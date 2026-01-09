@@ -7,6 +7,7 @@
     <title>Yantra</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -92,6 +93,20 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(0, 0, 0, 0.3);
+        }
+
+        .line-clamp-1 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -509,48 +524,47 @@
                             <div class="text-gray-500 font-medium">No apps found</div>
                             <div class="text-sm text-gray-400 mt-2">Try a different search term</div>
                         </div>
-                        <div v-else class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                             <div v-for="app in filteredApps" :key="app.id"
-                                class="bg-white rounded-3xl p-6 smooth-shadow-lg card-hover border border-gray-200 flex flex-col">
-                                <div class="flex flex-col items-center text-center mb-5">
-                                    <img v-if="app.logo" :src="app.logo" :alt="app.name"
-                                        class="w-20 h-20 rounded-2xl smooth-shadow mb-4">
-                                    <div v-else
-                                        class="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center text-4xl smooth-shadow mb-4">
-                                        📦
+                                class="group bg-white rounded-2xl p-4 border border-gray-200 hover:border-blue-300 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col">
+                                <div class="flex flex-col items-center mb-3">
+                                    <div class="relative mb-3">
+                                        <img v-if="app.logo" :src="app.logo" :alt="app.name"
+                                            class="w-16 h-16 rounded-xl transition-transform duration-300 group-hover:scale-110">
+                                        <div v-else
+                                            class="w-16 h-16 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl flex items-center justify-center text-3xl transition-transform duration-300 group-hover:scale-110">
+                                            📦
+                                        </div>
                                     </div>
-                                    <h3 class="font-bold text-xl text-gray-900 mb-2">{{ app.name }}</h3>
-                                    <span
-                                        class="text-xs px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 font-medium">
+                                    <h3 class="font-semibold text-sm text-gray-900 mb-1 text-center line-clamp-1">{{ app.name }}</h3>
+                                    <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
                                         {{ app.category }}
                                     </span>
                                 </div>
 
-                                <p class="text-sm text-gray-600 mb-5 leading-relaxed flex-1">{{ app.description || 'No description' }}</p>
+                                <p class="text-xs text-gray-500 mb-3 leading-relaxed flex-1 line-clamp-2 text-center">{{ app.description || 'No description' }}</p>
 
-                                <div class="flex flex-wrap gap-2 mb-5 justify-center">
-                                    <span v-for="tag in app.tags.slice(0, 2)" :key="tag"
-                                        class="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-medium">
-                                        {{ tag }}
-                                    </span>
-                                </div>
-
-                                <div class="flex flex-col gap-2">
+                                <div class="flex gap-1">
                                     <button @click="deployApp(app.id)" :disabled="deploying === app.id"
-                                        class="w-full px-4 py-3.5 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold transition-all smooth-shadow">
-                                        {{ deploying === app.id ? 'Deploying...' : '⚡ Deploy' }}
+                                        class="flex-1 px-3 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg text-xs font-semibold transition-all duration-200 transform active:scale-95">
+                                        {{ deploying === app.id ? '...' : 'Install' }}
                                     </button>
-                                    <div class="flex gap-2">
-                                        <a v-if="app.website" :href="app.website" target="_blank"
-                                            class="flex-1 px-3 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-xl text-xs font-semibold transition-all text-center">
-                                            🌐 Website
-                                        </a>
-                                        <a :href="`https://github.com/besoeasy/yantra/blob/main/apps/${app.id}/compose.yml`"
-                                            target="_blank"
-                                            class="flex-1 px-3 py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-xl text-xs font-semibold transition-all text-center">
-                                            📄 Compose
-                                        </a>
-                                    </div>
+                                    <a v-if="app.website" :href="app.website" target="_blank"
+                                        class="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 hover:bg-gray-50 hover:border-blue-300 text-gray-600 rounded-lg transition-all duration-200 transform active:scale-95"
+                                        title="Website">
+                                        <i class="fas fa-globe text-xs"></i>
+                                    </a>
+                                    <a :href="app.github" target="_blank"
+                                        class="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 hover:bg-gray-50 hover:border-blue-300 text-gray-600 rounded-lg transition-all duration-200 transform active:scale-95"
+                                        title="GitHub">
+                                        <i class="fab fa-github text-xs"></i>
+                                    </a>
+                                    <a :href="`https://github.com/besoeasy/yantra/blob/main/apps/${app.id}/compose.yml`"
+                                        target="_blank"
+                                        class="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 hover:bg-gray-50 hover:border-blue-300 text-gray-600 rounded-lg transition-all duration-200 transform active:scale-95"
+                                        title="Compose File">
+                                        <i class="fas fa-file-code text-xs"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
