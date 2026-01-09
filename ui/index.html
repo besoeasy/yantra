@@ -218,17 +218,31 @@
 
                     <!-- Containers Tab -->
                     <div v-if="activeTab === 'containers'">
-                        <h2 class="text-3xl font-bold mb-8 text-gray-800">Running Containers</h2>
+                        <div class="flex items-center justify-between mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800">Running Containers</h2>
+                            <div class="glass rounded-xl p-1 flex gap-1">
+                                <button @click="containerView = 'appstore'"
+                                    :class="containerView === 'appstore' ? 'bg-white shadow-sm' : 'hover:bg-white/50'"
+                                    class="px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+                                    <span class="mr-2">🏪</span>App Store ({{ appStoreContainers.length }})
+                                </button>
+                                <button @click="containerView = 'custom'"
+                                    :class="containerView === 'custom' ? 'bg-white shadow-sm' : 'hover:bg-white/50'"
+                                    class="px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+                                    <span class="mr-2">⚙️</span>Custom ({{ customContainers.length }})
+                                </button>
+                            </div>
+                        </div>
                         <div v-if="loading" class="text-center py-16">
                             <div class="text-gray-500 font-medium">Loading containers...</div>
                         </div>
-                        <div v-else-if="containers.length === 0" class="text-center py-16">
-                            <div class="text-5xl mb-4">📦</div>
-                            <div class="text-gray-500 font-medium">No containers running</div>
-                            <div class="text-sm text-gray-400 mt-2">Deploy an app to get started</div>
+                        <div v-else-if="activeContainers.length === 0" class="text-center py-16">
+                            <div class="text-5xl mb-4">{{ containerView === 'appstore' ? '🏪' : '⚙️' }}</div>
+                            <div class="text-gray-500 font-medium">No {{ containerView === 'appstore' ? 'app store' : 'custom' }} containers running</div>
+                            <div class="text-sm text-gray-400 mt-2">{{ containerView === 'appstore' ? 'Deploy an app to get started' : 'Custom containers from external sources will appear here' }}</div>
                         </div>
                         <div v-else class="grid grid-cols-1 gap-4">
-                            <div v-for="container in containers" :key="container.id"
+                            <div v-for="container in activeContainers" :key="container.id"
                                 class="glass rounded-2xl p-6 smooth-shadow card-hover">
                                 <div class="flex items-start justify-between mb-4">
                                     <div class="flex items-center gap-4">
@@ -606,7 +620,8 @@
                     envValues: {},
                     appSearch: '',
                     apiUrl: '',
-                    version: 'loading...'
+                    version: 'loading...',
+                    containerView: 'appstore'
                 }
             }, computed: {
                 filteredApps() {
@@ -620,6 +635,15 @@
                             app.description.toLowerCase().includes(search) ||
                             app.tags.some(tag => tag.toLowerCase().includes(search));
                     });
+                },
+                appStoreContainers() {
+                    return this.containers.filter(c => c.app.category !== 'uncategorized');
+                },
+                customContainers() {
+                    return this.containers.filter(c => c.app.category === 'uncategorized');
+                },
+                activeContainers() {
+                    return this.containerView === 'appstore' ? this.appStoreContainers : this.customContainers;
                 }
             }, mounted() {
                 this.fetchVersion();
