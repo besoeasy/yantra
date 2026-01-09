@@ -822,7 +822,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5252;
+const PORT = 5252;
 app.listen(PORT, '0.0.0.0', () => {
   log('info', '\n' + '='.repeat(50));
   log('info', '🚀 Yantra API Server Started');
