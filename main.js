@@ -185,23 +185,12 @@ function parseAppLabels(labels) {
   return appLabels;
 }
 
-// GET /api/health - Health check endpoint
-app.get('/api/health', async (req, res) => {
-  try {
-    await docker.ping();
-    return res.status(200).json({
-      status: 'ok',
-      docker: 'connected',
-      version: packageJson.version
-    });
-  } catch (error) {
-    return res.status(503).json({
-      status: 'unhealthy',
-      docker: 'disconnected',
-      error: error.message,
-      version: packageJson.version
-    });
-  }
+// GET /api/version - Get app version
+app.get('/api/version', (req, res) => {
+  res.json({
+    success: true,
+    version: packageJson.version
+  });
 });
 
 // GET /api/logs - Get stored logs
@@ -794,7 +783,7 @@ app.get('/', (req, res) => {
     version: packageJson.version,
     description: 'Lightweight Docker dashboard for self-hosting',
     endpoints: {
-      health: '/api/health',
+      version: '/api/version',
       containers: '/api/containers',
       container: '/api/containers/:id',
       apps: '/api/apps',

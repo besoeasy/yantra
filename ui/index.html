@@ -126,18 +126,6 @@
                     </div>
 
                     <!-- Status -->
-                    <div class="mb-8 p-4 bg-white rounded-2xl smooth-shadow border border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-gray-600">System Status</span>
-                            <span v-if="health" :class="health.status === 'healthy' ? 'text-green-600' : 'text-red-600'"
-                                class="text-sm font-semibold flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full status-dot"
-                                    :class="health.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'"></span>
-                                {{ health.status === 'healthy' ? 'Connected' : 'Disconnected' }}
-                            </span>
-                        </div>
-                    </div>
-
                     <!-- Navigation Tabs -->
                     <nav class="space-y-3 mb-8">
                         <button @click="activeTab = 'containers'"
@@ -621,7 +609,6 @@
                     imagesData: {},
                     logsData: {},
                     logFilter: 'all',
-                    health: null,
                     loading: false,
                     deploying: null,
                     deleting: null,
@@ -686,7 +673,7 @@
                 },
                 async fetchVersion() {
                     try {
-                        const response = await fetch(`${this.apiUrl}/api/health`);
+                        const response = await fetch(`${this.apiUrl}/api/version`);
                         const data = await response.json();
                         this.version = data.version || '0.0.0';
                     } catch (error) {
@@ -697,19 +684,10 @@
                 async refreshAll() {
                     this.loading = true;
                     await Promise.all([
-                        this.fetchHealth(),
                         this.fetchContainers(),
                         this.fetchApps()
                     ]);
                     this.loading = false;
-                },
-                async fetchHealth() {
-                    try {
-                        const response = await fetch(`${this.apiUrl}/api/health`);
-                        this.health = await response.json();
-                    } catch (error) {
-                        console.error('Failed to fetch health:', error);
-                    }
                 },
                 async fetchContainers() {
                     try {
