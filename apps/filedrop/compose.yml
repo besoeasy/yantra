@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
     labels:
       yantra.name: "File Drop"
-      yantra.logo: "QmT5eKcAxWshV9jZfhzGK6xd5SipD1jMADe5EeBur8hyA2"
+      yantra.logo: "QmRXThtTrA56JhncJEPXjJBBwpu74NxbYCsHxnnkn1QQcq"
       yantra.category: "utility,tools"
       yantra.port: "3232"
       yantra.description: "Decentralized file-sharing solution for Nostr and the web."

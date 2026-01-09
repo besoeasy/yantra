@@ -4,7 +4,7 @@ services:
     container_name: speedtest
     labels:
      yantra.name: "LibreSpeed"
-     yantra.logo: "QmZjYQm8xT6nVZvHpPzZrJf3h7qEj9H8YHsN7FqKx2vAZa"
+     yantra.logo: "QmR4dXKau4JxsY94BRLupk32nemq1nxqwJHCsmhGvsdKye"
      yantra.category: "network,tools"
      yantra.port: "${SPEEDTEST_PORT:-8082}"
      yantra.description: "Self-hosted speed test tool for bandwidth measurement"
