@@ -693,6 +693,41 @@ app.get('/api/volumes', async (req, res) => {
       });
     }
 
+    // Get volume sizes using docker system df -v
+    const volumeSizes = await new Promise((resolve) => {
+      exec('docker system df -v --format "{{.Name}}\t{{.Size}}"', (error, stdout) => {
+        if (error) {
+          log('warn', '⚠️  [GET /api/volumes] Could not get volume sizes:', error.message);
+          resolve({});
+          return;
+        }
+        
+        const sizes = {};
+        const lines = stdout.trim().split('\n');
+        lines.forEach(line => {
+          const [name, size] = line.split('\t');
+          if (name && size && name !== 'VOLUME NAME') {
+            // Parse size string (e.g., "1.5MB", "100kB", "2GB")
+            const sizeMatch = size.match(/^([\d.]+)([A-Za-z]+)$/);
+            if (sizeMatch) {
+              const value = parseFloat(sizeMatch[1]);
+              const unit = sizeMatch[2].toUpperCase();
+              let bytes = 0;
+              
+              if (unit === 'B') bytes = value;
+              else if (unit === 'KB') bytes = value * 1024;
+              else if (unit === 'MB') bytes = value * 1024 * 1024;
+              else if (unit === 'GB') bytes = value * 1024 * 1024 * 1024;
+              else if (unit === 'TB') bytes = value * 1024 * 1024 * 1024 * 1024;
+              
+              sizes[name] = bytes;
+            }
+          }
+        });
+        resolve(sizes);
+      });
+    });
+
     // Create a set of volume names used by containers
     const usedVolumeNames = new Set();
     containers.forEach(container => {
@@ -707,8 +742,8 @@ app.get('/api/volumes', async (req, res) => {
 
     const formattedVolumes = volumes.Volumes.map(volume => {
       const isUsed = usedVolumeNames.has(volume.Name);
-      const size = volume.UsageData ? (volume.UsageData.Size / (1024 * 1024)).toFixed(2) : 'N/A';
-      const sizeBytes = volume.UsageData ? volume.UsageData.Size : 0;
+      const sizeBytes = volumeSizes[volume.Name] || 0;
+      const size = sizeBytes > 0 ? (sizeBytes / (1024 * 1024)).toFixed(2) : '0';
 
       return {
         name: volume.Name,
