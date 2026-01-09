@@ -220,6 +220,7 @@ app.get('/api/containers', async (req, res) => {
 
     const formattedContainers = containers.map(container => {
       const appLabels = parseAppLabels(container.Labels);
+      const composeProject = container.Labels['com.docker.compose.project'];
 
       return {
         id: container.Id,
@@ -234,13 +235,15 @@ app.get('/api/containers', async (req, res) => {
         appLabels: appLabels,
         // Add computed fields for easier UI access
         app: {
+          id: composeProject || container.Names[0]?.replace('/', '') || 'unknown', // Add app ID
           name: appLabels.name || container.Names[0]?.replace('/', '') || 'unknown',
           logo: appLabels.logo ? (appLabels.logo.includes('://') ? appLabels.logo : `https://dweb.link/ipfs/${appLabels.logo}`) : null,
           category: appLabels.category || 'uncategorized',
           port: appLabels.port || null,
           description: appLabels.description || '',
           docs: appLabels.docs || null,
-          github: appLabels.github || null
+          github: appLabels.github || null,
+          website: appLabels.website || null
         }
       };
     });

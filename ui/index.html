@@ -570,10 +570,14 @@
                 }
             }, computed: {
                 allAppsCount() {
-                    return this.apps.length + this.containers.length;
+                    // Total unique apps: installed + uninstalled only
+                    return this.installedApps.length + this.uninstalledApps.length;
                 },
                 installedAppIds() {
-                    return new Set(this.containers.map(c => c.app.id));
+                    const ids = new Set(this.containers.map(c => c.app.id));
+                    console.log('Installed app IDs:', Array.from(ids));
+                    console.log('All containers:', this.containers.map(c => ({ id: c.app.id, name: c.app.name })));
+                    return ids;
                 },
                 installedApps() {
                     // Convert containers to app format with installed flag
@@ -587,7 +591,14 @@
                 },
                 uninstalledApps() {
                     // Filter out already installed apps and shuffle
-                    const uninstalled = this.apps.filter(app => !this.installedAppIds.has(app.id));
+                    const uninstalled = this.apps.filter(app => {
+                        const isInstalled = this.installedAppIds.has(app.id);
+                        if (isInstalled) {
+                            console.log('Filtering out installed app:', app.id, app.name);
+                        }
+                        return !isInstalled;
+                    });
+                    console.log('Uninstalled apps count:', uninstalled.length);
                     return this.shuffleWithSeed(uninstalled).map(app => ({
                         ...app,
                         isInstalled: false
@@ -705,6 +716,13 @@
                         const data = await response.json();
                         if (data.success) {
                             this.containers = data.containers.filter(c => c.state === 'running');
+                            console.log('=== CONTAINERS DATA ===');
+                            console.log('Containers:', this.containers.map(c => ({ 
+                                containerName: c.name, 
+                                appId: c.app.id, 
+                                appName: c.app.name,
+                                composeProject: c.labels?.['com.docker.compose.project']
+                            })));
                         }
                     } catch (error) {
                         console.error('Failed to fetch containers:', error);
@@ -716,6 +734,8 @@
                         const data = await response.json();
                         if (data.success) {
                             this.apps = data.apps;
+                            console.log('=== APPS DATA ===');
+                            console.log('Apps:', this.apps.map(a => ({ id: a.id, name: a.name })));
                         }
                     } catch (error) {
                         console.error('Failed to fetch apps:', error);
