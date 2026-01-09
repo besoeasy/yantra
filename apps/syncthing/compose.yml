@@ -1,0 +1,29 @@
+services:
+  syncthing:
+    image: syncthing/syncthing:latest
+    container_name: syncthing
+    hostname: syncthing
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ:-UTC}
+    volumes:
+      - syncthing_data:/var/syncthing
+    ports:
+      - "8384:8384" # Web UI
+      - "22000:22000/tcp" # Sync TCP
+      - "22000:22000/udp" # Sync UDP
+      - "21027:21027/udp" # Discovery
+    restart: unless-stopped
+    labels:
+      - "yantra.name=Syncthing"
+      - "yantra.logo=https://cdn.icon-icons.com/icons2/2699/PNG/512/syncthing_logo_icon_168925.png"
+      - "yantra.category=Tools"
+      - "yantra.port=8384"
+      - "yantra.description=Continuous file synchronization program. It synchronizes files between two or more computers."
+      - "yantra.website=https://syncthing.net/"
+      - "yantra.github=https://github.com/syncthing/syncthing"
+      - "yantra.tags=sync,backup,p2p,files"
+
+volumes:
+  syncthing_data:
