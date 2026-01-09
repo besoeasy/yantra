@@ -239,7 +239,7 @@
                             <div class="text-gray-500 font-medium">No {{ containerView === 'appstore' ? 'app store' : 'custom' }} containers running</div>
                             <div class="text-sm text-gray-400 mt-2">{{ containerView === 'appstore' ? 'Deploy an app to get started' : 'Custom containers from external sources will appear here' }}</div>
                         </div>
-                        <div v-else class="grid grid-cols-1 gap-6">
+                        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <div v-for="container in activeContainers" :key="container.id"
                                 class="bg-white rounded-3xl p-8 smooth-shadow-lg card-hover border border-gray-200">
                                 <div class="flex items-start justify-between mb-5">
@@ -288,15 +288,17 @@
                                         class="flex-1 px-6 py-3.5 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-sm font-semibold text-center transition-all smooth-shadow">
                                         Open App
                                     </a>
-                                    <a v-if="container.app.github" :href="container.app.github" target="_blank"
-                                        class="px-6 py-3.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-semibold transition-all">
-                                        GitHub
+                                    <a v-if="container.app.website" :href="container.app.website" target="_blank"
+                                        class="px-4 py-3.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-xl text-sm font-semibold transition-all"
+                                        title="Visit website">
+                                        <i class="fas fa-globe"></i>
                                     </a>
                                     <button @click="deleteContainer(container.id, container.app.name)"
                                         :disabled="deleting === container.id"
-                                        class="px-6 py-3.5 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold transition-all smooth-shadow"
+                                        class="px-4 py-3.5 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold transition-all smooth-shadow"
                                         title="Delete container and volumes">
-                                        {{ deleting === container.id ? '...' : '🗑️' }}
+                                        <i v-if="deleting !== container.id" class="fas fa-trash"></i>
+                                        <span v-else>...</span>
                                     </button>
                                 </div>
                             </div>
