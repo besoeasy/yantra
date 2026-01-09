@@ -269,12 +269,17 @@
                                 <p class="text-base text-gray-600 mb-5 leading-relaxed">{{ container.app.description ||
                                     'No description' }}</p>
 
-                                <div v-if="container.app.port" class="mb-5 flex items-center gap-2">
-                                    <span class="text-sm font-semibold text-gray-700">Port:</span>
-                                    <span
-                                        class="text-sm px-4 py-2 bg-green-50 text-green-700 rounded-lg font-mono font-semibold border border-green-200">
-                                        {{ container.app.port }}
-                                    </span>
+                                <div v-if="container.ports && container.ports.length > 0" class="mb-5">
+                                    <span class="text-sm font-semibold text-gray-700 mb-2 block">Ports:</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span v-for="(port, index) in container.ports" :key="index"
+                                            class="text-xs px-3 py-2 bg-green-50 text-green-700 rounded-lg font-mono font-semibold border border-green-200">
+                                            <span v-if="port.PublicPort">{{ port.PublicPort }}</span>
+                                            <span v-if="port.PublicPort && port.PrivatePort"> → {{ port.PrivatePort }}</span>
+                                            <span v-else-if="port.PrivatePort">{{ port.PrivatePort }}</span>
+                                            <span v-if="port.Type">/{{ port.Type }}</span>
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <div class="flex gap-3">
