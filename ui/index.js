@@ -33,9 +33,22 @@ createApp({
             console.log('All containers:', this.containers.map(c => ({ id: c.app.id, name: c.app.name })));
             return ids;
         },
+        // Custom containers are those without yantra.name label (category === 'uncategorized' and no appLabels.name)
+        customContainers() {
+            return this.containers.filter(c => {
+                // Check if container has no yantra.name label
+                return !c.appLabels || !c.appLabels.name;
+            });
+        },
+        // Yantra-managed containers (with yantra.name label)
+        yantraContainers() {
+            return this.containers.filter(c => {
+                return c.appLabels && c.appLabels.name;
+            });
+        },
         installedApps() {
-            // Convert containers to app format with installed flag
-            return this.containers.map(c => ({
+            // Convert only Yantra-managed containers to app format with installed flag
+            return this.yantraContainers.map(c => ({
                 ...c.app,
                 isInstalled: true,
                 containerId: c.id,
