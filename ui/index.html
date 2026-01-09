@@ -621,15 +621,19 @@
                 }
             }, computed: {
                 filteredApps() {
-                    if (!this.appSearch) {
-                        return this.apps;
+                    let result = this.apps;
+                    
+                    if (this.appSearch) {
+                        const search = this.appSearch.toLowerCase();
+                        result = result.filter(app => {
+                            return app.name.toLowerCase().includes(search) ||
+                                app.category.toLowerCase().includes(search) ||
+                                app.description.toLowerCase().includes(search);
+                        });
                     }
-                    const search = this.appSearch.toLowerCase();
-                    return this.apps.filter(app => {
-                        return app.name.toLowerCase().includes(search) ||
-                            app.category.toLowerCase().includes(search) ||
-                            app.description.toLowerCase().includes(search);
-                    });
+                    
+                    // Randomize order using date-hour seed
+                    return this.shuffleWithSeed(result);
                 },
                 appStoreContainers() {
                     return this.containers.filter(c => c.app.category !== 'uncategorized');
@@ -651,6 +655,50 @@
                 }, 10000);
             },
             methods: {
+                // SHA256 hash function
+                async sha256(message) {
+                    const msgBuffer = new TextEncoder().encode(message);
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                },
+                
+                // Get random seed based on current date-hour
+                getDateHourSeed() {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const hour = String(now.getHours()).padStart(2, '0');
+                    return `${year}-${month}-${day}-${hour}`;
+                },
+                
+                // Seeded random number generator
+                seededRandom(seed) {
+                    let x = Math.sin(seed) * 10000;
+                    return x - Math.floor(x);
+                },
+                
+                // Shuffle array with seed
+                shuffleWithSeed(array) {
+                    // Convert hash to numeric seed
+                    const dateHourSeed = this.getDateHourSeed();
+                    let numericSeed = 0;
+                    for (let i = 0; i < dateHourSeed.length; i++) {
+                        numericSeed += dateHourSeed.charCodeAt(i) * (i + 1);
+                    }
+                    
+                    // Clone array to avoid mutating original
+                    const shuffled = [...array];
+                    
+                    // Fisher-Yates shuffle with seeded random
+                    for (let i = shuffled.length - 1; i > 0; i--) {
+                        const j = Math.floor(this.seededRandom(numericSeed + i) * (i + 1));
+                        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                    }
+                    
+                    return shuffled;
+                },
                 appUrl(port) {
                     const protocol = window.location.protocol || 'http:';
                     let host = window.location.hostname || 'localhost';
