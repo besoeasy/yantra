@@ -1,0 +1,21 @@
+services:
+  element:
+    image: vectorim/element-web:latest
+    container_name: element
+    labels:
+     yantra.name: "Element"
+     yantra.logo: "QmX8tP9Kw2Vj6Nh5Lq7Ry4Fz8Mc3Tb1Gd9Ws6Yx2Kp5Hz"
+     yantra.category: "productivity"
+     yantra.port: "${ELEMENT_PORT:-8089}"
+     yantra.description: "Secure and decentralized Matrix chat client for communication"
+     yantra.website: "https://element.io"
+     yantra.github: "https://github.com/element-hq/element-web"
+     yantra.tags: "matrix,chat,messaging,communication,encryption"
+    ports:
+      - "${ELEMENT_PORT:-8089}:80"
+    volumes:
+      - element_config:/app/config
+    restart: unless-stopped
+
+volumes:
+  element_config:
