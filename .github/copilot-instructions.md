@@ -17,4 +17,15 @@ All the apps must follow the rules mentioned in apps/guide.md
 
 After edits make sure to update index.html if we change anything.
 
+If you need something uploaded to IPFS use
+
+curl -X POST http://localhost:3232/remoteupload \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com/image.png"}'
+
+  it returns 
+  {
+  "status": "success",
+  "cid": "QmX...",
+  }
 

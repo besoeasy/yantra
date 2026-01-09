@@ -1,0 +1,33 @@
+services:
+  bitcoin-knots:
+    image: btcpayserver/bitcoin:27.1-1.knots20240801
+    container_name: bitcoin-knots
+    hostname: bitcoin-knots
+    environment:
+      - TZ=${TZ:-UTC}
+      - BITCOIN_NETWORK=${BITCOIN_NETWORK:-mainnet}
+    volumes:
+      - bitcoin_knots_data:/data
+    ports:
+      - "${BITCOIN_P2P_PORT:-8333}:8333"
+      - "${BITCOIN_RPC_PORT:-8332}:8332"
+    restart: unless-stopped
+    command: >
+      bitcoind
+      -datadir=/data
+      -printtoconsole
+      -rpcallowip=0.0.0.0/0
+      -rpcbind=0.0.0.0
+      -rpcuser=${BITCOIN_RPC_USER:-bitcoin}
+      -rpcpassword=${BITCOIN_RPC_PASSWORD:-changeme}
+    labels:
+      yantra.name: "Bitcoin Knots"
+      yantra.logo: "QmTttEiisTnt6ivcGQo9W6BCKNpuViU9zAhNYLKd8xK9Lm"
+      yantra.category: "utility,development"
+      yantra.port: "${BITCOIN_RPC_PORT:-8332}"
+      yantra.description: "Bitcoin full node with enhanced features and privacy focus."
+      yantra.website: "https://bitcoinknots.org"
+      yantra.github: "https://github.com/bitcoinknots/bitcoin"
+
+volumes:
+  bitcoin_knots_data:

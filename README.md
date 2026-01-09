@@ -4,7 +4,6 @@ A lightweight, minimal, and open-source alternative to Umbrel for self-hosting e
 
 <img width="2318" height="1377" alt="image" src="https://github.com/user-attachments/assets/b90d2599-cd9e-424d-bb7c-20499991a7fe" />
 
-
 ## Why Yantra?
 
 We created Yantra as a **faster, lighter, and more transparent** alternative to Umbrel. Umbrel's heavy apps, forced proxy architecture, and slow update cycles made self-hosting unnecessarily painful. Yantra takes a different approach:
@@ -23,7 +22,7 @@ Yantra runs on any Debian-based Linux distribution:
 - **Ubuntu** 20.04, 22.04, 24.04+
 - **Raspberry Pi OS** (Bullseye, Bookworm)
 - **Linux Mint** 20, 21+
-- **Pop!_OS** 20.04+
+- **Pop!\_OS** 20.04+
 - **Elementary OS** 6+
 - **MX Linux** 21+
 - Any other Debian derivative
@@ -57,7 +56,6 @@ sudo systemctl start docker
 # Verify Docker is running
 sudo systemctl status docker
 ```
-
 
 ### Run Yantra with Docker
 
