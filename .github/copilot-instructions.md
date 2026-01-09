@@ -17,11 +17,11 @@ All the apps must follow the rules mentioned in apps/guide.md
 
 After edits make sure to update index.html if we change anything.
 
+Incase i ask you to add App, make sure to follow the steps below:
+
 ## IPFS Upload
 
 To upload images/files to IPFS (for app logos, etc.):
-
-**Endpoint**: `POST https://filedrop.besoeasy.com/remoteupload`
 
 **Example**:
 
