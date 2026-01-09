@@ -670,6 +670,113 @@ app.delete('/api/images/:id', async (req, res) => {
   }
 });
 
+// GET /api/volumes - List all volumes with usage status
+app.get('/api/volumes', async (req, res) => {
+  log('info', '💾 [GET /api/volumes] Fetching all volumes');
+  try {
+    const volumes = await docker.listVolumes();
+    const containers = await docker.listContainers({ all: true });
+
+    log('info', `💾 [GET /api/volumes] Found ${volumes.Volumes ? volumes.Volumes.length : 0} volumes`);
+
+    if (!volumes.Volumes) {
+      return res.json({
+        success: true,
+        total: 0,
+        used: 0,
+        unused: 0,
+        totalSize: '0',
+        unusedSize: '0',
+        volumes: [],
+        usedVolumes: [],
+        unusedVolumes: []
+      });
+    }
+
+    // Create a set of volume names used by containers
+    const usedVolumeNames = new Set();
+    containers.forEach(container => {
+      if (container.Mounts) {
+        container.Mounts.forEach(mount => {
+          if (mount.Type === 'volume' && mount.Name) {
+            usedVolumeNames.add(mount.Name);
+          }
+        });
+      }
+    });
+
+    const formattedVolumes = volumes.Volumes.map(volume => {
+      const isUsed = usedVolumeNames.has(volume.Name);
+      const size = volume.UsageData ? (volume.UsageData.Size / (1024 * 1024)).toFixed(2) : 'N/A';
+      const sizeBytes = volume.UsageData ? volume.UsageData.Size : 0;
+
+      return {
+        name: volume.Name,
+        driver: volume.Driver,
+        mountpoint: volume.Mountpoint,
+        created: volume.CreatedAt,
+        size: size,
+        sizeBytes: sizeBytes,
+        isUsed: isUsed,
+        scope: volume.Scope || 'local',
+        labels: volume.Labels || {}
+      };
+    });
+
+    // Sort by name and separate used from unused
+    const usedVolumes = formattedVolumes.filter(vol => vol.isUsed).sort((a, b) => a.name.localeCompare(b.name));
+    const unusedVolumes = formattedVolumes.filter(vol => !vol.isUsed).sort((a, b) => a.name.localeCompare(b.name));
+
+    const totalSize = formattedVolumes.reduce((sum, vol) => sum + (vol.sizeBytes || 0), 0);
+    const unusedSize = unusedVolumes.reduce((sum, vol) => sum + (vol.sizeBytes || 0), 0);
+
+    log('info', `✅ [GET /api/volumes] Returning ${formattedVolumes.length} volumes (${unusedVolumes.length} unused)`);
+    res.json({
+      success: true,
+      total: formattedVolumes.length,
+      used: usedVolumes.length,
+      unused: unusedVolumes.length,
+      totalSize: (totalSize / (1024 * 1024)).toFixed(2),
+      unusedSize: (unusedSize / (1024 * 1024)).toFixed(2),
+      volumes: formattedVolumes,
+      usedVolumes: usedVolumes,
+      unusedVolumes: unusedVolumes
+    });
+  } catch (error) {
+    log('error', '❌ [GET /api/volumes] Error:', error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// DELETE /api/volumes/:name - Remove a volume
+app.delete('/api/volumes/:name', async (req, res) => {
+  log('info', `🗑️  [DELETE /api/volumes/:name] Remove request for volume: ${req.params.name}`);
+  try {
+    const volume = docker.getVolume(req.params.name);
+    await volume.inspect();
+
+    log('info', `🗑️  [DELETE /api/volumes/:name] Removing volume...`);
+    await volume.remove({ force: false });
+
+    log('info', `✅ [DELETE /api/volumes/:name] Successfully removed volume`);
+    res.json({
+      success: true,
+      message: 'Volume removed successfully',
+      volumeName: req.params.name
+    });
+  } catch (error) {
+    log('error', `❌ [DELETE /api/volumes/:name] Error:`, error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to remove volume',
+      message: error.message
+    });
+  }
+});
+
 // DELETE /api/containers/:id - Remove container (or stack if part of an app)
 app.delete('/api/containers/:id', async (req, res) => {
   log('info', `🗑️  [DELETE /api/containers/:id] Remove request for: ${req.params.id}`);

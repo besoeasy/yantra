@@ -164,6 +164,18 @@
                                 {{ imagesData.unused || 0 }} unused
                             </span>
                         </button>
+                        <button @click="activeTab = 'volumes'; fetchVolumes()"
+                            :class="activeTab === 'volumes' ? 'bg-blue-500 text-white smooth-shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'"
+                            class="w-full px-5 py-4 rounded-xl font-semibold transition-all text-left flex items-center justify-between">
+                            <span class="flex items-center gap-3">
+                                <span class="text-xl">💾</span>
+                                <span class="text-base">Volumes</span>
+                            </span>
+                            <span class="text-xs px-2.5 py-1 rounded-full font-semibold"
+                                :class="activeTab === 'volumes' ? 'bg-white/20 text-white' : (volumesData.unused > 0 ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-600')">
+                                {{ volumesData.unused || 0 }} unused
+                            </span>
+                        </button>
                         <button @click="activeTab = 'logs'; fetchLogs()"
                             :class="activeTab === 'logs' ? 'bg-blue-500 text-white smooth-shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'"
                             class="w-full px-5 py-4 rounded-xl font-semibold transition-all text-left flex items-center justify-between">
@@ -423,6 +435,121 @@
                         </div>
                     </div>
 
+                    <!-- Volumes Tab -->
+                    <div v-if="activeTab === 'volumes'">
+                        <h2 class="text-5xl font-bold mb-12 text-gray-900 tracking-tight">Volumes</h2>
+                        <div v-if="loading" class="text-center py-16">
+                            <div class="text-gray-500 font-medium">Loading volumes...</div>
+                        </div>
+                        <div v-else>
+                            <!-- Summary Stats -->
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                                <div class="bg-white rounded-2xl p-6 smooth-shadow border border-gray-200">
+                                    <div class="text-gray-500 text-xs font-semibold uppercase tracking-wide mb-2">Total
+                                        Volumes</div>
+                                    <div class="text-4xl font-bold text-gray-900">{{ volumesData.total || 0 }}</div>
+                                </div>
+                                <div class="bg-white rounded-2xl p-6 smooth-shadow border border-gray-200">
+                                    <div class="text-gray-500 text-xs font-semibold uppercase tracking-wide mb-2">Used
+                                        Volumes</div>
+                                    <div class="text-3xl font-bold text-green-600">{{ volumesData.used || 0 }}</div>
+                                </div>
+                                <div class="glass rounded-2xl p-5 smooth-shadow">
+                                    <div class="text-gray-500 text-xs font-semibold uppercase tracking-wide mb-2">Unused
+                                        Volumes</div>
+                                    <div class="text-3xl font-bold text-orange-600">{{ volumesData.unused || 0 }}</div>
+                                </div>
+                                <div class="glass rounded-2xl p-5 smooth-shadow">
+                                    <div class="text-gray-500 text-xs font-semibold uppercase tracking-wide mb-2">Unused
+                                        Space</div>
+                                    <div class="text-3xl font-bold text-red-600">{{ volumesData.unusedSize || 0 }} <span
+                                            class="text-lg">MB</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Unused Volumes Section -->
+                            <div v-if="volumesData.unusedVolumes && volumesData.unusedVolumes.length > 0" class="mb-8">
+                                <h3 class="text-xl font-bold mb-4 text-orange-600 flex items-center gap-2">
+                                    <span>🗑️</span>
+                                    <span>Unused Volumes</span>
+                                </h3>
+                                <div class="space-y-3">
+                                    <div v-for="volume in volumesData.unusedVolumes" :key="volume.name"
+                                        class="glass rounded-2xl p-5 card-hover smooth-shadow">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex-1">
+                                                <div class="flex items-center gap-3 mb-2">
+                                                    <span class="text-2xl">💾</span>
+                                                    <div>
+                                                        <div class="font-bold text-gray-900">{{ volume.name }}</div>
+                                                        <div class="text-sm text-gray-500">{{ volume.driver }} • {{ volume.scope }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-4">
+                                                <div class="text-right">
+                                                    <div
+                                                        class="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                                                        Size</div>
+                                                    <div class="font-bold text-gray-900">{{ volume.size }} MB</div>
+                                                </div>
+                                                <button @click="deleteVolume(volume.name)"
+                                                    :disabled="deletingVolume === volume.name"
+                                                    class="px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold transition-all smooth-shadow"
+                                                    title="Delete this volume">
+                                                    <span v-if="deletingVolume !== volume.name">🗑️ Delete</span>
+                                                    <span v-else>Deleting...</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Used Volumes Section -->
+                            <div v-if="volumesData.usedVolumes && volumesData.usedVolumes.length > 0">
+                                <h3 class="text-xl font-bold mb-4 text-green-600 flex items-center gap-2">
+                                    <span>✅</span>
+                                    <span>Volumes in Use</span>
+                                </h3>
+                                <div class="space-y-3">
+                                    <div v-for="volume in volumesData.usedVolumes" :key="volume.name"
+                                        class="glass rounded-2xl p-5 smooth-shadow">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex-1">
+                                                <div class="flex items-center gap-3 mb-2">
+                                                    <span class="text-2xl">💾</span>
+                                                    <div>
+                                                        <div class="font-bold text-gray-900">{{ volume.name }}</div>
+                                                        <div class="text-sm text-gray-500">{{ volume.driver }} • {{ volume.scope }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-4">
+                                                <div class="text-right">
+                                                    <div
+                                                        class="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                                                        Size</div>
+                                                    <div class="font-bold text-gray-900">{{ volume.size }} MB</div>
+                                                </div>
+                                                <div
+                                                    class="px-4 py-2.5 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-xl text-sm font-semibold">
+                                                    In Use
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div v-if="!volumesData.unusedVolumes || (volumesData.unusedVolumes.length === 0 && volumesData.usedVolumes.length === 0)"
+                                class="text-center py-16">
+                                <div class="text-5xl mb-4">💾</div>
+                                <div class="text-gray-500 font-medium">No volumes found</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Logs Tab -->
                     <div v-if="activeTab === 'logs'">
                         <h2 class="text-3xl font-bold mb-8 text-gray-800">Application Logs</h2>
@@ -610,12 +737,14 @@
                     containers: [],
                     apps: [],
                     imagesData: {},
+                    volumesData: {},
                     logsData: {},
                     logFilter: 'all',
                     loading: false,
                     deploying: null,
                     deleting: null,
                     deletingImage: null,
+                    deletingVolume: null,
                     showEnvModal: false,
                     selectedApp: null,
                     envValues: {},
@@ -775,6 +904,34 @@
                         this.loading = false;
                     }
                 },
+                async fetchVolumes() {
+                    this.loading = true;
+                    try {
+                        const response = await fetch(`${this.apiUrl}/api/volumes`);
+                        const data = await response.json();
+                        if (data.success) {
+                            this.volumesData = data;
+                        }
+                    } catch (error) {
+                        console.error('Failed to fetch volumes:', error);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                async fetchVolumes() {
+                    this.loading = true;
+                    try {
+                        const response = await fetch(`${this.apiUrl}/api/volumes`);
+                        const data = await response.json();
+                        if (data.success) {
+                            this.volumesData = data;
+                        }
+                    } catch (error) {
+                        console.error('Failed to fetch volumes:', error);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
                 async fetchLogs() {
                     this.loading = true;
                     try {
@@ -897,6 +1054,28 @@
                         alert(`Deletion failed: ${error.message}`);
                     } finally {
                         this.deletingImage = null;
+                    }
+                },
+                async deleteVolume(volumeName) {
+                    if (!confirm(`Delete volume ${volumeName}?\n\nThis will permanently remove the volume and all its data.`)) return;
+
+                    this.deletingVolume = volumeName;
+                    try {
+                        const response = await fetch(`${this.apiUrl}/api/volumes/${volumeName}`, {
+                            method: 'DELETE'
+                        });
+                        const data = await response.json();
+
+                        if (data.success) {
+                            alert(`Volume deleted successfully!`);
+                            await this.fetchVolumes();
+                        } else {
+                            alert(`Deletion failed: ${data.error}\n${data.message}`);
+                        }
+                    } catch (error) {
+                        alert(`Deletion failed: ${error.message}`);
+                    } finally {
+                        this.deletingVolume = null;
                     }
                 }
             }
