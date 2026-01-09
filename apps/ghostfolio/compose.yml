@@ -4,7 +4,7 @@ services:
     container_name: ghostfolio
     labels:
      yantra.name: "Ghostfolio"
-     yantra.logo: "QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i"
+     yantra.logo: "QmfTpau6SSQzWKdrduo8ghaEhbW9us5utYRGsMbrPro1Ds"
      yantra.category: "productivity,utility"
      yantra.port: "3333"
      yantra.description: "Open source wealth management for portfolio tracking"

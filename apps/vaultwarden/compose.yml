@@ -4,7 +4,7 @@ services:
     container_name: vaultwarden
     labels:
      yantra.name: "Vaultwarden"
-     yantra.logo: "QmYSoiyanJ26mbB4CVZXGNEk1tfGjNaEnf3hBQyhtgA85w"
+     yantra.logo: "QmeGBekRcV4YqPpwQgKALgW3QUaQjutCoUGzEuACiwg4Wu"
      yantra.category: "productivity,security"
      yantra.port: "80"
      yantra.description: "Lightweight Bitwarden server for password management"

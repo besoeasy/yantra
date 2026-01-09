@@ -14,7 +14,7 @@ services:
     shm_size: "1gb"
     labels:
       yantra.name: "LibreOffice"
-      yantra.logo: "QmYSoiyanJ26mbB4CVZXGNEk1tfGjNaEnf3hBQyhtgA85w"
+      yantra.logo: "QmUCiKb8BvKqA9BssyndDvp9b46uU5LR7fLBpv2bkzdE78"
       yantra.category: "productivity,tools"
       yantra.port: "${LIBREOFFICE_PORT:-3000}"
       yantra.description: "Full-featured office suite accessible through web browser."
