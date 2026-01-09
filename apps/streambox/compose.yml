@@ -4,7 +4,7 @@ services:
     container_name: streambox
     labels:
      yantra.name: "StreamBox"
-     yantra.logo: "QmZ9vH6Kp2Tx8Wy5Nq4Lm7Rc3Jf9Gd1Bs8Vx4Qs6Ty2Hz"
+     yantra.logo: "QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i"
      yantra.category: "media"
      yantra.port: "${STREAMBOX_PORT_WEB:-6798}"
      yantra.description: "Media streaming and sharing platform with Telegram integration"

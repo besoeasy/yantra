@@ -4,7 +4,7 @@ services:
     container_name: element
     labels:
      yantra.name: "Element"
-     yantra.logo: "QmX8tP9Kw2Vj6Nh5Lq7Ry4Fz8Mc3Tb1Gd9Ws6Yx2Kp5Hz"
+     yantra.logo: "QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i"
      yantra.category: "productivity"
      yantra.port: "${ELEMENT_PORT:-8089}"
      yantra.description: "Secure and decentralized Matrix chat client for communication"
