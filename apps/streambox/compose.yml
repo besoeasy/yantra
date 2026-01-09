@@ -1,0 +1,29 @@
+services:
+  streambox:
+    image: ghcr.io/besoeasy/streambox:main
+    container_name: streambox
+    labels:
+     yantra.name: "StreamBox"
+     yantra.logo: "QmZ9vH6Kp2Tx8Wy5Nq4Lm7Rc3Jf9Gd1Bs8Vx4Qs6Ty2Hz"
+     yantra.category: "media"
+     yantra.port: "${STREAMBOX_PORT_WEB:-6798}"
+     yantra.description: "Media streaming and sharing platform with Telegram integration"
+     yantra.website: "https://github.com/besoeasy/streambox"
+     yantra.github: "https://github.com/besoeasy/streambox"
+     yantra.tags: "streaming,media,telegram,sharing"
+    ports:
+      - "${STREAMBOX_PORT_WEB:-6798}:6798"
+      - "${STREAMBOX_PORT_API:-6799}:6799"
+      - "${STREAMBOX_PORT_SMB:-4445}:4445"
+      - "${STREAMBOX_PORT_STREAM:-6888}:6888/tcp"
+      - "${STREAMBOX_PORT_STREAM:-6888}:6888/udp"
+    environment:
+      - TELEGRAMBOT=${STREAMBOX_TELEGRAMBOT}
+      - NSEC=${STREAMBOX_NSEC}
+      - AUTHCODE=${STREAMBOX_AUTHCODE}
+    volumes:
+      - streambox_data:/tmp/streambox
+    restart: unless-stopped
+
+volumes:
+  streambox_data:
