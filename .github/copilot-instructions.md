@@ -12,3 +12,9 @@ Ui is located in /ui/
 Apps templates located in /apps/, Apps are docker apps which have templates in /apps/<app-name>/compose.yml
 
 All the apps must follow the rules mentioned in apps/guide.md
+
+# GitHub Copilot Instructions
+
+After edits make sure to update index.html if we change anything.
+
+

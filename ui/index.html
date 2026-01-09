@@ -254,10 +254,12 @@
                                             <div class="flex items-center gap-2">
                                                 <h3 class="font-bold text-2xl text-gray-900">{{ container.app.name }}</h3>
                                             </div>
-                                            <span
-                                                class="text-xs px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 font-medium">
-                                                {{ container.app.category }}
-                                            </span>
+                                            <div class="flex flex-wrap gap-2">
+                                                <span v-for="cat in container.app.category.split(',')" :key="cat"
+                                                    class="text-xs px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 font-medium">
+                                                    {{ cat.trim() }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                     <span :class="container.state === 'running' ? 'bg-green-500' : 'bg-red-500'"
@@ -272,13 +274,6 @@
                                     <span
                                         class="text-sm px-4 py-2 bg-green-50 text-green-700 rounded-lg font-mono font-semibold border border-green-200">
                                         {{ container.app.port }}
-                                    </span>
-                                </div>
-
-                                <div class="flex flex-wrap gap-2 mb-6">
-                                    <span v-for="tag in container.app.tags.slice(0, 3)" :key="tag"
-                                        class="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg font-medium">
-                                        {{ tag }}
                                     </span>
                                 </div>
 
@@ -492,7 +487,7 @@
                         <div class="mb-12">
                             <div class="relative">
                                 <input v-model="appSearch" type="text"
-                                    placeholder="Search apps by name, category, or tags..."
+                                    placeholder="Search apps by name, category, or description..."
                                     class="w-full px-5 py-4 pl-12 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl">🔍</span>
                                 <button v-if="appSearch" @click="appSearch = ''"
@@ -527,9 +522,12 @@
                                         </div>
                                     </div>
                                     <h3 class="font-semibold text-sm text-gray-900 mb-1 text-center line-clamp-1">{{ app.name }}</h3>
-                                    <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
-                                        {{ app.category }}
-                                    </span>
+                                    <div class="flex flex-wrap gap-1 justify-center">
+                                        <span v-for="cat in app.category.split(',')" :key="cat"
+                                            class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
+                                            {{ cat.trim() }}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <p class="text-xs text-gray-500 mb-3 leading-relaxed flex-1 line-clamp-2 text-center">{{ app.description || 'No description' }}</p>
@@ -630,8 +628,7 @@
                     return this.apps.filter(app => {
                         return app.name.toLowerCase().includes(search) ||
                             app.category.toLowerCase().includes(search) ||
-                            app.description.toLowerCase().includes(search) ||
-                            app.tags.some(tag => tag.toLowerCase().includes(search));
+                            app.description.toLowerCase().includes(search);
                     });
                 },
                 appStoreContainers() {
