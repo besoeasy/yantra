@@ -57,7 +57,8 @@ createApp({
                 isInstalled: true,
                 containerId: c.id,
                 ports: c.ports,
-                state: c.state
+                state: c.state,
+                status: c.status
             }));
         },
         uninstalledApps() {
