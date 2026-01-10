@@ -45,22 +45,8 @@ All apps must include the following labels to ensure proper categorization and d
 
    - Only required for apps with web UI
    - Can be a single port or multiple ports (comma-separated)
-   - Supports inline labels to describe each port: `"PORT (Label)"`
-   - Support environment variables if port is configurable
-   - Examples:
-     - Single port: `"3001"`, `"${WHOAMI_PORT:-8081}"`
-     - Multiple ports: `"9091, 51413"`
-     - Ports with labels: `"6798 (Web UI), 6799 (API)"`
-     - Mixed: `"9091 (Web Interface), 51413 (P2P), 9092 (Downloads)"`
+   - Examples:   yantra.port: "8093 (HTTPS - Web UI), 8094 (HTTPS - Admin)"
    - When multiple ports are specified, UI will show a popup to select which port to open
-   - Labels are optional and provide user-friendly descriptions in the UI
-
-5. **yantra.protocol** (Optional) - Protocol for accessing the app
-
-   - Defaults to `"http"` if not specified
-   - Can be any protocol: `"https"`, `"ftp"`, `"ssh"`, `"wss"`, etc.
-   - Used when generating URLs for the "Open" button
-   - Example: `"https"`, `"wss"`, `"ftp"`
 
 6. **yantra.description** (Required) - Brief description of the app
 

@@ -14,7 +14,7 @@ services:
       yantra.name: "Domain Locker"
       yantra.logo: "QmU6CgMqEeKyB9x5TFhDqioT1TWXRdoJwTtfXgFm8ps6Qr"
       yantra.category: "security,tools"
-      yantra.port: "8090"
+      yantra.port: "8090 (HTTP - Web UI)"
       yantra.description: "Complete visibility of your domain portfolio with monitoring and alerts"
       yantra.website: "https://domain-locker.com"
       yantra.github: "https://github.com/Lissy93/domain-locker"

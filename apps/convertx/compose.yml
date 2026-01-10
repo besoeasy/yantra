@@ -6,7 +6,7 @@ services:
      yantra.name: "ConvertX"
      yantra.logo: "QmafozB6D4dw51adzoPyrCwTTCATQv1nbVwZPME6yzDWF7"
      yantra.category: "tools,utility"
-     yantra.port: "8183"
+     yantra.port: "8183 (HTTP - Web UI)"
      yantra.description: "Self-hosted file conversion tool supporting multiple formats"
      yantra.website: "https://github.com/C4illin/ConvertX"
      yantra.github: "https://github.com/C4illin/ConvertX"

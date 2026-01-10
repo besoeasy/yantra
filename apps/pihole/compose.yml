@@ -6,7 +6,7 @@ services:
      yantra.name: "Pi-hole"
      yantra.logo: "QmWk56fGA1itVTPbNtCQw1kZXScPSKJqQeNf5QfqnSVhsc"
      yantra.category: "network,security"
-     yantra.port: "8080"
+     yantra.port: "8080 (HTTP - Web UI)"
      yantra.description: "Network-wide ad blocking via DNS sinkhole"
      yantra.website: "https://docs.pi-hole.net"
      yantra.github: "https://github.com/pi-hole/pi-hole"

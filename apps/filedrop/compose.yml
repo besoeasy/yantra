@@ -17,7 +17,7 @@ services:
       yantra.name: "File Drop"
       yantra.logo: "QmRXThtTrA56JhncJEPXjJBBwpu74NxbYCsHxnnkn1QQcq"
       yantra.category: "utility,tools"
-      yantra.port: "3232"
+      yantra.port: "3232 (HTTP - Web UI)"
       yantra.description: "Decentralized file-sharing solution for Nostr and the web."
       yantra.website: "https://github.com/besoeasy/file-drop"
       yantra.github: "https://github.com/besoeasy/file-drop"

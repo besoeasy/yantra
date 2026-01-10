@@ -6,7 +6,7 @@ services:
      yantra.name: "Rotki"
      yantra.logo: "QmTRLwvRfA3n2Fnj8JoqUcoPXRVeNLYqk7TRqKhAq94SjE"
      yantra.category: "productivity,security,utility"
-     yantra.port: "8084"
+     yantra.port: "8084 (HTTP - Web UI)"
      yantra.description: "Privacy-focused portfolio tracker and analytics for crypto"
      yantra.website: "https://rotki.com/"
      yantra.github: "https://github.com/rotki/rotki"

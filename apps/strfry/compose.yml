@@ -21,7 +21,7 @@ services:
       yantra.name: "Strfry"
       yantra.logo: "QmNR4kyKJs3sZwdRJZ47z5feUWn6S8aJw31wzZrXK2fVcD"
       yantra.category: "network,social"
-      yantra.port: "7777"
+      yantra.port: "7777 (HTTP - Web UI)"
       yantra.description: "High-performance Nostr relay implementation"
       yantra.website: "https://github.com/hoytech/strfry/blob/master/docs/README.md"
       yantra.github: "https://github.com/hoytech/strfry"

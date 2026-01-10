@@ -6,7 +6,7 @@ services:
      yantra.name: "Gitea"
      yantra.logo: "QmTX3W7JAmw9xVy4G9CtBzk8UmbcxWijAKBqPzVrgUCRo8"
      yantra.category: "development,productivity"
-     yantra.port: "3000"
+     yantra.port: "3000 (HTTP - Web UI)"
      yantra.description: "Self-hosted Git service with code review and CI/CD"
      yantra.website: "https://docs.gitea.io"
      yantra.github: "https://github.com/go-gitea/gitea"

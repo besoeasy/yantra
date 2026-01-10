@@ -6,7 +6,7 @@ services:
      yantra.name: "LibreSpeed"
      yantra.logo: "QmR4dXKau4JxsY94BRLupk32nemq1nxqwJHCsmhGvsdKye"
      yantra.category: "network,tools"
-     yantra.port: "8098"
+     yantra.port: "8098 (HTTP - Web UI)"
      yantra.description: "Self-hosted speed test tool for bandwidth measurement"
      yantra.website: "https://github.com/librespeed/speedtest"
      yantra.github: "https://github.com/librespeed/speedtest"

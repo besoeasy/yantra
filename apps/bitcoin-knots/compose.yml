@@ -24,7 +24,7 @@ services:
       yantra.name: "Bitcoin Knots"
       yantra.logo: "QmTttEiisTnt6ivcGQo9W6BCKNpuViU9zAhNYLKd8xK9Lm"
       yantra.category: "utility,development"
-      yantra.port: "8332"
+      yantra.port: "8332 (HTTP - RPC API)"
       yantra.description: "Bitcoin full node with enhanced features and privacy focus."
       yantra.website: "https://bitcoinknots.org"
       yantra.github: "https://github.com/bitcoinknots/bitcoin"

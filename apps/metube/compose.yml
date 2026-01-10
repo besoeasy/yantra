@@ -14,7 +14,7 @@ services:
       yantra.name: "MeTube"
       yantra.logo: "QmSSUH23orHXCieMFnzLmRJAG1eDFa8PgdcJ3r2iuBQwUe"
       yantra.category: "media,tools,utility"
-      yantra.port: "8095"
+      yantra.port: "8095 (HTTP - Web UI)"
       yantra.description: "Web GUI for yt-dlp/youtube-dl with playlist support."
       yantra.website: "https://github.com/alexta69/metube"
       yantra.github: "https://github.com/alexta69/metube"

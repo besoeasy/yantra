@@ -6,7 +6,7 @@ services:
      yantra.name: "n8n"
      yantra.logo: "QmQEGWyJCYGJ63DLH4gga8kgWLqzrS4CAHVFghc4s7rWti"
      yantra.category: "productivity,tools"
-     yantra.port: "5678"
+     yantra.port: "5678 (HTTP - Web UI)"
      yantra.description: "Workflow automation platform with AI and 400+ integrations"
      yantra.website: "https://docs.n8n.io"
      yantra.github: "https://github.com/n8n-io/n8n"

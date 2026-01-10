@@ -12,7 +12,7 @@ services:
       yantra.name: "ZeroNote"
       yantra.logo: "QmUDcASwnYT4Jj6teUdf2umjPS9npmJkV3HBeWyFntRNsN"
       yantra.category: "productivity,security"
-      yantra.port: "8000"
+      yantra.port: "8000 (HTTP - Web UI)"
       yantra.description: "Offline-first encrypted notes application."
       yantra.website: "https://github.com/besoeasy/zeronote"
       yantra.github: "https://github.com/besoeasy/zeronote"
