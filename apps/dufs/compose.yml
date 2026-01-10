@@ -1,0 +1,21 @@
+services:
+  dufs:
+    image: sigoden/dufs:latest
+    container_name: dufs
+    volumes:
+      - dufs-data:/data
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    command: /data --enable-cors --allow-all
+    labels:
+      yantra.name: "Dufs"
+      yantra.logo: "QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i"
+      yantra.category: "utility,tools"
+      yantra.port: "5000"
+      yantra.description: "Lightweight file server with upload and download capabilities"
+      yantra.website: "https://github.com/sigoden/dufs"
+
+volumes:
+  dufs-data:
+    name: dufs-data
