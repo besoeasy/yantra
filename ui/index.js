@@ -21,7 +21,9 @@ createApp({
             version: 'loading...',
             containerView: 'appstore',
             showPortModal: false,
-            selectedAppForPorts: null
+            selectedAppForPorts: null,
+            notifications: [],
+            notificationIdCounter: 0
         }
     }, 
     computed: {
@@ -101,6 +103,23 @@ createApp({
         }, 10000);
     },
     methods: {
+        // Notification system
+        showNotification(message, type = 'info') {
+            const id = ++this.notificationIdCounter;
+            const notification = { id, message, type };
+            this.notifications.push(notification);
+            
+            // Auto-remove after 30 seconds
+            setTimeout(() => {
+                this.removeNotification(id);
+            }, 30000);
+        },
+        removeNotification(id) {
+            const index = this.notifications.findIndex(n => n.id === id);
+            if (index !== -1) {
+                this.notifications.splice(index, 1);
+            }
+        },
         // SHA256 hash function
         async sha256(message) {
             const msgBuffer = new TextEncoder().encode(message);
@@ -337,13 +356,13 @@ createApp({
                 const data = await response.json();
 
                 if (data.success) {
-                    alert(`${appId} deployed successfully!`);
+                    this.showNotification(`${appId} deployed successfully!`, 'success');
                     await this.fetchContainers();
                 } else {
-                    alert(`Deployment failed: ${data.error}`);
+                    this.showNotification(`Deployment failed: ${data.error}`, 'error');
                 }
             } catch (error) {
-                alert(`Deployment failed: ${error.message}`);
+                this.showNotification(`Deployment failed: ${error.message}`, 'error');
             } finally {
                 this.deploying = null;
                 this.selectedApp = null;
@@ -372,13 +391,13 @@ createApp({
                     if (data.volumesFailed.length > 0) {
                         message += `\n\nWarning: Some volumes failed to remove`;
                     }
-                    alert(message);
+                    this.showNotification(message, 'success');
                     await this.fetchContainers();
                 } else {
-                    alert(`Deletion failed: ${data.error}`);
+                    this.showNotification(`Deletion failed: ${data.error}`, 'error');
                 }
             } catch (error) {
-                alert(`Deletion failed: ${error.message}`);
+                this.showNotification(`Deletion failed: ${error.message}`, 'error');
             } finally {
                 this.deleting = null;
             }
@@ -394,13 +413,13 @@ createApp({
                 const data = await response.json();
 
                 if (data.success) {
-                    alert(`Image deleted successfully!`);
+                    this.showNotification(`Image deleted successfully!`, 'success');
                     await this.fetchImages();
                 } else {
-                    alert(`Deletion failed: ${data.error}\n${data.message}`);
+                    this.showNotification(`Deletion failed: ${data.error}\n${data.message}`, 'error');
                 }
             } catch (error) {
-                alert(`Deletion failed: ${error.message}`);
+                this.showNotification(`Deletion failed: ${error.message}`, 'error');
             } finally {
                 this.deletingImage = null;
             }
