@@ -1,0 +1,25 @@
+services:
+  strfry:
+    image: dockurr/strfry:latest
+    container_name: strfry
+    restart: unless-stopped
+    ports:
+      - "${STRFRY_PORT:-7777}:7777"
+    volumes:
+      - strfry_data:/app/strfry-db
+    environment:
+      - RELAY_NAME=${STRFRY_RELAY_NAME:-My Strfry Relay}
+      - RELAY_DESCRIPTION=${STRFRY_RELAY_DESCRIPTION:-A Nostr relay powered by strfry}
+      - RELAY_PUBKEY=${STRFRY_RELAY_PUBKEY:-}
+      - RELAY_CONTACT=${STRFRY_RELAY_CONTACT:-}
+    labels:
+      yantra.name: "Strfry"
+      yantra.logo: "QmNR4kyKJs3sZwdRJZ47z5feUWn6S8aJw31wzZrXK2fVcD"
+      yantra.category: "network,social"
+      yantra.port: "${STRFRY_PORT:-7777}"
+      yantra.description: "High-performance Nostr relay implementation"
+      yantra.website: "https://github.com/hoytech/strfry/blob/master/docs/README.md"
+      yantra.github: "https://github.com/hoytech/strfry"
+
+volumes:
+  strfry_data:
