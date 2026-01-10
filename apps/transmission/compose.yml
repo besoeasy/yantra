@@ -27,16 +27,13 @@ services:
     container_name: transmission-http
     volumes:
       - transmission_downloads:/usr/share/nginx/html:ro
-      - transmission_nginx_conf:/etc/nginx/conf.d
     ports:
       - "9092:80"
     restart: unless-stopped
-    command: /bin/sh -c "echo 'server { listen 80; location / { root /usr/share/nginx/html; autoindex on; autoindex_exact_size off; autoindex_localtime on; } }' > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    command: /bin/sh -c "rm -f /etc/nginx/conf.d/default.conf && echo 'server { listen 80; root /usr/share/nginx/html; location / { autoindex on; autoindex_exact_size off; autoindex_localtime on; } }' > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
 
 volumes:
   transmission_config:
     name: transmission_config
   transmission_downloads:
     name: transmission_downloads
-  transmission_nginx_conf:
-    name: transmission_nginx_conf
