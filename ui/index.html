@@ -160,7 +160,7 @@
 
                                 <div class="flex gap-2 pt-4 border-t border-gray-100">
                                     <button v-if="container.ports && container.ports.length > 0 && container.ports[0].PublicPort"
-                                        @click="window.open(appUrl(container.ports[0].PublicPort, container.protocol || 'http'), '_blank')"
+                                        @click="window.open(appUrl(container.ports[0].PublicPort, 'http'), '_blank')"
                                         class="flex-1 px-4 py-2.5 bg-purple-500 hover:bg-purple-600 text-white rounded-xl text-sm font-semibold transition-all">
                                         Open
                                     </button>
@@ -523,7 +523,7 @@
 
                 <div class="space-y-3 mb-6">
                     <a v-for="(portObj, index) in selectedAppForPorts?.parsedPorts" :key="index" 
-                        :href="appUrl(portObj.port, selectedAppForPorts?.protocol || 'http')" 
+                        :href="appUrl(portObj.port, portObj.protocol)" 
                         target="_blank"
                         @click="closePortModal"
                         class="block px-5 py-4 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-xl transition-all cursor-pointer group">
@@ -537,7 +537,7 @@
                                         <span v-if="portObj.label">{{ portObj.label }}</span>
                                         <span v-else>Port {{ portObj.port }}</span>
                                     </div>
-                                    <div class="text-xs text-gray-500 font-mono">{{ appUrl(portObj.port, selectedAppForPorts?.protocol || 'http') }}</div>
+                                    <div class="text-xs text-gray-500 font-mono">{{ appUrl(portObj.port, portObj.protocol) }}</div>
                                 </div>
                             </div>
                             <i class="fas fa-arrow-right text-gray-400 group-hover:text-blue-600 transition-colors"></i>

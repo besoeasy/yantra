@@ -166,43 +166,40 @@ createApp({
         getPorts(app) {
             // Parse port(s) from yantra.port label
             // Supports formats:
-            // - "6798" - single port
-            // - "6798, 6799" - multiple ports
-            // - "6798 (Web UI), 6799 (API)" - ports with labels
+            // - "6798 (HTTPS - Web UI)" - single port with protocol and label
+            // - "6798 (HTTP - API), 6799 (HTTPS - Admin)" - multiple ports with protocols
             if (!app.port) return [];
             
             const portStr = String(app.port).trim();
-            
-            // Check if it's a JSON array (legacy support)
-            if (portStr.startsWith('[')) {
-                try {
-                    const parsed = JSON.parse(portStr);
-                    return Array.isArray(parsed) ? parsed.map(p => ({ port: p, label: null })) : [{ port: portStr, label: null }];
-                } catch (e) {
-                    return [{ port: portStr, label: null }];
-                }
-            }
             
             // Check if it's comma-separated
             if (portStr.includes(',')) {
                 return portStr.split(',').map(p => {
                     const trimmed = p.trim();
-                    // Extract port and optional label: "6798 (Web UI)"
-                    const match = trimmed.match(/^(\d+)(?:\s*\(([^)]+)\))?$/);
+                    // Extract port, protocol, and label: "6798 (HTTPS - Web UI)"
+                    const match = trimmed.match(/^(\d+)(?:\s*\(([^-\)]+)\s*-\s*([^)]+)\))?$/);
                     if (match) {
-                        return { port: match[1], label: match[2] || null };
+                        return { 
+                            port: match[1], 
+                            protocol: match[2] ? match[2].trim().toLowerCase() : 'http',
+                            label: match[3] ? match[3].trim() : null 
+                        };
                     }
-                    return { port: trimmed, label: null };
+                    return { port: trimmed, protocol: 'http', label: null };
                 }).filter(p => p.port);
             }
             
-            // Single port with optional label
-            const match = portStr.match(/^(\d+)(?:\s*\(([^)]+)\))?$/);
+            // Single port with protocol and label
+            const match = portStr.match(/^(\d+)(?:\s*\(([^-\)]+)\s*-\s*([^)]+)\))?$/);
             if (match) {
-                return [{ port: match[1], label: match[2] || null }];
+                return [{ 
+                    port: match[1], 
+                    protocol: match[2] ? match[2].trim().toLowerCase() : 'http',
+                    label: match[3] ? match[3].trim() : null 
+                }];
             }
             
-            return [{ port: portStr, label: null }];
+            return [{ port: portStr, protocol: 'http', label: null }];
         },
         openApp(app) {
             const ports = this.getPorts(app);
@@ -210,8 +207,8 @@ createApp({
             if (ports.length === 0) return;
             
             if (ports.length === 1) {
-                // Single port - open directly
-                window.open(this.appUrl(ports[0].port, app.protocol || 'http'), '_blank');
+                // Single port - open directly using protocol from port
+                window.open(this.appUrl(ports[0].port, ports[0].protocol), '_blank');
             } else {
                 // Multiple ports - show modal
                 this.selectedAppForPorts = { ...app, parsedPorts: ports };

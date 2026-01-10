@@ -36,7 +36,7 @@ function extractPublishedPortsFromComposeObject(composeObj) {
     const publishedPorts = new Set();
     const services = composeObj && typeof composeObj === 'object' ? (composeObj.services || {}) : {};
 
-    for (const service of Object.values(services)) {
+    for (const [serviceName, service] of Object.entries(services)) {
         if (!service || typeof service !== 'object') continue;
 
         // 1) docker-compose "ports" section
@@ -77,7 +77,7 @@ function extractPublishedPortsFromComposeObject(composeObj) {
             }
         }
 
-        // 2) yantra.port label (optional but useful)
+        // 2) Validate yantra.port label format
         const labels = service.labels;
         if (Array.isArray(labels)) {
             for (const label of labels) {
@@ -86,18 +86,56 @@ function extractPublishedPortsFromComposeObject(composeObj) {
                 if (idx === -1) continue;
                 const key = label.slice(0, idx).trim();
                 const value = label.slice(idx + 1).trim();
-                if (key !== 'yantra.port') continue;
-                const port = extractDefaultPortFromEnvExpression(value);
-                if (port !== null) publishedPorts.add(port);
+                if (key === 'yantra.port') {
+                    validateYantraPortFormat(value, serviceName);
+                }
             }
         } else if (labels && typeof labels === 'object') {
             const value = labels['yantra.port'];
-            const port = typeof value === 'number' ? value : extractDefaultPortFromEnvExpression(value);
-            if (port !== null && Number.isFinite(port)) publishedPorts.add(port);
+            if (value) {
+                validateYantraPortFormat(value, serviceName);
+            }
         }
     }
 
     return [...publishedPorts].filter(p => Number.isFinite(p) && p > 0).sort((a, b) => a - b);
+}
+
+function validateYantraPortFormat(portValue, serviceName) {
+    if (!portValue) return;
+    
+    const portStr = String(portValue).trim();
+    
+    // Valid format: "8093 (HTTPS - Web UI)" or "8093 (HTTP - API), 8094 (HTTPS - Admin)"
+    // Pattern: PORT (PROTOCOL - LABEL)
+    const portEntries = portStr.split(',').map(p => p.trim());
+    
+    for (const entry of portEntries) {
+        // Must match: digits followed by (PROTOCOL - Label)
+        const match = entry.match(/^(\d+)\s*\(([A-Za-z]+)\s*-\s*(.+)\)$/);
+        
+        if (!match) {
+            throw new Error(
+                `❌ Invalid yantra.port format in service "${serviceName}"!\n` +
+                `   Found: "${entry}"\n` +
+                `   Expected format: "PORT (PROTOCOL - Label)"\n` +
+                `   Example: "8093 (HTTPS - Web UI)" or "8093 (HTTP - API), 8094 (HTTPS - Admin)"\n` +
+                `   \n` +
+                `   The protocol MUST be included in the port label.\n` +
+                `   Remove any separate yantra.protocol label.`
+            );
+        }
+        
+        const protocol = match[2].toLowerCase();
+        const validProtocols = ['http', 'https', 'ws', 'wss', 'ftp', 'ssh', 'tcp', 'udp'];
+        
+        if (!validProtocols.includes(protocol)) {
+            console.warn(
+                `⚠️  Warning: Uncommon protocol "${protocol}" in service "${serviceName}"\n` +
+                `   Common protocols: http, https, ws, wss, ftp, ssh`
+            );
+        }
+    }
 }
 
 async function detectPortConflict() {
