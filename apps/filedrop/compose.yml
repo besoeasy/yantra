@@ -5,6 +5,7 @@ services:
     hostname: filedrop
     environment:
       - STORAGE_MAX=${STORAGE_MAX:-200GB}
+      - NPUB=${FILEDROP_NPUB:-NOSTR_PUBLIC_KEY_HERE}
     volumes:
       - filedrop_data:/app/data
     ports:

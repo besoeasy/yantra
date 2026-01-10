@@ -9,7 +9,7 @@ https://github.com/user-attachments/assets/f877c0e2-a5a1-42c9-8ade-d0952549edb4
 We created Yantra as a **faster, lighter, and more transparent** alternative to Umbrel. Umbrel's heavy apps, forced proxy architecture, and slow update cycles made self-hosting unnecessarily painful. Yantra takes a different approach:
 
 - **Direct access** - No forced reverse proxies slowing down your apps
-- **Minimal footprint** - ~100MB RAM vs 500MB+ for alternatives
+- **Minimal footprint** - ~70MB RAM vs 500MB+ for alternatives
 - **Fast deployments** - Deploy apps in seconds, not minutes
 - **Open & transparent** - Simple codebase anyone can understand and modify
 - **Docker-native** - Works with standard Docker Engine for reliable container management
@@ -34,7 +34,7 @@ Yantra runs on any Debian-based Linux distribution:
 - 🎨 Clean, dark-mode Vue.js interface
 - 🏪 Built-in app store with 6+ popular self-hosted apps
 - � Docker-based (reliable, boot-persistent)
-- 💾 Minimal resource usage (~100MB RAM)
+- 💾 Minimal resource usage (~70MB RAM)
 
 ## Installation
 
