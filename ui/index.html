@@ -177,16 +177,12 @@
                                         <span class="text-gray-500 font-semibold">Status:</span>
                                         <span class="text-gray-700">{{ container.status }}</span>
                                     </div>
-                                    <div v-if="container.ports && container.ports.length > 0" class="flex items-start gap-2 text-sm">
-                                        <span class="text-gray-500 font-semibold">Ports:</span>
-                                        <div class="flex flex-wrap gap-1">
-                                            <span v-for="(port, index) in container.ports" :key="index" 
-                                                class="text-xs px-2 py-1 bg-purple-50 text-purple-700 rounded font-mono">
-                                                <span v-if="port.PublicPort">{{ port.PublicPort }}</span>
-                                                <span v-if="port.PublicPort && port.PrivatePort">→</span>
-                                                <span v-if="port.PrivatePort">{{ port.PrivatePort }}</span>
-                                            </span>
-                                        </div>
+                                    <div v-if="container.ports && container.ports.length > 0 && container.ports[0].PublicPort" class="flex items-center gap-2 text-sm">
+                                        <span class="text-gray-500 font-semibold">Port:</span>
+                                        <span class="text-xs px-2 py-1 bg-purple-50 text-purple-700 rounded font-mono">
+                                            {{ container.ports[0].PublicPort }}
+                                            <span v-if="container.ports.length > 1" class="text-purple-500 ml-1">+{{ container.ports.length - 1 }} more</span>
+                                        </span>
                                     </div>
                                 </div>
 
