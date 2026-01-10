@@ -415,10 +415,10 @@
                             <div v-for="app in combinedApps" :key="app.id"
                                 class="group bg-white rounded-2xl p-4 border border-gray-200 hover:border-blue-300 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col relative"
                                 :style="app.isInstalled ? 'min-height: 280px;' : ''">
-                                <!-- Installed Badge -->
-                                <div v-if="app.isInstalled" class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold flex items-center gap-1">
-                                    <span class="w-2 h-2 bg-white rounded-full"></span>
-                                    Installed
+                                <!-- Uptime Badge -->
+                                <div v-if="app.isInstalled && app.status" class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold flex items-center gap-1">
+                                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                                    {{ app.status.replace('Up ', '') }}
                                 </div>
                                 
                                 <div class="flex flex-col items-center mb-3">
@@ -440,11 +440,6 @@
                                 </div>
 
                                 <p class="text-xs text-gray-500 mb-3 leading-relaxed flex-1 line-clamp-2 text-center">{{ app.description || 'No description' }}</p>
-
-                                <!-- Uptime Status (for installed apps) -->
-                                <div v-if="app.isInstalled && app.status" class="text-xs text-gray-600 mb-3 text-center font-medium bg-gray-50 rounded-lg py-2 px-3">
-                                    {{ app.status }}
-                                </div>
 
                                 <div class="flex gap-1 relative">
                                     <!-- Installed App Buttons -->
