@@ -305,7 +305,7 @@ app.get('/api/containers/:id', async (req, res) => {
         labels: appLabels,
         app: {
           name: appLabels.name || info.Name.replace('/', ''),
-          logo: appLabels.logo || null,
+          logo: appLabels.logo ? (appLabels.logo.includes('://') ? appLabels.logo : `https://dweb.link/ipfs/${appLabels.logo}`) : 'https://dweb.link/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i',
           category: appLabels.category || 'uncategorized',
           port: appLabels.port || null,
           description: appLabels.description || '',
@@ -377,7 +377,7 @@ app.get('/api/apps', async (req, res) => {
           apps.push({
             id: entry.name,
             name: labels.name || entry.name,
-            logo: labels.logo ? (labels.logo.includes('://') ? labels.logo : `https://dweb.link/ipfs/${labels.logo}`) : null,
+            logo: labels.logo ? (labels.logo.includes('://') ? labels.logo : `https://dweb.link/ipfs/${labels.logo}`) : 'https://dweb.link/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i',
             category: labels.category || 'uncategorized',
             port: labels.port || null,
             description: labels.description || '',

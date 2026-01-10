@@ -1,0 +1,36 @@
+services:
+  deluge:
+    image: linuxserver/deluge:latest
+    container_name: deluge
+    volumes:
+      - deluge-config:/config
+      - deluge-downloads:/downloads
+    ports:
+      - "8112:8112"
+      - "6881:6881"
+      - "6881:6881/udp"
+    restart: unless-stopped
+    labels:
+      yantra.name: "Deluge"
+      yantra.logo: "QmQtUij4J7zqSQAb2R1bnw2i77vj5TM9TBraQvnQ4fv7Fb"
+      yantra.category: "download,utility"
+      yantra.port: "8112 (HTTP - Web UI), 8113 (HTTP - Downloads)"
+      yantra.description: "Lightweight BitTorrent client with web interface"
+      yantra.website: "https://deluge-torrent.org/"
+
+  deluge-http:
+    image: python:3-alpine
+    container_name: deluge-http
+    volumes:
+      - deluge-downloads:/downloads:ro
+    ports:
+      - "8113:8000"
+    restart: unless-stopped
+    working_dir: /downloads
+    command: python3 -m http.server 8000
+
+volumes:
+  deluge-config:
+    name: deluge-config
+  deluge-downloads:
+    name: deluge-downloads

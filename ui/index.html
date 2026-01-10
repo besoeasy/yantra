@@ -423,12 +423,8 @@
                                 
                                 <div class="flex flex-col items-center mb-3">
                                     <div class="relative mb-3">
-                                        <img v-if="app.logo" :src="app.logo" :alt="app.name"
+                                        <img :src="app.logo" :alt="app.name"
                                             class="w-20 h-20 rounded-xl transition-transform duration-300 group-hover:scale-110">
-                                        <div v-else
-                                            class="w-20 h-20 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl flex items-center justify-center text-4xl transition-transform duration-300 group-hover:scale-110">
-                                            📦
-                                        </div>
                                     </div>
                                     <h3 class="font-semibold text-sm text-gray-900 mb-1 text-center line-clamp-1">{{ app.name }}</h3>
                                     <div class="flex flex-wrap gap-1 justify-center">
