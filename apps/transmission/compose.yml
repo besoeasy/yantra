@@ -22,15 +22,14 @@ services:
       yantra.website: "https://transmissionbt.com/"
 
   transmission-http:
-    image: python:3-alpine
+    image: sigoden/dufs:latest
     container_name: transmission-http
     volumes:
-      - transmission_downloads:/downloads:ro
+      - transmission_downloads:/data
     ports:
-      - "9092:8000"
+      - "9092:5000"
     restart: unless-stopped
-    working_dir: /downloads
-    command: python3 -m http.server 8000
+    command: /data --enable-cors --allow-all
 
 volumes:
   transmission_config:

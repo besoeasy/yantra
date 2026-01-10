@@ -16,6 +16,11 @@ Apps templates located in /apps/, Apps are docker apps which have templates in /
 1. Run `node check.js` to check for conflicts.
 2. **Configuration**: Use environment variables with defaults for configuration values (e.g., `${VAR_NAME:-default_value}`), but NOT for port mappings.
 3. **Storage**: Use named volumes only. Never mount to host paths directly.
+4. **File Access**: When apps need to expose folders for user file management (downloads, outputs, uploads, etc.), add a companion service using `sigoden/dufs:latest`. This provides a lightweight (~3MB) web-based file manager with upload, delete, and folder management capabilities.
+   - Mount the shared volume as read-write (not `:ro`)
+   - Use command: `/data --enable-cors --allow-all`
+   - Expose on a separate port
+   - Example: See `deluge/compose.yml` for the `deluge-http` service pattern
 
 ## Labels
 
