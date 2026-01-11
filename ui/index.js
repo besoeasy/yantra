@@ -15,14 +15,11 @@ createApp({
             deletingImage: null,
             deletingAllImages: false,
             showEnvModal: false,
-            showPortConfigModal: false,
             selectedApp: null,
             envValues: {},
-            portValues: {},
             appSearch: '',
             apiUrl: '',
             version: 'loading...',
-            containerView: 'appstore',
             showPortModal: false,
             selectedAppForPorts: null,
             notifications: [],
@@ -198,26 +195,6 @@ createApp({
             const url = `${normalizedProtocol}://${host}:${portMatch[0]}`;
             console.log('[appUrl] Result:', url);
             return url;
-        },
-        getPortDescriptions(app) {
-            // Parse yantra.port label to extract port descriptions
-            // Returns a map of {portNumber: {protocol, description}}
-            const descriptions = {};
-            if (!app.port) return descriptions;
-            
-            const portStr = String(app.port).trim();
-            // Match format: "9091 (HTTP - Web Interface)" or "9092 (HTTP - Downloads)"
-            const regex = /(\d+)\s*\(([^-\)]+)\s*-\s*([^)]+)\)/g;
-            let match;
-            
-            while ((match = regex.exec(portStr)) !== null) {
-                descriptions[match[1]] = {
-                    protocol: match[2].trim().toLowerCase(),
-                    description: match[3].trim()
-                };
-            }
-            
-            return descriptions;
         },
         getPorts(app) {
             // Parse port(s) from yantra.port label
@@ -396,72 +373,13 @@ createApp({
             });
         },
         async deployApp(appId) {
-            // Find app to check if it has ports or environment variables
+            // Find app to check if it has environment variables
             const app = this.apps.find(a => a.id === appId);
 
             if (!app) return;
 
-            // Show port configuration modal if app has ports
-            if (app.ports && app.ports.length > 0) {
-                this.selectedApp = app;
-                this.portValues = {};
-                
-                // Parse port descriptions from yantra.port label
-                const portDescriptions = this.getPortDescriptions(app);
-                
-                // Fetch suggested ports from the backend
-                try {
-                    const response = await fetch(`${this.apiUrl}/api/ports/suggest`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            appId: app.id, 
-                            ports: app.ports 
-                        })
-                    });
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        // Use suggested ports and attach descriptions
-                        data.suggestions.forEach((suggestion, index) => {
-                            const port = app.ports[index];
-                            const key = `${port.containerPort}_${port.protocol}`;
-                            
-                            // Use suggested port for named ports, original for others
-                            this.portValues[key] = suggestion.suggestedPort;
-                            
-                            // Attach metadata
-                            port.suggestedPort = suggestion.suggestedPort;
-                            port.isNamed = suggestion.isNamed !== undefined ? suggestion.isNamed : port.isNamed;
-                            port.isOriginal = suggestion.isOriginal;
-                            
-                            // Attach description if available
-                            const desc = portDescriptions[port.hostPort];
-                            if (desc) {
-                                port.description = desc.description;
-                                port.labelProtocol = desc.protocol;
-                            }
-                        });
-                    }
-                } catch (error) {
-                    console.error('Failed to fetch suggested ports:', error);
-                    // Fallback to original ports
-                    app.ports.forEach(port => {
-                        const key = `${port.containerPort}_${port.protocol}`;
-                        this.portValues[key] = port.hostPort;
-                        
-                        // Attach description if available
-                        const desc = portDescriptions[port.hostPort];
-                        if (desc) {
-                            port.description = desc.description;
-                            port.labelProtocol = desc.protocol;
-                        }
-                    });
-                }
-                
-                this.showPortConfigModal = true;
-            } else if (app.environment && app.environment.length > 0) {
-                // No ports but has environment variables
+            // Check if app has environment variables
+            if (app.environment && app.environment.length > 0) {
                 this.selectedApp = app;
                 this.envValues = {};
                 app.environment.forEach(env => {
@@ -469,30 +387,11 @@ createApp({
                 });
                 this.showEnvModal = true;
             } else {
-                // No ports or environment variables, deploy directly
+                // No environment variables, deploy directly (Docker handles ports)
                 await this.confirmDeploy(appId, {}, {});
             }
         },
-        continueToEnvConfig() {
-            // Close port modal and open env modal if needed
-            this.showPortConfigModal = false;
-            
-            if (this.selectedApp && this.selectedApp.environment && this.selectedApp.environment.length > 0) {
-                this.envValues = {};
-                this.selectedApp.environment.forEach(env => {
-                    this.envValues[env.envVar] = env.default;
-                });
-                this.showEnvModal = true;
-            } else {
-                // No environment variables, deploy directly with port config
-                this.confirmDeploy(this.selectedApp.id, {}, this.portValues);
-            }
-        },
-        cancelPortConfig() {
-            this.showPortConfigModal = false;
-            this.selectedApp = null;
-            this.portValues = {};
-        },
+
         async confirmDeploy(appId, environment, ports) {
             this.showEnvModal = false;
             this.showPortConfigModal = false;
@@ -512,23 +411,22 @@ createApp({
                     body: JSON.stringify({ appId, environment, ports }),
                     signal: controller.signal
                 });
+                ) {
+            this.showEnvModal = false;
+            this.deploying = appId;
+            
+            // Show deployment started notification
+            this.showNotification(`Deploying ${appId}... This may take a few minutes.`, 'info');
+            
+            try {
+                // Create AbortController with 5 minute timeout for deployments
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes
                 
-                clearTimeout(timeoutId);
-                const data = await response.json();
-
-                if (data.success) {
-                    this.showNotification(`${appId} deployed successfully!`, 'success');
-                    await this.fetchContainers();
-                } else {
-                    this.showNotification(`Deployment failed: ${data.error}`, 'error');
-                }
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    this.showNotification(`Deployment timeout: ${appId} is taking longer than expected. Check container status.`, 'error');
-                } else if (error.message === 'Failed to fetch') {
-                    this.showNotification(`Network error: Unable to reach server. Deployment may still be in progress.\n\nRefresh to check status.`, 'error');
-                } else {
-                    this.showNotification(`Deployment failed: ${error.message}`, 'error');
+                const response = await fetch(`${this.apiUrl}/api/deploy`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ appId, environmentr.message}`, 'error');
                 }
             } finally {
                 this.deploying = null;
@@ -557,10 +455,8 @@ createApp({
                     if (data.volumesRemoved.length > 0) {
                         message += `\n\nVolumes removed: ${data.volumesRemoved.join(', ')}`;
                     }
-                    if (data.volumesFailed.length > 0) {
-                        message += `\n\nWarning: Some volumes failed to remove`;
-                    }
-                    this.showNotification(message, 'success');
+                  electedApp = null;
+            this.envhis.showNotification(message, 'success');
                     
                     // Close detail view if we're viewing this container
                     if (this.containerDetailView && this.selectedContainer?.id === containerId) {
