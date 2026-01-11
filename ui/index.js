@@ -399,19 +399,60 @@ createApp({
             if (app.ports && app.ports.length > 0) {
                 this.selectedApp = app;
                 this.portValues = {};
+                
                 // Parse port descriptions from yantra.port label
                 const portDescriptions = this.getPortDescriptions(app);
-                // Pre-fill with defaults and attach descriptions
-                app.ports.forEach(port => {
-                    const key = `${port.containerPort}_${port.protocol}`;
-                    this.portValues[key] = port.hostPort;
-                    // Attach description if available
-                    const desc = portDescriptions[port.hostPort];
-                    if (desc) {
-                        port.description = desc.description;
-                        port.labelProtocol = desc.protocol;
+                
+                // Fetch suggested ports from the backend
+                try {
+                    const response = await fetch(`${this.apiUrl}/api/ports/suggest`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            appId: app.id, 
+                            ports: app.ports 
+                        })
+                    });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Use suggested ports and attach descriptions
+                        data.suggestions.forEach((suggestion, index) => {
+                            const port = app.ports[index];
+                            const key = `${port.containerPort}_${port.protocol}`;
+                            
+                            // Use suggested port for named ports, original for others
+                            this.portValues[key] = suggestion.suggestedPort;
+                            
+                            // Attach metadata
+                            port.suggestedPort = suggestion.suggestedPort;
+                            port.isNamed = suggestion.isNamed !== undefined ? suggestion.isNamed : port.isNamed;
+                            port.isOriginal = suggestion.isOriginal;
+                            
+                            // Attach description if available
+                            const desc = portDescriptions[port.hostPort];
+                            if (desc) {
+                                port.description = desc.description;
+                                port.labelProtocol = desc.protocol;
+                            }
+                        });
                     }
-                });
+                } catch (error) {
+                    console.error('Failed to fetch suggested ports:', error);
+                    // Fallback to original ports
+                    app.ports.forEach(port => {
+                        const key = `${port.containerPort}_${port.protocol}`;
+                        this.portValues[key] = port.hostPort;
+                        
+                        // Attach description if available
+                        const desc = portDescriptions[port.hostPort];
+                        if (desc) {
+                            port.description = desc.description;
+                            port.labelProtocol = desc.protocol;
+                        }
+                    });
+                }
+                
                 this.showPortConfigModal = true;
             } else if (app.environment && app.environment.length > 0) {
                 // No ports but has environment variables

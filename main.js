@@ -393,6 +393,21 @@ app.get("/api/apps", async (req, res) => {
             });
           }
 
+          // Parse yantra.port to identify named ports (ports with descriptions)
+          const namedPorts = new Set();
+          if (labels.port) {
+            const portDescRegex = /(\d+)\s*\(([^-\)]+)\s*-\s*([^)]+)\)/g;
+            let portMatch;
+            while ((portMatch = portDescRegex.exec(labels.port)) !== null) {
+              namedPorts.add(portMatch[1]); // Add the port number to named ports set
+            }
+          }
+
+          // Mark which ports are named (have descriptions in yantra.port)
+          portMappings.forEach((port) => {
+            port.isNamed = namedPorts.has(port.hostPort);
+          });
+
           apps.push({
             id: entry.name,
             name: labels.name || entry.name,
@@ -856,6 +871,114 @@ app.get("/", (req, res) => {
       deploy: "POST /api/deploy",
     },
   });
+});
+
+// GET /api/ports/used - Get all currently used ports from Docker containers
+app.get("/api/ports/used", async (req, res) => {
+  log("info", "🔌 [GET /api/ports/used] Fetching all used ports");
+  try {
+    const containers = await docker.listContainers({ all: false }); // Only running containers
+    const usedPorts = new Set();
+
+    containers.forEach((container) => {
+      if (container.Ports && container.Ports.length > 0) {
+        container.Ports.forEach((port) => {
+          if (port.PublicPort) {
+            usedPorts.add(port.PublicPort);
+          }
+        });
+      }
+    });
+
+    const portArray = Array.from(usedPorts).sort((a, b) => a - b);
+    log("info", `✅ [GET /api/ports/used] Found ${portArray.length} used ports`);
+
+    res.json({
+      success: true,
+      count: portArray.length,
+      ports: portArray,
+    });
+  } catch (error) {
+    log("error", "❌ [GET /api/ports/used] Error:", error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+// POST /api/ports/suggest - Suggest available ports for an app
+app.post("/api/ports/suggest", async (req, res) => {
+  log("info", "💡 [POST /api/ports/suggest] Suggesting ports for app");
+  try {
+    const { appId, ports: appPorts } = req.body;
+
+    if (!appId || !appPorts || !Array.isArray(appPorts)) {
+      return res.status(400).json({
+        success: false,
+        error: "appId and ports array are required",
+      });
+    }
+
+    // Get all currently used ports
+    const containers = await docker.listContainers({ all: false });
+    const usedPorts = new Set();
+
+    containers.forEach((container) => {
+      if (container.Ports && container.Ports.length > 0) {
+        container.Ports.forEach((port) => {
+          if (port.PublicPort) {
+            usedPorts.add(port.PublicPort);
+          }
+        });
+      }
+    });
+
+    // Port suggestion algorithm: starts from 5255
+    const START_PORT = 5255;
+    let currentPort = START_PORT;
+
+    const suggestedPorts = appPorts.map((port) => {
+      // Only suggest for named ports (ports with descriptions in yantra.port label)
+      if (!port.isNamed) {
+        // Keep original port for unnamed ports (like BitTorrent ports, etc.)
+        return {
+          ...port,
+          suggestedPort: port.hostPort,
+          isOriginal: true,
+        };
+      }
+
+      // Find next available port starting from currentPort
+      while (usedPorts.has(currentPort)) {
+        currentPort++;
+      }
+
+      const suggested = currentPort;
+      usedPorts.add(currentPort); // Mark as used for next iteration
+      currentPort++;
+
+      return {
+        ...port,
+        suggestedPort: suggested,
+        isOriginal: false,
+      };
+    });
+
+    log("info", `✅ [POST /api/ports/suggest] Suggested ports for ${appId}:`, suggestedPorts);
+
+    res.json({
+      success: true,
+      appId,
+      suggestions: suggestedPorts,
+    });
+  } catch (error) {
+    log("error", "❌ [POST /api/ports/suggest] Error:", error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
 });
 
 // Error handling middleware
