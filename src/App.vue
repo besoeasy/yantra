@@ -1,11 +1,17 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useDarkMode } from './composables/useDarkMode'
 
 const router = useRouter()
 const route = useRoute()
+const { isDark, toggleDarkMode, initDarkMode } = useDarkMode()
 
 const isActive = (name) => route.name === name
+
+onMounted(() => {
+  initDarkMode()
+})
 </script>
 
 <template>
@@ -58,6 +64,14 @@ const isActive = (name) => route.name === name
 
       <!-- Bottom Actions -->
       <div class="flex flex-col items-center gap-3 mt-4">
+        <!-- Dark Mode Toggle -->
+        <button
+          @click="toggleDarkMode"
+          class="w-12 h-12 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-all"
+          :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+          <i :class="isDark ? 'fas fa-sun' : 'fas fa-moon'" class="text-lg"></i>
+        </button>
+        
         <!-- GitHub -->
         <a 
           href="https://github.com/besoeasy/Yantra" 
