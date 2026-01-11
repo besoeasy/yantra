@@ -210,51 +210,66 @@ onMounted(async () => {
       <div class="text-gray-500 font-medium">No apps found</div>
       <div class="text-sm text-gray-400 mt-2">Try a different search term</div>
     </div>
-    <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 lg:gap-6">
-      <div v-for="app in combinedApps" :key="app.id"
-        :class="musthaveapps.includes(app.id) ? 'ring-2 ring-yellow-400 ring-opacity-50 shadow-lg shadow-yellow-200/50' : 'shadow-md'"
-        class="group bg-white dark:bg-slate-800 rounded-2xl p-5 transition-all duration-300 ease-out hover:shadow-2xl hover:-translate-y-2 cursor-pointer flex flex-col relative overflow-hidden">
-        <!-- Recommended Badge -->
-        <div v-if="musthaveapps.includes(app.id)" class="absolute top-3 left-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 text-xs px-2.5 py-1 rounded-full font-bold flex items-center gap-1 shadow-lg z-10">
-          <span>⭐</span>
-          <span>Recommended</span>
-        </div>
+    <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      <div v-for="(app, index) in combinedApps" :key="app.id"
+        :style="{ animationDelay: `${index * 30}ms` }"
+        class="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl p-6 transition-all duration-500 ease-out hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl hover:scale-[1.02] cursor-pointer flex flex-col animate-fadeIn">
         
-        <!-- Subtle background gradient on hover -->
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-50/0 to-purple-50/0 group-hover:from-blue-50/50 group-hover:to-purple-50/50 dark:from-blue-900/0 dark:to-purple-900/0 dark:group-hover:from-blue-900/20 dark:group-hover:to-purple-900/20 transition-all duration-300 pointer-events-none"></div>
-        
-        <div class="flex flex-col items-center mb-4 relative z-10">
-          <div class="relative mb-4">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <img :src="app.logo" :alt="app.name"
-              class="w-24 h-24 rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-2xl relative z-10 object-contain">
+        <!-- App Logo & Name Section -->
+        <div class="flex items-center gap-4 mb-4">
+          <div class="relative flex-shrink-0">
+            <!-- Recommended Badge on Logo -->
+            <div v-if="musthaveapps.includes(app.id)" 
+              class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg z-10 animate-pulse">
+              <span class="text-xs">⭐</span>
+            </div>
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-700 dark:to-slate-600 p-2 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg">
+              <img :src="app.logo" :alt="app.name"
+                class="w-full h-full object-contain transition-all duration-300 group-hover:rotate-3">
+            </div>
           </div>
-          <h3 class="font-bold text-base text-gray-900 dark:text-white mb-2 text-center line-clamp-1 px-2">{{ app.name }}</h3>
-          <div class="flex flex-wrap gap-1.5 justify-center">
-            <span v-for="cat in app.category.split(',')" :key="cat"
-              class="text-xs px-2.5 py-1 rounded-full bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-medium">
-              {{ cat.trim() }}
-            </span>
+          
+          <div class="flex-1 min-w-0">
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white truncate mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              {{ app.name }}
+            </h3>
+            <div class="flex flex-wrap gap-1">
+              <span v-for="(cat, idx) in app.category.split(',').slice(0, 2)" :key="cat"
+                class="text-xs px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium">
+                {{ cat.trim() }}
+              </span>
+            </div>
           </div>
         </div>
 
-        <p class="text-xs text-gray-600 dark:text-gray-400 mb-4 leading-relaxed flex-1 line-clamp-3 text-center px-1 relative z-10">{{ app.description || 'No description' }}</p>
+        <!-- Description -->
+        <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-4 line-clamp-2 flex-1">
+          {{ app.description || 'No description available' }}
+        </p>
 
-        <div class="flex gap-2 relative z-10">
+        <!-- Actions -->
+        <div class="flex items-center gap-2">
           <button @click="deployApp(app.id)" :disabled="deploying === app.id"
-            class="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
-            {{ deploying === app.id ? '...' : 'Install' }}
+            :class="deploying === app.id ? 'bg-gray-400 dark:bg-gray-600' : 'bg-blue-600 hover:bg-blue-700 active:scale-95'"
+            class="flex-1 px-4 py-2.5 text-white rounded-xl text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md disabled:cursor-not-allowed">
+            <span v-if="deploying === app.id" class="inline-flex items-center gap-2">
+              <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              Installing...
+            </span>
+            <span v-else>Install</span>
           </button>
+          
           <a v-if="app.website" :href="app.website" target="_blank"
-            class="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 hover:bg-blue-50 dark:hover:bg-slate-600 hover:border-blue-400 dark:hover:border-blue-500 text-gray-600 dark:text-gray-300 rounded-xl transition-all duration-200 transform hover:scale-110 active:scale-95"
-            title="Website">
-            <Globe :size="16" />
+            class="p-2.5 rounded-xl bg-gray-100 hover:bg-blue-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-all duration-200 hover:scale-110 active:scale-95"
+            title="Visit Website">
+            <Globe :size="18" />
           </a>
+          
           <a :href="`https://github.com/besoeasy/yantra/blob/main/apps/${app.id}/compose.yml`"
             target="_blank"
-            class="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 hover:bg-blue-50 dark:hover:bg-slate-600 hover:border-blue-400 dark:hover:border-blue-500 text-gray-600 dark:text-gray-300 rounded-xl transition-all duration-200 transform hover:scale-110 active:scale-95"
-            title="Compose File">
-            <FileCode :size="16" />
+            class="p-2.5 rounded-xl bg-gray-100 hover:bg-purple-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-600 hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400 transition-all duration-200 hover:scale-110 active:scale-95"
+            title="View Source">
+            <FileCode :size="18" />
           </a>
         </div>
       </div>
