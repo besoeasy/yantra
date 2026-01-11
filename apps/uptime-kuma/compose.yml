@@ -10,7 +10,7 @@ services:
      yantra.description: "Self-hosted uptime monitoring tool"
      yantra.website: "https://github.com/louislam/uptime-kuma/wiki"
     ports:
-      - "3001:3001"
+      - "3001"
     volumes:
       - uptime_kuma_data:/app/data
     restart: unless-stopped

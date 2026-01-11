@@ -6,7 +6,7 @@ services:
     volumes:
       - syncthing_data:/var/syncthing
     ports:
-      - "8384:8384" # Web UI
+      - "8384" # Web UI
       - "22000:22000/tcp" # Sync TCP
       - "22000:22000/udp" # Sync UDP
       - "21027:21027/udp" # Discovery
@@ -15,7 +15,7 @@ services:
       yantra.name: "Syncthing"
       yantra.logo: "QmXjiuL2tgJYmbLa5rZz117MqGX49xpYbUdRrcjFrtj2Na"
       yantra.category: "tools,utility"
-      yantra.port: "8384 (HTTP - Web UI), 8385 (HTTP - Files)"
+      yantra.port: "8384 (HTTP - Web UI), 5000 (HTTP - Files)"
       yantra.description: "Continuous file synchronization program. It synchronizes files between two or more computers."
       yantra.website: "https://syncthing.net/"
 
@@ -25,7 +25,7 @@ services:
     volumes:
       - syncthing_data:/data
     ports:
-      - "8385:5000"
+      - "5000"
     restart: unless-stopped
     command: /data --enable-cors --allow-all
 

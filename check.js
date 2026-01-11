@@ -53,6 +53,14 @@ function extractPublishedPortsFromComposeObject(composeObj) {
                 }
 
                 const parts = portSpec.split(':').map(p => p.trim()).filter(Boolean);
+                
+                // ONLY check ports with explicit mappings (HOST:CONTAINER format)
+                // Skip auto-assigned ports (single port like "9091")
+                if (parts.length < 2) {
+                    // Single port - Docker will auto-assign, skip conflict check
+                    continue;
+                }
+                
                 // string syntax: HOST:CONTAINER or IP:HOST:CONTAINER
                 let hostPart = null;
                 if (parts.length === 2) hostPart = parts[0];
@@ -127,7 +135,7 @@ function validateYantraPortFormat(portValue, serviceName) {
         }
         
         const protocol = match[2].toLowerCase();
-        const validProtocols = ['http', 'https', 'ws', 'wss', 'ftp', 'ssh', 'tcp', 'udp'];
+        const validProtocols = ['http', 'https', 'ws', 'wss', 'ftp', 'ssh', 'tcp', 'udp', 'smb'];
         
         if (!validProtocols.includes(protocol)) {
             console.warn(

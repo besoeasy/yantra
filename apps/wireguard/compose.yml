@@ -4,9 +4,7 @@ services:
     container_name: wireguard
     hostname: wireguard
     environment:
-      - WG_HOST=${DEVICE_DOMAIN_NAME:-localhost}
       - TZ=${TZ:-UTC}
-      - WG_PORT=${WIREGUARD_PORT:-51820}
     volumes:
       - wireguard_data:/etc/wireguard
     ports:
