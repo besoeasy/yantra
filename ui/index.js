@@ -3,7 +3,7 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
-            activeTab: 'apps',
+            activeTab: 'containers',
             containers: [],
             apps: [],
             imagesData: {},
@@ -722,25 +722,55 @@ createApp({
             return null;
         },
         getLabeledPorts() {
-            // Parse yantra.port label to extract all labeled ports for quick access
-            if (!this.selectedContainer || !this.selectedContainer.app || !this.selectedContainer.app.port) {
+            // Get actual running container ports and match them with yantra.port descriptions
+            if (!this.selectedContainer || !this.selectedContainer.ports || this.selectedContainer.ports.length === 0) {
                 return [];
             }
             
-            const portStr = this.selectedContainer.app.port;
             const ports = [];
+            const portDescriptions = {};
             
-            // Parse format: "9091 (HTTP - Web Interface), 9092 (HTTP - Downloads)"
-            const regex = /(\d+)\s*\(([^-\)]+)\s*-\s*([^)]+)\)/g;
-            let match;
-            
-            while ((match = regex.exec(portStr)) !== null) {
-                ports.push({
-                    port: match[1],
-                    protocol: match[2].trim().toLowerCase(),
-                    label: match[3].trim()
-                });
+            // Parse yantra.port label to build a map of descriptions
+            if (this.selectedContainer.app && this.selectedContainer.app.port) {
+                const portStr = this.selectedContainer.app.port;
+                // Parse format: "9091 (HTTP - Web Interface), 9092 (HTTP - Downloads)"
+                const regex = /(\d+)\s*\(([^-\)]+)\s*-\s*([^)]+)\)/g;
+                let match;
+                
+                while ((match = regex.exec(portStr)) !== null) {
+                    portDescriptions[match[1]] = {
+                        protocol: match[2].trim().toLowerCase(),
+                        label: match[3].trim()
+                    };
+                }
             }
+            
+            // Build list from actual container ports (only TCP ports with public access)
+            this.selectedContainer.ports.forEach(port => {
+                if (port.PublicPort && port.Type === 'tcp') {
+                    // Check if we have a description for this port or any port
+                    const description = portDescriptions[port.PublicPort] || portDescriptions[port.PrivatePort];
+                    
+                    if (description) {
+                        ports.push({
+                            port: port.PublicPort,
+                            protocol: description.protocol,
+                            label: description.label
+                        });
+                    } else if (Object.keys(portDescriptions).length > 0) {
+                        // If we have port descriptions but none match, use first available description
+                        // This handles cases where label port differs from actual port
+                        const firstDesc = Object.values(portDescriptions)[ports.length];
+                        if (firstDesc) {
+                            ports.push({
+                                port: port.PublicPort,
+                                protocol: firstDesc.protocol,
+                                label: firstDesc.label
+                            });
+                        }
+                    }
+                }
+            });
             
             return ports;
         }

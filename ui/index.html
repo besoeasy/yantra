@@ -141,9 +141,15 @@
                                 <div class="text-gray-500 font-medium">Loading containers...</div>
                             </div>
                             <div v-else-if="containers.length === 0" class="text-center py-16">
-                                <div class="text-5xl mb-4">🐳</div>
-                                <div class="text-gray-500 font-medium">No containers running</div>
-                                <div class="text-sm text-gray-400 mt-2">Install some apps to see them here</div>
+                                <div class="text-5xl mb-4">🎯</div>
+                                <div class="text-gray-900 font-bold text-2xl mb-2">Welcome to Yantra!</div>
+                                <div class="text-gray-500 font-medium mb-4">No containers running yet</div>
+                                <div class="text-sm text-gray-400 mb-6">Get started by installing apps from the App Store</div>
+                                <button @click="activeTab = 'apps'"
+                                    class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold transition-all inline-flex items-center gap-2">
+                                    <i class="fas fa-store"></i>
+                                    <span>Browse App Store</span>
+                                </button>
                             </div>
                             <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div v-for="container in containers" :key="container.id"
@@ -152,7 +158,9 @@
                                     <div class="flex items-start justify-between mb-4">
                                         <div class="flex-1">
                                             <div class="flex items-center gap-3 mb-2">
-                                                <span class="text-3xl">🐳</span>
+                                                <img v-if="container.app.logo" :src="container.app.logo" :alt="container.name"
+                                                    class="w-12 h-12 rounded-lg object-cover">
+                                                <span v-else class="text-3xl">🐳</span>
                                                 <div>
                                                     <h3 class="font-bold text-gray-900 text-lg">{{ container.name }}</h3>
                                                     <div class="text-xs text-gray-500 font-mono mt-1">{{ container.id.substring(0, 12) }}</div>
@@ -172,13 +180,7 @@
                                             <span class="text-gray-500 font-semibold">Status:</span>
                                             <span class="text-gray-700">{{ container.status }}</span>
                                         </div>
-                                        <div v-if="container.ports && container.ports.length > 0 && container.ports[0].PublicPort" class="flex items-center gap-2 text-sm">
-                                            <span class="text-gray-500 font-semibold">Port:</span>
-                                            <span class="text-xs px-2 py-1 bg-purple-50 text-purple-700 rounded font-mono">
-                                                {{ container.ports[0].PublicPort }}
-                                                <span v-if="container.ports.length > 1" class="text-purple-500 ml-1">+{{ container.ports.length - 1 }} more</span>
-                                            </span>
-                                        </div>
+                                   
                                     </div>
 
                                     <div class="text-sm text-gray-500 flex items-center gap-2">
@@ -201,7 +203,9 @@
                                 
                                 <div class="flex items-start justify-between">
                                     <div class="flex items-center gap-4">
-                                        <span class="text-5xl">🐳</span>
+                                        <img v-if="selectedContainer.app.logo" :src="selectedContainer.app.logo" :alt="selectedContainer.name"
+                                            class="w-16 h-16 rounded-xl object-cover">
+                                        <span v-else class="text-5xl">🐳</span>
                                         <div>
                                             <h2 class="text-4xl font-bold text-gray-900">{{ selectedContainer.name }}</h2>
                                             <div class="text-sm text-gray-500 font-mono mt-2">{{ selectedContainer.id.substring(0, 12) }}</div>
@@ -266,6 +270,19 @@
                                         <span>Container Info</span>
                                     </h3>
                                     <div class="space-y-3">
+                                        <div v-if="selectedContainer.app.description">
+                                            <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Description</div>
+                                            <div class="text-sm text-gray-900">{{ selectedContainer.app.description }}</div>
+                                        </div>
+                                        <div v-if="selectedContainer.app.category && selectedContainer.app.category !== 'uncategorized'">
+                                            <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Category</div>
+                                            <div class="flex flex-wrap gap-1">
+                                                <span v-for="cat in selectedContainer.app.category.split(',')" :key="cat"
+                                                    class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-medium">
+                                                    {{ cat.trim() }}
+                                                </span>
+                                            </div>
+                                        </div>
                                         <div>
                                             <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Image</div>
                                             <div class="text-sm font-mono text-gray-900 bg-gray-50 px-3 py-2 rounded">{{ selectedContainer.image }}</div>
@@ -273,6 +290,14 @@
                                         <div>
                                             <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Status</div>
                                             <div class="text-sm text-gray-900">{{ selectedContainer.status }}</div>
+                                        </div>
+                                        <div v-if="selectedContainer.app.website">
+                                            <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Website</div>
+                                            <a :href="selectedContainer.app.website" target="_blank"
+                                                class="text-sm text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1">
+                                                {{ selectedContainer.app.website }}
+                                                <i class="fas fa-external-link-alt text-xs"></i>
+                                            </a>
                                         </div>
                                         <div v-if="selectedContainer.ports && selectedContainer.ports.length > 0">
                                             <div class="text-xs text-gray-500 font-semibold uppercase mb-2">Ports</div>

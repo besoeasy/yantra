@@ -13,6 +13,8 @@ Apps templates located in /apps/, Apps are docker apps which have templates in /
 
 ## General Rules
 
+Most Import : All docker api actions should be atomic, either fully succeed or fully fail with no partial changes. beacuase our app is stateless and uses no database.
+
 1. Run `node check.js` to check for conflicts.
 2. **Configuration**: Use environment variables with defaults for configuration values (e.g., `${VAR_NAME:-default_value}`), but NOT for port mappings.
 3. **Storage**: Use named volumes only. Never mount to host paths directly.
