@@ -223,10 +223,8 @@ onMounted(async () => {
               class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center shadow-lg z-10 animate-pulse">
               <span class="text-xs">⭐</span>
             </div>
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-700 dark:to-slate-600 p-2 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg">
-              <img :src="app.logo" :alt="app.name"
-                class="w-full h-full object-contain transition-all duration-300 group-hover:rotate-3">
-            </div>
+            <img :src="app.logo" :alt="app.name"
+              class="w-16 h-16 object-contain transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
           </div>
           
           <div class="flex-1 min-w-0">
