@@ -52,4 +52,4 @@ ENV PORT=5252
 ENV NODE_ENV=production
 
 # Run the application
-CMD ["node", "api/main.js"]
+CMD ["npm", "run", "server"]
