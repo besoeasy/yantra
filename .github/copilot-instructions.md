@@ -1,69 +1,118 @@
-# UI Design
+# Project Development Guidelines
 
-1. Always tailwindCSS and avoid custom CSS unless absolutely necessary.
-2. Use lot of animations and transitions to make the UI feel smooth.
-3. Use Lucide icons (lucide-vue-next) for all icons.
-4. Design shgould be minimalistic and easy to use.
-5. All components and pages should be responsive and work well on mobile devices.
+## UI Design Standards
 
-# Apps
+### CSS Framework
+- **Primary Framework**: Use TailwindCSS for all styling
+- **Custom CSS**: Avoid unless absolutely necessary for specific edge cases
+- **Rationale**: Maintains consistency and leverages utility-first approach
 
-Apps templates located in /apps/, Apps are docker apps which have templates in /apps/<app-name>/compose.yml
+### User Experience
+- **Animations**: Implement smooth transitions and animations throughout the interface
+- **Icons**: Use Lucide icons exclusively via `lucide-vue-next` package
+- **Design Philosophy**: Follow minimalistic principles prioritizing ease of use
+- **Responsiveness**: Ensure all components and pages function properly on mobile devices
 
-## General Rules
+---
 
-Most Import : All docker api actions should be atomic, either fully succeed or fully fail with no partial changes. beacuase our app is stateless and uses no database.
+## Docker App Templates
 
-1. Run `node check.js` to check for conflicts.
-2. **Configuration**: Use environment variables with defaults for configuration values (e.g., `${VAR_NAME:-default_value}`), but NOT for port mappings.
-3. **Storage**: Use named volumes only. Never mount to host paths directly.
-4. **File Access**: When apps need to expose folders for user file management (downloads, outputs, uploads, etc.), add a companion service using `sigoden/dufs:latest`. This provides a lightweight (~3MB) web-based file manager with upload, delete, and folder management capabilities.
-   - Mount the shared volume as read-write (not `:ro`)
-   - Use command: `/data --enable-cors --allow-all`
-   - Expose on a separate port
-   - Example: See `deluge/compose.yml` for the `deluge-http` service pattern
+### Directory Structure
+- **Location**: All app templates are stored in `/apps/`
+- **Format**: Each app has its Docker Compose configuration at `/apps/<app-name>/compose.yml`
 
-## Labels
+### Critical Rules
 
-All apps must include the following labels to ensure proper categorization and display in the UI:
+#### Atomicity Requirement (MOST IMPORTANT)
+**All Docker API actions MUST be atomic** - they must either:
+- Fully succeed with all changes applied, OR
+- Fully fail with no partial changes
 
-1. **yantra.name** (Required) - Human-readable app name
+**Reason**: The application is stateless and does not use a database for tracking changes.
 
-   - Use proper capitalization and spacing
-   - Example: `"Pi-hole"`, `"Uptime Kuma"`
+#### Implementation Checklist
 
-2. **yantra.logo** (Required) - App logo URL
+1. **Conflict Prevention**
+   - Run `node check.js` before making changes to detect potential conflicts
 
-   - Should be IPFS CID
-   - Prefer IPFS for reliability, since URL based images can be changed to host payloads.
-   - Example: `"QmYSoiyanJ26mbB4CVZXGNEk1tfGjNaEnf3hBQyhtgA85w"`
+2. **Configuration Management**
+   - Use environment variables with default values: `${VAR_NAME:-default_value}`
+   - **Exception**: Do NOT use environment variables for port mappings
+   - Port mappings must be explicit and hardcoded
 
-3. **yantra.category** (Required) - App category for organization
+3. **Storage Guidelines**
+   - Use named Docker volumes exclusively
+   - **Never** mount directly to host filesystem paths
+   - This ensures portability and proper isolation
 
-   - Try to use already existing categories, you can create new ones if needed.
-   - Use lowercase only
-   - Can specify up to 3 categories as comma-separated values
-   - Example: `"network,security"`, `"tools,utility"`, `"productivity,security,utility"`
+4. **File Access for User-Facing Folders**
+   
+   When an app needs to expose folders for user file management (downloads, outputs, uploads, etc.):
+   
+   - Add a companion service using `sigoden/dufs:latest` (lightweight ~3MB file manager)
+   - Mount the shared volume with read-write permissions (not `:ro`)
+   - Use the command: `/data --enable-cors --allow-all`
+   - Expose the file manager on a separate port from the main app
+   - **Reference Example**: See `deluge/compose.yml` for the `deluge-http` service pattern
 
-4. **yantra.port** (Optional) - Primary access port for the app
+---
 
-   - Only required for apps with web UI
-   - Can be a single port or multiple ports (comma-separated)
-   - Examples: yantra.port: "8093 (HTTPS - Web UI), 8094 (HTTPS - Admin)"
-   - When multiple ports are specified, UI will show a popup to select which port to open
+## Required Docker Labels
 
-5. **yantra.description** (Required) - Brief description of the app
+All Docker Compose apps must include these labels for proper UI integration:
 
-   - Keep it concise (under 80 characters)
-   - Describe the main purpose/functionality
-   - Example: `"Network-wide ad blocking via DNS sinkhole"`
+### 1. yantra.name (Required)
+- **Purpose**: Human-readable display name
+- **Format**: Proper capitalization with spacing
+- **Examples**: 
+  - `"Pi-hole"`
+  - `"Uptime Kuma"`
+  - `"Home Assistant"`
 
-6. **yantra.website** (Required) - Official documentation or website URL
+### 2. yantra.logo (Required)
+- **Purpose**: App logo for visual identification
+- **Format**: IPFS CID (Content Identifier)
+- **Why IPFS**: Provides reliability and prevents URL-based payloads/tampering
+- **Example**: `"QmYSoiyanJ26mbB4CVZXGNEk1tfGjNaEnf3hBQyhtgA85w"`
 
-   - Link to official docs, wiki, or homepage
-   - Prefer documentation over marketing pages
-   - Example: `"https://docs.pi-hole.net"`
+### 3. yantra.category (Required)
+- **Purpose**: Organizes apps into browsable categories
+- **Format**: Lowercase only, comma-separated for multiple categories
+- **Limit**: Maximum 3 categories per app
+- **Best Practice**: Reuse existing categories when possible; create new ones only when necessary
+- **Examples**:
+  - `"network,security"`
+  - `"tools,utility"`
+  - `"productivity,security,utility"`
 
-# GitHub Copilot Instructions
+### 4. yantra.port (Optional - Required for Web UIs)
+- **Purpose**: Defines primary access port(s) for the app
+- **When to Include**: Required if the app has a web interface
+- **Format Options**:
+  - Single port: `"8080"`
+  - Multiple ports with labels: `"8093 (HTTPS - Web UI), 8094 (HTTPS - Admin)"`
+- **UI Behavior**: When multiple ports are specified, the UI displays a selection popup
 
-After edits make sure to update index.html if we change anything.
+### 5. yantra.description (Required)
+- **Purpose**: Brief explanation of app functionality
+- **Length**: Under 80 characters
+- **Content**: Focus on main purpose and key features
+- **Example**: `"Network-wide ad blocking via DNS sinkhole"`
+
+### 6. yantra.website (Required)
+- **Purpose**: Link to official resources
+- **Preference Order**:
+  1. Official documentation
+  2. Wiki pages
+  3. Project homepage
+- **Avoid**: Marketing-focused landing pages when docs are available
+- **Example**: `"https://docs.pi-hole.net"`
+
+---
+
+## Post-Edit Checklist
+
+After making any changes to the codebase:
+- ✅ Run `node /api/check.js` to verify no conflicts were introduced
+- ✅ Test responsive behavior on mobile devices
+- ✅ Verify all required labels are present for new apps
