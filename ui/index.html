@@ -504,6 +504,17 @@
                 <div class="space-y-3 mb-6">
                     <div v-for="port in selectedApp?.ports" :key="`${port.containerPort}_${port.protocol}`" 
                         class="p-4 bg-white border border-gray-200 rounded-xl">
+                        <!-- Port Description Header -->
+                        <div v-if="port.description" class="mb-3 flex items-start gap-2">
+                            <i class="fas fa-info-circle text-blue-500 mt-0.5"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-gray-900">{{ port.description }}</div>
+                                <div v-if="port.labelProtocol" class="text-xs text-gray-500 uppercase mt-0.5">
+                                    {{ port.labelProtocol }}
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="flex items-center gap-4">
                             <div class="flex-1">
                                 <label class="block text-xs font-semibold text-gray-500 uppercase mb-2">
@@ -533,7 +544,7 @@
                             </div>
                         </div>
                         <div v-if="port.envVar" class="mt-2 text-xs text-gray-500">
-                            <i class="fas fa-info-circle mr-1"></i>
+                            <i class="fas fa-cog mr-1"></i>
                             Can be overridden by environment variable: {{ port.envVar }}
                         </div>
                     </div>

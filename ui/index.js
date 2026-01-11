@@ -193,6 +193,26 @@ createApp({
             console.log('[appUrl] Result:', url);
             return url;
         },
+        getPortDescriptions(app) {
+            // Parse yantra.port label to extract port descriptions
+            // Returns a map of {portNumber: {protocol, description}}
+            const descriptions = {};
+            if (!app.port) return descriptions;
+            
+            const portStr = String(app.port).trim();
+            // Match format: "9091 (HTTP - Web Interface)" or "9092 (HTTP - Downloads)"
+            const regex = /(\d+)\s*\(([^-\)]+)\s*-\s*([^)]+)\)/g;
+            let match;
+            
+            while ((match = regex.exec(portStr)) !== null) {
+                descriptions[match[1]] = {
+                    protocol: match[2].trim().toLowerCase(),
+                    description: match[3].trim()
+                };
+            }
+            
+            return descriptions;
+        },
         getPorts(app) {
             // Parse port(s) from yantra.port label
             // Supports formats:
@@ -379,10 +399,18 @@ createApp({
             if (app.ports && app.ports.length > 0) {
                 this.selectedApp = app;
                 this.portValues = {};
-                // Pre-fill with defaults
+                // Parse port descriptions from yantra.port label
+                const portDescriptions = this.getPortDescriptions(app);
+                // Pre-fill with defaults and attach descriptions
                 app.ports.forEach(port => {
                     const key = `${port.containerPort}_${port.protocol}`;
                     this.portValues[key] = port.hostPort;
+                    // Attach description if available
+                    const desc = portDescriptions[port.hostPort];
+                    if (desc) {
+                        port.description = desc.description;
+                        port.labelProtocol = desc.protocol;
+                    }
                 });
                 this.showPortConfigModal = true;
             } else if (app.environment && app.environment.length > 0) {
