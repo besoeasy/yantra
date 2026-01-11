@@ -10,7 +10,7 @@ services:
     command: /data --enable-cors --allow-all
     labels:
       yantra.name: "Dufs"
-      yantra.logo: "QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i"
+      yantra.logo: "QmcxYwqfC2FtTekjvcykJ4KaUfVHXuepzQ3ci3FqD9RxMq"
       yantra.category: "utility,tools"
       yantra.port: "5000 (HTTP - Web UI)"
       yantra.description: "Lightweight file server with upload and download capabilities"

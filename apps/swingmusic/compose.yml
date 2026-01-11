@@ -1,0 +1,33 @@
+services:
+  swingmusic:
+    image: ghcr.io/swingmx/swingmusic:latest
+    container_name: swingmusic
+    volumes:
+      - swingmusic-music:/music
+      - swingmusic-config:/config
+    ports:
+      - "1970:1970"
+    restart: unless-stopped
+    labels:
+      yantra.name: "SwingMusic"
+      yantra.logo: "QmeucPrxzvAxS3KbnYukrBb2jo8ykgjwyNtmZB9nQsdMoa"
+      yantra.category: "media,entertainment"
+      yantra.port: "1970 (HTTP - Web UI), 1971 (HTTP - Music Files)"
+      yantra.description: "Beautiful music player with a modern web interface"
+      yantra.website: "https://swingmusic.vercel.app/"
+
+  swingmusic-files:
+    image: sigoden/dufs:latest
+    container_name: swingmusic-files
+    volumes:
+      - swingmusic-music:/data
+    ports:
+      - "1971:5000"
+    restart: unless-stopped
+    command: /data --enable-cors --allow-all
+
+volumes:
+  swingmusic-music:
+    name: swingmusic-music
+  swingmusic-config:
+    name: swingmusic-config
