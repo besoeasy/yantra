@@ -380,6 +380,19 @@ app.get("/api/apps", async (req, res) => {
             });
           }
 
+          // Extract port mappings
+          const portMappings = [];
+          // Match patterns like: - "8080:80", "53:53/tcp", "53:53/udp", "${PORT:-8080}:80"
+          const portRegex = /-\s*["']?(?:\$\{([A-Z_]+):-)?(\d+)(?:\})?:(\d+)(?:\/(tcp|udp))?["']?/g;
+          while ((match = portRegex.exec(composeContent)) !== null) {
+            portMappings.push({
+              hostPort: match[2],  // The host port (left side)
+              containerPort: match[3],  // The container port (right side)
+              protocol: match[4] || 'tcp',  // tcp/udp, defaults to tcp
+              envVar: match[1] || null  // Environment variable if used
+            });
+          }
+
           apps.push({
             id: entry.name,
             name: labels.name || entry.name,
@@ -397,6 +410,7 @@ app.get("/api/apps", async (req, res) => {
             path: appPath,
             composePath: composePath,
             environment: envVars,
+            ports: portMappings,
           });
         } catch (err) {
           // Skip if compose.yml doesn't exist
@@ -475,10 +489,13 @@ app.get("/api/apps/:id/check-arch", async (req, res) => {
 app.post("/api/deploy", async (req, res) => {
   log("info", "🚀 [POST /api/deploy] Deploy request received");
   try {
-    const { appId, environment } = req.body;
+    const { appId, environment, ports } = req.body;
     log("info", `🚀 [POST /api/deploy] Deploying app: ${appId}`);
     if (environment) {
       log("info", `🚀 [POST /api/deploy] Custom environment:`, environment);
+    }
+    if (ports) {
+      log("info", `🚀 [POST /api/deploy] Custom port mappings:`, ports);
     }
 
     if (!appId) {
@@ -495,8 +512,9 @@ app.post("/api/deploy", async (req, res) => {
     log("info", `🚀 [POST /api/deploy] Compose path: ${composePath}`);
 
     // Verify compose file exists
+    let composeContent;
     try {
-      await fsPromises.access(composePath);
+      composeContent = await fsPromises.readFile(composePath, "utf8");
       log("info", `🚀 [POST /api/deploy] Compose file exists, proceeding with deployment`);
     } catch (err) {
       log("error", `❌ [POST /api/deploy] Compose file not found for ${appId}`);
@@ -504,6 +522,31 @@ app.post("/api/deploy", async (req, res) => {
         success: false,
         error: `App '${appId}' not found or has no compose.yml`,
       });
+    }
+
+    // Apply custom port mappings if provided
+    if (ports && Object.keys(ports).length > 0) {
+      log("info", `🚀 [POST /api/deploy] Applying custom port mappings`);
+      
+      // Replace port mappings in compose content
+      for (const [key, newHostPort] of Object.entries(ports)) {
+        const [containerPort, protocol] = key.split('_');
+        
+        // Match patterns like: "8080:80", "8080:80/tcp", "${PORT:-8080}:80"
+        const portPattern = new RegExp(
+          `(- +["']?)(?:\\$\\{[A-Z_]+:-)?\\d+(\\})?:(${containerPort})(?:/(${protocol}))?["']?`,
+          'g'
+        );
+        
+        composeContent = composeContent.replace(portPattern, (match, prefix, envClose, contPort, proto) => {
+          return `${prefix}${newHostPort}:${contPort}${proto ? '/' + proto : ''}${match.endsWith('"') || match.endsWith("'") ? match.slice(-1) : ''}`;
+        });
+      }
+      
+      // Write modified compose to temporary file
+      const tempComposePath = path.join(appPath, "compose.temp.yml");
+      await fsPromises.writeFile(tempComposePath, composeContent);
+      log("info", `🚀 [POST /api/deploy] Created temporary compose file with custom ports`);
     }
 
     // Check architecture compatibility
@@ -541,8 +584,12 @@ app.post("/api/deploy", async (req, res) => {
       log("info", `🚀 [POST /api/deploy] Created .env file with custom variables`);
     }
 
+    // Determine which compose file to use
+    const tempComposePath = path.join(appPath, "compose.temp.yml");
+    const useComposePath = ports && Object.keys(ports).length > 0 ? tempComposePath : composePath;
+
     // Deploy using docker compose
-    const command = `docker compose -f "${composePath}" up -d`;
+    const command = `docker compose -f "${useComposePath}" up -d`;
     log("info", `🚀 [POST /api/deploy] Executing: ${command}`);
 
     try {
@@ -558,6 +605,16 @@ app.post("/api/deploy", async (req, res) => {
       log("info", `   stdout: ${stdout.trim()}`);
       if (stderr) log("info", `   stderr: ${stderr.trim()}`);
 
+      // Clean up temporary compose file if it was created
+      if (useComposePath === tempComposePath) {
+        try {
+          await fsPromises.unlink(tempComposePath);
+          log("info", `🚀 [POST /api/deploy] Cleaned up temporary compose file`);
+        } catch (err) {
+          log("warn", `⚠️  [POST /api/deploy] Failed to clean up temporary file: ${err.message}`);
+        }
+      }
+
       res.json({
         success: true,
         message: `App '${appId}' deployed successfully`,
@@ -568,6 +625,15 @@ app.post("/api/deploy", async (req, res) => {
     } catch (error) {
       log("error", `❌ [POST /api/deploy] Deployment failed for ${appId}:`, error.message);
       log("error", `   stderr: ${error.stderr}`);
+
+      // Clean up temporary compose file if it was created
+      if (useComposePath === tempComposePath) {
+        try {
+          await fsPromises.unlink(tempComposePath);
+        } catch (err) {
+          // Ignore cleanup errors
+        }
+      }
 
       // Check if the error is architecture-related
       const isArchError =

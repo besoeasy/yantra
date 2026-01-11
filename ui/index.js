@@ -15,8 +15,10 @@ createApp({
             deletingImage: null,
             deletingAllImages: false,
             showEnvModal: false,
+            showPortConfigModal: false,
             selectedApp: null,
             envValues: {},
+            portValues: {},
             appSearch: '',
             apiUrl: '',
             version: 'loading...',
@@ -236,7 +238,33 @@ createApp({
             return [{ port: portStr, protocol: 'http', label: null }];
         },
         openApp(app) {
-            const ports = this.getPorts(app);
+            // For installed apps, use actual container ports; for uninstalled apps, use yantra.port label
+            let ports;
+            
+            if (app.isInstalled && app.ports && app.ports.length > 0) {
+                // Use actual container ports from Docker
+                ports = app.ports
+                    .filter(p => p.PublicPort) // Only show ports that are exposed
+                    .map(p => ({
+                        port: p.PublicPort,
+                        protocol: p.Type === 'tcp' ? 'http' : 'http', // Default to http for now
+                        label: `Port ${p.PublicPort}`
+                    }));
+                
+                // Remove duplicates (same public port)
+                const uniquePorts = [];
+                const seenPorts = new Set();
+                ports.forEach(p => {
+                    if (!seenPorts.has(p.port)) {
+                        seenPorts.add(p.port);
+                        uniquePorts.push(p);
+                    }
+                });
+                ports = uniquePorts;
+            } else {
+                // Use yantra.port label for uninstalled apps or as fallback
+                ports = this.getPorts(app);
+            }
             
             if (ports.length === 0) return;
             
@@ -342,25 +370,57 @@ createApp({
             });
         },
         async deployApp(appId) {
-            // Find app to check if it has environment variables
+            // Find app to check if it has ports or environment variables
             const app = this.apps.find(a => a.id === appId);
 
-            if (app && app.environment && app.environment.length > 0) {
-                // Show modal for environment configuration
+            if (!app) return;
+
+            // Show port configuration modal if app has ports
+            if (app.ports && app.ports.length > 0) {
+                this.selectedApp = app;
+                this.portValues = {};
+                // Pre-fill with defaults
+                app.ports.forEach(port => {
+                    const key = `${port.containerPort}_${port.protocol}`;
+                    this.portValues[key] = port.hostPort;
+                });
+                this.showPortConfigModal = true;
+            } else if (app.environment && app.environment.length > 0) {
+                // No ports but has environment variables
                 this.selectedApp = app;
                 this.envValues = {};
-                // Pre-fill with defaults
                 app.environment.forEach(env => {
                     this.envValues[env.envVar] = env.default;
                 });
                 this.showEnvModal = true;
             } else {
-                // No environment variables, deploy directly
-                await this.confirmDeploy(appId, {});
+                // No ports or environment variables, deploy directly
+                await this.confirmDeploy(appId, {}, {});
             }
         },
-        async confirmDeploy(appId, environment) {
+        continueToEnvConfig() {
+            // Close port modal and open env modal if needed
+            this.showPortConfigModal = false;
+            
+            if (this.selectedApp && this.selectedApp.environment && this.selectedApp.environment.length > 0) {
+                this.envValues = {};
+                this.selectedApp.environment.forEach(env => {
+                    this.envValues[env.envVar] = env.default;
+                });
+                this.showEnvModal = true;
+            } else {
+                // No environment variables, deploy directly with port config
+                this.confirmDeploy(this.selectedApp.id, {}, this.portValues);
+            }
+        },
+        cancelPortConfig() {
+            this.showPortConfigModal = false;
+            this.selectedApp = null;
+            this.portValues = {};
+        },
+        async confirmDeploy(appId, environment, ports) {
             this.showEnvModal = false;
+            this.showPortConfigModal = false;
             this.deploying = appId;
             
             // Show deployment started notification
@@ -374,7 +434,7 @@ createApp({
                 const response = await fetch(`${this.apiUrl}/api/deploy`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ appId, environment }),
+                    body: JSON.stringify({ appId, environment, ports }),
                     signal: controller.signal
                 });
                 
@@ -402,8 +462,10 @@ createApp({
         },
         cancelDeploy() {
             this.showEnvModal = false;
+            this.showPortConfigModal = false;
             this.selectedApp = null;
             this.envValues = {};
+            this.portValues = {};
         },
         async deleteContainer(containerId, containerName) {
             if (!confirm(`Delete ${containerName}?\n\nThis will remove the container and all its volumes permanently.`)) return;
