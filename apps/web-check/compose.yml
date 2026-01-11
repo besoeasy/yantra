@@ -1,0 +1,14 @@
+services:
+  web-check:
+    image: lissy93/web-check:latest
+    container_name: web-check
+    ports:
+      - "3002:3000"
+    restart: unless-stopped
+    labels:
+      yantra.name: "Web Check"
+      yantra.logo: "QmXwF1DUNZLpkLFzK7HhVdtNNPncNZMS4ktb7KHb6K8Khz"
+      yantra.category: "tools,network,utility"
+      yantra.port: "3002 (HTTP - Web UI)"
+      yantra.description: "All-in-one tool for analyzing and monitoring websites"
+      yantra.website: "https://github.com/lissy93/web-check"
