@@ -1,5 +1,5 @@
 # Multi-stage build for optimized image size
-FROM node:24-lts AS builder
+FROM node:lts AS builder
 
 # Set working directory
 WORKDIR /app

@@ -1,3 +1,9 @@
+# UI Design
+
+1. Always tailwindCSS and avoid custom CSS unless absolutely necessary.
+2. Use lot of animations and transitions to make the UI feel smooth.
+3. Use Lucidicons and FontAwesome for icons.
+
 # Apps
 
 Apps templates located in /apps/, Apps are docker apps which have templates in /apps/<app-name>/compose.yml
@@ -20,6 +26,7 @@ Most Import : All docker api actions should be atomic, either fully succeed or f
 All apps must include the following labels to ensure proper categorization and display in the UI:
 
 1. **yantra.name** (Required) - Human-readable app name
+
    - Use proper capitalization and spacing
    - Example: `"Pi-hole"`, `"Uptime Kuma"`
 
@@ -40,16 +47,16 @@ All apps must include the following labels to ensure proper categorization and d
 
    - Only required for apps with web UI
    - Can be a single port or multiple ports (comma-separated)
-   - Examples:   yantra.port: "8093 (HTTPS - Web UI), 8094 (HTTPS - Admin)"
+   - Examples: yantra.port: "8093 (HTTPS - Web UI), 8094 (HTTPS - Admin)"
    - When multiple ports are specified, UI will show a popup to select which port to open
 
-6. **yantra.description** (Required) - Brief description of the app
+5. **yantra.description** (Required) - Brief description of the app
 
    - Keep it concise (under 80 characters)
    - Describe the main purpose/functionality
    - Example: `"Network-wide ad blocking via DNS sinkhole"`
 
-7. **yantra.website** (Required) - Official documentation or website URL
+6. **yantra.website** (Required) - Official documentation or website URL
 
    - Link to official docs, wiki, or homepage
    - Prefer documentation over marketing pages
