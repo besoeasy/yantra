@@ -39,6 +39,9 @@
    - Use environment variables with default values: `${VAR_NAME:-default_value}`
    - **Exception**: Do NOT use environment variables for port mappings
    - Port mappings must be explicit and hardcoded
+   - **Port Format**: Use short format `"PORT"` instead of `"PORT:PORT"` for non-essential ports
+     - Example: `"25441"` instead of `"25441:25441"`
+     - Docker will automatically map to the same port on the host
 
 3. **Storage Guidelines**
    - Use named Docker volumes exclusively
