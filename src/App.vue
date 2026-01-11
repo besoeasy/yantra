@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useDarkMode } from './composables/useDarkMode'
+import { Box, Boxes, Images, ClipboardList, Sun, Moon, AlertTriangle, Github } from 'lucide-vue-next'
 
 const router = useRouter()
 const route = useRoute()
@@ -31,7 +32,7 @@ onMounted(() => {
           :class="isActive('apps') ? 'bg-gray-900 dark:bg-slate-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'"
           class="relative w-12 h-12 rounded-full flex items-center justify-center transition-all smooth-shadow"
           title="Apps">
-          <i class="fas fa-box text-lg"></i>
+          <Box :size="20" />
         </router-link>
 
         <!-- Containers Tab -->
@@ -40,7 +41,7 @@ onMounted(() => {
           :class="isActive('containers') ? 'bg-gray-900 dark:bg-slate-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'"
           class="relative w-12 h-12 rounded-full flex items-center justify-center transition-all smooth-shadow"
           title="Containers">
-          <i class="fas fa-cubes text-lg"></i>
+          <Boxes :size="20" />
         </router-link>
 
         <!-- Images Tab -->
@@ -49,7 +50,7 @@ onMounted(() => {
           :class="isActive('images') ? 'bg-gray-900 dark:bg-slate-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'"
           class="relative w-12 h-12 rounded-full flex items-center justify-center transition-all smooth-shadow"
           title="Images">
-          <i class="fas fa-images text-lg"></i>
+          <Images :size="20" />
         </router-link>
 
         <!-- Logs Tab -->
@@ -58,7 +59,7 @@ onMounted(() => {
           :class="isActive('logs') ? 'bg-gray-900 dark:bg-slate-600 text-white' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'"
           class="relative w-12 h-12 rounded-full flex items-center justify-center transition-all smooth-shadow"
           title="Logs">
-          <i class="fas fa-clipboard-list text-lg"></i>
+          <ClipboardList :size="20" />
         </router-link>
       </nav>
 
@@ -69,7 +70,8 @@ onMounted(() => {
           @click="toggleDarkMode"
           class="w-12 h-12 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-all"
           :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-          <i :class="isDark ? 'fas fa-sun' : 'fas fa-moon'" class="text-lg"></i>
+          <Sun v-if="isDark" :size="20" />
+          <Moon v-else :size="20" />
         </button>
         
         <!-- GitHub -->
@@ -78,7 +80,7 @@ onMounted(() => {
           target="_blank"
           class="w-12 h-12 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-all"
           title="View on GitHub">
-          <i class="fab fa-github text-lg"></i>
+          <Github :size="20" />
         </a>
 
         <!-- Report Issue -->
@@ -87,7 +89,7 @@ onMounted(() => {
           target="_blank"
           class="w-12 h-12 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-all"
           title="Report Issue">
-          <i class="fas fa-exclamation-triangle text-lg"></i>
+          <AlertTriangle :size="20" />
         </a>
       </div>
     </aside>

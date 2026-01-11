@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { Store, ArrowRight } from 'lucide-vue-next'
 
 const router = useRouter()
 
@@ -51,7 +52,7 @@ onMounted(async () => {
       <div class="text-sm text-gray-400 mb-6">Get started by installing apps from the App Store</div>
       <router-link to="/apps"
         class="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold transition-all">
-        <i class="fas fa-store"></i>
+        <Store :size="18" />
         <span>Browse App Store</span>
       </router-link>
     </div>
@@ -87,7 +88,7 @@ onMounted(async () => {
         </div>
 
         <div class="text-sm text-gray-500 flex items-center gap-2">
-          <i class="fas fa-arrow-right"></i>
+          <ArrowRight :size="16" />
           <span>Click to view details</span>
         </div>
       </div>

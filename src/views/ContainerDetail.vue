@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+import { ArrowLeft, ExternalLink, ArrowRight, Info, FileText, Tags, Box, Activity, Globe, TrendingUp, Loader2, Settings, Terminal, RefreshCw } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -200,7 +201,7 @@ onUnmounted(() => {
       <div class="mb-8">
         <router-link to="/containers"
           class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors">
-          <i class="fas fa-arrow-left"></i>
+          <ArrowLeft :size="16" />
           <span>Back to Containers</span>
         </router-link>
         
@@ -240,7 +241,7 @@ onUnmounted(() => {
             class="group flex items-center gap-3 bg-white hover:bg-gray-50 rounded-xl p-4 border border-gray-200 hover:border-gray-300 transition-all">
             
             <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-100 group-hover:bg-indigo-500 flex items-center justify-center transition-colors">
-              <i class="fas fa-external-link-alt text-gray-600 group-hover:text-white text-sm transition-colors"></i>
+              <ExternalLink :size="16" class="text-gray-600 group-hover:text-white transition-colors" />
             </div>
             
             <div class="flex-1 min-w-0">
@@ -253,7 +254,7 @@ onUnmounted(() => {
               <div class="text-sm text-gray-600 truncate">{{ portInfo.label }}</div>
             </div>
             
-            <i class="fas fa-arrow-right text-gray-400 group-hover:text-gray-600 text-sm transition-colors"></i>
+            <ArrowRight :size="16" class="text-gray-400 group-hover:text-gray-600 transition-colors" />
           </a>
         </div>
       </div>
@@ -264,14 +265,14 @@ onUnmounted(() => {
         <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200 shadow-sm">
           <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
             <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-              <i class="fas fa-info-circle text-white"></i>
+              <Info :size="20" class="text-white" />
             </div>
             <span>Container Info</span>
           </h3>
           <div class="space-y-4">
             <div v-if="selectedContainer.app.description" class="bg-white rounded-xl p-4 border border-gray-100">
               <div class="flex items-center gap-2 mb-2">
-                <i class="fas fa-file-alt text-gray-400"></i>
+                <FileText :size="16" class="text-gray-400" />
                 <div class="text-xs text-gray-500 font-semibold uppercase">Description</div>
               </div>
               <div class="text-sm text-gray-900 leading-relaxed">{{ selectedContainer.app.description }}</div>
@@ -280,7 +281,7 @@ onUnmounted(() => {
             <div v-if="selectedContainer.app.category && selectedContainer.app.category !== 'uncategorized'" 
               class="bg-white rounded-xl p-4 border border-gray-100">
               <div class="flex items-center gap-2 mb-2">
-                <i class="fas fa-tags text-gray-400"></i>
+                <Tags :size="16" class="text-gray-400" />
                 <div class="text-xs text-gray-500 font-semibold uppercase">Categories</div>
               </div>
               <div class="flex flex-wrap gap-2">
@@ -293,7 +294,7 @@ onUnmounted(() => {
             
             <div class="bg-white rounded-xl p-4 border border-gray-100">
               <div class="flex items-center gap-2 mb-2">
-                <i class="fas fa-cube text-gray-400"></i>
+                <Box :size="16" class="text-gray-400" />
                 <div class="text-xs text-gray-500 font-semibold uppercase">Docker Image</div>
               </div>
               <div class="text-sm font-mono text-gray-900 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200">
@@ -303,7 +304,7 @@ onUnmounted(() => {
             
             <div class="bg-white rounded-xl p-4 border border-gray-100">
               <div class="flex items-center gap-2 mb-2">
-                <i class="fas fa-heartbeat text-gray-400"></i>
+                <Activity :size="16" class="text-gray-400" />
                 <div class="text-xs text-gray-500 font-semibold uppercase">Status</div>
               </div>
               <div class="flex items-center gap-2">
@@ -315,13 +316,13 @@ onUnmounted(() => {
             
             <div v-if="selectedContainer.app.website" class="bg-white rounded-xl p-4 border border-gray-100">
               <div class="flex items-center gap-2 mb-2">
-                <i class="fas fa-globe text-gray-400"></i>
+                <Globe :size="16" class="text-gray-400" />
                 <div class="text-xs text-gray-500 font-semibold uppercase">Website</div>
               </div>
               <a :href="selectedContainer.app.website" target="_blank"
                 class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg text-sm font-semibold transition-all shadow-sm">
                 Visit Website
-                <i class="fas fa-external-link-alt text-xs"></i>
+                <ExternalLink :size="14" />
               </a>
             </div>
           </div>
@@ -330,7 +331,7 @@ onUnmounted(() => {
         <!-- Resource Stats Card -->
         <div class="bg-white rounded-2xl p-6 border border-gray-200">
           <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-            <i class="fas fa-chart-line text-green-500"></i>
+            <TrendingUp :size="20" class="text-green-500" />
             <span>Resource Usage</span>
           </h3>
           <div v-if="containerStats" class="space-y-4">
@@ -386,7 +387,7 @@ onUnmounted(() => {
             </div>
           </div>
           <div v-else class="text-center py-8 text-gray-500">
-            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+            <Loader2 :size="24" class="animate-spin mx-auto mb-2" />
             <div class="text-sm">Loading stats...</div>
           </div>
         </div>
@@ -395,7 +396,7 @@ onUnmounted(() => {
       <!-- Environment Variables -->
       <div v-if="selectedContainer.env && selectedContainer.env.length > 0" class="bg-white rounded-2xl p-6 border border-gray-200 mb-6">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-          <i class="fas fa-cog text-purple-500"></i>
+          <Settings :size="20" class="text-purple-500" />
           <span>Environment Variables</span>
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-64 overflow-y-auto">
@@ -412,12 +413,12 @@ onUnmounted(() => {
       <div class="bg-white rounded-2xl p-6 border border-gray-200">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xl font-bold flex items-center gap-2">
-            <i class="fas fa-terminal text-gray-700"></i>
+            <Terminal :size="20" class="text-gray-700" />
             <span>Container Logs</span>
           </h3>
           <button @click="fetchContainerLogs"
-            class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-all">
-            <i class="fas fa-sync-alt mr-1"></i>
+            class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5">
+            <RefreshCw :size="14" />
             Refresh
           </button>
         </div>

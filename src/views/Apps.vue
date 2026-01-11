@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useToast } from 'vue-toastification'
+import { Globe, FileCode } from 'lucide-vue-next'
 
 const toast = useToast()
 
@@ -243,13 +244,13 @@ onMounted(async () => {
           <a v-if="app.website" :href="app.website" target="_blank"
             class="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 hover:bg-gray-50 hover:border-blue-300 text-gray-600 rounded-lg transition-all duration-200 transform active:scale-95"
             title="Website">
-            <i class="fas fa-globe text-xs"></i>
+            <Globe :size="14" />
           </a>
           <a :href="`https://github.com/besoeasy/yantra/blob/main/apps/${app.id}/compose.yml`"
             target="_blank"
             class="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 hover:bg-gray-50 hover:border-blue-300 text-gray-600 rounded-lg transition-all duration-200 transform active:scale-95"
             title="Compose File">
-            <i class="fas fa-file-code text-xs"></i>
+            <FileCode :size="14" />
           </a>
         </div>
       </div>

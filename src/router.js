@@ -10,27 +10,27 @@ const router = createRouter({
     {
       path: '/apps',
       name: 'apps',
-      component: () => import('./views/Apps.vue')
+      component: () => import(/* webpackChunkName: "apps" */ './views/Apps.vue')
     },
     {
       path: '/containers',
       name: 'containers',
-      component: () => import('./views/Containers.vue')
+      component: () => import(/* webpackChunkName: "containers" */ './views/Containers.vue')
     },
     {
       path: '/containers/:id',
       name: 'container-detail',
-      component: () => import('./views/ContainerDetail.vue')
+      component: () => import(/* webpackChunkName: "container-detail" */ './views/ContainerDetail.vue')
     },
     {
       path: '/images',
       name: 'images',
-      component: () => import('./views/Images.vue')
+      component: () => import(/* webpackChunkName: "images" */ './views/Images.vue')
     },
     {
       path: '/logs',
       name: 'logs',
-      component: () => import('./views/Logs.vue')
+      component: () => import(/* webpackChunkName: "logs" */ './views/Logs.vue')
     }
   ]
 })

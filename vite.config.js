@@ -8,13 +8,27 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    process.env.NODE_ENV === 'development' && vueDevTools(),
     tailwindcss(),
-  ],
+  ].filter(Boolean),
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['vue', 'vue-router', 'pinia'],
+          'ui': ['vue-toastification', 'lucide-vue-next']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 600,
+    cssCodeSplit: true,
+    sourcemap: false,
+    minify: 'esbuild'
   },
   server: {
     proxy: {
