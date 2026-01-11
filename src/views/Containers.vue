@@ -38,46 +38,46 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="p-6 md:p-10 lg:p-12">
-    <div class="mb-8">
-      <h2 class="text-4xl font-bold mb-2 text-gray-900">Running Containers</h2>
-      <p class="text-gray-600">Manage your active Docker containers</p>
+  <div class="p-4 sm:p-6 md:p-10 lg:p-12">
+    <div class="mb-6 md:mb-8">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-2 text-gray-900">Running Containers</h2>
+      <p class="text-sm sm:text-base text-gray-600">Manage your active Docker containers</p>
     </div>
     
     <div v-if="loading" class="text-center py-16">
       <div class="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
       <div class="text-gray-500 font-medium">Loading containers...</div>
     </div>
-    <div v-else-if="containers.length === 0" class="text-center py-20">
-      <div class="text-6xl mb-4">🎯</div>
-      <div class="text-gray-900 font-bold text-2xl mb-2">Welcome to Yantra!</div>
-      <div class="text-gray-600 font-medium mb-2">No containers running yet</div>
-      <div class="text-sm text-gray-500 mb-6">Get started by installing apps from the App Store</div>
+    <div v-else-if="containers.length === 0" class="text-center py-12 sm:py-20">
+      <div class="text-5xl sm:text-6xl mb-4">🎯</div>
+      <div class="text-gray-900 font-bold text-xl sm:text-2xl mb-2">Welcome to Yantra!</div>
+      <div class="text-gray-600 font-medium mb-2 text-sm sm:text-base">No containers running yet</div>
+      <div class="text-xs sm:text-sm text-gray-500 mb-6">Get started by installing apps from the App Store</div>
       <router-link to="/apps"
-        class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95">
+        class="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 touch-manipulation text-sm sm:text-base">
         <Store :size="18" />
         <span>Browse App Store</span>
       </router-link>
     </div>
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
       <div v-for="(container, index) in containers" :key="container.id"
         :style="{ animationDelay: `${index * 50}ms` }"
         @click="viewContainerDetail(container)"
-        class="group bg-white/80/80 backdrop-blur-sm rounded-2xl p-5 transition-all duration-300 hover:bg-white:bg-slate-800 hover:shadow-xl hover:scale-[1.02] cursor-pointer animate-fadeIn">
+        class="group bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:bg-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer animate-fadeIn touch-manipulation">
         
         <!-- Header with Logo and Status -->
-        <div class="flex items-start justify-between mb-4">
-          <div class="flex items-center gap-3 flex-1 min-w-0">
+        <div class="flex items-start justify-between mb-3 sm:mb-4">
+          <div class="flex items-center gap-2.5 sm:gap-3 flex-1 min-w-0">
             <div class="relative flex-shrink-0">
               <img v-if="container.app.logo" :src="container.app.logo" :alt="container.name"
-                class="w-14 h-14 object-contain transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-              <span v-else class="text-4xl">🐳</span>
+                class="w-12 h-12 sm:w-14 sm:h-14 object-contain transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+              <span v-else class="text-3xl sm:text-4xl">🐳</span>
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="font-bold text-gray-900 text-lg truncate group-hover:text-blue-600:text-blue-400 transition-colors">
+              <h3 class="font-bold text-gray-900 text-base sm:text-lg truncate group-hover:text-blue-600 transition-colors">
                 {{ container.name }}
               </h3>
-              <div class="text-xs text-gray-500 font-mono mt-0.5">
+              <div class="text-[10px] sm:text-xs text-gray-500 font-mono mt-0.5">
                 {{ container.id.substring(0, 12) }}
               </div>
             </div>
@@ -85,33 +85,33 @@ onMounted(async () => {
           
           <!-- Status Badge -->
           <div class="flex-shrink-0">
-            <div :class="container.state === 'running' ? 'bg-green-100/30 text-green-700' : 'bg-gray-100 text-gray-600'"
-              class="px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5">
+            <div :class="container.state === 'running' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
+              class="px-2 sm:px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-semibold flex items-center gap-1 sm:gap-1.5">
               <span :class="container.state === 'running' ? 'bg-green-500' : 'bg-gray-400'" 
-                class="w-2 h-2 rounded-full animate-pulse"></span>
-              {{ container.state }}
+                class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full animate-pulse"></span>
+              <span class="hidden sm:inline">{{ container.state }}</span>
             </div>
           </div>
         </div>
         
         <!-- Container Info -->
-        <div class="space-y-2.5 mb-4">
+        <div class="space-y-2 sm:space-y-2.5 mb-3 sm:mb-4">
           <div class="flex items-start gap-2">
-            <span class="text-xs text-gray-500 font-semibold mt-0.5 flex-shrink-0">Image:</span>
-            <span class="text-xs text-gray-700 font-mono break-all">{{ container.image }}</span>
+            <span class="text-[10px] sm:text-xs text-gray-500 font-semibold mt-0.5 flex-shrink-0">Image:</span>
+            <span class="text-[10px] sm:text-xs text-gray-700 font-mono break-all">{{ container.image }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-xs text-gray-500 font-semibold">Status:</span>
-            <span class="text-xs text-gray-700">{{ container.status }}</span>
+            <span class="text-[10px] sm:text-xs text-gray-500 font-semibold">Status:</span>
+            <span class="text-[10px] sm:text-xs text-gray-700">{{ container.status }}</span>
           </div>
         </div>
 
         <!-- View Details Footer -->
         <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-          <span class="text-sm text-gray-500 group-hover:text-blue-600:text-blue-400 transition-colors font-medium">
+          <span class="text-xs sm:text-sm text-gray-500 group-hover:text-blue-600 transition-colors font-medium">
             View Details
           </span>
-          <ArrowRight :size="16" class="text-gray-400 group-hover:text-blue-600:text-blue-400 group-hover:translate-x-1 transition-all" />
+          <ArrowRight :size="14" class="sm:w-4 sm:h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
         </div>
       </div>
     </div>

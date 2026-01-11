@@ -8,9 +8,9 @@ const isActive = (name) => route.name === name
 </script>
 
 <template>
-  <div class="min-h-screen flex bg-white text-gray-900">
-    <!-- Minimal Sidebar -->
-    <aside class="bg-white flex flex-col items-center border-r border-gray-200 w-20 py-6 px-2 fixed h-screen z-50">
+  <div class="min-h-screen flex flex-col md:flex-row bg-white text-gray-900">
+    <!-- Desktop Sidebar -->
+    <aside class="hidden md:flex bg-white flex-col items-center border-r border-gray-200 w-20 py-6 px-2 fixed h-screen z-50">
       <!-- Logo -->
       <h1 class="text-lg font-bold text-gray-900 mb-8 uppercase leading-tight text-center">
         Yan<br/>tra
@@ -77,8 +77,49 @@ const isActive = (name) => route.name === name
       </div>
     </aside>
 
+    <!-- Mobile Bottom Navigation -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 safe-area-inset-bottom">
+      <div class="flex items-center justify-around px-2 py-3">
+        <router-link 
+          to="/apps"
+          :class="isActive('apps') ? 'bg-gray-900 text-white' : 'text-gray-600'"
+          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
+          title="Apps">
+          <Box :size="20" />
+          <span class="text-xs font-medium">Apps</span>
+        </router-link>
+
+        <router-link 
+          to="/containers"
+          :class="isActive('containers') ? 'bg-gray-900 text-white' : 'text-gray-600'"
+          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
+          title="Containers">
+          <Boxes :size="20" />
+          <span class="text-xs font-medium">Containers</span>
+        </router-link>
+
+        <router-link 
+          to="/images"
+          :class="isActive('images') ? 'bg-gray-900 text-white' : 'text-gray-600'"
+          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
+          title="Images">
+          <Images :size="20" />
+          <span class="text-xs font-medium">Images</span>
+        </router-link>
+
+        <router-link 
+          to="/logs"
+          :class="isActive('logs') ? 'bg-gray-900 text-white' : 'text-gray-600'"
+          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
+          title="Logs">
+          <ClipboardList :size="20" />
+          <span class="text-xs font-medium">Logs</span>
+        </router-link>
+      </div>
+    </nav>
+
     <!-- Main Content -->
-    <main class="ml-20 flex-1 min-h-screen">
+    <main class="flex-1 min-h-screen md:ml-20 pb-20 md:pb-0">
       <router-view />
     </main>
   </div>

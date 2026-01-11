@@ -10,11 +10,32 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Better touch target on mobile */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
 }
 
 body {
     background: var(--bg-body);
     transition: background-color 0.3s ease;
+    /* Prevent overscroll on mobile */
+    overscroll-behavior: none;
+}
+
+/* Safe area for iPhone notch and home indicator */
+.safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Touch-friendly interactions */
+.touch-manipulation {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+}
+
+/* Better mobile scrolling */
+.mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
 }
 
 .glass {
