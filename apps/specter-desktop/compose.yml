@@ -1,0 +1,14 @@
+services:
+  specter-desktop:
+    image: ghcr.io/cryptoadvance/specter-desktop:v2.1.1
+    container_name: specter-desktop
+    labels:
+      yantra.name: "Specter Desktop"
+      yantra.logo: "QmZfCWe2Af3FenimdADmbrThB56Gh4zZKTBajnH5KwuD69"
+      yantra.category: "security,tools"
+      yantra.port: "25441 (HTTP - Web UI)"
+      yantra.description: "Bitcoin wallet interface with focus on privacy and security"
+      yantra.website: "https://specter.solutions/desktop"
+    ports:
+      - "25441"
+    restart: unless-stopped
