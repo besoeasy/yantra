@@ -14,19 +14,6 @@ We created Yantra as a **faster, lighter, and more transparent** alternative to 
 - **Open & transparent** - Simple codebase anyone can understand and modify
 - **Docker-native** - Works with standard Docker Engine for reliable container management
 
-## Supported Operating Systems
-
-Yantra runs on any Debian-based Linux distribution:
-
-- **Debian** 11, 12+
-- **Ubuntu** 20.04, 22.04, 24.04+
-- **Raspberry Pi OS** (Bullseye, Bookworm)
-- **Linux Mint** 20, 21+
-- **Pop!\_OS** 20.04+
-- **Elementary OS** 6+
-- **MX Linux** 21+
-- Any other Debian derivative
-
 ## Features
 
 - 🚀 One-click app deployment
@@ -36,31 +23,9 @@ Yantra runs on any Debian-based Linux distribution:
 - � Docker-based (reliable, boot-persistent)
 - 💾 Minimal resource usage (~70MB RAM)
 
-## Installation
-
-### Prerequisites
-
-**Install Docker** (if not already installed)
+## Run Yantra with Docker
 
 ```bash
-sudo apt update
-sudo apt install -y docker.io
-
-# Add your user to the docker group (optional, for non-root usage)
-sudo usermod -aG docker $USER
-
-# Enable Docker to start on boot
-sudo systemctl enable docker
-sudo systemctl start docker
-
-# Verify Docker is running
-sudo systemctl status docker
-```
-
-### Run Yantra with Docker
-
-```bash
-# Pull and run the pre-built image
 docker run -d \
   --name yantra \
   -p 80:5252 \
@@ -68,7 +33,4 @@ docker run -d \
   -v /var/run/docker.sock:/var/run/docker.sock \
   --restart unless-stopped \
   ghcr.io/besoeasy/yantra:main
-
-# Note: The container includes Docker CLI for managing containers.
-# On some systems, you may need to run: docker pull ghcr.io/besoeasy/yantra:main --platform linux/arm64
 ```
