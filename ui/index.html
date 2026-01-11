@@ -258,61 +258,68 @@
                             <!-- Container Info Grid -->
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                                 <!-- Basic Info Card -->
-                                <div class="bg-white rounded-2xl p-6 border border-gray-200">
-                                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                                        <i class="fas fa-info-circle text-blue-500"></i>
+                                <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200 shadow-sm">
+                                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                            <i class="fas fa-info-circle text-white"></i>
+                                        </div>
                                         <span>Container Info</span>
                                     </h3>
-                                    <div class="space-y-3">
-                                        <div v-if="selectedContainer.app.description">
-                                            <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Description</div>
-                                            <div class="text-sm text-gray-900">{{ selectedContainer.app.description }}</div>
+                                    <div class="space-y-4">
+                                        <div v-if="selectedContainer.app.description" class="bg-white rounded-xl p-4 border border-gray-100">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <i class="fas fa-file-alt text-gray-400"></i>
+                                                <div class="text-xs text-gray-500 font-semibold uppercase">Description</div>
+                                            </div>
+                                            <div class="text-sm text-gray-900 leading-relaxed">{{ selectedContainer.app.description }}</div>
                                         </div>
-                                        <div v-if="selectedContainer.app.category && selectedContainer.app.category !== 'uncategorized'">
-                                            <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Category</div>
-                                            <div class="flex flex-wrap gap-1">
+                                        
+                                        <div v-if="selectedContainer.app.category && selectedContainer.app.category !== 'uncategorized'" 
+                                            class="bg-white rounded-xl p-4 border border-gray-100">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <i class="fas fa-tags text-gray-400"></i>
+                                                <div class="text-xs text-gray-500 font-semibold uppercase">Categories</div>
+                                            </div>
+                                            <div class="flex flex-wrap gap-2">
                                                 <span v-for="cat in selectedContainer.app.category.split(',')" :key="cat"
-                                                    class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-medium">
+                                                    class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs font-semibold shadow-sm">
                                                     {{ cat.trim() }}
                                                 </span>
                                             </div>
                                         </div>
-                                        <div>
-                                            <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Image</div>
-                                            <div class="text-sm font-mono text-gray-900 bg-gray-50 px-3 py-2 rounded">{{ selectedContainer.image }}</div>
+                                        
+                                        <div class="bg-white rounded-xl p-4 border border-gray-100">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <i class="fas fa-cube text-gray-400"></i>
+                                                <div class="text-xs text-gray-500 font-semibold uppercase">Docker Image</div>
+                                            </div>
+                                            <div class="text-sm font-mono text-gray-900 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200">
+                                                {{ selectedContainer.image }}
+                                            </div>
                                         </div>
-                                        <div>
-                                            <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Status</div>
-                                            <div class="text-sm text-gray-900">{{ selectedContainer.status }}</div>
+                                        
+                                        <div class="bg-white rounded-xl p-4 border border-gray-100">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <i class="fas fa-heartbeat text-gray-400"></i>
+                                                <div class="text-xs text-gray-500 font-semibold uppercase">Status</div>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <div :class="selectedContainer.state === 'running' ? 'bg-green-500' : 'bg-gray-400'" 
+                                                    class="w-3 h-3 rounded-full animate-pulse"></div>
+                                                <span class="text-sm font-semibold text-gray-900 capitalize">{{ selectedContainer.status }}</span>
+                                            </div>
                                         </div>
-                                        <div v-if="selectedContainer.app.website">
-                                            <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Website</div>
+                                        
+                                        <div v-if="selectedContainer.app.website" class="bg-white rounded-xl p-4 border border-gray-100">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <i class="fas fa-globe text-gray-400"></i>
+                                                <div class="text-xs text-gray-500 font-semibold uppercase">Documentation</div>
+                                            </div>
                                             <a :href="selectedContainer.app.website" target="_blank"
-                                                class="text-sm text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1">
-                                                {{ selectedContainer.app.website }}
+                                                class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg text-sm font-semibold transition-all shadow-sm">
+                                                Visit Docs
                                                 <i class="fas fa-external-link-alt text-xs"></i>
                                             </a>
-                                        </div>
-                                        <div v-if="selectedContainer.ports && selectedContainer.ports.length > 0">
-                                            <div class="text-xs text-gray-500 font-semibold uppercase mb-2">Ports</div>
-                                            <div class="space-y-2">
-                                                <div v-for="(port, index) in selectedContainer.ports" :key="index" 
-                                                    class="flex items-center justify-between bg-purple-50 rounded-lg p-2">
-                                                    <div class="flex items-center gap-2">
-                                                        <span class="text-sm font-mono text-purple-700 font-semibold">
-                                                            {{ port.PublicPort }}:{{ port.PrivatePort }}/{{ port.Type }}
-                                                        </span>
-                                                        <span v-if="getPortLabel(port.PublicPort)" class="text-xs text-purple-600">
-                                                            - {{ getPortLabel(port.PublicPort) }}
-                                                        </span>
-                                                    </div>
-                                                    <button v-if="port.Type === 'tcp'" 
-                                                        @click="window.open(appUrl(port.PublicPort, 'http'), '_blank')"
-                                                        class="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs font-semibold transition-all">
-                                                        <i class="fas fa-external-link-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
