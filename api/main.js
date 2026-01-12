@@ -731,11 +731,17 @@ app.post("/api/deploy", async (req, res) => {
     // Write .env file if environment variables provided
     if (environment && Object.keys(environment).length > 0) {
       const envPath = path.join(appPath, ".env");
+      // Filter out empty values - don't write vars with empty/whitespace-only values
       const envContent = Object.entries(environment)
+        .filter(([key, value]) => value !== null && value !== undefined && String(value).trim() !== '')
         .map(([key, value]) => `${key}=${value}`)
         .join("\n");
-      await fsPromises.writeFile(envPath, envContent);
-      log("info", `🚀 [POST /api/deploy] Created .env file with custom variables`);
+      
+      // Only create .env file if there are non-empty variables
+      if (envContent.length > 0) {
+        await fsPromises.writeFile(envPath, envContent);
+        log("info", `🚀 [POST /api/deploy] Created .env file with custom variables`);
+      }
     }
 
     // Add expiration label if temporary installation
