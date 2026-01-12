@@ -1,0 +1,21 @@
+services:
+  strfry:
+    image: ghcr.io/hoytech/strfry:latest
+    container_name: strfry-relay
+    restart: unless-stopped
+    ports:
+      - "7777"
+    volumes:
+      - strfry-data:/app/strfry-db
+      - ./strfry.conf:/etc/strfry.conf:ro
+    command: relay --config /etc/strfry.conf
+    labels:
+      yantra.name: "Strfry"
+      yantra.logo: "QmNR4kyKJs3sZwdRJZ47z5feUWn6S8aJw31wzZrXK2fVcD"
+      yantra.category: "network,social"
+      yantra.port: "7777 (HTTP - Web UI)"
+      yantra.description: "High-performance nostr relay with LMDB storage"
+      yantra.website: "https://github.com/hoytech/strfry"
+
+volumes:
+  strfry-data:
