@@ -66,7 +66,7 @@ Install [Transmission](apps/transmission), download your files, remove it.
 Install [SAMBA](apps/samba) or [Dufs](apps/dufs), share files, remove it.
 
 **6. Browse privately with TOR?**  
-Install [TOR Browser](apps/), use it, remove it when done.
+Install [TOR Browser](apps/tor), use it, remove it when done.
 
 **7. Need a tracking-free search engine?**  
 Install [SearXNG](apps/searxng), search privately, remove it.
