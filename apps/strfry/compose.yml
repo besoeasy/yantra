@@ -7,7 +7,9 @@ services:
       - "7777"
     volumes:
       - strfry-data:/app/strfry-db
-      - ./strfry.conf:/etc/strfry.conf:ro
+    configs:
+      - source: strfry-config
+        target: /etc/strfry.conf
     command: relay --config /etc/strfry.conf
     labels:
       yantra.name: "Strfry"
@@ -16,6 +18,85 @@ services:
       yantra.port: "7777 (HTTP - Web UI)"
       yantra.description: "High-performance nostr relay with LMDB storage"
       yantra.website: "https://github.com/hoytech/strfry"
+
+configs:
+  strfry-config:
+    content: |
+      ##
+      ## strfry config
+      ##
+
+      # Directory that contains the strfry LMDB database (restart required)
+      db = "./strfry-db/"
+
+      dbParams {
+          maxreaders = 256
+          mapsize = 10995116277760
+          noReadAhead = false
+      }
+
+      events {
+          maxEventSize = 65536
+          rejectEventsNewerThanSeconds = 900
+          rejectEventsOlderThanSeconds = 94608000
+          rejectEphemeralEventsOlderThanSeconds = 60
+          ephemeralEventsLifetimeSeconds = 300
+          maxNumTags = 2000
+          maxTagValSize = 1024
+      }
+
+      relay {
+          bind = "0.0.0.0"
+          port = 7777
+          nofiles = 1000000
+          realIpHeader = ""
+
+          info {
+              name = "Strfry Relay"
+              description = "A high-performance nostr relay powered by strfry"
+              pubkey = ""
+              contact = "https://github.com/besoeasy/Yantra"
+              icon = "https://github.com/hoytech/strfry/raw/master/docs/strfry.svg"
+              nips = ""
+          }
+
+          maxWebsocketPayloadSize = 131072
+          maxReqFilterSize = 200
+          autoPingSeconds = 55
+          enableTcpKeepalive = false
+          queryTimesliceBudgetMicroseconds = 10000
+          maxFilterLimit = 500
+          maxSubsPerConnection = 20
+
+          writePolicy {
+              plugin = ""
+          }
+
+          compression {
+              enabled = true
+              slidingWindow = true
+          }
+
+          logging {
+              dumpInAll = false
+              dumpInEvents = false
+              dumpInReqs = false
+              dbScanPerf = false
+              invalidEvents = true
+          }
+
+          numThreads {
+              ingester = 3
+              reqWorker = 3
+              reqMonitor = 3
+              negentropy = 2
+          }
+
+          negentropy {
+              enabled = true
+              maxSyncEvents = 1000000
+          }
+      }
 
 volumes:
   strfry-data:
