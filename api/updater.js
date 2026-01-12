@@ -19,6 +19,6 @@ setInterval(async () => {
   } catch (err) {
     console.error('[UPDATER] Update failed:', err.message);
   }
-}, 7 * 60 * 60 * 1000);
+}, 1 * 60 * 60 * 1000);
 
 export default {};
