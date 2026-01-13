@@ -7,13 +7,13 @@ services:
       - jellyfin-tvshows:/data/tvshows
       - jellyfin-movies:/data/movies
     ports:
-      - "8097:8096"
+      - "8096"
     restart: unless-stopped
     labels:
       yantra.name: "Jellyfin"
       yantra.logo: "QmacujPMRLrMPjWkCLHr3gyQniejcXtkc3LpaJ5YQqZLUD"
       yantra.category: "media,entertainment"
-      yantra.port: "8097 (HTTP - Web UI)"
+      yantra.port: "8096 (HTTP - Web UI)"
       yantra.description: "Free and open-source media server for streaming video, music, and photos"
       yantra.website: "https://jellyfin.org/"
 
