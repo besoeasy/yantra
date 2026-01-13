@@ -355,39 +355,67 @@ onUnmounted(() => {
             <span class="text-xs sm:text-sm text-gray-500 font-medium">({{ containerVolumes.length }})</span>
           </div>
           
-          <div class="grid gap-2 sm:gap-3">
-            <div v-for="volume in containerVolumes" :key="volume.name"
-              class="group bg-gradient-to-br from-purple-50 to-pink-50/20 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-purple-200 transition-all hover:shadow-md">
-              <div class="flex items-start justify-between gap-3">
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 mb-1">
-                    <Folder :size="16" class="text-purple-600 flex-shrink-0" />
-                    <h3 class="text-sm sm:text-base font-semibold text-gray-900 truncate" :title="volume.name">
-                      {{ volume.name }}
-                    </h3>
-                  </div>
-                  <div class="text-xs text-gray-600 font-mono bg-white/50 px-2 py-1 rounded border border-purple-100 mb-2 truncate" :title="volume.destination">
-                    {{ volume.destination }}
-                  </div>
-                  <div class="flex items-center gap-2">
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                    <div class="flex items-center gap-2">
+                      <Folder :size="14" class="text-purple-600" />
+                      Volume Name
+                    </div>
+                  </th>
+                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide hidden md:table-cell">
+                    Mount Path
+                  </th>
+                  <th class="text-center py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                    Access
+                  </th>
+                  <th class="text-right py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="volume in containerVolumes" :key="volume.name"
+                  class="border-b border-gray-100 hover:bg-purple-50/30 transition-colors">
+                  <td class="py-3 px-2 sm:px-4">
+                    <div class="flex flex-col gap-1">
+                      <span class="text-sm sm:text-base font-semibold text-gray-900 break-all" :title="volume.name">
+                        {{ volume.name }}
+                      </span>
+                      <span class="text-xs text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded border border-gray-200 md:hidden break-all" :title="volume.destination">
+                        {{ volume.destination }}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="py-3 px-2 sm:px-4 hidden md:table-cell">
+                    <span class="text-xs sm:text-sm text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded border border-gray-200 inline-block" :title="volume.destination">
+                      {{ volume.destination }}
+                    </span>
+                  </td>
+                  <td class="py-3 px-2 sm:px-4 text-center">
                     <span :class="[
-                      'px-2 py-0.5 rounded text-[10px] font-semibold uppercase',
+                      'px-2 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-semibold uppercase inline-block',
                       volume.rw ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                     ]">
-                      {{ volume.rw ? 'Read/Write' : 'Read Only' }}
+                      {{ volume.rw ? 'RW' : 'RO' }}
                     </span>
-                  </div>
-                </div>
-                <button
-                  @click="browseVolume(volume.name)"
-                  :disabled="browsingVolume[volume.name]"
-                  class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 disabled:from-gray-300 disabled:to-gray-400 text-white rounded-lg font-semibold shadow-md hover:shadow-lg disabled:shadow-none transition-all transform hover:scale-105 active:scale-95 disabled:transform-none disabled:cursor-not-allowed text-xs sm:text-sm flex-shrink-0">
-                  <Loader2 v-if="browsingVolume[volume.name]" :size="14" class="animate-spin" />
-                  <Eye v-else :size="14" class="sm:w-4 sm:h-4" />
-                  <span class="hidden sm:inline">Browse</span>
-                </button>
-              </div>
-            </div>
+                  </td>
+                  <td class="py-3 px-2 sm:px-4 text-right">
+                    <button
+                      @click="browseVolume(volume.name)"
+                      :disabled="browsingVolume[volume.name]"
+                      class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 disabled:from-gray-300 disabled:to-gray-400 text-white rounded-lg font-semibold shadow-md hover:shadow-lg disabled:shadow-none transition-all transform hover:scale-105 active:scale-95 disabled:transform-none disabled:cursor-not-allowed text-xs sm:text-sm">
+                      <Loader2 v-if="browsingVolume[volume.name]" :size="14" class="animate-spin" />
+                      <Eye v-else :size="14" />
+                      <span class="hidden sm:inline">Browse</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
