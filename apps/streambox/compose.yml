@@ -5,7 +5,7 @@ services:
     labels:
       yantra.name: "StreamBox"
       yantra.logo: "QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i"
-      yantra.category: "media,tools"
+      yantra.category: "media,download,utility"
       yantra.port: "6798 (HTTP - Web UI), 6799 (HTTP - DOWNLOADS), 4445 (SMB - API)"
       yantra.description: "Media streaming and sharing platform with Telegram integration"
       yantra.website: "https://github.com/besoeasy/streambox"

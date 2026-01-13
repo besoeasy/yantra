@@ -1183,23 +1183,7 @@ app.post("/api/ports/suggest", async (req, res) => {
   }
 });
 
-// GET /api/cleanup - Manually trigger cleanup of expired apps
-app.get("/api/cleanup", async (req, res) => {
-  log("info", "🧹 [GET /api/cleanup] Manual cleanup triggered");
-  try {
-    const results = await cleanupExpiredApps();
-    res.json({
-      success: true,
-      results,
-    });
-  } catch (error) {
-    log("error", "❌ [GET /api/cleanup] Error:", error.message);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
+
 
 // Catch-all route to serve Vue.js app for client-side routing (must be last)
 if (process.env.NODE_ENV === "production") {
