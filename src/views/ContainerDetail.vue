@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
-import { ArrowLeft, ExternalLink, ArrowRight, Info, FileText, Tags, Box, Activity, Globe, TrendingUp, Loader2, Settings, Terminal, RefreshCw, Trash2, Cpu, MemoryStick, HardDrive, Network, Play, Square, RotateCcw } from 'lucide-vue-next'
+import { ArrowLeft, ExternalLink, ArrowRight, Info, FileText, Tags, Box, Activity, Globe, TrendingUp, Loader2, Settings, Terminal, RefreshCw, Trash2, Cpu, MemoryStick, HardDrive, Network, Play, Square, RotateCcw, Eye, Folder } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -14,7 +14,21 @@ const containerLogs = ref([])
 const deleting = ref(false)
 const apiUrl = ref('')
 const refreshingLogs = ref(false)
+const browsingVolume = ref({})
 let statsInterval = null
+
+// Extract volume names from container mounts
+const containerVolumes = computed(() => {
+  if (!selectedContainer.value?.mounts) return []
+  
+  return selectedContainer.value.mounts
+    .filter(mount => mount.Type === 'volume')
+    .map(mount => ({
+      name: mount.Name,
+      destination: mount.Destination,
+      rw: mount.RW
+    }))
+})
 
 const getLabeledPorts = computed(() => {
   if (!selectedContainer.value || !selectedContainer.value.ports) {
@@ -176,6 +190,30 @@ async function deleteContainer() {
   }
 }
 
+async function browseVolume(volumeName) {
+  browsingVolume.value[volumeName] = true
+  try {
+    const response = await fetch(`${apiUrl.value}/api/volumes/${volumeName}/browse`, {
+      method: 'POST',
+    })
+    const data = await response.json()
+    if (data.success) {
+      toast.success(`Volume browser started on port ${data.port}`)
+      
+      // Open browser in new tab
+      if (data.port) {
+        const url = `http://localhost:${data.port}`
+        window.open(url, '_blank')
+      }
+    }
+  } catch (error) {
+    toast.error('Failed to start volume browser')
+    console.error(error)
+  } finally {
+    delete browsingVolume.value[volumeName]
+  }
+}
+
 onMounted(async () => {
   await fetchContainerDetail()
   await Promise.all([
@@ -302,6 +340,53 @@ onUnmounted(() => {
               
               <ArrowRight :size="14" class="sm:w-[18px] sm:h-[18px] text-gray-400 group-hover:text-indigo-600 transition-all group-hover:translate-x-1" />
             </a>
+          </div>
+        </div>
+
+        <!-- Volumes Section -->
+        <div v-if="containerVolumes.length > 0" 
+          class="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 transition-all hover:shadow-xl">
+          <div class="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-md">
+              <HardDrive :size="16" class="sm:w-5 sm:h-5 text-white" />
+            </div>
+            <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Volumes</h2>
+            <span class="text-xs sm:text-sm text-gray-500 font-medium">({{ containerVolumes.length }})</span>
+          </div>
+          
+          <div class="grid gap-2 sm:gap-3">
+            <div v-for="volume in containerVolumes" :key="volume.name"
+              class="group bg-gradient-to-br from-purple-50 to-pink-50/20 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-purple-200 transition-all hover:shadow-md">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <Folder :size="16" class="text-purple-600 flex-shrink-0" />
+                    <h3 class="text-sm sm:text-base font-semibold text-gray-900 truncate" :title="volume.name">
+                      {{ volume.name }}
+                    </h3>
+                  </div>
+                  <div class="text-xs text-gray-600 font-mono bg-white/50 px-2 py-1 rounded border border-purple-100 mb-2 truncate" :title="volume.destination">
+                    {{ volume.destination }}
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span :class="[
+                      'px-2 py-0.5 rounded text-[10px] font-semibold uppercase',
+                      volume.rw ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                    ]">
+                      {{ volume.rw ? 'Read/Write' : 'Read Only' }}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  @click="browseVolume(volume.name)"
+                  :disabled="browsingVolume[volume.name]"
+                  class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 disabled:from-gray-300 disabled:to-gray-400 text-white rounded-lg font-semibold shadow-md hover:shadow-lg disabled:shadow-none transition-all transform hover:scale-105 active:scale-95 disabled:transform-none disabled:cursor-not-allowed text-xs sm:text-sm flex-shrink-0">
+                  <Loader2 v-if="browsingVolume[volume.name]" :size="14" class="animate-spin" />
+                  <Eye v-else :size="14" class="sm:w-4 sm:h-4" />
+                  <span class="hidden sm:inline">Browse</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
