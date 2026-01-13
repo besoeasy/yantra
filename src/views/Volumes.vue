@@ -121,23 +121,23 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 md:p-10 lg:p-12">
     <div class="max-w-7xl mx-auto">
       <!-- Header -->
-      <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center justify-between mb-6 md:mb-8">
         <div class="flex items-center gap-3">
-          <div class="p-3 bg-purple-600 rounded-xl">
+          <div class="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-md">
             <HardDrive class="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 class="text-3xl font-bold text-white">Volumes</h1>
-            <p class="text-gray-400 text-sm">Browse and manage Docker volumes</p>
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Volumes</h1>
+            <p class="text-sm sm:text-base text-gray-600">Browse and manage Docker volumes</p>
           </div>
         </div>
         <button
           @click="fetchVolumes"
           :disabled="loading"
-          class="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50"
+          class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 transform hover:scale-105 active:scale-95 disabled:transform-none"
         >
           <RefreshCw :class="['w-4 h-4', { 'animate-spin': loading }]" />
           Refresh
@@ -151,28 +151,28 @@ onUnmounted(() => {
 
       <!-- Empty State -->
       <div v-else-if="volumes.length === 0" class="text-center py-20">
-        <HardDrive class="w-16 h-16 text-gray-600 mx-auto mb-4" />
-        <p class="text-gray-400 text-lg">No volumes found</p>
+        <HardDrive class="w-16 h-16 text-gray-400 mx-auto mb-4" />
+        <p class="text-gray-600 text-lg font-semibold">No volumes found</p>
       </div>
 
       <!-- Volumes Grid -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <div
           v-for="volume in volumes"
           :key="volume.name"
-          class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-purple-500 transition-all duration-200"
+          class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200 hover:border-purple-300 hover:shadow-xl transition-all duration-200"
         >
           <!-- Volume Header -->
           <div class="flex items-start justify-between mb-4">
             <div class="flex-1 min-w-0">
-              <h3 class="text-lg font-semibold text-white truncate" :title="volume.name">
+              <h3 class="text-lg font-semibold text-gray-900 truncate" :title="volume.name">
                 {{ volume.name }}
               </h3>
-              <p class="text-sm text-gray-400">{{ volume.driver }}</p>
+              <p class="text-sm text-gray-600">{{ volume.driver }}</p>
             </div>
             <div
               v-if="volume.isBrowsing"
-              class="flex items-center gap-1 px-2 py-1 bg-green-600/20 text-green-400 rounded-md text-xs font-medium ml-3"
+              class="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-md text-xs font-medium ml-3 flex-shrink-0"
             >
               <Eye class="w-3 h-3" />
               Browsing
@@ -181,10 +181,10 @@ onUnmounted(() => {
 
           <!-- Volume Info -->
           <div class="space-y-2 mb-4">
-            <div class="text-xs text-gray-500">
+            <div class="text-xs text-gray-600">
               <span class="font-medium">Created:</span> {{ formatDate(volume.createdAt) }}
             </div>
-            <div class="text-xs text-gray-500 truncate" :title="volume.mountpoint">
+            <div class="text-xs text-gray-600 truncate" :title="volume.mountpoint">
               <span class="font-medium">Path:</span> {{ volume.mountpoint }}
             </div>
           </div>
@@ -194,7 +194,7 @@ onUnmounted(() => {
             <button
               @click="startBrowsing(volume.name)"
               :disabled="actionLoading[volume.name]"
-              class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 disabled:transform-none"
             >
               <Loader2 v-if="actionLoading[volume.name]" class="w-4 h-4 animate-spin" />
               <Eye v-else class="w-4 h-4" />
@@ -206,7 +206,7 @@ onUnmounted(() => {
               v-if="volumePorts[volume.name]"
               :href="`http://localhost:${volumePorts[volume.name]}`"
               target="_blank"
-              class="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200"
+              class="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95"
             >
               <ExternalLink class="w-4 h-4" />
               Open :{{ volumePorts[volume.name] }}
@@ -214,7 +214,7 @@ onUnmounted(() => {
             <button
               @click="stopBrowsing(volume.name)"
               :disabled="actionLoading[volume.name]"
-              class="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 disabled:transform-none"
             >
               <Loader2 v-if="actionLoading[volume.name]" class="w-4 h-4 animate-spin" />
               <EyeOff v-else class="w-4 h-4" />
@@ -225,8 +225,8 @@ onUnmounted(() => {
       </div>
 
       <!-- Info Box -->
-      <div class="mt-8 p-4 bg-blue-600/10 border border-blue-500/30 rounded-xl">
-        <p class="text-sm text-blue-300">
+      <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+        <p class="text-sm text-blue-800">
           <span class="font-semibold">💡 Tip:</span> Click "Browse" to start a temporary file browser for any volume. 
           The browser will open in a new tab and can be stopped when you're done.
         </p>
