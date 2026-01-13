@@ -2,11 +2,14 @@ services:
   bitcoin-knots:
     image: bitcoinknots/bitcoin:latest
     container_name: bitcoin-knots
+    environment:
+      - BITCOIN_RPC_USER=${BITCOIN_RPC_USER:-bitcoin}
+      - BITCOIN_RPC_PASSWORD=${BITCOIN_RPC_PASSWORD:-changeme}
     command:
       -printtoconsole
       -server=1
-      -rpcuser=bitcoin
-      -rpcpassword=changeme
+      -rpcuser=${BITCOIN_RPC_USER}
+      -rpcpassword=${BITCOIN_RPC_PASSWORD}
       -rpcbind=0.0.0.0
       -rpcallowip=0.0.0.0/0
     volumes:
