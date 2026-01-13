@@ -1,0 +1,13 @@
+services:
+  tor-browser:
+    image: domistyle/tor-browser
+    container_name: tor-browser
+    ports:
+      - "5800"
+    labels:
+      yantra.name: "Tor Browser"
+      yantra.description: "Privacy-focused web browser with Tor network integration"
+      yantra.category: "privacy,security"
+      yantra.port: "5800 (HTTP - Web UI)"
+      yantra.website: "https://github.com/domistyle/docker-tor-browser"
+      yantra.logo: "QmcmXdgNMubKaD6ZtezJ7W7r5BKsL4wKfjwFPcZY1kmaes"
