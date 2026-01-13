@@ -54,7 +54,7 @@ const categories = computed(() => {
       ).length;
       return { name: cat, count };
     })
-    .filter((cat) => cat.count >= 2);
+    .filter((cat) => cat.count > 2);
 });
 
 const combinedApps = computed(() => {
