@@ -1,0 +1,29 @@
+services:
+  emby:
+    image: linuxserver/emby:latest
+    container_name: emby
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - emby-config:/config
+      - emby-tvshows:/data/tvshows
+      - emby-movies:/data/movies
+    ports:
+      - "8096"
+    restart: unless-stopped
+    labels:
+      yantra.name: "Emby"
+      yantra.logo: "QmdPMq6p7sEvXuRSt9MxkDzzr7Tm6Gxii9oVXGpYWFVi3Q"
+      yantra.category: "media,entertainment"
+      yantra.port: "8096 (HTTP - Web UI)"
+      yantra.description: "Media server for streaming video, music, live TV, and photos"
+      yantra.website: "https://emby.media/"
+
+volumes:
+  emby-config:
+    name: emby-config
+  emby-tvshows:
+    name: emby-tvshows
+  emby-movies:
+    name: emby-movies

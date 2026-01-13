@@ -107,9 +107,9 @@ async function deployApp() {
         toast.success(`${app.value.name} installed successfully! 🎉`);
       }
       
-      // Wait a moment then redirect to containers
+      // Wait a moment then redirect to the specific container page
       setTimeout(() => {
-        router.push("/containers");
+        router.push(`/containers/${app.value.id}`);
       }, 1500);
     } else {
       throw new Error(result.error || "Deployment failed");
@@ -328,13 +328,13 @@ onMounted(async () => {
             <div class="flex-1">
               <h3 class="text-lg font-bold text-green-900 mb-2">Already Installed</h3>
               <p class="text-green-700 mb-4">
-                This app is already running on your system. You can manage it from the Containers page.
+                This app is already running on your system. You can manage it from the container page.
               </p>
               <button
-                @click="router.push('/containers')"
+                @click="router.push(`/containers/${app.id}`)"
                 class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold transition-all"
               >
-                <span>View Containers</span>
+                <span>View Container</span>
               </button>
             </div>
           </div>

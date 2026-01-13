@@ -14,6 +14,7 @@ const loading = ref(false);
 const appSearch = ref("");
 const apiUrl = ref("");
 const selectedCategory = ref(null);
+const installFilter = ref("all"); // "all", "installed", "not-installed"
 
 // Computed
 const installedAppIds = computed(() => {
@@ -21,15 +22,16 @@ const installedAppIds = computed(() => {
   return ids;
 });
 
-const uninstalledApps = computed(() => {
-  const uninstalled = apps.value.filter((app) => !installedAppIds.value.has(app.id));
-  return shuffleWithSeed(uninstalled).map((app) => ({
+const allAppsWithStatus = computed(() => {
+  return shuffleWithSeed(apps.value).map((app) => ({
     ...app,
-    isInstalled: false,
+    isInstalled: installedAppIds.value.has(app.id),
   }));
 });
 
-const allAppsCount = computed(() => uninstalledApps.value.length);
+const allAppsCount = computed(() => allAppsWithStatus.value.length);
+const installedCount = computed(() => allAppsWithStatus.value.filter(app => app.isInstalled).length);
+const notInstalledCount = computed(() => allAppsWithStatus.value.filter(app => !app.isInstalled).length);
 
 const categories = computed(() => {
   const categorySet = new Set();
@@ -46,7 +48,7 @@ const categories = computed(() => {
   // Calculate count for each category and filter out categories with less than 2 apps
   return categoriesArray
     .map((cat) => {
-      const count = uninstalledApps.value.filter((app) =>
+      const count = allAppsWithStatus.value.filter((app) =>
         app.category
           .split(",")
           .map((c) => c.trim())
@@ -58,7 +60,14 @@ const categories = computed(() => {
 });
 
 const combinedApps = computed(() => {
-  let combined = [...uninstalledApps.value];
+  let combined = [...allAppsWithStatus.value];
+
+  // Filter by install status
+  if (installFilter.value === "installed") {
+    combined = combined.filter((app) => app.isInstalled);
+  } else if (installFilter.value === "not-installed") {
+    combined = combined.filter((app) => !app.isInstalled);
+  }
 
   if (selectedCategory.value) {
     combined = combined.filter((app) =>
@@ -181,13 +190,38 @@ onMounted(async () => {
           </button>
         </div>
         <div class="mt-2 text-sm text-gray-500 flex items-center justify-between">
-          <span v-if="combinedApps.length < allAppsCount || selectedCategory">
+          <span v-if="combinedApps.length < allAppsCount || selectedCategory || installFilter !== 'all'">
             Showing {{ combinedApps.length }} of {{ allAppsCount }} apps
             <span v-if="selectedCategory" class="inline-flex items-center gap-1">
               in <span class="font-semibold text-blue-600">{{ selectedCategory }}</span>
               <button @click="selectedCategory = null" class="ml-1 text-gray-400 hover:text-gray-600 transition-colors" title="Clear filter">✕</button>
             </span>
           </span>
+        </div>
+
+        <!-- Install Status Filter -->
+        <div class="mt-4 flex flex-wrap gap-2">
+          <button
+            @click="installFilter = 'all'"
+            :class="installFilter === 'all' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+          >
+            All ({{ allAppsCount }})
+          </button>
+          <button
+            @click="installFilter = 'installed'"
+            :class="installFilter === 'installed' ? 'bg-green-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+          >
+            Installed ({{ installedCount }})
+          </button>
+          <button
+            @click="installFilter = 'not-installed'"
+            :class="installFilter === 'not-installed' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'"
+            class="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+          >
+            Not Installed ({{ notInstalledCount }})
+          </button>
         </div>
       </div>
 
@@ -219,9 +253,17 @@ onMounted(async () => {
             </div>
 
             <div class="flex-1 min-w-0">
-              <h3 class="font-bold text-base sm:text-lg text-gray-900 truncate mb-1 group-hover:text-blue-600 transition-colors">
-                {{ app.name }}
-              </h3>
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-bold text-base sm:text-lg text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                  {{ app.name }}
+                </h3>
+                <span
+                  v-if="app.isInstalled"
+                  class="flex-shrink-0 text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-semibold"
+                >
+                  Installed
+                </span>
+              </div>
               <div class="flex flex-wrap gap-1">
                 <span
                   v-for="(cat, idx) in app.category.split(',').slice(0, 3)"
