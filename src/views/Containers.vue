@@ -10,6 +10,15 @@ const loading = ref(false)
 const apiUrl = ref('')
 const currentTime = ref(Date.now())
 
+// Computed properties to separate volume browsers from regular containers
+const volumeBrowsers = computed(() => 
+  containers.value.filter(c => c.labels && c.labels['yantra.volume-browser'])
+)
+
+const regularContainers = computed(() => 
+  containers.value.filter(c => !c.labels || !c.labels['yantra.volume-browser'])
+)
+
 // Helper function to format time remaining
 function formatTimeRemaining(expireAt) {
   const expirationTime = parseInt(expireAt, 10) * 1000 // Convert to milliseconds
@@ -103,8 +112,16 @@ onMounted(async () => {
         <span>Browse App Store</span>
       </router-link>
     </div>
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
-      <div v-for="(container, index) in containers" :key="container.id"
+    <div v-else class="space-y-8">
+      <!-- Regular Containers Section -->
+      <div v-if="regularContainers.length > 0">
+        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <span class="text-blue-600">🐳</span>
+          Applications
+          <span class="text-sm font-normal text-gray-500">({{ regularContainers.length }})</span>
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+          <div v-for="(container, index) in regularContainers" :key="container.id"
         :style="{ animationDelay: `${index * 50}ms` }"
         @click="viewContainerDetail(container)"
         class="group bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:bg-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer animate-fadeIn touch-manipulation">
@@ -174,6 +191,67 @@ onMounted(async () => {
             View Details
           </span>
           <ArrowRight :size="14" class="sm:w-4 sm:h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+        </div>
+      </div>
+        </div>
+      </div>
+
+      <!-- Volume Browsers Section -->
+      <div v-if="volumeBrowsers.length > 0">
+        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <span class="text-purple-600">📦</span>
+          Volume Browsers
+          <span class="text-sm font-normal text-gray-500">({{ volumeBrowsers.length }})</span>
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+          <div v-for="(container, index) in volumeBrowsers" :key="container.id"
+            :style="{ animationDelay: `${index * 50}ms` }"
+            @click="viewContainerDetail(container)"
+            class="group bg-purple-50/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:bg-purple-50 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer animate-fadeIn touch-manipulation border border-purple-200">
+            
+            <!-- Header with Logo and Status -->
+            <div class="flex items-start justify-between mb-3 sm:mb-4">
+              <div class="flex items-center gap-2.5 sm:gap-3 flex-1 min-w-0">
+                <div class="relative flex-shrink-0">
+                  <span class="text-3xl sm:text-4xl">📦</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="font-bold text-gray-900 text-base sm:text-lg truncate group-hover:text-purple-600 transition-colors">
+                    {{ container.labels['yantra.volume-browser'] }}
+                  </h3>
+                  <div class="text-[10px] sm:text-xs text-gray-500 font-mono mt-0.5">
+                    Volume Browser
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Status Badge -->
+              <div class="flex-shrink-0">
+                <div :class="container.state === 'running' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'"
+                  class="px-2 sm:px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-semibold flex items-center gap-1 sm:gap-1.5">
+                  <span :class="container.state === 'running' ? 'bg-green-500' : 'bg-gray-400'" 
+                    class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full animate-pulse"></span>
+                  <span class="hidden sm:inline">{{ container.state }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Container Info -->
+            <div class="space-y-2 sm:space-y-2.5 mb-3 sm:mb-4">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] sm:text-xs text-gray-500 font-semibold">Status:</span>
+                <span class="text-[10px] sm:text-xs text-gray-700">{{ container.status }}</span>
+              </div>
+            </div>
+
+            <!-- View Details Footer -->
+            <div class="flex items-center justify-between pt-3 border-t border-purple-200">
+              <span class="text-xs sm:text-sm text-gray-500 group-hover:text-purple-600 transition-colors font-medium">
+                View Details
+              </span>
+              <ArrowRight :size="14" class="sm:w-4 sm:h-4 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
