@@ -1213,7 +1213,7 @@ app.post("/api/volumes/:name/browse", async (req, res) => {
     }
 
     // Create new browser container
-    const containerName = `yantra-volume-browser-${volumeName}`;
+    const containerName = `yantra-v-${volumeName}`;
     
     const container = await docker.createContainer({
       Image: imageName,
