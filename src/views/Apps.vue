@@ -1,7 +1,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useToast } from 'vue-toastification'
-import { Globe, FileCode } from 'lucide-vue-next'
+import { 
+  Globe, FileCode, Tag, Grid3x3, FileText, Bitcoin, Wallet, 
+  Play, Wifi, Users, Home, Brain, Code2, Package, Network,
+  Server, Cloud, Shield, Wrench, Download, HardDrive
+} from 'lucide-vue-next'
 
 const toast = useToast()
 
@@ -18,6 +22,7 @@ const apiUrl = ref('')
 const musthaveapps = ['dufs', 'watchtower']
 const temporaryInstall = ref(false)
 const expirationHours = ref(24)
+const selectedCategory = ref(null)
 
 // Computed
 const installedAppIds = computed(() => {
@@ -35,8 +40,64 @@ const uninstalledApps = computed(() => {
 
 const allAppsCount = computed(() => uninstalledApps.value.length)
 
+// Category icon mapping
+const categoryIcons = {
+  'all': Grid3x3,
+  'productivity': FileText,
+  'files & productivity': FileText,
+  'bitcoin': Bitcoin,
+  'finance': Wallet,
+  'media': Play,
+  'networking': Wifi,
+  'network': Network,
+  'social': Users,
+  'home & automation': Home,
+  'automation': Home,
+  'ai': Brain,
+  'developer tools': Code2,
+  'tools': Wrench,
+  'utility': Package,
+  'security': Shield,
+  'storage': HardDrive,
+  'cloud': Cloud,
+  'server': Server,
+  'download': Download
+}
+
+function getCategoryIcon(categoryName) {
+  const normalized = categoryName.toLowerCase()
+  return categoryIcons[normalized] || Tag
+}
+
+const categories = computed(() => {
+  const categorySet = new Set()
+  apps.value.forEach(app => {
+    if (app.category) {
+      app.category.split(',').forEach(cat => {
+        categorySet.add(cat.trim())
+      })
+    }
+  })
+  
+  const categoriesArray = Array.from(categorySet).sort()
+  
+  // Calculate count for each category
+  return categoriesArray.map(cat => {
+    const count = uninstalledApps.value.filter(app => 
+      app.category.split(',').map(c => c.trim()).includes(cat)
+    ).length
+    return { name: cat, count }
+  })
+})
+
 const combinedApps = computed(() => {
   let combined = [...uninstalledApps.value]
+  
+  if (selectedCategory.value) {
+    combined = combined.filter(app => 
+      app.category.split(',').map(c => c.trim()).includes(selectedCategory.value)
+    )
+  }
   
   if (appSearch.value) {
     const search = appSearch.value.toLowerCase()
@@ -192,37 +253,46 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="p-4 sm:p-6 md:p-10 lg:p-12">
-    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 md:mb-12 text-gray-900 tracking-tight">App Store</h2>
-    <p class="text-gray-600 mb-6 md:mb-8 -mt-3 md:-mt-8">Browse and install apps</p>
-    
-    <!-- Search Bar -->
-    <div class="mb-6 md:mb-8">
-      <div class="relative">
-        <input v-model="appSearch" type="text"
-          placeholder="Search apps..."
-          class="w-full px-4 sm:px-5 py-3 sm:py-4 pl-11 sm:pl-12 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all text-base">
-        <span class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-lg sm:text-xl">🔍</span>
-        <button v-if="appSearch" @click="appSearch = ''"
-          class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 touch-manipulation"
-          title="Clear search">
-          ✕
-        </button>
+  <div class="relative">
+    <!-- Main Content Area -->
+    <div class="lg:mr-64 xl:mr-72 p-4 sm:p-6 md:p-10 lg:p-12">
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 md:mb-12 text-gray-900 tracking-tight">App Store</h2>
+      <p class="text-gray-600 mb-6 md:mb-8 -mt-3 md:-mt-8">Browse and install apps</p>
+        
+      <!-- Search Bar -->
+      <div class="mb-6 md:mb-8">
+        <div class="relative">
+          <input v-model="appSearch" type="text"
+            placeholder="Search apps..."
+            class="w-full px-4 sm:px-5 py-3 sm:py-4 pl-11 sm:pl-12 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all text-base">
+          <span class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-lg sm:text-xl">🔍</span>
+          <button v-if="appSearch" @click="appSearch = ''"
+            class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 touch-manipulation"
+            title="Clear search">
+            ✕
+          </button>
+        </div>
+        <div class="mt-2 text-sm text-gray-500 flex items-center justify-between">
+          <span v-if="combinedApps.length < allAppsCount || selectedCategory">
+            Showing {{ combinedApps.length }} of {{ allAppsCount }} apps
+            <span v-if="selectedCategory" class="inline-flex items-center gap-1">
+              in <span class="font-semibold text-blue-600">{{ selectedCategory }}</span>
+              <button @click="selectedCategory = null" 
+                class="ml-1 text-gray-400 hover:text-gray-600 transition-colors" title="Clear filter">✕</button>
+            </span>
+          </span>
+        </div>
       </div>
-      <div v-if="combinedApps.length < allAppsCount" class="mt-2 text-sm text-gray-500">
-        Showing {{ combinedApps.length }} of {{ allAppsCount }} apps
-      </div>
-    </div>
 
-    <div v-if="loading" class="text-center py-16">
-      <div class="text-gray-500 font-medium">Loading apps...</div>
-    </div>
-    <div v-else-if="combinedApps.length === 0" class="text-center py-16">
-      <div class="text-5xl mb-4">🔍</div>
-      <div class="text-gray-500 font-medium">No apps found</div>
-      <div class="text-sm text-gray-400 mt-2">Try a different search term</div>
-    </div>
-    <div v-else class="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+      <div v-if="loading" class="text-center py-16">
+        <div class="text-gray-500 font-medium">Loading apps...</div>
+      </div>
+      <div v-else-if="combinedApps.length === 0" class="text-center py-16">
+        <div class="text-5xl mb-4">🔍</div>
+        <div class="text-gray-500 font-medium">No apps found</div>
+        <div class="text-sm text-gray-400 mt-2">Try a different search term</div>
+      </div>
+      <div v-else class="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       <div v-for="(app, index) in combinedApps" :key="app.id"
         :style="{ animationDelay: `${index * 30}ms` }"
         class="group bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 transition-all duration-500 ease-out hover:bg-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col animate-fadeIn">
@@ -352,5 +422,81 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+    </div>
+
+    <!-- Categories Sidebar - Fixed to right side on larger screens -->
+    <aside class="hidden lg:block fixed top-0 right-0 w-64 xl:w-72 h-screen bg-white border-l border-gray-200 z-40 overflow-y-auto custom-scrollbar">
+      <div class="p-6">
+        <div class="flex items-center gap-2 mb-6 pb-4 border-b border-gray-100">
+          <Tag :size="20" class="text-gray-900" />
+          <h3 class="text-lg font-bold text-gray-900">Categories</h3>
+        </div>
+        
+        <div class="space-y-1.5">
+          <!-- All Apps Option -->
+          <button @click="selectedCategory = null"
+            :class="selectedCategory === null ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-50'"
+            class="w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group">
+            <component :is="Grid3x3" :size="20" 
+              :class="selectedCategory === null ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'" 
+              class="flex-shrink-0 transition-colors" />
+            <span class="text-sm font-medium flex-1 text-left">All apps</span>
+            <span class="text-xs font-bold px-2 py-1 rounded-full min-w-[28px] text-center"
+              :class="selectedCategory === null ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200'">
+              {{ allAppsCount }}
+            </span>
+          </button>
+          
+          <!-- Category Buttons -->
+          <button v-for="category in categories" :key="category.name"
+            @click="selectedCategory = category.name"
+            :class="selectedCategory === category.name ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-50'"
+            class="w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group">
+            <component :is="getCategoryIcon(category.name)" :size="20"
+              :class="selectedCategory === category.name ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'"
+              class="flex-shrink-0 transition-colors" />
+            <span class="text-sm font-medium capitalize flex-1 text-left">{{ category.name }}</span>
+            <span class="text-xs font-bold px-2 py-1 rounded-full min-w-[28px] text-center"
+              :class="selectedCategory === category.name ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200'">
+              {{ category.count }}
+            </span>
+          </button>
+        </div>
+      </div>
+    </aside>
   </div>
 </template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+</style>
