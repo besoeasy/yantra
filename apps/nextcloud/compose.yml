@@ -1,0 +1,42 @@
+services:
+  nextcloud:
+    image: nextcloud:stable
+    container_name: nextcloud
+    labels:
+      yantra.name: "Nextcloud"
+      yantra.logo: "Qmbai3MPS4LMTkpQKzmTCqABJhAfhQSD58bS8MLi6cD7Kc"
+      yantra.category: "productivity,utility"
+      yantra.port: "80 (HTTP - Web UI)"
+      yantra.description: "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing"
+      yantra.website: "https://github.com/nextcloud/server"
+    ports:
+      - "80"
+    environment:
+      MYSQL_HOST: nextcloud-db
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: nextcloud_password
+      NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER:-admin}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD:-admin_password}
+      NEXTCLOUD_TRUSTED_DOMAINS: ${NEXTCLOUD_TRUSTED_DOMAINS:-localhost}
+    volumes:
+      - nextcloud_data:/var/www/html
+    depends_on:
+      - nextcloud-db
+    restart: unless-stopped
+
+  nextcloud-db:
+    image: mariadb:10.11
+    container_name: nextcloud-db
+    environment:
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: nextcloud_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - nextcloud_db:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  nextcloud_data:
+  nextcloud_db:
