@@ -68,7 +68,7 @@ Install [Transmission](apps/transmission), download your files, remove it.
 Install [SAMBA](apps/samba) or [Dufs](apps/dufs), share files, remove it.
 
 **6. Browse privately with TOR?**  
-Install [TOR Browser](apps/tor), use it, remove it when done.
+Install [TOR Browser](apps/tor-browser), use it, remove it when done.
 
 **7. Need a tracking-free search engine?**  
 Install [SearXNG](apps/searxng), search privately, remove it.
@@ -79,10 +79,12 @@ Apps run in complete isolation - no leftovers, no system clutter, no permanent i
 ## Features
 
 - 🚀 One-click app deployment
-- 📦 Container management with volume cleanup
+- ⏱️ **Temporary installations** - Set expiration time, apps auto-delete when done
+- 🔄 **Multiple instances** - Run the same app multiple times with different configurations
+- 📂 **Direct volume access** - Browse and manage app data files directly (unique to Yantra)
 - 🎨 Clean Vue.js interface
-- 🏪 Built-in app store with 6+ popular self-hosted apps
-- � Docker-based (reliable, boot-persistent)
+- 🏪 Built-in app store with popular self-hosted apps
+- 🐳 Docker-based (reliable, boot-persistent)
 - 💾 Minimal resource usage (~70MB RAM)
 
 ## Run Yantra with Docker
