@@ -1006,6 +1006,17 @@ app.post("/api/deploy", async (req, res) => {
       log("error", `❌ [POST /api/deploy] Deployment failed for ${appId}:`, error.message);
       log("error", `   stderr: ${error.stderr}`);
 
+      // Cleanup temporary compose file on error
+      if (composeFile === ".compose.tmp.yml") {
+        const tempComposePath = path.join(appPath, ".compose.tmp.yml");
+        try {
+          await $`rm -f ${tempComposePath}`;
+          log("info", `🚀 [POST /api/deploy] Cleaned up temporary compose file after error`);
+        } catch (cleanupError) {
+          log("error", `⚠️ [POST /api/deploy] Failed to cleanup temp file:`, cleanupError.message);
+        }
+      }
+
       // Check if the error is architecture-related
       const isArchError =
         error.stderr && (error.stderr.includes("no matching manifest") || error.stderr.includes("platform") || error.stderr.includes("architecture"));
