@@ -1,0 +1,40 @@
+services:
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress
+    labels:
+      yantra.name: "WordPress"
+      yantra.logo: "QmV9SwSWz5hSuJBGd8ApiXfet1GXdLHigfNwVewf59WzoC"
+      yantra.category: "cms,blog"
+      yantra.port: "80 (HTTP - Web UI)"
+      yantra.description: "Popular open-source content management system for websites and blogs"
+      yantra.website: "https://github.com/WordPress/WordPress"
+    restart: unless-stopped
+    ports:
+      - "80"
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress_data:/var/www/html
+    depends_on:
+      - wordpress-db
+
+
+  wordpress-db:
+    image: mysql:8.0
+    container_name: wordpress-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - wordpress_db:/var/lib/mysql
+
+volumes:
+  wordpress_data:
+  wordpress_db:
