@@ -1,0 +1,18 @@
+services:
+  actual-budget:
+    image: actualbudget/actual-server:latest
+    container_name: actual-budget
+    labels:
+      yantra.name: "Actual Budget"
+      yantra.category: "finance,productivity"
+      yantra.port: "5006 (HTTP - Web UI)"
+      yantra.description: "Self-hosted personal finance app with powerful budgeting and tracking features"
+      yantra.website: "https://github.com/actualbudget/actual"
+    ports:
+      - "5006"
+    volumes:
+      - actual_data:/data
+    restart: unless-stopped
+
+volumes:
+  actual_data:
