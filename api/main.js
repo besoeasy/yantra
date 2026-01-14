@@ -543,15 +543,31 @@ app.get("/api/apps", async (req, res) => {
 
           // Extract port mappings
           const portMappings = [];
-          // Match patterns like: - "8080:80", "53:53/tcp", "53:53/udp", "${PORT:-8080}:80"
-          const portRegex = /-\s*["']?(?:\$\{([A-Z_]+):-)?(\d+)(?:\})?:(\d+)(?:\/(tcp|udp))?["']?/g;
-          while ((match = portRegex.exec(composeContent)) !== null) {
+          
+          // Match fixed port mappings: - "8080:80", "53:53/tcp", "53:53/udp"
+          const fixedPortRegex = /-\s*["']?(\d+):(\d+)(?:\/(tcp|udp))?["']?/g;
+          while ((match = fixedPortRegex.exec(composeContent)) !== null) {
             portMappings.push({
-              hostPort: match[2], // The host port (left side)
-              containerPort: match[3], // The container port (right side)
-              protocol: match[4] || "tcp", // tcp/udp, defaults to tcp
-              envVar: match[1] || null, // Environment variable if used
+              hostPort: match[1], // The host port (left side)
+              containerPort: match[2], // The container port (right side)
+              protocol: match[3] || "tcp", // tcp/udp, defaults to tcp
+              envVar: null,
             });
+          }
+          
+          // Match auto-assigned ports: - "9091", - "8080"
+          const autoPortRegex = /-\s*["'](\d+)["'](?:\s|$)/g;
+          while ((match = autoPortRegex.exec(composeContent)) !== null) {
+            const port = match[1];
+            // Only add if not already in portMappings (avoid duplicates from fixed ports)
+            if (!portMappings.some(p => p.containerPort === port)) {
+              portMappings.push({
+                hostPort: port, // Auto-assigned, use same as container
+                containerPort: port,
+                protocol: "tcp", // Default to tcp for auto-assigned
+                envVar: null,
+              });
+            }
           }
 
           // Parse yantra.port to identify named ports (ports with descriptions)
@@ -665,13 +681,16 @@ app.get("/api/apps/:id/check-arch", async (req, res) => {
 app.post("/api/deploy", async (req, res) => {
   log("info", "🚀 [POST /api/deploy] Deploy request received");
   try {
-    const { appId, environment, expiresIn } = req.body;
+    const { appId, environment, expiresIn, customPortMappings } = req.body;
     log("info", `🚀 [POST /api/deploy] Deploying app: ${appId}`);
     if (environment) {
       log("info", `🚀 [POST /api/deploy] Custom environment:`, environment);
     }
     if (expiresIn) {
       log("info", `🚀 [POST /api/deploy] Temporary installation: ${expiresIn} hours`);
+    }
+    if (customPortMappings) {
+      log("info", `🚀 [POST /api/deploy] Custom port mappings:`, customPortMappings);
     }
 
     if (!appId) {
@@ -787,8 +806,66 @@ app.post("/api/deploy", async (req, res) => {
       }
     }
 
-    // Deploy using docker compose (Docker will auto-assign ports)
-    const composeFile = expiresIn ? ".compose.tmp.yml" : "compose.yml";
+    // Apply custom port mappings if provided
+    if (customPortMappings && Object.keys(customPortMappings).length > 0) {
+      log("info", `🚀 [POST /api/deploy] Applying custom port mappings`);
+      
+      // Replace port mappings in compose content
+      const lines = modifiedComposeContent.split("\n");
+      const result = [];
+      
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        
+        // Match fixed port mappings: - "8080:80", "53:53/tcp", etc.
+        const fixedPortMatch = line.match(/^(\s*-\s*["']?)(\d+):(\d+)(\/(?:tcp|udp))?["']?$/);
+        
+        if (fixedPortMatch) {
+          const indent = fixedPortMatch[1];
+          const hostPort = fixedPortMatch[2];
+          const containerPort = fixedPortMatch[3];
+          const protocol = fixedPortMatch[4] || '';
+          const protocolName = protocol.replace('/', '') || 'tcp';
+          
+          // Check if this port has a custom mapping
+          const mappingKey = `${hostPort}/${protocolName}`;
+          if (customPortMappings[mappingKey]) {
+            const newHostPort = customPortMappings[mappingKey];
+            line = `${indent}${newHostPort}:${containerPort}${protocol}`;
+            log("info", `🚀 [POST /api/deploy] Replaced fixed port ${hostPort} with ${newHostPort}`);
+          }
+        }
+        
+        // Match auto-assigned ports: - "9091"
+        const autoPortMatch = line.match(/^(\s*-\s*["'])(\d+)["']$/);
+        
+        if (autoPortMatch) {
+          const indent = autoPortMatch[1];
+          const port = autoPortMatch[2];
+          const protocolName = 'tcp'; // Auto-assigned ports default to tcp
+          
+          // Check if this port has a custom mapping
+          const mappingKey = `${port}/${protocolName}`;
+          if (customPortMappings[mappingKey]) {
+            const newHostPort = customPortMappings[mappingKey];
+            line = `${indent}${newHostPort}:${port}"`;
+            log("info", `🚀 [POST /api/deploy] Replaced auto-assigned port ${port} with ${newHostPort}`);
+          }
+        }
+        
+        result.push(line);
+      }
+      
+      modifiedComposeContent = result.join("\n");
+      
+      // Write to temporary file
+      const tempComposePath = path.join(appPath, ".compose.tmp.yml");
+      await Bun.write(tempComposePath, modifiedComposeContent);
+      log("info", `🚀 [POST /api/deploy] Created temporary compose file with custom ports`);
+    }
+
+    // Deploy using docker compose (Docker will auto-assign ports or use custom mappings)
+    const composeFile = (expiresIn || customPortMappings) ? ".compose.tmp.yml" : "compose.yml";
     const command = `docker compose -f "${composeFile}" up -d`;
     log("info", `🚀 [POST /api/deploy] Executing: ${command}`);
 
@@ -812,7 +889,7 @@ app.post("/api/deploy", async (req, res) => {
       if (stderr) log("info", `   stderr: ${stderr.trim()}`);
 
       // Cleanup temporary compose file if it exists
-      if (expiresIn) {
+      if (expiresIn || customPortMappings) {
         try {
           const tempComposePath = path.join(appPath, ".compose.tmp.yml");
           await Bun.file(tempComposePath).unlink();

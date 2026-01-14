@@ -17,6 +17,8 @@ const envValues = ref({});
 const temporaryInstall = ref(false);
 const expirationHours = ref(24);
 const apiUrl = ref("");
+const customizePorts = ref(false);
+const customPortMappings = ref({});
 
 // Computed
 const isInstalled = computed(() => {
@@ -33,6 +35,49 @@ const fixedPorts = computed(() => {
   // Filter out ports that are already described in yantra.port (isNamed)
   return app.value.ports.filter(p => !p.isNamed);
 });
+
+const allPorts = computed(() => {
+  // For customization, show ALL ports (both named and unnamed)
+  if (!app.value?.ports) return [];
+  return app.value.ports;
+});
+
+// Port conflict detection
+function checkPortConflict(hostPort, protocol) {
+  return containers.value.find(c => 
+    c.Ports?.some(p => 
+      p.PublicPort === parseInt(hostPort) && 
+      p.Type === protocol
+    )
+  );
+}
+
+function getPortStatus(port) {
+  const hostPort = customPortMappings.value[port.hostPort + '/' + port.protocol] || port.hostPort;
+  const conflict = checkPortConflict(hostPort, port.protocol);
+  
+  if (conflict) {
+    return {
+      status: 'conflict',
+      color: 'red',
+      message: `Port in use by ${conflict.Names?.[0]?.replace(/^\//, '') || 'another container'}`
+    };
+  }
+  
+  if (parseInt(hostPort) < 1024) {
+    return {
+      status: 'warning',
+      color: 'yellow',
+      message: 'Privileged port (requires root)'
+    };
+  }
+  
+  return {
+    status: 'available',
+    color: 'green',
+    message: 'Available'
+  };
+}
 
 const categories = computed(() => {
   if (!app.value?.category) return [];
@@ -85,6 +130,22 @@ async function fetchContainers() {
 async function deployApp() {
   if (deploying.value) return;
 
+  // Check for port conflicts if customizing ports
+  if (customizePorts.value) {
+    const conflicts = [];
+    allPorts.value.forEach(port => {
+      const status = getPortStatus(port);
+      if (status.status === 'conflict') {
+        conflicts.push(`${port.hostPort}/${port.protocol}: ${status.message}`);
+      }
+    });
+    
+    if (conflicts.length > 0) {
+      toast.error(`Port conflicts detected:\n${conflicts.join('\n')}`);
+      return;
+    }
+  }
+
   deploying.value = true;
   toast.info(`Deploying ${app.value.name}... This may take a few minutes.`);
 
@@ -96,6 +157,10 @@ async function deployApp() {
     
     if (temporaryInstall.value) {
       requestBody.expiresIn = expirationHours.value;
+    }
+    
+    if (customizePorts.value && Object.keys(customPortMappings.value).length > 0) {
+      requestBody.customPortMappings = customPortMappings.value;
     }
 
     const response = await fetch(`${apiUrl.value}/api/deploy`, {
@@ -312,6 +377,54 @@ onMounted(async () => {
                   <option :value="72">72 hours (3 days)</option>
                   <option :value="168">168 hours (1 week)</option>
                 </select>
+              </div>
+            </div>
+
+            <!-- Port Customization -->
+            <div v-if="allPorts.length > 0" :class="(app.environment?.length > 0 || temporaryInstall) ? 'pt-6 border-t border-gray-200' : ''">
+              <label class="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  v-model="customizePorts"
+                  class="w-5 h-5 mt-0.5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                />
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <Package :size="18" class="text-gray-600" />
+                    <span class="text-base font-semibold text-gray-700 group-hover:text-blue-600 transition-colors">
+                      Advanced: Customize Port Mappings
+                    </span>
+                  </div>
+                  <p class="text-sm text-gray-500 mt-1">
+                    ⚠️ Only modify if you understand Docker port mappings or need to resolve conflicts
+                  </p>
+                </div>
+              </label>
+
+              <div v-if="customizePorts" class="mt-4 ml-8 space-y-3 animate-fadeIn">
+                <div v-for="port in allPorts" :key="port.hostPort + '/' + port.protocol" class="space-y-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    Container Port: {{ port.containerPort }}/{{ port.protocol }}
+                  </label>
+                  <div class="flex items-center gap-3">
+                    <input
+                      v-model="customPortMappings[port.hostPort + '/' + port.protocol]"
+                      type="number"
+                      :placeholder="port.hostPort"
+                      min="1"
+                      max="65535"
+                      class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    <div :class="`w-3 h-3 rounded-full bg-${getPortStatus(port).color}-500`"></div>
+                  </div>
+                  <p class="text-xs" :class="{
+                    'text-red-600': getPortStatus(port).status === 'conflict',
+                    'text-yellow-600': getPortStatus(port).status === 'warning',
+                    'text-green-600': getPortStatus(port).status === 'available'
+                  }">
+                    {{ getPortStatus(port).message }}
+                  </p>
+                </div>
               </div>
             </div>
 
