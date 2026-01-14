@@ -116,7 +116,7 @@ onMounted(async () => {
             Watchtower Not Installed
           </h3>
           <p class="text-xs sm:text-sm text-gray-700">
-            Auto-updates are disabled. Click to install Watchtower and keep Yantra up to date automatically.
+            Install Watchtower to enable automatic updates for Yantra & Installed Apps.
           </p>
         </div>
         <div class="flex-shrink-0 hidden sm:flex items-center gap-2 text-orange-600 font-semibold text-sm group-hover:gap-3 transition-all">
