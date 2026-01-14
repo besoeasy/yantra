@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     labels:
       yantra.name: "Sshwifty"
-      yantra.logo: "QmVe73bVFRDukScD9oaptfisA21NyZAtRDLbSE74oFKcHE"
+      yantra.logo: "QmaBFPcjwrDkxbtzYFfgzw3yKzuBg3cp7WyhHfWvW7WCDs"
       yantra.category: "network,tools"
       yantra.port: "8182 (HTTP - Web UI)"
       yantra.description: "Browser-based SSH and Telnet client with a single-page web UI"
