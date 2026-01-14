@@ -4,6 +4,7 @@ services:
     container_name: speedtest-tracker
     labels:
       yantra.name: "Speedtest Tracker"
+      yantra.logo: "QmSrAjXJ6RihNVXFLxSA98S1KpMDALqKapDpdEt9ttRUbL"
       yantra.category: "network,monitoring"
       yantra.port: "80 (HTTP - Web UI)"
       yantra.description: "Self-hosted speedtest tracker to monitor internet speed over time"
