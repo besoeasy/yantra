@@ -2,6 +2,7 @@ services:
   pihole:
     image: pihole/pihole:latest
     container_name: pihole
+    entrypoint: /app/entrypoint.sh
     labels:
       yantra.name: "Pi-hole"
       yantra.logo: "QmWk56fGA1itVTPbNtCQw1kZXScPSKJqQeNf5QfqnSVhsc"
@@ -15,8 +16,9 @@ services:
       - "80"
     environment:
       - TZ=${TZ:-UTC}
-      - WEBPASSWORD=${WEBPASSWORD:-changeme}
+      - WEBPASSWORD=${WEBPASSWORD:-yantra}
     volumes:
+      - ./entrypoint.sh:/app/entrypoint.sh:ro
       - pihole_data:/etc/pihole
       - pihole_dnsmasq:/etc/dnsmasq.d
     dns:
