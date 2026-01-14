@@ -28,6 +28,12 @@ const ports = computed(() => {
   return app.value.port.split(",").map((p) => p.trim());
 });
 
+const fixedPorts = computed(() => {
+  if (!app.value?.ports) return [];
+  // Filter out ports that are already described in yantra.port (isNamed)
+  return app.value.ports.filter(p => !p.isNamed);
+});
+
 const categories = computed(() => {
   if (!app.value?.category) return [];
   return app.value.category.split(",").map((c) => c.trim());
@@ -222,19 +228,29 @@ onMounted(async () => {
         </div>
 
         <!-- Ports Information -->
-        <div v-if="ports.length > 0" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100">
+        <div v-if="ports.length > 0 || fixedPorts.length > 0" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100">
           <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Package :size="24" />
             <span>Ports & Access</span>
           </h2>
           <div class="space-y-2">
+            <!-- Named ports (from yantra.port label) -->
             <div
               v-for="(port, idx) in ports"
-              :key="idx"
+              :key="'named-' + idx"
               class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100"
             >
               <div class="w-2 h-2 rounded-full bg-green-500"></div>
               <span class="font-mono text-sm text-gray-900">{{ port }}</span>
+            </div>
+            <!-- Additional fixed ports (from compose.yml) -->
+            <div
+              v-for="(port, idx) in fixedPorts"
+              :key="'fixed-' + idx"
+              class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100"
+            >
+              <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+              <span class="font-mono text-sm text-gray-900">{{ port.hostPort }}:{{ port.containerPort }}/{{ port.protocol }}</span>
             </div>
           </div>
         </div>
