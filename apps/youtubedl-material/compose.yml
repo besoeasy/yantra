@@ -1,0 +1,26 @@
+services:
+  youtubedl-material:
+    image: tzahi12345/youtubedl-material:latest
+    container_name: youtubedl-material
+    labels:
+      yantra.name: "YoutubeDL Material"
+      yantra.category: "media,downloader"
+      yantra.port: "17442 (HTTP - Web UI)"
+      yantra.description: "Web UI for youtube-dl with subscription support and organization features"
+      yantra.website: "https://github.com/Tzahi12345/YoutubeDL-Material"
+    ports:
+      - "17442"
+    volumes:
+      - youtubedl_appdata:/app/appdata
+      - youtubedl_video:/app/video
+      - youtubedl_subscriptions:/app/subscriptions
+      - youtubedl_users:/app/users
+      - youtubedl_audio:/app/audio
+    restart: unless-stopped
+
+volumes:
+  youtubedl_appdata:
+  youtubedl_video:
+  youtubedl_subscriptions:
+  youtubedl_users:
+  youtubedl_audio:

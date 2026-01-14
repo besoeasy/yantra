@@ -1,0 +1,33 @@
+services:
+  nocodb:
+    image: nocodb/nocodb:latest
+    container_name: nocodb
+    labels:
+      yantra.name: "NocoDB"
+      yantra.category: "database,productivity"
+      yantra.port: "8080 (HTTP - Web UI)"
+      yantra.description: "Open source Airtable alternative - turn databases into smart spreadsheets"
+      yantra.website: "https://github.com/nocodb/nocodb"
+    ports:
+      - "8080"
+    environment:
+      - NC_DB=${NC_DB:-mysql2://root:password@root_db:3306/noco}
+    volumes:
+      - nocodb_data:/usr/app/data
+    depends_on:
+      - root_db
+    restart: unless-stopped
+
+  root_db:
+    image: mysql:5.7
+    container_name: nocodb_database
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-noco}
+    volumes:
+      - nocodb_db_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  nocodb_data:
+  nocodb_db_data:
