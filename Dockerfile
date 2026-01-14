@@ -17,7 +17,6 @@ COPY . .
 # Build Vue app
 RUN bun run build
 
-
 # =========================
 # Production stage
 # =========================
