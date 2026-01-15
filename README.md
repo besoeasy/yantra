@@ -5,6 +5,10 @@ It gives you ready-to-run apps — from Bitcoin nodes to file converters and pri
 
 Yantra runs alongside your existing system, not as a full operating system replacement, so you keep full control of your machine while enjoying a powerful app ecosystem.
 
+## Community
+
+Looking for a Quick chat with Yantra community here is the link to our telegram group: https://t.me/+Qu06yCZHBAU3NTk1
+
 ## Run Yantra with Docker
 
 ```bash
@@ -115,3 +119,5 @@ Apps run in complete isolation - no leftovers, no system clutter, no permanent i
 - **Access all your self-hosted apps** as if they were on your local network
 
 Simply install Tailscale on your server and devices, and you'll have secure remote access to your Yantra instance and all deployed apps without the security risks of exposing services publicly.
+
+
