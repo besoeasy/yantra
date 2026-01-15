@@ -37,7 +37,7 @@ RUN bun install --production
 COPY --from=builder /app/dist ./dist
 
 # Copy backend / app files
-COPY api/ ./api/
+COPY daemon/ ./daemon/
 COPY apps/ ./apps/
 
 # Expose port
