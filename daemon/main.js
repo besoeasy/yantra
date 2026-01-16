@@ -32,8 +32,155 @@ const containerEnvCache = new Map(); // id -> { env: string[], expiresAt: number
 const IMAGE_ARCH_CACHE_TTL_MS = 60 * 60_000;
 const imageArchCache = new Map(); // imageName -> { value: any, expiresAt: number }
 
+// Apps catalog cache (reading/parsing many compose.yml files can be expensive)
+const APPS_CACHE_TTL_MS = 60_000;
+let appsCatalogCache = {
+  value: null,
+  expiresAt: 0,
+  inFlight: null,
+};
+
 function nowMs() {
   return Date.now();
+}
+
+async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) {
+  const cacheIsValid = appsCatalogCache.value && appsCatalogCache.expiresAt > nowMs();
+  if (!forceRefresh && cacheIsValid) {
+    return appsCatalogCache.value;
+  }
+
+  if (!forceRefresh && appsCatalogCache.inFlight) {
+    return await appsCatalogCache.inFlight;
+  }
+
+  const loadPromise = (async () => {
+    const appsDir = path.join(__dirname, "..", "apps");
+    const apps = [];
+
+    const fs = await import("fs/promises");
+    const entries = await fs.readdir(appsDir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+
+      const appPath = path.join(appsDir, entry.name);
+      const composePath = path.join(appPath, "compose.yml");
+
+      try {
+        const composeFile = Bun.file(composePath);
+        if (!(await composeFile.exists())) continue;
+
+        const composeContent = await composeFile.text();
+        const labels = {};
+
+        // Format 1: yantra.name: "value"
+        const labelRegex = /yantra\.([\w-]+):\s*["'](.+?)["']/g;
+        let match;
+        while ((match = labelRegex.exec(composeContent)) !== null) {
+          labels[match[1]] = match[2];
+        }
+
+        // Format 2: - "yantra.name=value"
+        const arrayLabelRegex = /-\s*["']yantra\.([\w-]+)=(.+?)["']/g;
+        while ((match = arrayLabelRegex.exec(composeContent)) !== null) {
+          labels[match[1]] = match[2];
+        }
+
+        // Extract environment variables
+        const envVars = [];
+        const envRegex = /-\s+([A-Z_]+)=\$\{([A-Z_]+):?-?([^}]*)\}/g;
+        while ((match = envRegex.exec(composeContent)) !== null) {
+          envVars.push({
+            name: match[1],
+            envVar: match[2],
+            default: match[3] || "",
+          });
+        }
+
+        // Extract port mappings
+        const portMappings = [];
+
+        // Match fixed port mappings: - "8080:80", "53:53/tcp", "53:53/udp"
+        const fixedPortRegex = /-\s*["']?(\d+):(\d+)(?:\/(tcp|udp))?["']?/g;
+        while ((match = fixedPortRegex.exec(composeContent)) !== null) {
+          portMappings.push({
+            hostPort: match[1],
+            containerPort: match[2],
+            protocol: match[3] || "tcp",
+            envVar: null,
+          });
+        }
+
+        // Match auto-assigned ports: - "9091", - "8080"
+        const autoPortRegex = /-\s*["'](\d+)["'](?:\s|$)/g;
+        while ((match = autoPortRegex.exec(composeContent)) !== null) {
+          const port = match[1];
+          if (!portMappings.some((p) => p.containerPort === port)) {
+            portMappings.push({
+              hostPort: port,
+              containerPort: port,
+              protocol: "tcp",
+              envVar: null,
+            });
+          }
+        }
+
+        // Parse yantra.port to identify named ports
+        const namedPorts = new Set();
+        if (labels.port) {
+          const portDescRegex = /(\d+)\s*\(([^-\)]+)\s*-\s*([^)]+)\)/g;
+          let portMatch;
+          while ((portMatch = portDescRegex.exec(labels.port)) !== null) {
+            namedPorts.add(portMatch[1]);
+          }
+        }
+
+        portMappings.forEach((port) => {
+          port.isNamed = namedPorts.has(port.hostPort);
+        });
+
+        apps.push({
+          id: entry.name,
+          name: labels.name || entry.name,
+          logo: labels.logo
+            ? labels.logo.includes("://")
+              ? labels.logo
+              : `https://dweb.link/ipfs/${labels.logo}`
+            : "https://dweb.link/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i",
+          category: labels.category || "uncategorized",
+          port: labels.port || null,
+          description: labels.description || "",
+
+          website: labels.website || null,
+          docs: labels.docs || null,
+          path: appPath,
+          composePath: composePath,
+          environment: envVars,
+          ports: portMappings,
+        });
+      } catch (err) {
+        // Skip apps with missing/unreadable compose.yml
+      }
+    }
+
+    return { apps, count: apps.length };
+  })();
+
+  if (!forceRefresh) {
+    appsCatalogCache.inFlight = loadPromise;
+  }
+
+  try {
+    const value = await loadPromise;
+    appsCatalogCache.value = value;
+    appsCatalogCache.expiresAt = nowMs() + APPS_CACHE_TTL_MS;
+    return value;
+  } finally {
+    if (appsCatalogCache.inFlight === loadPromise) {
+      appsCatalogCache.inFlight = null;
+    }
+  }
 }
 
 async function mapWithConcurrency(items, limit, mapper) {
@@ -551,124 +698,11 @@ app.get("/api/containers/:id/logs", async (req, res) => {
 // GET /api/apps - List available apps from /apps directory
 app.get("/api/apps", async (req, res) => {
   try {
-    const appsDir = path.join(__dirname, "..", "apps");
-    const apps = [];
-
-    // Read all directories in /apps using Bun's native readdir
-    const fs = await import("fs/promises");
-    const entries = await fs.readdir(appsDir, { withFileTypes: true });
-
-    for (const entry of entries) {
-      if (entry.isDirectory()) {
-        const appPath = path.join(appsDir, entry.name);
-        const composePath = path.join(appPath, "compose.yml");
-
-        // Check if compose.yml exists
-        try {
-          const composeFile = Bun.file(composePath);
-          if (!(await composeFile.exists())) continue;
-
-          // Read and parse compose file to extract labels
-          const composeContent = await composeFile.text();
-          const labels = {};
-
-          // Simple regex to extract labels (works for both formats)
-          // Format 1: yantra.name: "value"
-          const labelRegex = /yantra\.([\w-]+):\s*["'](.+?)["']/g;
-          let match;
-          while ((match = labelRegex.exec(composeContent)) !== null) {
-            labels[match[1]] = match[2];
-          }
-
-          // Format 2: - "yantra.name=value"
-          const arrayLabelRegex = /-\s*["']yantra\.([\w-]+)=(.+?)["']/g;
-          while ((match = arrayLabelRegex.exec(composeContent)) !== null) {
-            labels[match[1]] = match[2];
-          }
-
-          // Extract environment variables
-          const envVars = [];
-          const envRegex = /-\s+([A-Z_]+)=\$\{([A-Z_]+):?-?([^}]*)\}/g;
-          while ((match = envRegex.exec(composeContent)) !== null) {
-            envVars.push({
-              name: match[1],
-              envVar: match[2],
-              default: match[3] || "",
-            });
-          }
-
-          // Extract port mappings
-          const portMappings = [];
-
-          // Match fixed port mappings: - "8080:80", "53:53/tcp", "53:53/udp"
-          const fixedPortRegex = /-\s*["']?(\d+):(\d+)(?:\/(tcp|udp))?["']?/g;
-          while ((match = fixedPortRegex.exec(composeContent)) !== null) {
-            portMappings.push({
-              hostPort: match[1], // The host port (left side)
-              containerPort: match[2], // The container port (right side)
-              protocol: match[3] || "tcp", // tcp/udp, defaults to tcp
-              envVar: null,
-            });
-          }
-
-          // Match auto-assigned ports: - "9091", - "8080"
-          const autoPortRegex = /-\s*["'](\d+)["'](?:\s|$)/g;
-          while ((match = autoPortRegex.exec(composeContent)) !== null) {
-            const port = match[1];
-            // Only add if not already in portMappings (avoid duplicates from fixed ports)
-            if (!portMappings.some(p => p.containerPort === port)) {
-              portMappings.push({
-                hostPort: port, // Auto-assigned, use same as container
-                containerPort: port,
-                protocol: "tcp", // Default to tcp for auto-assigned
-                envVar: null,
-              });
-            }
-          }
-
-          // Parse yantra.port to identify named ports (ports with descriptions)
-          const namedPorts = new Set();
-          if (labels.port) {
-            const portDescRegex = /(\d+)\s*\(([^-\)]+)\s*-\s*([^)]+)\)/g;
-            let portMatch;
-            while ((portMatch = portDescRegex.exec(labels.port)) !== null) {
-              namedPorts.add(portMatch[1]); // Add the port number to named ports set
-            }
-          }
-
-          // Mark which ports are named (have descriptions in yantra.port)
-          portMappings.forEach((port) => {
-            port.isNamed = namedPorts.has(port.hostPort);
-          });
-
-          apps.push({
-            id: entry.name,
-            name: labels.name || entry.name,
-            logo: labels.logo
-              ? labels.logo.includes("://")
-                ? labels.logo
-                : `https://dweb.link/ipfs/${labels.logo}`
-              : "https://dweb.link/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i",
-            category: labels.category || "uncategorized",
-            port: labels.port || null,
-            description: labels.description || "",
-
-            website: labels.website || null, // Map website label
-            docs: labels.docs || null,
-            path: appPath,
-            composePath: composePath,
-            environment: envVars,
-            ports: portMappings,
-          });
-        } catch (err) {
-          // Skip if compose.yml doesn't exist
-        }
-      }
-    }
-
+    const forceRefresh = req.query.refresh === "1" || req.query.refresh === "true";
+    const { apps, count } = await getAppsCatalogCached({ forceRefresh });
     res.json({
       success: true,
-      count: apps.length,
+      count,
       apps: apps,
     });
   } catch (error) {
