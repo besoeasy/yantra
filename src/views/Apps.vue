@@ -231,50 +231,72 @@ onUnmounted(() => {
         <div class="text-gray-500 font-medium">No apps found</div>
         <div class="text-sm text-gray-400 mt-2">Try a different search term</div>
       </div>
-      <div v-else class="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         <div
           v-for="(app, index) in combinedApps"
           :key="app.id"
           :style="{ animationDelay: `${index * 30}ms` }"
           @click="viewAppDetail(app.id)"
-          class="group bg-white/80 backdrop-blur-sm p-4 sm:p-6 transition-all duration-500 ease-out hover:bg-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col animate-fadeIn"
+          class="app-card group bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 transition-all duration-500 ease-out hover:border-gray-300 hover:shadow-2xl hover:shadow-gray-900/10 hover:-translate-y-1 active:scale-[0.98] cursor-pointer flex flex-col animate-fadeIn overflow-hidden relative"
         >
-          <div class="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-            <div class="relative flex-shrink-0">
-              <!-- Gradient effect on hover -->
-              <div class="absolute inset-0 bg-gradient-to-br from-blue-400/0 to-purple-500/0 group-hover:from-blue-400/20 group-hover:to-purple-500/20 rounded-2xl blur-xl transition-all duration-300"></div>
-              <img
-                :src="app.logo"
-                :alt="app.name"
-                class="relative w-12 h-12 sm:w-16 sm:h-16 object-contain transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-              />
-            </div>
+          <!-- Gradient background on hover -->
+          <div class="absolute inset-0 bg-gradient-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/50 group-hover:to-gray-50/30 transition-all duration-500 pointer-events-none"></div>
 
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <h3 class="font-bold text-base sm:text-lg text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+          <!-- Content wrapper -->
+          <div class="relative z-10 flex flex-col h-full">
+            <!-- Header with icon and title -->
+            <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
+              <div class="relative flex-shrink-0">
+                <img
+                  :src="app.logo"
+                  :alt="app.name"
+                  class="w-14 h-14 sm:w-16 sm:h-16 object-contain transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+                />
+              </div>
+
+              <div class="flex-1 min-w-0">
+                <h3 class="font-bold text-base sm:text-lg text-gray-900 truncate group-hover:text-gray-900 transition-colors line-clamp-2">
                   {{ app.name }}
                 </h3>
-                <span v-if="appInstanceCounts[app.id] > 1" class="flex-shrink-0 text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold">
-                  {{ appInstanceCounts[app.id] }}
-                </span>
+                <p v-if="app.status" class="text-xs text-gray-500 mt-0.5">{{ app.status }}</p>
               </div>
-              <div class="flex flex-wrap gap-1">
-                <span
-                  v-for="(cat, idx) in app.category.split(',').slice(0, 3)"
-                  :key="cat"
-                  class="text-xs px-2 py-0.5 rounded-md bg-blue-50/30 text-blue-700 font-medium"
-                >
-                  {{ cat.trim() }}
-                </span>
+
+              <!-- Instance count badge -->
+              <div v-if="appInstanceCounts[app.id] > 1" class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 border border-blue-200">
+                <span class="text-xs font-bold text-blue-700">{{ appInstanceCounts[app.id] }}</span>
               </div>
             </div>
-          </div>
 
-          <!-- Description -->
-          <p class="text-sm text-gray-600 leading-relaxed line-clamp-2">
-            {{ app.description || "No description available" }}
-          </p>
+            <!-- Description -->
+            <p class="text-sm text-gray-600 leading-relaxed line-clamp-2 mb-4 flex-grow group-hover:text-gray-700 transition-colors">
+              {{ app.description || "No description available" }}
+            </p>
+
+            <!-- Categories -->
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span
+                v-for="(cat, idx) in app.category.split(',').slice(0, 3)"
+                :key="cat"
+                class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100/60 text-gray-700 border border-gray-200/50 group-hover:bg-gray-100/80 group-hover:border-gray-300 transition-all duration-300"
+              >
+                {{ cat.trim() }}
+              </span>
+              <span
+                v-if="app.category.split(',').length > 3"
+                class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium text-gray-500 bg-gray-50/80 border border-gray-100/50 group-hover:bg-gray-100/80 group-hover:border-gray-200 transition-all duration-300"
+              >
+                +{{ app.category.split(',').length - 3 }}
+              </span>
+            </div>
+
+            <!-- Footer action indicator -->
+            <div class="flex items-center gap-2 text-xs text-gray-400 group-hover:text-gray-700 transition-colors mt-auto pt-3 border-t border-gray-100 group-hover:border-gray-200">
+              <span>View Details</span>
+              <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -368,5 +390,48 @@ onUnmounted(() => {
 
 .animate-fadeIn {
   animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* App card enhancements */
+.app-card {
+  border-radius: 1rem;
+  transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.app-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0) 0%, rgba(75, 85, 99, 0) 100%);
+  opacity: 0;
+  transition: opacity 500ms ease-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app-card:hover::before {
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.05) 0%, rgba(75, 85, 99, 0.03) 100%);
+  opacity: 1;
+}
+
+/* Smooth hover lift effect */
+.app-card:hover {
+  filter: drop-shadow(0 20px 25px -5px rgba(0, 0, 0, 0.08));
+}
+
+/* Category badge hover animation */
+.app-card span {
+  transition: all 300ms ease-out;
+}
+
+/* Icon container rotation on hover */
+.app-card:hover img {
+  filter: brightness(1.1);
+}
+
+/* Action indicator arrow */
+.app-card:hover svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 </style>
