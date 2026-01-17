@@ -206,19 +206,49 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <div v-else class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
-              <Package :size="24" class="text-gray-900" />
-            </div>
-            <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Apps</span>
+        <div v-else class="col-span-2 relative overflow-hidden bg-gradient-to-br from-green-400 via-emerald-500 to-teal-500 rounded-2xl p-8 shadow-lg transition-all duration-300 border-2 border-green-300">
+          <!-- Animated background pattern -->
+          <div class="absolute inset-0 opacity-10">
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 32px 32px;"></div>
           </div>
-          <div class="space-y-1">
-            <div class="text-5xl font-black text-gray-900 tracking-tight">
-              {{ totalApps }}
+          
+          <div class="relative">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+                  <span class="text-3xl">🔄</span>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-green-100 uppercase tracking-wider mb-1">Active & Protected</div>
+                  <div class="text-3xl font-black text-white tracking-tight">
+                    Watchtower
+                  </div>
+                </div>
+              </div>
+              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                <span class="text-2xl">✅</span>
+              </div>
             </div>
-            <div class="text-sm text-gray-600">
-              Installed applications
+            
+            <div class="space-y-3">
+              <p class="text-white/90 text-sm leading-relaxed">
+                All your apps automatically update <span class="font-bold text-white">every 3 hours</span>. Your system stays secure and up-to-date without any manual intervention.
+              </p>
+              
+              <div class="flex items-center gap-2 pt-2">
+                <div class="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg">
+                  <span class="text-white/90 text-xs">⏰</span>
+                  <span class="text-white text-xs font-semibold">Every 3 hours</span>
+                </div>
+                <div class="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg">
+                  <span class="text-white/90 text-xs">🛡️</span>
+                  <span class="text-white text-xs font-semibold">Always secure</span>
+                </div>
+                <div class="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg">
+                  <span class="text-white/90 text-xs">✨</span>
+                  <span class="text-white text-xs font-semibold">{{ totalApps }} apps</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
