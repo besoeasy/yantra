@@ -122,115 +122,136 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 md:p-10 lg:p-12">
-    <div class="max-w-7xl mx-auto">
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-6 md:mb-8">
-        <div class="flex items-center gap-3">
-          <div class="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-md">
-            <HardDrive class="w-6 h-6 text-white" />
+  <div class="p-4 sm:p-6 md:p-10 lg:p-12">
+    <div class="mb-6 md:mb-8">
+      <div class="flex items-center gap-3 mb-2">
+        <HardDrive class="w-8 h-8 text-blue-600" />
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">Docker Volumes</h2>
+      </div>
+      <p class="text-sm sm:text-base text-gray-600">Browse and manage your Docker volumes</p>
+    </div>
+    
+    <div v-if="loading && volumes.length === 0" class="text-center py-16">
+      <div class="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+      <div class="text-gray-500 font-medium">Loading volumes...</div>
+    </div>
+    <div v-else>
+      <!-- Summary Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-8 md:mb-10">
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 sm:p-6 smooth-shadow border border-blue-100 transition-all hover:shadow-lg hover:-translate-y-0.5">
+          <div class="flex items-center gap-2 mb-3">
+            <HardDrive class="w-4 h-4 text-blue-600" />
+            <div class="text-blue-700 text-xs font-bold uppercase tracking-wider">Total</div>
           </div>
-          <div>
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Volumes</h1>
-            <p class="text-sm sm:text-base text-gray-600">Browse and manage Docker volumes</p>
-          </div>
+          <div class="text-3xl sm:text-4xl font-bold text-blue-900">{{ volumes.length }}</div>
         </div>
-        <button
-          @click="fetchVolumes"
-          :disabled="loading"
-          class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 transform hover:scale-105 active:scale-95 disabled:transform-none"
-        >
-          <RefreshCw :class="['w-4 h-4', { 'animate-spin': loading }]" />
-          Refresh
-        </button>
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-5 sm:p-6 smooth-shadow border border-green-100 transition-all hover:shadow-lg hover:-translate-y-0.5">
+          <div class="flex items-center gap-2 mb-3">
+            <Eye class="w-4 h-4 text-green-600" />
+            <div class="text-green-700 text-xs font-bold uppercase tracking-wider">Browsing</div>
+          </div>
+          <div class="text-3xl sm:text-4xl font-bold text-green-900">{{ volumes.filter(v => v.isBrowsing).length }}</div>
+        </div>
+        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-5 sm:p-6 smooth-shadow border border-purple-100 transition-all hover:shadow-lg hover:-translate-y-0.5">
+          <div class="flex items-center gap-2 mb-3">
+            <HardDrive class="w-4 h-4 text-purple-600" />
+            <div class="text-purple-700 text-xs font-bold uppercase tracking-wider">Available</div>
+          </div>
+          <div class="text-3xl sm:text-4xl font-bold text-purple-900">{{ volumes.filter(v => !v.isBrowsing).length }}</div>
+        </div>
       </div>
 
-      <!-- Loading State -->
-      <div v-if="loading && volumes.length === 0" class="flex items-center justify-center py-20">
-        <Loader2 class="w-8 h-8 text-purple-500 animate-spin" />
-      </div>
-
-      <!-- Empty State -->
-      <div v-else-if="volumes.length === 0" class="text-center py-20">
-        <HardDrive class="w-16 h-16 text-gray-400 mx-auto mb-4" />
-        <p class="text-gray-600 text-lg font-semibold">No volumes found</p>
-      </div>
-
-      <!-- Volumes Grid -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div
-          v-for="volume in volumes"
-          :key="volume.name"
-          class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200 hover:border-purple-300 hover:shadow-xl transition-all duration-200"
-        >
-          <!-- Volume Header -->
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex-1 min-w-0">
-              <h3 class="text-lg font-semibold text-gray-900 truncate" :title="volume.name">
-                {{ volume.name }}
-              </h3>
-              <p class="text-sm text-gray-600">{{ volume.driver }}</p>
-            </div>
-            <div
-              v-if="volume.isBrowsing"
-              class="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-md text-xs font-medium ml-3 flex-shrink-0"
-            >
-              <Eye class="w-3 h-3" />
-              Browsing
-            </div>
+      <!-- Browsing Volumes Section -->
+      <div v-if="volumes.filter(v => v.isBrowsing).length > 0" class="mb-8 md:mb-10">
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 sm:p-5 mb-5 border border-green-200">
+          <div class="flex items-center gap-2.5">
+            <Eye class="w-5 h-5 text-green-600" />
+            <h3 class="text-lg sm:text-xl font-bold text-green-900">Currently Browsing</h3>
           </div>
-
-          <!-- Volume Info -->
-          <div class="space-y-2 mb-4">
-            <div class="text-xs text-gray-600">
-              <span class="font-medium">Created:</span> {{ formatDate(volume.createdAt) }}
+          <p class="text-xs sm:text-sm text-green-700 mt-1 ml-7">Active volume browsers that are currently open</p>
+        </div>
+        <div class="space-y-3">
+          <div v-for="volume in volumes.filter(v => v.isBrowsing)" :key="volume.name"
+            class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 hover:border-green-300 transition-all smooth-shadow hover:shadow-lg">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div class="flex-1 w-full sm:w-auto">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="p-2 bg-green-100 rounded-lg">
+                    <HardDrive class="w-5 h-5 text-green-600" />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-bold text-gray-900 text-sm sm:text-base break-all">{{ volume.name }}</div>
+                    <div class="text-xs text-gray-500 mt-0.5">{{ volume.driver }} • {{ formatDate(volume.createdAt) }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                <a
+                  v-if="volumePorts[volume.name]"
+                  :href="`http://${window.location.hostname || 'localhost'}:${volumePorts[volume.name]}`"
+                  target="_blank"
+                  class="px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl text-sm font-semibold transition-all smooth-shadow active:scale-95 touch-manipulation flex items-center gap-2 whitespace-nowrap">
+                  <ExternalLink class="w-4 h-4" />
+                  <span>Open :{{ volumePorts[volume.name] }}</span>
+                </a>
+                <button @click="stopBrowsing(volume.name)"
+                  :disabled="actionLoading[volume.name]"
+                  class="px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold transition-all smooth-shadow active:scale-95 touch-manipulation flex items-center gap-2 whitespace-nowrap">
+                  <Loader2 v-if="actionLoading[volume.name]" class="w-4 h-4 animate-spin" />
+                  <EyeOff v-else class="w-4 h-4" />
+                  <span>{{ actionLoading[volume.name] ? 'Stopping...' : 'Stop' }}</span>
+                </button>
+              </div>
             </div>
-            <div class="text-xs text-gray-600 truncate" :title="volume.mountpoint">
-              <span class="font-medium">Path:</span> {{ volume.mountpoint }}
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div v-if="!volume.isBrowsing" class="flex gap-2">
-            <button
-              @click="startBrowsing(volume.name)"
-              :disabled="actionLoading[volume.name]"
-              class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 disabled:transform-none"
-            >
-              <Loader2 v-if="actionLoading[volume.name]" class="w-4 h-4 animate-spin" />
-              <Eye v-else class="w-4 h-4" />
-              Browse
-            </button>
-          </div>
-          <div v-else class="flex flex-col gap-2">
-            <a
-              v-if="volumePorts[volume.name]"
-              :href="`http://localhost:${volumePorts[volume.name]}`"
-              target="_blank"
-              class="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95"
-            >
-              <ExternalLink class="w-4 h-4" />
-              Open :{{ volumePorts[volume.name] }}
-            </a>
-            <button
-              @click="stopBrowsing(volume.name)"
-              :disabled="actionLoading[volume.name]"
-              class="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 disabled:transform-none"
-            >
-              <Loader2 v-if="actionLoading[volume.name]" class="w-4 h-4 animate-spin" />
-              <EyeOff v-else class="w-4 h-4" />
-              Stop Browser
-            </button>
           </div>
         </div>
       </div>
 
-      <!-- Info Box -->
-      <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-        <p class="text-sm text-blue-800">
-          <span class="font-semibold">💡 Tip:</span> Click "Browse" to start a temporary file browser for any volume. 
-          The browser will open in a new tab and can be stopped when you're done.
-        </p>
+      <!-- Available Volumes Section -->
+      <div v-if="volumes.filter(v => !v.isBrowsing).length > 0">
+        <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 sm:p-5 mb-5 border border-purple-200">
+          <div class="flex items-center gap-2.5">
+            <HardDrive class="w-5 h-5 text-purple-600" />
+            <h3 class="text-lg sm:text-xl font-bold text-purple-900">Available Volumes</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-purple-700 mt-1 ml-7">Click "Browse" to start exploring these volumes</p>
+        </div>
+        <div class="space-y-3">
+          <div v-for="volume in volumes.filter(v => !v.isBrowsing)" :key="volume.name"
+            class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 hover:border-purple-300 transition-all smooth-shadow hover:shadow-lg">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div class="flex-1 w-full sm:w-auto">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="p-2 bg-purple-100 rounded-lg">
+                    <HardDrive class="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-bold text-gray-900 text-sm sm:text-base break-all">{{ volume.name }}</div>
+                    <div class="text-xs text-gray-500 mt-0.5">{{ volume.driver }} • {{ formatDate(volume.createdAt) }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                <button @click="startBrowsing(volume.name)"
+                  :disabled="actionLoading[volume.name]"
+                  class="px-4 py-2.5 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold transition-all smooth-shadow active:scale-95 touch-manipulation flex items-center gap-2 whitespace-nowrap">
+                  <Loader2 v-if="actionLoading[volume.name]" class="w-4 h-4 animate-spin" />
+                  <Eye v-else class="w-4 h-4" />
+                  <span>{{ actionLoading[volume.name] ? 'Starting...' : 'Browse' }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="volumes.length === 0"
+        class="text-center py-16 sm:py-20">
+        <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <HardDrive class="w-8 h-8 text-gray-400" />
+        </div>
+        <div class="text-gray-900 font-bold text-xl mb-2">No Volumes Found</div>
+        <div class="text-gray-500 text-sm">Docker volumes will appear here once you install apps</div>
       </div>
     </div>
   </div>
