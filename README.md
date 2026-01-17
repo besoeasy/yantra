@@ -11,6 +11,7 @@
 
 Get up and running in seconds. No complicated setup.
 
+**Using Docker:**
 ```bash
 docker run -d \
   --name yantra \
@@ -21,7 +22,18 @@ docker run -d \
   ghcr.io/besoeasy/yantra
 ```
 
-_[New to Docker? Learn how to install it here.](https://chatgpt.com/?prompt=how+to+install+docker+on+my+system+%3F)_
+**Using Podman:**
+```bash
+podman run -d \
+  --name yantra \
+  -p 80:5252 \
+  -p 443:5252 \
+  -v /run/user/$(id -u)/podman/podman.sock:/var/run/docker.sock \
+  --restart unless-stopped \
+  ghcr.io/besoeasy/yantra
+```
+
+_[New to Docker? Learn how to install it here.](https://chatgpt.com/?prompt=how+to+install+docker+on+my+system+%3F)_ | _[New to Podman? Learn how to install it here.](https://chatgpt.com/?prompt=how+to+install+podman+on+my+system+%3F)_
 
 ---
 
