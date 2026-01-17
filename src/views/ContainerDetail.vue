@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
-import { ArrowLeft, ExternalLink, ArrowRight, Info, FileText, Tags, Box, Activity, Globe, TrendingUp, Loader2, Settings, Terminal, RefreshCw, Trash2, Cpu, MemoryStick, HardDrive, Network, Play, Square, RotateCcw, Eye, Folder } from 'lucide-vue-next'
+import { ArrowLeft, ExternalLink, ArrowRight, Info, FileText, Tags, Box, Activity, Globe, TrendingUp, Loader2, Settings, Terminal, RefreshCw, Trash2, Cpu, MemoryStick, HardDrive, Network, Play, Square, RotateCcw, Eye, Folder, Lock, ShieldCheck, FolderOpen, Database, Share2 } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -175,6 +175,25 @@ function appUrl(port, protocol = 'http') {
   }
 
   return `${normalizedProtocol}://${host}:${portMatch[0]}`
+}
+
+// Get protocol icon and color
+function getProtocolInfo(protocol, labeledProtocol) {
+  const proto = (labeledProtocol || protocol || 'tcp').toLowerCase()
+  
+  const protocolMap = {
+    'http': { icon: Globe, color: 'text-blue-600', bg: 'bg-blue-100', label: 'HTTP' },
+    'https': { icon: Lock, color: 'text-green-600', bg: 'bg-green-100', label: 'HTTPS' },
+    'smb': { icon: Share2, color: 'text-purple-600', bg: 'bg-purple-100', label: 'SMB' },
+    'ftp': { icon: FolderOpen, color: 'text-orange-600', bg: 'bg-orange-100', label: 'FTP' },
+    'sftp': { icon: ShieldCheck, color: 'text-teal-600', bg: 'bg-teal-100', label: 'SFTP' },
+    'webdav': { icon: Database, color: 'text-indigo-600', bg: 'bg-indigo-100', label: 'WebDAV' },
+    'ssh': { icon: Terminal, color: 'text-gray-700', bg: 'bg-gray-100', label: 'SSH' },
+    'tcp': { icon: Network, color: 'text-blue-600', bg: 'bg-blue-100', label: 'TCP' },
+    'udp': { icon: Network, color: 'text-cyan-600', bg: 'bg-cyan-100', label: 'UDP' },
+  }
+  
+  return protocolMap[proto] || { icon: Network, color: 'text-gray-600', bg: 'bg-gray-100', label: proto.toUpperCase() }
 }
 
 function formatBytes(bytes) {
@@ -408,7 +427,7 @@ onUnmounted(() => {
                   <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide hidden lg:table-cell">
                     Description
                   </th>
-                  <th class="text-center py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide hidden md:table-cell">
                     Protocol
                   </th>
                   <th class="text-right py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
@@ -433,6 +452,12 @@ onUnmounted(() => {
                         <span v-if="mapping.label" class="px-1.5 py-0.5 bg-indigo-600 text-white text-[9px] sm:text-[10px] font-bold uppercase rounded">
                           ★
                         </span>
+                        <!-- Protocol icon on mobile -->
+                        <component 
+                          :is="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).icon" 
+                          :size="14" 
+                          :class="[getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color, 'md:hidden']" 
+                        />
                       </div>
                       <span class="text-xs text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded border border-gray-200 sm:hidden">
                         Container: {{ mapping.containerPort }}
@@ -454,10 +479,19 @@ onUnmounted(() => {
                     </span>
                     <span v-else class="text-xs text-gray-400 italic">—</span>
                   </td>
-                  <td class="py-3 px-2 sm:px-4 text-center">
-                    <span class="px-2 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-semibold uppercase inline-block bg-blue-100 text-blue-700">
-                      {{ mapping.protocol }}
-                    </span>
+                  <td class="py-3 px-2 sm:px-4 hidden md:table-cell">
+                    <div class="flex items-center gap-2">
+                      <component 
+                        :is="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).icon" 
+                        :size="16" 
+                        :class="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color" 
+                      />
+                      <span 
+                        class="px-2 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-semibold uppercase inline-block"
+                        :class="[getProtocolInfo(mapping.protocol, mapping.labeledProtocol).bg, getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color]">
+                        {{ getProtocolInfo(mapping.protocol, mapping.labeledProtocol).label }}
+                      </span>
+                    </div>
                   </td>
                   <td class="py-3 px-2 sm:px-4 text-right">
                     <a v-if="mapping.hostPort && (mapping.protocol === 'tcp')"
