@@ -403,9 +403,8 @@ onUnmounted(() => {
         </div>
 
         <!-- Ports & Access Section -->
-        <div v-if="allPortMappings.length > 0" 
-          class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 transition-shadow hover:shadow-md">
-          <div class="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
+        <div v-if="allPortMappings.length > 0" class="space-y-3 sm:space-y-4">
+          <div class="flex items-center gap-2.5 sm:gap-3">
             <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
               <Network :size="16" class="sm:w-5 sm:h-5 text-indigo-600" />
             </div>
