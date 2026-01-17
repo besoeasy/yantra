@@ -130,7 +130,7 @@ onUnmounted(() => {
 <template>
   <div class="min-h-screen bg-gray-50">
     <div class="p-4 sm:p-6 lg:p-8">
-      <div class="max-w-7xl mx-auto space-y-6">
+      <div class="mx-auto space-y-6">
         <!-- Loading State -->
         <div v-if="loading" class="text-center py-20">
           <div class="w-12 h-12 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin mx-auto mb-4"></div>
@@ -243,14 +243,10 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- Applications Section -->
-      <div v-if="regularContainers.length > 0" class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-bold text-gray-900">Applications</h2>
-          <span class="text-sm text-gray-500 font-medium">{{ regularContainers.length }} installed</span>
-        </div>
-
-        <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); grid-auto-rows: auto;">
+      <!-- All Containers Section -->
+      <div v-if="regularContainers.length > 0 || volumeBrowsers.length > 0" class="space-y-4">
+        <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); grid-auto-rows: auto;">
+          <!-- Regular Application Containers -->
           <div v-for="(container, index) in regularContainers" :key="container.id"
             :style="{ animationDelay: `${index * 50}ms` }"
             @click="viewContainerDetail(container)"
@@ -305,25 +301,29 @@ onUnmounted(() => {
               <ArrowRight :size="16" class="text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
             </div>
           </div>
-        </div>
-      </div>
 
-      <!-- Volume Browsers Section -->
-      <div v-if="volumeBrowsers.length > 0" class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-bold text-gray-900">Volume Browsers</h2>
-          <span class="text-sm text-gray-500 font-medium">{{ volumeBrowsers.length }} active</span>
-        </div>
+          <!-- Divider Card -->
+          <div v-if="volumeBrowsers.length > 0" 
+               class="col-span-full bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border-2 border-purple-200">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                  <Package :size="20" class="text-purple-600" />
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-gray-900">Open Volumes</h3>
+                  <p class="text-sm text-purple-700">💡 Safe to close - these are temporary file browsers</p>
+                </div>
+              </div>
+              <span class="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-sm font-semibold">
+                {{ volumeBrowsers.length }} active
+              </span>
+            </div>
+          </div>
 
-        <div class="p-4 bg-purple-50 border border-purple-200 rounded-xl">
-          <p class="text-sm text-purple-800">
-            <span class="font-semibold">💡 Safe to Close:</span> These are temporary file browsers. Deleting them won't affect your data.
-          </p>
-        </div>
-
-        <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); grid-auto-rows: auto;">
+          <!-- Volume Browser Containers -->
           <div v-for="(container, index) in volumeBrowsers" :key="container.id"
-            :style="{ animationDelay: `${index * 50}ms` }"
+            :style="{ animationDelay: `${(regularContainers.length + index) * 50}ms` }"
             @click="viewContainerDetail(container)"
             class="group bg-purple-50 rounded-xl p-5 border border-purple-200 hover:border-purple-300 hover:shadow-lg transition-all duration-200 cursor-pointer animate-fadeIn">
             
