@@ -437,8 +437,9 @@ onUnmounted(() => {
               </thead>
               <tbody>
                 <tr v-for="(mapping, index) in allPortMappings" :key="index"
-                  class="border-b border-gray-100 hover:bg-indigo-50/30 transition-colors"
-                  :class="{ 'bg-indigo-50/20': mapping.label }">
+                  class="border-b border-gray-100 hover:bg-indigo-50/40 transition-all duration-300 animate-in"
+                  :class="{ 'bg-indigo-50/20': mapping.label }"
+                  :style="{ animationDelay: `${Math.min(index * 50, 500)}ms` }">
                   <td class="py-3 px-2 sm:px-4">
                     <div class="flex flex-col gap-1">
                       <div class="flex items-center gap-2">
@@ -456,7 +457,7 @@ onUnmounted(() => {
                         <component 
                           :is="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).icon" 
                           :size="14" 
-                          :class="[getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color, 'md:hidden']" 
+                          :class="[getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color, 'md:hidden transition-transform hover:scale-110']" 
                         />
                       </div>
                       <span class="text-xs text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded border border-gray-200 sm:hidden">
@@ -480,14 +481,14 @@ onUnmounted(() => {
                     <span v-else class="text-xs text-gray-400 italic">—</span>
                   </td>
                   <td class="py-3 px-2 sm:px-4 hidden md:table-cell">
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 group/protocol">
                       <component 
                         :is="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).icon" 
                         :size="16" 
-                        :class="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color" 
+                        :class="[getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color, 'transition-transform group-hover/protocol:scale-110']" 
                       />
                       <span 
-                        class="px-2 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-semibold uppercase inline-block"
+                        class="px-2 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-semibold uppercase inline-block transition-all group-hover/protocol:shadow-md"
                         :class="[getProtocolInfo(mapping.protocol, mapping.labeledProtocol).bg, getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color]">
                         {{ getProtocolInfo(mapping.protocol, mapping.labeledProtocol).label }}
                       </span>
@@ -497,10 +498,10 @@ onUnmounted(() => {
                     <a v-if="mapping.hostPort && (mapping.protocol === 'tcp')"
                       :href="appUrl(mapping.hostPort, mapping.labeledProtocol || 'http')"
                       target="_blank"
-                      class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-sm hover:shadow-md transition-all active:scale-95 text-xs sm:text-sm group">
-                      <Globe :size="14" />
+                      class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-sm hover:shadow-lg transition-all duration-200 active:scale-95 hover:scale-105 text-xs sm:text-sm group">
+                      <Globe :size="14" class="transition-transform group-hover:rotate-12" />
                       <span class="hidden sm:inline">Open</span>
-                      <ExternalLink :size="12" class="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      <ExternalLink :size="12" class="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200" />
                     </a>
                     <span v-else class="text-xs text-gray-400">—</span>
                   </td>
