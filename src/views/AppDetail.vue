@@ -19,6 +19,8 @@ const expirationHours = ref(24);
 const apiUrl = ref("");
 const customizePorts = ref(false);
 const customPortMappings = ref({});
+const imageDetails = ref(null);
+const loadingImages = ref(false);
 
 // Computed
 const isInstalled = computed(() => {
@@ -135,6 +137,24 @@ async function fetchContainers() {
   }
 }
 
+async function fetchImageDetails() {
+  if (!app.value) return;
+  
+  try {
+    loadingImages.value = true;
+    const response = await fetch(`${apiUrl.value}/api/image-details/${app.value.id}`);
+    const data = await response.json();
+    
+    if (data.success) {
+      imageDetails.value = data.images;
+    }
+  } catch (error) {
+    console.error("Error fetching image details:", error);
+  } finally {
+    loadingImages.value = false;
+  }
+}
+
 async function deployApp() {
   if (deploying.value) return;
 
@@ -212,6 +232,7 @@ async function deployApp() {
 onMounted(async () => {
   loading.value = true;
   await Promise.all([fetchApp(), fetchContainers()]);
+  await fetchImageDetails();
   loading.value = false;
 });
 </script>
@@ -327,6 +348,92 @@ onMounted(async () => {
             >
               <div class="w-2 h-2 rounded-full bg-blue-500"></div>
               <span class="font-mono text-sm text-gray-900">{{ port.hostPort }}:{{ port.containerPort }}/{{ port.protocol }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Docker Image Details -->
+        <div v-if="imageDetails && imageDetails.length > 0" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100">
+          <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Package :size="24" />
+            <span>Docker Image Details</span>
+            <span v-if="imageDetails.length > 1" class="ml-auto text-sm font-normal text-gray-500">({{ imageDetails.length }} image{{ imageDetails.length !== 1 ? 's' : '' }})</span>
+          </h2>
+
+          <div v-if="loadingImages" class="text-center py-8">
+            <div class="w-8 h-8 border-3 border-gray-300 border-t-gray-900 rounded-full animate-spin mx-auto mb-2"></div>
+            <div class="text-sm text-gray-500">Loading image details...</div>
+          </div>
+
+          <div v-else class="space-y-4">
+            <div
+              v-for="(img, idx) in imageDetails"
+              :key="img.id"
+              class="border border-gray-200 rounded-xl p-5 hover:border-gray-300 hover:shadow-md transition-all"
+            >
+              <!-- Image Tags -->
+              <div class="mb-4 pb-4 border-b border-gray-100">
+                <div class="flex flex-wrap gap-2 items-center">
+                  <span class="text-xs font-semibold text-gray-500 uppercase">Tags:</span>
+                  <div class="flex flex-wrap gap-2">
+                    <span
+                      v-for="(tag, tIdx) in img.tags"
+                      :key="'tag-' + tIdx"
+                      class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono bg-gray-100 text-gray-700 border border-gray-200"
+                    >
+                      {{ tag }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Image Metadata Grid -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Created Date -->
+                <div class="flex items-start gap-3">
+                  <Clock :size="16" class="text-gray-400 flex-shrink-0 mt-1" />
+                  <div class="flex-1 min-w-0">
+                    <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Published</div>
+                    <div class="text-sm text-gray-900 font-mono">{{ img.createdDate }}</div>
+                    <div class="text-xs text-gray-500 mt-0.5">{{ img.relativeTime }}</div>
+                  </div>
+                </div>
+
+                <!-- Architecture -->
+                <div class="flex items-start gap-3">
+                  <Package :size="16" class="text-gray-400 flex-shrink-0 mt-1" />
+                  <div class="flex-1 min-w-0">
+                    <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Architecture</div>
+                    <div class="text-sm text-gray-900 font-mono">{{ img.architecture }}/{{ img.os }}</div>
+                  </div>
+                </div>
+
+                <!-- Image Size -->
+                <div class="flex items-start gap-3">
+                  <Package :size="16" class="text-gray-400 flex-shrink-0 mt-1" />
+                  <div class="flex-1 min-w-0">
+                    <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Size</div>
+                    <div class="text-sm text-gray-900 font-mono">{{ img.size }} MB</div>
+                  </div>
+                </div>
+
+                <!-- Image ID -->
+                <div class="flex items-start gap-3">
+                  <FileCode :size="16" class="text-gray-400 flex-shrink-0 mt-1" />
+                  <div class="flex-1 min-w-0">
+                    <div class="text-xs text-gray-500 font-semibold uppercase mb-1">Image ID</div>
+                    <div class="text-sm text-gray-900 font-mono">{{ img.shortId }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SHA256 Digest -->
+              <div v-if="img.digest && img.digest !== 'N/A'" class="mt-4 pt-4 border-t border-gray-100">
+                <div class="text-xs text-gray-500 font-semibold uppercase mb-2">SHA256 Digest</div>
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100 overflow-x-auto">
+                  <code class="text-xs text-gray-700 font-mono break-all">{{ img.digest }}</code>
+                </div>
+              </div>
             </div>
           </div>
         </div>

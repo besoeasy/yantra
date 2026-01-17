@@ -1169,6 +1169,83 @@ app.get("/api/images", async (req, res) => {
   }
 });
 
+// GET /api/image-details/:imageName - Get detailed metadata for specific image(s)
+app.get("/api/image-details/:imageName", async (req, res) => {
+  try {
+    const imageName = req.params.imageName;
+    const images = await docker.listImages();
+    
+    // Find images matching the name (could be multiple tags of same image)
+    const matchedImages = images.filter(img => 
+      img.RepoTags && img.RepoTags.some(tag => tag.includes(imageName))
+    );
+
+    if (matchedImages.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "Image not found",
+      });
+    }
+
+    const imageDetails = matchedImages.map(img => {
+      const image = docker.getImage(img.Id);
+      return image.inspect().then(info => {
+        const createdDate = new Date(info.Created);
+        const now = new Date();
+        const diffMs = now - createdDate;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        
+        let relativeTime = '';
+        if (diffDays === 0) {
+          const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+          relativeTime = diffHours === 0 ? 'just now' : `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+        } else if (diffDays === 1) {
+          relativeTime = 'yesterday';
+        } else if (diffDays < 30) {
+          relativeTime = `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+        } else if (diffDays < 365) {
+          const diffMonths = Math.floor(diffDays / 30);
+          relativeTime = `${diffMonths} month${diffMonths !== 1 ? 's' : ''} ago`;
+        } else {
+          const diffYears = Math.floor(diffDays / 365);
+          relativeTime = `${diffYears} year${diffYears !== 1 ? 's' : ''} ago`;
+        }
+
+        return {
+          id: img.Id,
+          shortId: img.Id.substring(7, 19),
+          tags: img.RepoTags || ['<none>:<none>'],
+          digest: info.RepoDigests ? info.RepoDigests[0] : 'N/A',
+          created: info.Created,
+          createdDate: createdDate.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+          }),
+          relativeTime: relativeTime,
+          architecture: info.Architecture || 'unknown',
+          os: info.Os || 'unknown',
+          size: (img.Size / (1024 * 1024)).toFixed(2),
+          sizeBytes: img.Size,
+        };
+      });
+    });
+
+    const details = await Promise.all(imageDetails);
+
+    res.json({
+      success: true,
+      images: details,
+    });
+  } catch (error) {
+    log("error", `❌ [GET /api/image-details] Error:`, error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
 // DELETE /api/images/:id - Remove an image
 app.delete("/api/images/:id", async (req, res) => {
   log("info", `🗑️  [DELETE /api/images/:id] Remove request for image: ${req.params.id}`);
