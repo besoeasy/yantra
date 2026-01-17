@@ -412,62 +412,66 @@ onUnmounted(() => {
             <span class="text-xs sm:text-sm text-gray-500 font-medium">({{ allPortMappings.length }})</span>
           </div>
           
-          <!-- Minimal Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
+          <!-- Grid Layout -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
             <a v-for="(mapping, index) in allPortMappings" :key="index"
               :href="mapping.hostPort && mapping.protocol === 'tcp' ? appUrl(mapping.hostPort, mapping.labeledProtocol || 'http') : undefined"
               :target="mapping.hostPort && mapping.protocol === 'tcp' ? '_blank' : undefined"
-              class="group relative bg-white rounded-lg p-3.5 transition-all duration-200 animate-in hover:shadow-sm border border-gray-100"
+              class="group relative overflow-hidden rounded-xl bg-white border transition-all duration-200 animate-in"
               :class="[
+                mapping.label ? 'border-indigo-200/60 hover:border-indigo-300' : 'border-gray-200 hover:border-gray-300',
                 mapping.hostPort && mapping.protocol === 'tcp'
-                  ? 'cursor-pointer hover:border-gray-200'
-                  : 'cursor-not-allowed opacity-50'
+                  ? 'cursor-pointer hover:shadow-md'
+                  : 'cursor-not-allowed opacity-60'
               ]"
               :style="{ animationDelay: `${Math.min(index * 30, 400)}ms` }">
               
-              <!-- Star Badge (if labeled) -->
-              <div v-if="mapping.label" class="absolute top-2 right-2">
-                <div class="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
-              </div>
+              <!-- Top colored bar -->
+              <div class="h-1" :class="mapping.label ? 'bg-linear-to-r from-indigo-500 to-purple-500' : 'bg-gray-200'"></div>
               
-              <!-- Content -->
-              <div class="flex gap-3">
-                <!-- Protocol Icon -->
-                <div
-                  class="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center"
-                  :class="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).bg"
-                >
-                  <component
-                    :is="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).icon"
-                    :size="16"
-                    :class="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color"
-                  />
-                </div>
-                
-                <!-- Info -->
-                <div class="flex-1 min-w-0">
-                  <!-- Port Number -->
-                  <div class="mb-1">
-                    <div v-if="mapping.hostPort" class="text-2xl font-bold text-gray-900 font-mono leading-none">
-                      {{ mapping.hostPort }}
+              <div class="p-4">
+                <!-- Header Row -->
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <div class="flex-1 min-w-0">
+                    <!-- Port Number -->
+                    <div class="flex items-baseline gap-2 mb-1">
+                      <span v-if="mapping.hostPort" class="text-3xl font-black text-gray-900 font-mono leading-none tracking-tighter">
+                        {{ mapping.hostPort }}
+                      </span>
+                      <span v-else class="text-base text-gray-400 font-medium">Not bound</span>
                     </div>
-                    <div v-else class="text-sm text-gray-400">Not bound</div>
+                    
+                    <!-- Container Port -->
+                    <div class="flex items-center gap-1.5 text-xs text-gray-500 font-mono">
+                      <span class="text-gray-400">→</span>
+                      <span>:{{ mapping.containerPort }}</span>
+                    </div>
                   </div>
                   
-                  <!-- Details -->
-                  <div class="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
-                    <span>→</span>
-                    <span class="font-mono">{{ mapping.containerPort }}</span>
-                    <span class="px-1.5 py-0.5 rounded text-[10px] font-medium"
+                  <!-- Protocol Badge -->
+                  <div class="flex flex-col items-end gap-1.5">
+                    <component
+                      :is="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).icon"
+                      :size="20"
+                      :class="[getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color, 'transition-transform group-hover:scale-110']"
+                    />
+                    <span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded"
                       :class="[getProtocolInfo(mapping.protocol, mapping.labeledProtocol).bg, getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color]">
                       {{ getProtocolInfo(mapping.protocol, mapping.labeledProtocol).label }}
                     </span>
                   </div>
-                  
-                  <!-- Description -->
-                  <div v-if="mapping.label" class="text-xs text-gray-600 line-clamp-2">
+                </div>
+                
+                <!-- Description -->
+                <div v-if="mapping.label" class="pt-2 border-t border-gray-100">
+                  <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed">
                     {{ mapping.label }}
-                  </div>
+                  </p>
+                </div>
+                
+                <!-- Hover overlay for clickable items -->
+                <div v-if="mapping.hostPort && mapping.protocol === 'tcp'"
+                  class="absolute inset-0 bg-linear-to-br from-indigo-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-indigo-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 transition-all duration-300 pointer-events-none">
                 </div>
               </div>
             </a>
