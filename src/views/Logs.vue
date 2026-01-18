@@ -54,7 +54,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="p-4 sm:p-6 md:p-10 lg:p-12">
+  <div class="h-screen flex flex-col p-4 sm:p-6 md:p-10 lg:p-12">
     <div class="mb-6 md:mb-8">
       <div class="flex items-center gap-3 mb-2">
         <Terminal class="w-8 h-8 text-blue-600" />
@@ -63,11 +63,11 @@ onUnmounted(() => {
       <p class="text-sm sm:text-base text-gray-600">Monitor system events and troubleshoot issues</p>
     </div>
     
-    <div v-if="loading" class="text-center py-16">
+    <div v-if="loading" class="flex-1 flex items-center justify-center text-center">
       <div class="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
       <div class="text-gray-500 font-medium">Loading logs...</div>
     </div>
-    <div v-else>
+    <div v-else class="flex-1 min-h-0 flex flex-col">
       <!-- Controls -->
       <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 smooth-shadow mb-5">
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
@@ -109,13 +109,13 @@ onUnmounted(() => {
       </div>
 
       <!-- Logs List -->
-      <div class="bg-gray-900 rounded-2xl overflow-hidden smooth-shadow border border-gray-800">
+      <div class="bg-gray-900 rounded-2xl overflow-hidden smooth-shadow border border-gray-800 flex flex-col flex-1 min-h-0">
         <div class="bg-gradient-to-r from-gray-800 to-gray-900 px-4 py-3 border-b border-gray-700 flex items-center gap-2">
           <Terminal class="w-4 h-4 text-gray-400" />
           <span class="text-sm font-semibold text-gray-300">Console Output</span>
           <span class="text-xs text-gray-500 ml-auto">{{ logsData.count || 0 }} entries</span>
         </div>
-        <div class="max-h-[500px] sm:max-h-[600px] overflow-y-auto font-mono text-xs sm:text-sm bg-gray-950">
+        <div class="flex-1 min-h-0 overflow-y-auto font-mono text-xs sm:text-sm bg-gray-950">
           <div v-if="!logsData.logs || logsData.logs.length === 0" class="p-8 sm:p-12 text-center">
             <div class="w-16 h-16 bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <FileText class="w-8 h-8 text-gray-600" />
