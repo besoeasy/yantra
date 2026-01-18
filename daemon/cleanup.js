@@ -177,93 +177,6 @@ export async function cleanupExpiredApps() {
 }
 
 /**
- * Check and remove unused Docker images older than specified days
- * @param {number} daysOld - Minimum age in days for images to be removed (default: 10)
- * @returns {Promise<Object>} Results of cleanup operation
- */
-export async function cleanupOldUnusedImages(daysOld = 10) {
-  log("info", `Starting image cleanup check for unused images older than ${daysOld} days`);
-
-  const results = {
-    checked: 0,
-    removed: [],
-    failed: [],
-    spaceReclaimed: 0,
-    timestamp: new Date().toISOString(),
-  };
-
-  try {
-    // Get all images
-    const images = await docker.listImages({ all: true });
-    results.checked = images.length;
-
-    log("info", `Checking ${images.length} images for cleanup`);
-
-    // Get all containers (including stopped ones) to determine which images are in use
-    const containers = await docker.listContainers({ all: true });
-    const imagesInUse = new Set(containers.map(c => c.ImageID));
-
-    const cutoffDate = Date.now() - (daysOld * 24 * 60 * 60 * 1000);
-
-    for (const image of images) {
-      const imageId = image.Id;
-      const imageTags = image.RepoTags || ["<none>:<none>"];
-      const imageCreated = image.Created * 1000; // Convert to milliseconds
-      const imageSize = image.Size;
-
-      // Skip if image is in use by any container
-      if (imagesInUse.has(imageId)) {
-        continue;
-      }
-
-      // Skip if image is not old enough
-      if (imageCreated > cutoffDate) {
-        continue;
-      }
-
-      const ageInDays = Math.floor((Date.now() - imageCreated) / (24 * 60 * 60 * 1000));
-
-      log("info", `Found unused old image: ${imageTags[0]} (${ageInDays} days old, ${(imageSize / 1024 / 1024).toFixed(2)} MB)`);
-
-      try {
-        // Remove the image
-        const imageObj = docker.getImage(imageId);
-        await imageObj.remove({ force: false });
-
-        log("info", `Successfully removed image: ${imageTags[0]}`);
-        results.removed.push({
-          id: imageId.substring(0, 12),
-          tags: imageTags,
-          size: imageSize,
-          ageInDays: ageInDays,
-          createdAt: new Date(imageCreated).toISOString(),
-        });
-        results.spaceReclaimed += imageSize;
-
-      } catch (error) {
-        log("error", `Failed to remove image ${imageTags[0]}: ${error.message}`);
-        results.failed.push({
-          id: imageId.substring(0, 12),
-          tags: imageTags,
-          error: error.message,
-        });
-      }
-    }
-
-    const spaceReclaimedMB = (results.spaceReclaimed / 1024 / 1024).toFixed(2);
-    log("info", `Image cleanup complete: ${results.removed.length} removed (${spaceReclaimedMB} MB reclaimed), ${results.failed.length} failed`);
-    return results;
-
-  } catch (error) {
-    log("error", `Image cleanup check failed: ${error.message}`);
-    return {
-      ...results,
-      error: error.message,
-    };
-  }
-}
-
-/**
  * Start automatic cleanup scheduler
  * @param {number} intervalMinutes - How often to run cleanup (default: 60 minutes)
  */
@@ -272,16 +185,10 @@ export function startCleanupScheduler(intervalMinutes = 60) {
 
   log("info", `Starting cleanup scheduler (runs every ${intervalMinutes} minutes)`);
 
-  // Then run on interval
+  // Run cleanup on interval
   setInterval(() => {
-    if (Math.random() > 0.2) {
-      cleanupExpiredApps().catch((err) => {
-        log("error", `Scheduled cleanup failed: ${err.message}`);
-      });
-    } else {
-      cleanupOldUnusedImages().catch((err) => {
-        log("error", `Scheduled image cleanup failed: ${err.message}`);
-      });
-    }
+    cleanupExpiredApps().catch((err) => {
+      log("error", `Scheduled cleanup failed: ${err.message}`);
+    });
   }, intervalMs);
 }
