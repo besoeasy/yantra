@@ -298,9 +298,7 @@ function formatCategory(category) {
 </script>
 
 <template>
-  <section
-    class="relative overflow-hidden rounded-3xl border border-gray-100/50 bg-white p-5 sm:p-6 shadow-[0_2px_20px_rgb(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
-  >
+  <section class="w-full">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
       <div class="flex items-center gap-3">
