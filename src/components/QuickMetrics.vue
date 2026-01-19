@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { Activity, Package, HardDrive, Clock, Timer, Layers, Trophy } from 'lucide-vue-next'
 import DonutChart from './charts/DonutChart.vue'
+import HorizontalBarChart from './charts/HorizontalBarChart.vue'
 
 const props = defineProps({
   containers: {
@@ -222,6 +223,37 @@ const expiringContainers = computed(() => {
   }
 })
 
+const expiringTop = computed(() => {
+  const tempContainers = props.containers
+    .filter(c => c?.labels && c.labels['yantra.expireAt'])
+    .map((c) => {
+      const expireAtSec = parseInt(c.labels['yantra.expireAt'], 10)
+      const expireAt = Number.isFinite(expireAtSec) ? expireAtSec * 1000 : null
+      if (!expireAt) return null
+      const remainingMs = expireAt - props.currentTime
+      return {
+        name: c?.app?.name || c?.name || 'Unknown',
+        expireAt,
+        remainingMs,
+        remainingLabel: formatDuration(remainingMs),
+        isExpired: remainingMs <= 0,
+        isSoon: remainingMs > 0 && remainingMs < (60 * 60 * 1000)
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.expireAt - b.expireAt)
+
+  const top = tempContainers.slice(0, 4)
+  const valuesMinutes = top.map((t) => Math.max(0, Math.round((t.remainingMs || 0) / 60000)))
+  const categories = top.map((t) => t.name)
+
+  return {
+    items: top,
+    valuesMinutes,
+    categories
+  }
+})
+
 // Category Usage Statistics
 // Counts UNIQUE apps per category (an app can belong to multiple categories).
 const categoryStats = computed(() => {
@@ -349,6 +381,26 @@ function formatCategory(category) {
     .filter(Boolean)
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ')
+}
+
+function formatDuration(ms) {
+  if (!Number.isFinite(ms)) return 'N/A'
+  if (ms <= 0) return 'Expired'
+
+  const totalMinutes = Math.floor(ms / 60000)
+  const days = Math.floor(totalMinutes / (60 * 24))
+  const hours = Math.floor((totalMinutes % (60 * 24)) / 60)
+  const minutes = totalMinutes % 60
+
+  if (days > 0) return `${days}d ${hours}h`
+  if (hours > 0) return `${hours}h ${minutes}m`
+  return `${minutes}m`
+}
+
+function formatMinutesAsDuration(minutes) {
+  if (!Number.isFinite(minutes)) return 'N/A'
+  const ms = minutes * 60000
+  return formatDuration(ms)
 }
 </script>
 
@@ -615,6 +667,35 @@ function formatCategory(category) {
             </div>
             <div class="text-xs text-gray-600 mt-2 truncate" :title="expiringContainers.containerName">
               {{ expiringContainers.containerName }}
+            </div>
+          </div>
+
+          <div class="mt-4 rounded-2xl border border-gray-100 bg-white/60 p-4" v-if="expiringTop.items.length > 0">
+            <div class="flex items-center justify-between gap-3 mb-3">
+              <div>
+                <div class="text-sm font-bold text-gray-900">Next 4 expiring</div>
+                <div class="text-xs text-gray-500">Time remaining (minutes)</div>
+              </div>
+              <div class="text-xs font-semibold text-gray-500">Hover bars for exact</div>
+            </div>
+
+            <HorizontalBarChart
+              :values="expiringTop.valuesMinutes"
+              :categories="expiringTop.categories"
+              :height="150"
+              :colors="['#fb923c', '#f97316', '#ef4444', '#f59e0b']"
+              :value-formatter="formatMinutesAsDuration"
+            />
+
+            <div class="mt-3 space-y-2">
+              <div v-for="item in expiringTop.items" :key="item.name" class="flex items-center justify-between gap-3 text-xs">
+                <div class="min-w-0">
+                  <div class="text-gray-700 font-semibold truncate" :title="item.name">{{ item.name }}</div>
+                </div>
+                <div class="shrink-0 font-bold tabular-nums" :class="item.isSoon ? 'text-red-600' : item.isExpired ? 'text-gray-400' : 'text-orange-700'">
+                  {{ item.remainingLabel }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
