@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { Store, ArrowRight, Package, HardDrive } from "lucide-vue-next";
 import SystemCleaner from "../components/SystemCleaner.vue";
 import WatchtowerAlert from "../components/WatchtowerAlert.vue";
+import GreetingCard from "../components/home/GreetingCard.vue";
 import AppCategoriesCard from "../components/quick-metrics/AppCategoriesCard.vue";
 import BiggestStorageCard from "../components/quick-metrics/BiggestStorageCard.vue";
 import DiskUsageCard from "../components/quick-metrics/DiskUsageCard.vue";
@@ -80,13 +81,6 @@ const otherContainers = computed(() => {
   });
 });
 
-// Greeting
-const greeting = computed(() => {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
-});
 
 // Helper function to format time remaining
 function formatTimeRemaining(expireAt) {
@@ -235,28 +229,7 @@ onUnmounted(() => {
           <!-- Dashboard Cards -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
             <div class="lg:col-span-2 xl:col-span-2">
-              <div class="group relative rounded-2xl border border-gray-100 bg-white p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
-                <div
-                  class="absolute inset-0 rounded-2xl bg-linear-to-br from-blue-50/0 to-purple-50/0 group-hover:from-blue-50/70 group-hover:to-purple-50/30 transition-all duration-300 pointer-events-none"
-                ></div>
-                <div class="relative z-10">
-                  <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
-                    {{ greeting }}
-                  </h1>
-                  <p class="text-sm sm:text-base text-gray-500 font-medium mt-1">Here's what's happening with your system today.</p>
-
-                  <div class="mt-5 grid grid-cols-2 gap-3">
-                    <div class="rounded-2xl border border-gray-100 bg-white/70 px-4 py-3">
-                      <div class="text-3xl font-extrabold text-gray-900 leading-none tabular-nums">{{ runningApps }}</div>
-                      <div class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mt-1">Running Apps</div>
-                    </div>
-                    <div class="rounded-2xl border border-gray-100 bg-white/70 px-4 py-3">
-                      <div class="text-3xl font-extrabold text-gray-900 leading-none tabular-nums">{{ totalVolumes }}</div>
-                      <div class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mt-1">Volumes</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <GreetingCard :running-apps="runningApps" :total-volumes="totalVolumes" />
             </div>
 
             <div v-if="reclaimableStats.show" class="h-full">
