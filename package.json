@@ -4,7 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "DOCKER_SOCKET=/run/user/$(id -u)/podman/podman.sock bun run server",
     "server": "bun daemon/main.js",
     "dev": "vite",
     "build": "vite build",
