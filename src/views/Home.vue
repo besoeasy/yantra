@@ -296,7 +296,7 @@ onUnmounted(() => {
               <span class="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-bold">{{ volumeContainers.length }}</span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
               <div
                 v-for="(container, index) in volumeContainers"
                 :key="container.id"
@@ -342,7 +342,7 @@ onUnmounted(() => {
               <span class="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-bold">{{ yantraContainers.length }}</span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
               <div
                 v-for="(container, index) in yantraContainers"
                 :key="container.id"
