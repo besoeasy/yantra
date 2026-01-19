@@ -222,27 +222,55 @@ const expiringContainers = computed(() => {
 })
 
 // Category Usage Statistics
+// Counts UNIQUE apps per category (an app can belong to multiple categories).
 const categoryStats = computed(() => {
-  const categoryCounts = {}
-  
-  props.containers.forEach(container => {
-    const category = container.app?.category || 'uncategorized'
-    categoryCounts[category] = (categoryCounts[category] || 0) + 1
+  // Build a unique app list from containers (avoid counting multiple containers per app)
+  const appsById = new Map()
+
+  props.containers.forEach((container) => {
+    const app = container?.app
+    if (!app) return
+    const id = app.id || app.projectId || app.name || container.id
+    if (!appsById.has(id)) {
+      appsById.set(id, app)
+    }
   })
-  
-  if (Object.keys(categoryCounts).length === 0) {
-    return { mostUsed: null, leastUsed: null, total: 0 }
+
+  const categoryToApps = new Map() // categoryKey -> { label: string, apps: Set<string> }
+
+  for (const [appId, app] of appsById.entries()) {
+    const raw = (app?.category || 'uncategorized').toString()
+    const parts = raw
+      .split(',')
+      .map((c) => c.trim())
+      .filter(Boolean)
+
+    const categories = parts.length > 0 ? parts : ['uncategorized']
+
+    for (const category of categories) {
+      const key = category.trim().toLowerCase()
+      if (!categoryToApps.has(key)) {
+        categoryToApps.set(key, { label: category, apps: new Set() })
+      }
+      categoryToApps.get(key).apps.add(appId)
+    }
   }
-  
-  // Sort categories by usage
-  const sorted = Object.entries(categoryCounts)
-    .sort((a, b) => b[1] - a[1])
-  
+
+  const entries = Array.from(categoryToApps.values()).map((v) => [v.label, v.apps.size])
+  if (entries.length === 0) {
+    return { mostUsed: null, leastUsed: null, total: 0, all: [] }
+  }
+
+  const sorted = entries.sort((a, b) => b[1] - a[1])
+  const most = sorted[0]
+  const least = sorted[sorted.length - 1]
+
   return {
-    mostUsed: sorted[0] ? { category: sorted[0][0], count: sorted[0][1] } : null,
-    leastUsed: sorted[sorted.length - 1] ? { category: sorted[sorted.length - 1][0], count: sorted[sorted.length - 1][1] } : null,
-    total: Object.keys(categoryCounts).length,
-    all: sorted
+    mostUsed: most ? { category: most[0], count: most[1] } : null,
+    leastUsed: least ? { category: least[0], count: least[1] } : null,
+    total: sorted.length,
+    all: sorted,
+    appsCount: appsById.size,
   }
 })
 
@@ -258,12 +286,14 @@ function formatBytes(bytes) {
 // Helper function to capitalize category names
 function formatCategory(category) {
   if (!category) return 'Unknown'
-  
-  // Split by both hyphens and commas, take only the first part
-  const firstCategory = category.split(/[-,]/)[0].trim()
-  
-  // Capitalize first letter
-  return firstCategory.charAt(0).toUpperCase() + firstCategory.slice(1)
+  const cleaned = String(category).trim().replace(/_/g, ' ').replace(/\s+/g, ' ')
+
+  // Title-case words, but keep short words readable
+  return cleaned
+    .split(/\s|-/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
 }
 </script>
 
