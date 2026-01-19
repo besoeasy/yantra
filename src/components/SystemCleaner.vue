@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { Trash2, HardDrive, AlertTriangle, RefreshCw, CheckCircle2, Package, Database } from 'lucide-vue-next'
+import { ref, computed, watch, onMounted } from 'vue'
+import { Trash2, RefreshCw, CheckCircle2, Package, Database, Sparkles, ArrowRight } from 'lucide-vue-next'
 import { useToast } from 'vue-toastification'
 
 const toast = useToast()
@@ -106,108 +106,123 @@ async function cleanSystem() {
     cleaning.value = false
   }
 }
-
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition-all hover:shadow-md h-full flex flex-col">
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center border border-orange-100">
-          <Trash2 :size="20" class="text-orange-600" />
-        </div>
-        <div>
-          <h2 class="text-lg font-bold text-gray-900 leading-tight">System Cleaner</h2>
-          <p class="text-xs text-gray-500 font-medium mt-0.5">Reclaim disk space</p>
-        </div>
-      </div>
+  <div class="relative h-full overflow-hidden group rounded-2xl transition-all duration-500 hover:-translate-y-1">
+    <!-- Animated Background Mesh -->
+    <div class="absolute inset-0 bg-gray-900">
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-cyan-600/10 to-gray-900 z-10"></div>
       
-      <button 
-        @click="fetchStats" 
-        :disabled="loading || cleaning"
-        class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-50 transition-colors"
-        title="Refresh stats"
-      >
-        <RefreshCw :size="16" :class="{ 'animate-spin': loading }" />
-      </button>
+      <!-- Animated Orbs -->
+      <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-500/30 transition-colors duration-700"></div>
+      <div class="absolute bottom-0 left-0 w-48 h-48 bg-cyan-600/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 group-hover:bg-cyan-600/30 transition-colors duration-700"></div>
     </div>
 
-    <div v-if="loading && !imageStats.totalSize" class="flex-1 flex flex-col items-center justify-center py-8">
-      <RefreshCw :size="24" class="animate-spin text-gray-300 mb-2" />
-      <span class="text-xs text-gray-400 font-medium">Analyzing...</span>
-    </div>
-
-    <div v-else class="flex-1 flex flex-col">
-      <!-- Success State -->
-      <div v-if="cleaned && lastCleanResult" class="mb-6 bg-green-50 rounded-xl p-4 border border-green-100 animate-in fade-in slide-in-from-top-2">
-        <div class="flex items-start gap-3">
-          <CheckCircle2 :size="18" class="text-green-600 mt-0.5" />
+    <!-- Content Container -->
+    <div class="relative z-20 h-full p-6 flex flex-col justify-between border border-white/5 rounded-2xl backdrop-blur-sm group-hover:border-blue-500/30 transition-colors duration-500">
+      
+      <!-- Header -->
+      <div class="flex items-start justify-between mb-6">
+        <div class="flex items-center gap-4">
+          <!-- Icon Container -->
+          <div class="relative">
+            <div class="absolute inset-0 bg-blue-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
+            <div class="relative w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
+              <Trash2 class="w-6 h-6 text-white" />
+            </div>
+          </div>
+          
           <div>
-            <h3 class="text-sm font-bold text-green-800 mb-1">Cleanup Successful!</h3>
-            <p class="text-xs text-green-700 leading-relaxed">
-              Removed {{ lastCleanResult.images.count }} images and {{ lastCleanResult.volumes.count }} volumes.
+            <h3 class="text-lg font-bold text-white mb-1 group-hover:text-blue-200 transition-colors">
+              System Cleaner
+            </h3>
+            <p class="text-sm font-medium text-gray-400 group-hover:text-gray-300 transition-colors">
+              Reclaim disk space
             </p>
-            <p class="text-xs font-bold text-green-800 mt-1.5">
-              Reclaimed: {{ formatBytes(lastCleanResult.images.spaceReclaimed + lastCleanResult.volumes.spaceReclaimed) }}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Stats Grid -->
-      <div class="grid grid-cols-2 gap-3 mb-6">
-        <!-- Images -->
-        <div class="bg-gray-50 rounded-xl p-3 border border-gray-100">
-          <div class="flex items-center gap-2 mb-2">
-            <Package :size="14" class="text-gray-500" />
-            <span class="text-xs font-semibold text-gray-600 uppercase">Images</span>
-          </div>
-          <div class="flex items-baseline gap-1">
-            <span class="text-lg font-bold text-gray-900">{{ formatBytes(imageStats.unusedSize) }}</span>
-          </div>
-          <div class="text-[10px] text-gray-500 font-medium">
-            {{ imageStats.unusedCount }} unused
           </div>
         </div>
 
-        <!-- Volumes -->
-        <div class="bg-gray-50 rounded-xl p-3 border border-gray-100">
-          <div class="flex items-center gap-2 mb-2">
-            <Database :size="14" class="text-gray-500" />
-            <span class="text-xs font-semibold text-gray-600 uppercase">Volumes</span>
-          </div>
-          <div class="flex items-baseline gap-1">
-            <span class="text-lg font-bold text-gray-900">{{ formatBytes(volumeStats.unusedSize) }}</span>
-          </div>
-          <div class="text-[10px] text-gray-500 font-medium">
-            {{ volumeStats.unusedCount }} unused
-          </div>
-        </div>
-      </div>
-
-      <!-- Action Button -->
-      <div class="mt-auto">
-        <button
-          @click="cleanSystem"
-          :disabled="!hasReclaimable || cleaning"
-          :class="[
-            'w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold transition-all active:scale-95 shadow-sm',
-            hasReclaimable 
-              ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-orange-200' 
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-          ]"
+        <button 
+          @click="emit('cleaned')" 
+          :disabled="loading || cleaning"
+          class="text-gray-500 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/10"
+          title="Refresh stats"
         >
-          <span v-if="cleaning" class="flex items-center gap-2">
-            <RefreshCw :size="18" class="animate-spin" />
-            <span>Cleaning...</span>
-          </span>
-          <span v-else-if="!hasReclaimable">
-            System is Clean ✨
-          </span>
-          <span v-else>
-            Free Up {{ totalReclaimableFormatted }}
-          </span>
+          <RefreshCw :size="16" :class="{ 'animate-spin': loading }" />
         </button>
+      </div>
+
+      <!-- Content State -->
+      <div v-if="loading && !imageStats.totalSize" class="flex-1 flex flex-col items-center justify-center py-4">
+        <RefreshCw :size="24" class="animate-spin text-blue-400 mb-2" />
+        <span class="text-xs text-blue-300 font-medium">Analyzing...</span>
+      </div>
+
+      <div v-else class="flex-1 flex flex-col">
+        <!-- Success State -->
+        <div v-if="cleaned && lastCleanResult" class="mb-4 bg-green-500/10 rounded-xl p-4 border border-green-500/20 animate-in fade-in slide-in-from-top-2">
+          <div class="flex items-start gap-3">
+            <CheckCircle2 :size="18" class="text-green-400 mt-0.5" />
+            <div>
+              <h3 class="text-sm font-bold text-green-400 mb-1">Cleanup Successful!</h3>
+              <p class="text-xs text-green-300/80 leading-relaxed">
+                Reclaimed {{ formatBytes(lastCleanResult.images.spaceReclaimed + lastCleanResult.volumes.spaceReclaimed) }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          <!-- Images -->
+          <div class="bg-white/5 rounded-xl p-3 border border-white/5 group-hover:border-white/10 transition-colors">
+            <div class="flex items-center gap-2 mb-2">
+              <Package :size="14" class="text-blue-400" />
+              <span class="text-xs font-semibold text-gray-400 uppercase">Images</span>
+            </div>
+            <div class="flex items-baseline gap-1">
+              <span class="text-lg font-bold text-white">{{ formatBytes(imageStats.unusedSize) }}</span>
+            </div>
+            <div class="text-[10px] text-gray-500 font-medium">
+              {{ imageStats.unusedCount }} unused
+            </div>
+          </div>
+
+          <!-- Volumes -->
+          <div class="bg-white/5 rounded-xl p-3 border border-white/5 group-hover:border-white/10 transition-colors">
+            <div class="flex items-center gap-2 mb-2">
+              <Database :size="14" class="text-cyan-400" />
+              <span class="text-xs font-semibold text-gray-400 uppercase">Volumes</span>
+            </div>
+            <div class="flex items-baseline gap-1">
+              <span class="text-lg font-bold text-white">{{ formatBytes(volumeStats.unusedSize) }}</span>
+            </div>
+            <div class="text-[10px] text-gray-500 font-medium">
+              {{ volumeStats.unusedCount }} unused
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="mt-auto pt-4 border-t border-white/5">
+          <button
+            @click="cleanSystem"
+            :disabled="!hasReclaimable || cleaning"
+            class="w-full group/btn relative flex items-center justify-between py-3 px-4 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+            :class="hasReclaimable ? 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white shadow-lg shadow-blue-900/20' : 'bg-white/5 text-gray-500'"
+          >
+            <div class="flex items-center gap-2">
+              <Sparkles v-if="!cleaning" class="w-4 h-4 text-blue-200" />
+              <RefreshCw v-else class="w-4 h-4 animate-spin" />
+              <span v-if="cleaning">Cleaning...</span>
+              <span v-else-if="!hasReclaimable">System Clean</span>
+              <span v-else>Free Up {{ totalReclaimableFormatted }}</span>
+            </div>
+            
+            <ArrowRight v-if="hasReclaimable && !cleaning" class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+          </button>
+        </div>
       </div>
     </div>
   </div>
