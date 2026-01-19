@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Activity, Package, HardDrive, Clock, Timer, Layers } from 'lucide-vue-next'
+import { Activity, Package, HardDrive, Clock, Timer, Layers, Trophy } from 'lucide-vue-next'
 
 const props = defineProps({
   containers: {
@@ -47,6 +47,8 @@ const containersByState = computed(() => {
 
 const totalContainers = computed(() => props.containers.length)
 
+const hasContainers = computed(() => totalContainers.value > 0)
+
 const containerStatePercentages = computed(() => {
   if (totalContainers.value === 0) return {}
   
@@ -56,6 +58,45 @@ const containerStatePercentages = computed(() => {
     paused: (containersByState.value.paused / totalContainers.value) * 100,
     exited: (containersByState.value.exited / totalContainers.value) * 100
   }
+})
+
+const containerStateRows = computed(() => {
+  const pct = containerStatePercentages.value
+
+  return [
+    {
+      key: 'running',
+      label: 'Running',
+      count: containersByState.value.running,
+      percent: pct.running || 0,
+      dotClass: 'bg-green-500',
+      barClass: 'bg-gradient-to-r from-green-500 to-green-400'
+    },
+    {
+      key: 'stopped',
+      label: 'Stopped',
+      count: containersByState.value.stopped,
+      percent: pct.stopped || 0,
+      dotClass: 'bg-gray-400',
+      barClass: 'bg-gray-400'
+    },
+    {
+      key: 'exited',
+      label: 'Exited',
+      count: containersByState.value.exited,
+      percent: pct.exited || 0,
+      dotClass: 'bg-red-500',
+      barClass: 'bg-red-500'
+    },
+    {
+      key: 'paused',
+      label: 'Paused',
+      count: containersByState.value.paused,
+      percent: pct.paused || 0,
+      dotClass: 'bg-orange-500',
+      barClass: 'bg-orange-500'
+    }
+  ]
 })
 
 // Disk Space Breakdown
@@ -227,199 +268,265 @@ function formatCategory(category) {
 </script>
 
 <template>
-  <div class="bg-white rounded-3xl p-6 shadow-[0_2px_20px_rgb(0,0,0,0.04)] border border-gray-100/50">
+  <section class="rounded-3xl border border-gray-200/70 bg-white p-5 sm:p-6 shadow-sm">
     <!-- Header -->
-    <div class="flex items-center gap-3 mb-6">
-      <div class="p-2 bg-gradient-to-br from-purple-100 to-blue-100 text-purple-600 rounded-xl">
-        <Activity :size="24" />
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-gradient-to-br from-purple-100 to-blue-100 text-purple-700 rounded-2xl shadow-sm">
+          <Activity :size="22" />
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Quick Metrics</h2>
+          <p class="text-sm text-gray-500">Live snapshot of your Docker resources</p>
+        </div>
       </div>
-      <h2 class="text-2xl font-bold text-gray-900">Quick Metrics</h2>
+
+      <div class="flex flex-wrap gap-2 sm:justify-end">
+        <div class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700">
+          <span class="text-gray-500">Containers</span>
+          <span class="text-gray-900">{{ totalContainers }}</span>
+        </div>
+        <div class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700">
+          <span class="text-gray-500">Images</span>
+          <span class="text-gray-900">{{ images.length }}</span>
+        </div>
+        <div class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700">
+          <span class="text-gray-500">Volumes</span>
+          <span class="text-gray-900">{{ volumes.length }}</span>
+        </div>
+      </div>
     </div>
 
     <!-- Metrics Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
       <!-- Container States -->
-      <div class="space-y-3">
-        <div class="flex items-center gap-2 mb-3">
-          <Package :size="18" class="text-gray-400" />
-          <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Container States</h3>
-        </div>
-        
-        <div v-if="totalContainers === 0" class="text-sm text-gray-400 py-4 text-center">
-          No containers
-        </div>
-        
-        <div v-else class="space-y-2">
-          <!-- Running -->
-          <div v-if="containersByState.running > 0" class="flex items-center justify-between text-sm">
+      <div class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
+        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/60 group-hover:to-gray-50/20 transition-all duration-300 pointer-events-none"></div>
+
+        <div class="relative z-10">
+          <div class="flex items-start justify-between gap-3 mb-4">
             <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-              <span class="text-gray-600 font-medium">Running</span>
+              <div class="p-2 rounded-xl bg-gray-50 text-gray-700 border border-gray-100">
+                <Package :size="18" />
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">Container States</h3>
+                <p class="text-xs text-gray-500">Status distribution</p>
+              </div>
             </div>
-            <span class="font-bold text-gray-900">{{ containersByState.running }}</span>
-          </div>
-          <div v-if="containersByState.running > 0" class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-            <div class="bg-gradient-to-r from-green-500 to-green-400 h-full rounded-full transition-all duration-500"
-                 :style="{ width: `${containerStatePercentages.running}%` }"></div>
-          </div>
-          
-          <!-- Stopped -->
-          <div v-if="containersByState.stopped > 0" class="flex items-center justify-between text-sm">
-            <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full bg-gray-400"></div>
-              <span class="text-gray-600 font-medium">Stopped</span>
+
+            <div class="text-right">
+              <div class="text-xs text-gray-500">Total</div>
+              <div class="text-sm font-bold text-gray-900">{{ totalContainers }}</div>
             </div>
-            <span class="font-bold text-gray-900">{{ containersByState.stopped }}</span>
           </div>
-          <div v-if="containersByState.stopped > 0" class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-            <div class="bg-gray-400 h-full rounded-full transition-all duration-500"
-                 :style="{ width: `${containerStatePercentages.stopped}%` }"></div>
+
+          <div v-if="!hasContainers" class="rounded-xl border border-dashed border-gray-200 bg-gray-50/50 px-4 py-6 text-center">
+            <div class="text-sm font-semibold text-gray-700">No containers</div>
+            <div class="text-xs text-gray-500 mt-1">Start a stack to see state metrics.</div>
           </div>
-          
-          <!-- Exited -->
-          <div v-if="containersByState.exited > 0" class="flex items-center justify-between text-sm">
-            <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full bg-red-500"></div>
-              <span class="text-gray-600 font-medium">Exited</span>
+
+          <div v-else class="space-y-3">
+            <div v-for="row in containerStateRows" :key="row.key" v-show="row.count > 0" class="space-y-1.5">
+              <div class="flex items-center justify-between gap-3 text-sm">
+                <div class="flex items-center gap-2 min-w-0">
+                  <div class="w-2.5 h-2.5 rounded-full" :class="[row.dotClass, row.key === 'running' ? 'animate-pulse' : '']"></div>
+                  <span class="text-gray-700 font-medium truncate">{{ row.label }}</span>
+                </div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                  <span class="text-xs text-gray-500 tabular-nums">{{ row.percent.toFixed(0) }}%</span>
+                  <span class="font-bold text-gray-900 tabular-nums">{{ row.count }}</span>
+                </div>
+              </div>
+
+              <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-500" :class="row.barClass" :style="{ width: `${row.percent}%` }"></div>
+              </div>
             </div>
-            <span class="font-bold text-gray-900">{{ containersByState.exited }}</span>
-          </div>
-          <div v-if="containersByState.exited > 0" class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-            <div class="bg-red-500 h-full rounded-full transition-all duration-500"
-                 :style="{ width: `${containerStatePercentages.exited}%` }"></div>
-          </div>
-          
-          <!-- Paused -->
-          <div v-if="containersByState.paused > 0" class="flex items-center justify-between text-sm">
-            <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full bg-orange-500"></div>
-              <span class="text-gray-600 font-medium">Paused</span>
-            </div>
-            <span class="font-bold text-gray-900">{{ containersByState.paused }}</span>
-          </div>
-          <div v-if="containersByState.paused > 0" class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-            <div class="bg-orange-500 h-full rounded-full transition-all duration-500"
-                 :style="{ width: `${containerStatePercentages.paused}%` }"></div>
           </div>
         </div>
       </div>
 
       <!-- Disk Breakdown -->
-      <div class="space-y-3">
-        <div class="flex items-center gap-2 mb-3">
-          <HardDrive :size="18" class="text-gray-400" />
-          <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Disk Usage</h3>
-        </div>
-        
-        <div class="space-y-3">
-          <!-- Images -->
-          <div>
-            <div class="flex items-center justify-between text-sm mb-1.5">
-              <span class="text-gray-600 font-medium">Images</span>
-              <span class="font-bold text-gray-900">{{ formatBytes(diskMetrics.images.total) }}</span>
-            </div>
-            <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-              <div class="flex h-full">
-                <div class="bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-500"
-                     :style="{ width: `${diskMetrics.images.usedPercent}%` }"
-                     :title="`Used: ${formatBytes(diskMetrics.images.used)}`"></div>
-                <div class="bg-gradient-to-r from-orange-300 to-orange-200 transition-all duration-500"
-                     :style="{ width: `${diskMetrics.images.unusedPercent}%` }"
-                     :title="`Unused: ${formatBytes(diskMetrics.images.unused)}`"></div>
+      <div class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
+        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/60 group-hover:to-gray-50/20 transition-all duration-300 pointer-events-none"></div>
+
+        <div class="relative z-10">
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <div class="flex items-center gap-2">
+              <div class="p-2 rounded-xl bg-gray-50 text-gray-700 border border-gray-100">
+                <HardDrive :size="18" />
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">Disk Usage</h3>
+                <p class="text-xs text-gray-500">Used vs unused</p>
               </div>
             </div>
-            <div class="flex items-center justify-between text-xs text-gray-400 mt-1">
-              <span>Used: {{ formatBytes(diskMetrics.images.used) }}</span>
-              <span>Unused: {{ formatBytes(diskMetrics.images.unused) }}</span>
+            <div class="text-right">
+              <div class="text-xs text-gray-500">Total</div>
+              <div class="text-sm font-bold text-gray-900">
+                {{ formatBytes(diskMetrics.images.total + diskMetrics.volumes.total) }}
+              </div>
             </div>
           </div>
-          
-          <!-- Volumes -->
-          <div>
-            <div class="flex items-center justify-between text-sm mb-1.5">
-              <span class="text-gray-600 font-medium">Volumes</span>
-              <span class="font-bold text-gray-900">{{ formatBytes(diskMetrics.volumes.total) }}</span>
-            </div>
-            <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-              <div class="flex h-full">
-                <div class="bg-gradient-to-r from-indigo-500 to-indigo-400 transition-all duration-500"
-                     :style="{ width: `${diskMetrics.volumes.usedPercent}%` }"
-                     :title="`Used: ${formatBytes(diskMetrics.volumes.used)}`"></div>
-                <div class="bg-gradient-to-r from-orange-300 to-orange-200 transition-all duration-500"
-                     :style="{ width: `${diskMetrics.volumes.unusedPercent}%` }"
-                     :title="`Unused: ${formatBytes(diskMetrics.volumes.unused)}`"></div>
+
+          <div class="space-y-4">
+            <!-- Images -->
+            <div class="rounded-xl border border-gray-100 bg-white/60 p-3">
+              <div class="flex items-center justify-between gap-3 text-sm mb-2">
+                <span class="text-gray-700 font-semibold">Images</span>
+                <span class="font-bold text-gray-900 tabular-nums">{{ formatBytes(diskMetrics.images.total) }}</span>
+              </div>
+
+              <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                <div class="flex h-full">
+                  <div
+                    class="bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-500"
+                    :style="{ width: `${diskMetrics.images.usedPercent}%` }"
+                    :title="`Used: ${formatBytes(diskMetrics.images.used)}`"
+                  ></div>
+                  <div
+                    class="bg-gradient-to-r from-orange-300 to-orange-200 transition-all duration-500"
+                    :style="{ width: `${diskMetrics.images.unusedPercent}%` }"
+                    :title="`Unused: ${formatBytes(diskMetrics.images.unused)}`"
+                  ></div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                  Used: <span class="font-semibold tabular-nums">{{ formatBytes(diskMetrics.images.used) }}</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-orange-300"></span>
+                  Unused: <span class="font-semibold tabular-nums">{{ formatBytes(diskMetrics.images.unused) }}</span>
+                </span>
               </div>
             </div>
-            <div class="flex items-center justify-between text-xs text-gray-400 mt-1">
-              <span>Used: {{ formatBytes(diskMetrics.volumes.used) }}</span>
-              <span>Unused: {{ formatBytes(diskMetrics.volumes.unused) }}</span>
+
+            <!-- Volumes -->
+            <div class="rounded-xl border border-gray-100 bg-white/60 p-3">
+              <div class="flex items-center justify-between gap-3 text-sm mb-2">
+                <span class="text-gray-700 font-semibold">Volumes</span>
+                <span class="font-bold text-gray-900 tabular-nums">{{ formatBytes(diskMetrics.volumes.total) }}</span>
+              </div>
+
+              <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                <div class="flex h-full">
+                  <div
+                    class="bg-gradient-to-r from-indigo-500 to-indigo-400 transition-all duration-500"
+                    :style="{ width: `${diskMetrics.volumes.usedPercent}%` }"
+                    :title="`Used: ${formatBytes(diskMetrics.volumes.used)}`"
+                  ></div>
+                  <div
+                    class="bg-gradient-to-r from-orange-300 to-orange-200 transition-all duration-500"
+                    :style="{ width: `${diskMetrics.volumes.unusedPercent}%` }"
+                    :title="`Unused: ${formatBytes(diskMetrics.volumes.unused)}`"
+                  ></div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-xs text-gray-500 mt-2">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                  Used: <span class="font-semibold tabular-nums">{{ formatBytes(diskMetrics.volumes.used) }}</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-orange-300"></span>
+                  Unused: <span class="font-semibold tabular-nums">{{ formatBytes(diskMetrics.volumes.unused) }}</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Average Uptime -->
-      <div class="space-y-3">
-        <div class="flex items-center gap-2 mb-3">
-          <Clock :size="18" class="text-gray-400" />
-          <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Avg Uptime</h3>
-        </div>
-        
-        <div v-if="averageUptime.count === 0" class="text-sm text-gray-400 py-4 text-center">
-          No running containers
-        </div>
-        
-        <div v-else class="flex flex-col items-center justify-center py-2">
-          <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 mb-2">
-            {{ averageUptime.formatted }}
-          </div>
-          <div class="text-xs text-gray-500 font-medium">
-            Across {{ averageUptime.count }} running {{ averageUptime.count === 1 ? 'container' : 'containers' }}
-          </div>
-          
-          <!-- Visual indicator -->
-          <div class="mt-4 flex items-center gap-1">
-            <div v-for="i in Math.min(averageUptime.count, 10)" :key="i"
-                 class="w-1.5 h-8 bg-gradient-to-t from-purple-200 to-purple-500 rounded-full"
-                 :style="{ 
-                   animationDelay: `${i * 100}ms`,
-                   height: `${Math.random() * 20 + 20}px`
-                 }"
-                 :class="i <= 5 ? 'animate-pulse' : ''">
+      <div class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
+        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/60 group-hover:to-gray-50/20 transition-all duration-300 pointer-events-none"></div>
+
+        <div class="relative z-10">
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <div class="flex items-center gap-2">
+              <div class="p-2 rounded-xl bg-gray-50 text-gray-700 border border-gray-100">
+                <Clock :size="18" />
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">Average Uptime</h3>
+                <p class="text-xs text-gray-500">Running containers only</p>
+              </div>
             </div>
-            <span v-if="averageUptime.count > 10" class="text-xs text-gray-400 ml-1">+{{ averageUptime.count - 10 }}</span>
+          </div>
+
+          <div v-if="averageUptime.count === 0" class="rounded-xl border border-dashed border-gray-200 bg-gray-50/50 px-4 py-6 text-center">
+            <div class="text-sm font-semibold text-gray-700">No running containers</div>
+            <div class="text-xs text-gray-500 mt-1">Start a container to track uptime.</div>
+          </div>
+
+          <div v-else class="flex flex-col items-center justify-center py-2">
+            <div class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 tabular-nums">
+              {{ averageUptime.formatted }}
+            </div>
+            <div class="text-xs text-gray-500 font-medium mt-1">
+              Across {{ averageUptime.count }} running {{ averageUptime.count === 1 ? 'container' : 'containers' }}
+            </div>
+
+            <div class="mt-5 w-full">
+              <div class="flex items-end justify-center gap-1.5">
+                <div
+                  v-for="i in 10"
+                  :key="i"
+                  class="w-2 rounded-full bg-gradient-to-t from-purple-200 to-purple-500"
+                  :class="i <= 4 ? 'animate-pulse' : ''"
+                  :style="{ height: `${14 + ((i * 7) % 18)}px` }"
+                ></div>
+              </div>
+              <div v-if="averageUptime.count > 10" class="text-center text-xs text-gray-400 mt-2">
+                +{{ averageUptime.count - 10 }} more
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
 
-    <!-- Second Row: Expiring Containers & Category Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6" v-if="expiringContainers.count > 0 || categoryStats.mostUsed">
-      
+    <!-- Second Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6" v-if="expiringContainers.count > 0 || categoryStats.mostUsed">
       <!-- Expiring Containers -->
-      <div class="space-y-3" v-if="expiringContainers.count > 0">
-        <div class="flex items-center gap-2 mb-3">
-          <Timer :size="18" class="text-gray-400" />
-          <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Expiring Containers</h3>
-        </div>
-        
-        <div class="space-y-3">
-          <!-- Count -->
-          <div class="flex items-center justify-between">
-            <span class="text-sm text-gray-600 font-medium">Total Expiring</span>
-            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg font-bold text-sm">{{ expiringContainers.count }}</span>
-          </div>
-          
-          <!-- Next Expiry Countdown -->
-          <div class="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-4 border border-orange-100">
-            <div class="text-xs text-gray-500 font-medium mb-1">Next to Expire</div>
-            <div class="text-2xl font-bold mb-1"
-                 :class="expiringContainers.isExpiringSoon ? 'text-red-600 animate-pulse' : 'text-orange-600'">
-              {{ expiringContainers.nextExpiryFormatted }}
+      <div v-if="expiringContainers.count > 0" class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
+        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-50/0 to-red-50/0 group-hover:from-orange-50/70 group-hover:to-red-50/40 transition-all duration-300 pointer-events-none"></div>
+
+        <div class="relative z-10">
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <div class="flex items-center gap-2">
+              <div class="p-2 rounded-xl bg-orange-50 text-orange-700 border border-orange-100">
+                <Timer :size="18" />
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">Expiring Containers</h3>
+                <p class="text-xs text-gray-500">Temporary instances</p>
+              </div>
             </div>
-            <div class="text-xs text-gray-600 truncate" :title="expiringContainers.containerName">
+            <div class="inline-flex items-center gap-2 rounded-xl bg-orange-50 border border-orange-100 px-3 py-1.5">
+              <span class="text-xs font-semibold text-orange-700">Total</span>
+              <span class="text-xs font-extrabold text-orange-800 tabular-nums">{{ expiringContainers.count }}</span>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-orange-100 bg-white/70 p-4">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="text-xs text-gray-500 font-medium">Next to expire</div>
+                <div
+                  class="text-2xl font-extrabold mt-1 tabular-nums"
+                  :class="expiringContainers.isExpiringSoon ? 'text-red-600 animate-pulse' : 'text-orange-700'"
+                >
+                  {{ expiringContainers.nextExpiryFormatted }}
+                </div>
+              </div>
+            </div>
+            <div class="text-xs text-gray-600 mt-2 truncate" :title="expiringContainers.containerName">
               {{ expiringContainers.containerName }}
             </div>
           </div>
@@ -427,52 +534,67 @@ function formatCategory(category) {
       </div>
 
       <!-- Category Statistics -->
-      <div class="space-y-3" v-if="categoryStats.mostUsed">
-        <div class="flex items-center gap-2 mb-3">
-          <Layers :size="18" class="text-gray-400" />
-          <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">App Categories</h3>
-        </div>
-        
-        <div class="space-y-3">
-          <!-- Most Used -->
-          <div>
-            <div class="flex items-center justify-between text-sm mb-2">
-              <span class="text-gray-600 font-medium">Most Used</span>
-              <span class="font-bold text-gray-900">{{ categoryStats.mostUsed.count }} {{ categoryStats.mostUsed.count === 1 ? 'app' : 'apps' }}</span>
-            </div>
-            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl px-4 py-2 border border-green-100">
-              <div class="text-sm font-bold text-green-700">🏆 {{ formatCategory(categoryStats.mostUsed.category) }}</div>
+      <div v-if="categoryStats.mostUsed" class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
+        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-50/0 to-emerald-50/0 group-hover:from-green-50/60 group-hover:to-emerald-50/30 transition-all duration-300 pointer-events-none"></div>
+
+        <div class="relative z-10">
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <div class="flex items-center gap-2">
+              <div class="p-2 rounded-xl bg-gray-50 text-gray-700 border border-gray-100">
+                <Layers :size="18" />
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">App Categories</h3>
+                <p class="text-xs text-gray-500">Usage highlights</p>
+              </div>
             </div>
           </div>
-          
-          <!-- Least Used (only show if more than 1 category) -->
-          <div v-if="categoryStats.total > 1 && categoryStats.leastUsed.category !== categoryStats.mostUsed.category">
-            <div class="flex items-center justify-between text-sm mb-2">
-              <span class="text-gray-600 font-medium">Least Used</span>
-              <span class="font-bold text-gray-900">{{ categoryStats.leastUsed.count }} {{ categoryStats.leastUsed.count === 1 ? 'app' : 'apps' }}</span>
+
+          <div class="space-y-4">
+            <div class="rounded-2xl border border-green-100 bg-white/70 p-4">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2 min-w-0">
+                  <div class="p-1.5 rounded-lg bg-green-50 text-green-700 border border-green-100">
+                    <Trophy :size="16" />
+                  </div>
+                  <div class="min-w-0">
+                    <div class="text-xs text-gray-500 font-medium">Most used</div>
+                    <div class="text-sm font-extrabold text-green-700 truncate">
+                      {{ formatCategory(categoryStats.mostUsed.category) }}
+                    </div>
+                  </div>
+                </div>
+                <div class="text-sm font-bold text-gray-900 tabular-nums">
+                  {{ categoryStats.mostUsed.count }}
+                </div>
+              </div>
+              <div class="text-xs text-gray-500 mt-2">
+                {{ categoryStats.mostUsed.count === 1 ? 'app' : 'apps' }} in this category
+              </div>
             </div>
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl px-4 py-2 border border-blue-100">
-              <div class="text-sm font-bold text-blue-700">{{ formatCategory(categoryStats.leastUsed.category) }}</div>
+
+            <div
+              v-if="categoryStats.total > 1 && categoryStats.leastUsed.category !== categoryStats.mostUsed.category"
+              class="rounded-2xl border border-blue-100 bg-white/70 p-4"
+            >
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="text-xs text-gray-500 font-medium">Least used</div>
+                  <div class="text-sm font-extrabold text-blue-700 truncate">
+                    {{ formatCategory(categoryStats.leastUsed.category) }}
+                  </div>
+                </div>
+                <div class="text-sm font-bold text-gray-900 tabular-nums">
+                  {{ categoryStats.leastUsed.count }}
+                </div>
+              </div>
+              <div class="text-xs text-gray-500 mt-2">
+                {{ categoryStats.leastUsed.count === 1 ? 'app' : 'apps' }} in this category
+              </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
-  </div>
+  </section>
 </template>
-
-<style scoped>
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-</style>
