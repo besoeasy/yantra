@@ -443,48 +443,48 @@ app.get("/api/containers", async (req, res) => {
     const containers = await docker.listContainers({ all: true });
 
     const formattedContainers = await mapWithConcurrency(containers, 8, async (container) => {
-        const appLabels = parseAppLabels(container.Labels);
-        const composeProject = container.Labels["com.docker.compose.project"];
+      const appLabels = parseAppLabels(container.Labels);
+      const composeProject = container.Labels["com.docker.compose.project"];
 
-        // Fetch full container details to get environment variables
-        let envVars = [];
-        try {
-          envVars = await getContainerEnv(container.Id);
-        } catch (error) {
-          log("error", `Failed to get env for container ${container.Id}:`, error.message);
-        }
+      // Fetch full container details to get environment variables
+      let envVars = [];
+      try {
+        envVars = await getContainerEnv(container.Id);
+      } catch (error) {
+        log("error", `Failed to get env for container ${container.Id}:`, error.message);
+      }
 
-        // Extract base app ID from compose project (remove -2, -3 suffix for instances)
-        let baseAppId = composeProject || container.Names[0]?.replace("/", "") || "unknown";
-        if (composeProject && composeProject.match(/-\d+$/)) {
-          baseAppId = composeProject.replace(/-\d+$/, '');
-        }
+      // Extract base app ID from compose project (remove -2, -3 suffix for instances)
+      let baseAppId = composeProject || container.Names[0]?.replace("/", "") || "unknown";
+      if (composeProject && composeProject.match(/-\d+$/)) {
+        baseAppId = composeProject.replace(/-\d+$/, '');
+      }
 
-        return {
-          id: container.Id,
-          name: container.Names[0]?.replace("/", "") || "unknown",
-          image: container.Image,
-          imageId: container.ImageID,
-          state: container.State,
-          status: container.Status,
-          created: container.Created,
-          ports: container.Ports,
-          labels: container.Labels, // Keep original labels for filtering
-          appLabels: appLabels,
-          env: envVars,
-          // Add computed fields for easier UI access
-          app: {
-            id: baseAppId, // Base app ID without instance suffix
-            projectId: composeProject || container.Names[0]?.replace("/", "") || "unknown", // Full project ID with instance suffix
-            name: appLabels.name || container.Names[0]?.replace("/", "") || "unknown",
-            logo: appLabels.logo ? (appLabels.logo.includes("://") ? appLabels.logo : `https://dweb.link/ipfs/${appLabels.logo}`) : null,
-            category: appLabels.category || "uncategorized",
-            port: appLabels.port || null,
-            description: appLabels.description || "",
-            docs: appLabels.docs || null,
-            website: appLabels.website || null,
-          },
-        };
+      return {
+        id: container.Id,
+        name: container.Names[0]?.replace("/", "") || "unknown",
+        image: container.Image,
+        imageId: container.ImageID,
+        state: container.State,
+        status: container.Status,
+        created: container.Created,
+        ports: container.Ports,
+        labels: container.Labels, // Keep original labels for filtering
+        appLabels: appLabels,
+        env: envVars,
+        // Add computed fields for easier UI access
+        app: {
+          id: baseAppId, // Base app ID without instance suffix
+          projectId: composeProject || container.Names[0]?.replace("/", "") || "unknown", // Full project ID with instance suffix
+          name: appLabels.name || container.Names[0]?.replace("/", "") || "unknown",
+          logo: appLabels.logo ? (appLabels.logo.includes("://") ? appLabels.logo : `https://dweb.link/ipfs/${appLabels.logo}`) : null,
+          category: appLabels.category || "uncategorized",
+          port: appLabels.port || null,
+          description: appLabels.description || "",
+          docs: appLabels.docs || null,
+          website: appLabels.website || null,
+        },
+      };
     });
 
     // Filter out auxiliary containers (sidecars)
@@ -1211,10 +1211,10 @@ app.get("/api/image-details/:appId", async (req, res) => {
 
     // Get locally available images
     const localImages = await docker.listImages();
-    
+
     const imageDetails = await Promise.all(imageNames.map(async (imageName) => {
       // Check if image is available locally
-      const localImage = localImages.find(img => 
+      const localImage = localImages.find(img =>
         img.RepoTags && img.RepoTags.some(tag => tag === imageName || tag.includes(imageName.split(':')[0]))
       );
 
@@ -1227,7 +1227,7 @@ app.get("/api/image-details/:appId", async (req, res) => {
           const now = new Date();
           const diffMs = now - createdDate;
           const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-          
+
           let relativeTime = '';
           if (diffDays === 0) {
             const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
@@ -1251,10 +1251,10 @@ app.get("/api/image-details/:appId", async (req, res) => {
             tags: localImage.RepoTags || [imageName],
             digest: info.RepoDigests ? info.RepoDigests[0] : 'N/A',
             created: info.Created,
-            createdDate: createdDate.toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'short', 
-              day: 'numeric' 
+            createdDate: createdDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
             }),
             relativeTime: relativeTime,
             architecture: info.Architecture || 'unknown',
@@ -1487,7 +1487,7 @@ app.get("/api/volumes", async (req, res) => {
     let volumeSizes = {};
     try {
       const dfData = await docker.df();
-      
+
       // Extract volume sizes from the df response
       if (dfData.Volumes && Array.isArray(dfData.Volumes)) {
         dfData.Volumes.forEach(vol => {
@@ -1503,7 +1503,7 @@ app.get("/api/volumes", async (req, res) => {
 
     // Get all containers to check which volumes are in use
     const containers = await docker.listContainers({ all: true });
-    
+
     // Check if any volume has an active dufs browser container
     const browsedVolumes = new Set();
     // Track which volumes are mounted by containers
@@ -1513,7 +1513,7 @@ app.get("/api/volumes", async (req, res) => {
       if (container.Labels && container.Labels["yantra.volume-browser"]) {
         browsedVolumes.add(container.Labels["yantra.volume-browser"]);
       }
-      
+
       // Add all mounted volumes to the used set
       if (container.Mounts) {
         container.Mounts.forEach((mount) => {
@@ -1527,7 +1527,7 @@ app.get("/api/volumes", async (req, res) => {
     const enrichedVolumes = volumeList.map((vol) => {
       const sizeBytes = volumeSizes[vol.Name] || 0;
       const sizeMB = (sizeBytes / (1024 * 1024)).toFixed(2);
-      
+
       return {
         name: vol.Name,
         driver: vol.Driver,
@@ -1738,7 +1738,7 @@ app.delete("/api/volumes/:name", async (req, res) => {
 
   try {
     const volume = docker.getVolume(volumeName);
-    
+
     // Try to inspect the volume first to ensure it exists
     try {
       await volume.inspect();
@@ -1753,7 +1753,7 @@ app.delete("/api/volumes/:name", async (req, res) => {
     // Remove the volume
     log("info", `🗑️  [DELETE /api/volumes/:name] Removing volume...`);
     await volume.remove();
-    
+
     log("info", `✅ [DELETE /api/volumes/:name] Successfully removed volume: ${volumeName}`);
     res.json({
       success: true,
@@ -1762,15 +1762,15 @@ app.delete("/api/volumes/:name", async (req, res) => {
     });
   } catch (error) {
     log("error", `❌ [DELETE /api/volumes/:name] Error:`, error.message);
-    
+
     // Check if volume is in use
     const isInUseError = error.message && error.message.includes("in use");
-    
+
     res.status(500).json({
       success: false,
       error: isInUseError ? "Volume is in use" : "Failed to remove volume",
-      message: isInUseError 
-        ? `Volume '${volumeName}' is currently in use by a container and cannot be deleted` 
+      message: isInUseError
+        ? `Volume '${volumeName}' is currently in use by a container and cannot be deleted`
         : error.message,
     });
   }

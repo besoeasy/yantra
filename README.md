@@ -86,6 +86,22 @@ Yantra is designed for the modern "Work PC" homelab. Spin up tools, use them, sp
 
 ---
 
+## 💾 Volume Management & WebDAV
+
+Yantra gives you **direct access** to your data with built-in WebDAV support.
+
+1. **Browse Volumes**: Go to the **Volumes** tab and click **Browse** on any volume.
+2. **WebDAV Access**: The browser uses `dufs`, which inherently supports WebDAV.
+3. **Sync Data**: Use WebDAV to sync files between volumes or machines.
+
+**Example: Syncing two volumes with `rclone`**
+```bash
+# Sync from Volume A (port 5001) to Volume B (port 5002)
+rclone sync :webdav:http://localhost:5001 :webdav:http://localhost:5002 --webdav-vendor other
+```
+
+---
+
 ## 🔒 Pro Tip: Go Remote with Tailscale
 
 Want to access your apps from anywhere?
