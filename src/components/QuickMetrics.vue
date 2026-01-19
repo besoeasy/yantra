@@ -70,7 +70,7 @@ const containerStateRows = computed(() => {
       count: containersByState.value.running,
       percent: pct.running || 0,
       dotClass: 'bg-green-500',
-      barClass: 'bg-gradient-to-r from-green-500 to-green-400'
+      barClass: 'bg-linear-to-r from-green-500 to-green-400'
     },
     {
       key: 'stopped',
@@ -298,11 +298,13 @@ function formatCategory(category) {
 </script>
 
 <template>
-  <section class="rounded-3xl border border-gray-200/70 bg-white p-5 sm:p-6 shadow-sm">
+  <section
+    class="relative overflow-hidden rounded-3xl border border-gray-100/50 bg-white p-5 sm:p-6 shadow-[0_2px_20px_rgb(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
+  >
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
       <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-gradient-to-br from-purple-100 to-blue-100 text-purple-700 rounded-2xl shadow-sm">
+        <div class="p-2.5 bg-linear-to-br from-purple-100 to-blue-100 text-purple-700 rounded-2xl shadow-sm">
           <Activity :size="22" />
         </div>
         <div>
@@ -331,7 +333,7 @@ function formatCategory(category) {
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
       <!-- Container States -->
       <div class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
-        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/60 group-hover:to-gray-50/20 transition-all duration-300 pointer-events-none"></div>
+        <div class="absolute inset-0 rounded-2xl bg-linear-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/60 group-hover:to-gray-50/20 transition-all duration-300 pointer-events-none"></div>
 
         <div class="relative z-10">
           <div class="flex items-start justify-between gap-3 mb-4">
@@ -363,7 +365,7 @@ function formatCategory(category) {
                   <div class="w-2.5 h-2.5 rounded-full" :class="[row.dotClass, row.key === 'running' ? 'animate-pulse' : '']"></div>
                   <span class="text-gray-700 font-medium truncate">{{ row.label }}</span>
                 </div>
-                <div class="flex items-center gap-2 flex-shrink-0">
+                <div class="flex items-center gap-2 shrink-0">
                   <span class="text-xs text-gray-500 tabular-nums">{{ row.percent.toFixed(0) }}%</span>
                   <span class="font-bold text-gray-900 tabular-nums">{{ row.count }}</span>
                 </div>
@@ -379,7 +381,7 @@ function formatCategory(category) {
 
       <!-- Disk Breakdown -->
       <div class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
-        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/60 group-hover:to-gray-50/20 transition-all duration-300 pointer-events-none"></div>
+        <div class="absolute inset-0 rounded-2xl bg-linear-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/60 group-hover:to-gray-50/20 transition-all duration-300 pointer-events-none"></div>
 
         <div class="relative z-10">
           <div class="flex items-start justify-between gap-3 mb-4">
@@ -411,12 +413,12 @@ function formatCategory(category) {
               <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                 <div class="flex h-full">
                   <div
-                    class="bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-500"
+                    class="bg-linear-to-r from-blue-500 to-blue-400 transition-all duration-500"
                     :style="{ width: `${diskMetrics.images.usedPercent}%` }"
                     :title="`Used: ${formatBytes(diskMetrics.images.used)}`"
                   ></div>
                   <div
-                    class="bg-gradient-to-r from-orange-300 to-orange-200 transition-all duration-500"
+                    class="bg-linear-to-r from-orange-300 to-orange-200 transition-all duration-500"
                     :style="{ width: `${diskMetrics.images.unusedPercent}%` }"
                     :title="`Unused: ${formatBytes(diskMetrics.images.unused)}`"
                   ></div>
@@ -445,12 +447,12 @@ function formatCategory(category) {
               <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                 <div class="flex h-full">
                   <div
-                    class="bg-gradient-to-r from-indigo-500 to-indigo-400 transition-all duration-500"
+                    class="bg-linear-to-r from-indigo-500 to-indigo-400 transition-all duration-500"
                     :style="{ width: `${diskMetrics.volumes.usedPercent}%` }"
                     :title="`Used: ${formatBytes(diskMetrics.volumes.used)}`"
                   ></div>
                   <div
-                    class="bg-gradient-to-r from-orange-300 to-orange-200 transition-all duration-500"
+                    class="bg-linear-to-r from-orange-300 to-orange-200 transition-all duration-500"
                     :style="{ width: `${diskMetrics.volumes.unusedPercent}%` }"
                     :title="`Unused: ${formatBytes(diskMetrics.volumes.unused)}`"
                   ></div>
@@ -474,7 +476,7 @@ function formatCategory(category) {
 
       <!-- Average Uptime -->
       <div class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
-        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/60 group-hover:to-gray-50/20 transition-all duration-300 pointer-events-none"></div>
+        <div class="absolute inset-0 rounded-2xl bg-linear-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/60 group-hover:to-gray-50/20 transition-all duration-300 pointer-events-none"></div>
 
         <div class="relative z-10">
           <div class="flex items-start justify-between gap-3 mb-4">
@@ -495,7 +497,7 @@ function formatCategory(category) {
           </div>
 
           <div v-else class="flex flex-col items-center justify-center py-2">
-            <div class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 tabular-nums">
+            <div class="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-blue-600 tabular-nums">
               {{ averageUptime.formatted }}
             </div>
             <div class="text-xs text-gray-500 font-medium mt-1">
@@ -507,7 +509,7 @@ function formatCategory(category) {
                 <div
                   v-for="i in 10"
                   :key="i"
-                  class="w-2 rounded-full bg-gradient-to-t from-purple-200 to-purple-500"
+                  class="w-2 rounded-full bg-linear-to-t from-purple-200 to-purple-500"
                   :class="i <= 4 ? 'animate-pulse' : ''"
                   :style="{ height: `${14 + ((i * 7) % 18)}px` }"
                 ></div>
@@ -525,7 +527,7 @@ function formatCategory(category) {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6" v-if="expiringContainers.count > 0 || categoryStats.mostUsed">
       <!-- Expiring Containers -->
       <div v-if="expiringContainers.count > 0" class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
-        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-50/0 to-red-50/0 group-hover:from-orange-50/70 group-hover:to-red-50/40 transition-all duration-300 pointer-events-none"></div>
+        <div class="absolute inset-0 rounded-2xl bg-linear-to-br from-orange-50/0 to-red-50/0 group-hover:from-orange-50/70 group-hover:to-red-50/40 transition-all duration-300 pointer-events-none"></div>
 
         <div class="relative z-10">
           <div class="flex items-start justify-between gap-3 mb-4">
@@ -565,7 +567,7 @@ function formatCategory(category) {
 
       <!-- Category Statistics -->
       <div v-if="categoryStats.mostUsed" class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
-        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-50/0 to-emerald-50/0 group-hover:from-green-50/60 group-hover:to-emerald-50/30 transition-all duration-300 pointer-events-none"></div>
+        <div class="absolute inset-0 rounded-2xl bg-linear-to-br from-green-50/0 to-emerald-50/0 group-hover:from-green-50/60 group-hover:to-emerald-50/30 transition-all duration-300 pointer-events-none"></div>
 
         <div class="relative z-10">
           <div class="flex items-start justify-between gap-3 mb-4">
