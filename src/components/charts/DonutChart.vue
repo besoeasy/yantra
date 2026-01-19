@@ -30,6 +30,10 @@ const props = defineProps({
   donutLabel: {
     type: String,
     default: ''
+  },
+  theme: {
+    type: String,
+    default: 'light'
   }
 })
 
@@ -39,21 +43,27 @@ const chartOptions = computed(() => {
     return `${Math.round(val)}`
   }
 
+  const isDark = String(props.theme).toLowerCase() === 'dark'
+  const labelColor = isDark ? '#e5e7eb' : '#111827'
+  const subLabelColor = isDark ? '#9ca3af' : '#6b7280'
+
   return {
     chart: {
       type: 'donut',
       sparkline: { enabled: true }
+    },
+    theme: { mode: isDark ? 'dark' : 'light' },
+    tooltip: {
+      theme: isDark ? 'dark' : 'light',
+      y: {
+        formatter: (val) => formatValue(val)
+      }
     },
     labels: props.labels,
     colors: props.colors,
     dataLabels: { enabled: false },
     legend: { show: false },
     stroke: { width: 0 },
-    tooltip: {
-      y: {
-        formatter: (val) => formatValue(val)
-      }
-    },
     plotOptions: {
       pie: {
         donut: {
@@ -64,13 +74,15 @@ const chartOptions = computed(() => {
               show: true,
               fontSize: '12px',
               fontWeight: 700,
-              offsetY: 18
+              offsetY: 18,
+              color: subLabelColor
             },
             value: {
               show: true,
               fontSize: '14px',
               fontWeight: 800,
               offsetY: -2,
+              color: labelColor,
               formatter: (val) => formatValue(val)
             },
             total: {
@@ -78,6 +90,7 @@ const chartOptions = computed(() => {
               label: props.donutLabel || 'Total',
               fontSize: '12px',
               fontWeight: 700,
+              color: subLabelColor,
               formatter: () => {
                 if (typeof props.totalFormatter === 'function') return props.totalFormatter()
                 const sum = (props.series || []).reduce((s, n) => s + (Number(n) || 0), 0)

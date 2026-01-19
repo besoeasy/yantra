@@ -22,6 +22,10 @@ const props = defineProps({
   valueFormatter: {
     type: Function,
     default: null
+  },
+  theme: {
+    type: String,
+    default: 'light'
   }
 })
 
@@ -33,10 +37,20 @@ const chartOptions = computed(() => {
     return `${Math.round(val)}`
   }
 
+  const isDark = String(props.theme).toLowerCase() === 'dark'
+
   return {
     chart: {
       type: 'bar',
       sparkline: { enabled: true }
+    },
+    theme: { mode: isDark ? 'dark' : 'light' },
+    tooltip: {
+      theme: isDark ? 'dark' : 'light',
+      x: { show: true },
+      y: {
+        formatter: (val) => formatValue(val)
+      }
     },
     colors: props.colors,
     plotOptions: {
@@ -61,12 +75,6 @@ const chartOptions = computed(() => {
     grid: {
       show: false,
       padding: { left: 0, right: 0, top: 0, bottom: 0 }
-    },
-    tooltip: {
-      x: { show: true },
-      y: {
-        formatter: (val) => formatValue(val)
-      }
     }
   }
 })

@@ -18,6 +18,10 @@ const props = defineProps({
   valueFormatter: {
     type: Function,
     default: null
+  },
+  theme: {
+    type: String,
+    default: 'light'
   }
 })
 
@@ -29,18 +33,22 @@ const chartOptions = computed(() => {
     return `${val}`
   }
 
+  const isDark = String(props.theme).toLowerCase() === 'dark'
+
   return {
     chart: {
       type: 'treemap',
       sparkline: { enabled: true }
     },
+    theme: { mode: isDark ? 'dark' : 'light' },
     colors: props.colors,
     legend: { show: false },
     dataLabels: {
       enabled: true,
       style: {
         fontSize: '11px',
-        fontWeight: 700
+        fontWeight: 700,
+        colors: [isDark ? '#ffffff' : '#111827']
       },
       formatter: (text, opts) => {
         const value = opts?.value
@@ -48,7 +56,13 @@ const chartOptions = computed(() => {
         if (!safeText) return ''
         return safeText.length > 18 ? `${safeText.slice(0, 18)}…` : safeText
       },
-      dropShadow: { enabled: false }
+      dropShadow: {
+        enabled: true,
+        top: 1,
+        left: 0,
+        blur: 2,
+        opacity: 0.35
+      }
     },
     plotOptions: {
       treemap: {
@@ -59,6 +73,7 @@ const chartOptions = computed(() => {
       }
     },
     tooltip: {
+      theme: isDark ? 'dark' : 'light',
       y: {
         formatter: (val) => formatValue(val)
       }
