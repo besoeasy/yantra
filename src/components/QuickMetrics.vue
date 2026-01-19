@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Activity, Package, HardDrive, Clock, Timer, Layers, Trophy } from 'lucide-vue-next'
+import { Activity, HardDrive, Clock, Timer, Layers, Trophy } from 'lucide-vue-next'
 import DonutChart from './charts/DonutChart.vue'
 import HorizontalBarChart from './charts/HorizontalBarChart.vue'
 import TreemapChart from './charts/TreemapChart.vue'
@@ -24,83 +24,7 @@ const props = defineProps({
   }
 })
 
-// Container State Breakdown
-const containersByState = computed(() => {
-  const states = {
-    running: 0,
-    stopped: 0,
-    paused: 0,
-    exited: 0,
-    other: 0
-  }
-  
-  props.containers.forEach(container => {
-    const state = container.state?.toLowerCase() || 'other'
-    if (states.hasOwnProperty(state)) {
-      states[state]++
-    } else if (state === 'created' || state === 'restarting') {
-      states.stopped++
-    } else {
-      states.other++
-    }
-  })
-  
-  return states
-})
-
 const totalContainers = computed(() => props.containers.length)
-
-const hasContainers = computed(() => totalContainers.value > 0)
-
-const containerStatePercentages = computed(() => {
-  if (totalContainers.value === 0) return {}
-  
-  return {
-    running: (containersByState.value.running / totalContainers.value) * 100,
-    stopped: (containersByState.value.stopped / totalContainers.value) * 100,
-    paused: (containersByState.value.paused / totalContainers.value) * 100,
-    exited: (containersByState.value.exited / totalContainers.value) * 100
-  }
-})
-
-const containerStateRows = computed(() => {
-  const pct = containerStatePercentages.value
-
-  return [
-    {
-      key: 'running',
-      label: 'Running',
-      count: containersByState.value.running,
-      percent: pct.running || 0,
-      dotClass: 'bg-green-500',
-      barClass: 'bg-linear-to-r from-green-500 to-green-400'
-    },
-    {
-      key: 'stopped',
-      label: 'Stopped',
-      count: containersByState.value.stopped,
-      percent: pct.stopped || 0,
-      dotClass: 'bg-gray-400',
-      barClass: 'bg-gray-400'
-    },
-    {
-      key: 'exited',
-      label: 'Exited',
-      count: containersByState.value.exited,
-      percent: pct.exited || 0,
-      dotClass: 'bg-red-500',
-      barClass: 'bg-red-500'
-    },
-    {
-      key: 'paused',
-      label: 'Paused',
-      count: containersByState.value.paused,
-      percent: pct.paused || 0,
-      dotClass: 'bg-orange-500',
-      barClass: 'bg-orange-500'
-    }
-  ]
-})
 
 // Disk Space Breakdown
 const diskMetrics = computed(() => {
@@ -332,6 +256,23 @@ const diskDonuts = computed(() => {
   }
 })
 
+const biggestStorageTreemapImages = computed(() => {
+  const images = Array.isArray(props.images) ? props.images : []
+
+  return images
+    .map((img) => {
+      const size = Number(img?.sizeBytes ?? img?.SizeBytes ?? img?.size ?? img?.Size ?? 0) || 0
+      const tags = Array.isArray(img?.tags) ? img.tags : (Array.isArray(img?.RepoTags) ? img.RepoTags : (Array.isArray(img?.repoTags) ? img.repoTags : []))
+      const bestTag = tags.find((t) => typeof t === 'string' && t.trim() && t !== '<none>:<none>')
+      const shortId = img?.shortId || (typeof img?.id === 'string' ? img.id.replace(/^sha256:/, '').slice(0, 12) : null)
+      const name = bestTag || shortId || img?.id || img?.Id || 'Unknown'
+      return { x: String(name), y: size }
+    })
+    .filter((d) => d.y > 0)
+    .sort((a, b) => b.y - a.y)
+    .slice(0, 10)
+})
+
 const categoryTreemap = computed(() => {
   const rows = Array.isArray(categoryStats.value.all) ? categoryStats.value.all : []
   if (rows.length === 0) return { data: [] }
@@ -428,7 +369,7 @@ function formatMinutesAsDuration(minutes) {
 
     <!-- Metrics Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
-      <!-- Container States -->
+      <!-- Biggest Storage -->
       <div class="group relative rounded-2xl border border-gray-100 bg-white p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/5">
         <div class="absolute inset-0 rounded-2xl bg-linear-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/60 group-hover:to-gray-50/20 transition-all duration-300 pointer-events-none"></div>
 
@@ -436,41 +377,28 @@ function formatMinutesAsDuration(minutes) {
           <div class="flex items-start justify-between gap-3 mb-4">
             <div class="flex items-center gap-2">
               <div class="p-2 rounded-xl bg-gray-50 text-gray-700 border border-gray-100">
-                <Package :size="18" />
+                <HardDrive :size="18" />
               </div>
               <div>
-                <h3 class="text-sm font-bold text-gray-900">Container States</h3>
-                <p class="text-xs text-gray-500">Status distribution</p>
+                <h3 class="text-sm font-bold text-gray-900">Biggest Storage</h3>
+                <p class="text-xs text-gray-500">Top images & volumes by size</p>
               </div>
-            </div>
-
-            <div class="text-right">
-              <div class="text-xs text-gray-500">Total</div>
-              <div class="text-sm font-bold text-gray-900">{{ totalContainers }}</div>
             </div>
           </div>
 
-          <div v-if="!hasContainers" class="rounded-xl border border-dashed border-gray-200 bg-gray-50/50 px-4 py-6 text-center">
-            <div class="text-sm font-semibold text-gray-700">No containers</div>
-            <div class="text-xs text-gray-500 mt-1">Start a stack to see state metrics.</div>
-          </div>
+          <div class="rounded-2xl border border-gray-100 bg-white/60 p-3">
+            <div class="flex items-center justify-between gap-3">
+              <div class="text-sm font-semibold text-gray-700">Images</div>
+              <div class="text-xs text-gray-500">Top 10</div>
+            </div>
 
-          <div v-else class="space-y-3">
-            <div v-for="row in containerStateRows" :key="row.key" v-show="row.count > 0" class="space-y-1.5">
-              <div class="flex items-center justify-between gap-3 text-sm">
-                <div class="flex items-center gap-2 min-w-0">
-                  <div class="w-2.5 h-2.5 rounded-full" :class="[row.dotClass, row.key === 'running' ? 'animate-pulse' : '']"></div>
-                  <span class="text-gray-700 font-medium truncate">{{ row.label }}</span>
-                </div>
-                <div class="flex items-center gap-2 shrink-0">
-                  <span class="text-xs text-gray-500 tabular-nums">{{ row.percent.toFixed(0) }}%</span>
-                  <span class="font-bold text-gray-900 tabular-nums">{{ row.count }}</span>
-                </div>
-              </div>
+            <div v-if="biggestStorageTreemapImages.length === 0" class="mt-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/50 px-4 py-6 text-center">
+              <div class="text-sm font-semibold text-gray-700">No image sizes</div>
+              <div class="text-xs text-gray-500 mt-1">Enable sizeBytes to chart.</div>
+            </div>
 
-              <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                <div class="h-full rounded-full transition-all duration-500" :class="row.barClass" :style="{ width: `${row.percent}%` }"></div>
-              </div>
+            <div v-else class="mt-2">
+              <TreemapChart :data="biggestStorageTreemapImages" :height="220" :value-formatter="formatBytes" />
             </div>
           </div>
         </div>
