@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { Activity, Package, HardDrive, Clock, Timer, Layers, Trophy } from 'lucide-vue-next'
 import DonutChart from './charts/DonutChart.vue'
 import HorizontalBarChart from './charts/HorizontalBarChart.vue'
+import TreemapChart from './charts/TreemapChart.vue'
 
 const props = defineProps({
   containers: {
@@ -331,34 +332,25 @@ const diskDonuts = computed(() => {
   }
 })
 
-const categoryDonut = computed(() => {
+const categoryTreemap = computed(() => {
   const rows = Array.isArray(categoryStats.value.all) ? categoryStats.value.all : []
-  if (rows.length === 0) {
-    return { series: [], labels: [], colors: [], legend: [] }
-  }
+  if (rows.length === 0) return { data: [] }
 
-  const sorted = [...rows].sort((a, b) => (b?.[1] || 0) - (a?.[1] || 0))
-  const topN = 6
+  const sorted = [...rows].sort((a, b) => (Number(b?.[1]) || 0) - (Number(a?.[1]) || 0))
+
+  // Keep the treemap readable
+  const topN = 10
   const top = sorted.slice(0, topN)
   const rest = sorted.slice(topN)
   const otherCount = rest.reduce((sum, r) => sum + (Number(r?.[1]) || 0), 0)
 
-  const labels = top.map((r) => formatCategory(r[0]))
-  const series = top.map((r) => Number(r[1]) || 0)
+  const data = top
+    .map((r) => ({ x: formatCategory(r[0]), y: Number(r[1]) || 0 }))
+    .filter((d) => d.y > 0)
 
-  if (otherCount > 0) {
-    labels.push('Other')
-    series.push(otherCount)
-  }
+  if (otherCount > 0) data.push({ x: 'Other', y: otherCount })
 
-  const colors = ['#22c55e', '#10b981', '#0ea5e9', '#6366f1', '#a855f7', '#f59e0b', '#94a3b8']
-
-  return {
-    labels,
-    series,
-    colors: colors.slice(0, labels.length),
-    legend: labels.map((label, idx) => ({ label, value: series[idx], color: colors[idx] }))
-  }
+  return { data }
 })
 
 // Helper function to format bytes
@@ -725,31 +717,14 @@ function formatMinutesAsDuration(minutes) {
                 <div class="text-xs font-bold text-gray-900 tabular-nums">{{ categoryStats.appsCount }} apps</div>
               </div>
 
-              <div v-if="categoryDonut.series.length === 0" class="mt-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/50 px-4 py-6 text-center">
+              <div v-if="categoryTreemap.data.length === 0" class="mt-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/50 px-4 py-6 text-center">
                 <div class="text-sm font-semibold text-gray-700">No category data</div>
                 <div class="text-xs text-gray-500 mt-1">Apps need categories to chart.</div>
               </div>
 
-              <div v-else class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
-                <DonutChart
-                  :series="categoryDonut.series"
-                  :labels="categoryDonut.labels"
-                  :colors="categoryDonut.colors"
-                  :height="190"
-                  donut-label="Apps"
-                  :total-formatter="() => `${categoryStats.appsCount}`"
-                />
-
-                <div class="space-y-2">
-                  <div v-for="row in categoryDonut.legend" :key="row.label" class="flex items-center justify-between gap-3 text-xs">
-                    <div class="flex items-center gap-2 min-w-0">
-                      <span class="w-2.5 h-2.5 rounded-full" :style="{ backgroundColor: row.color }"></span>
-                      <span class="text-gray-700 font-medium truncate" :title="row.label">{{ row.label }}</span>
-                    </div>
-                    <span class="text-gray-900 font-bold tabular-nums">{{ row.value }}</span>
-                  </div>
-                  <div class="text-[11px] text-gray-400">Top {{ Math.min(6, categoryStats.total) }} categories</div>
-                </div>
+              <div v-else class="mt-2">
+                <TreemapChart :data="categoryTreemap.data" :height="220" :value-formatter="(v) => `${v} app${v === 1 ? '' : 's'}`" />
+                <div class="mt-2 text-[11px] text-gray-400">Top {{ Math.min(10, categoryStats.total) }} categories (plus “Other”)</div>
               </div>
             </div>
 
