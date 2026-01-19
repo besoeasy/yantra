@@ -217,10 +217,12 @@ function formatBytes(bytes) {
 // Helper function to capitalize category names
 function formatCategory(category) {
   if (!category) return 'Unknown'
-  return category
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
+  
+  // Split by both hyphens and commas, take only the first part
+  const firstCategory = category.split(/[-,]/)[0].trim()
+  
+  // Capitalize first letter
+  return firstCategory.charAt(0).toUpperCase() + firstCategory.slice(1)
 }
 </script>
 
