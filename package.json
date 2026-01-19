@@ -13,7 +13,6 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.3",
     "cors": "^2.8.5",
-    "dockerode": "^4.0.2",
     "express": "^4.21.2",
     "lucide-vue-next": "^0.487.0",
     "tailwindcss": "^4.1.3",
