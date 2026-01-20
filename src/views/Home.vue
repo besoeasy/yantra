@@ -11,7 +11,6 @@ import ImageDiskUsageCard from "../components/quick-metrics/ImageDiskUsageCard.v
 import VolumeDiskUsageCard from "../components/quick-metrics/VolumeDiskUsageCard.vue";
 import AverageUptimeCard from "../components/quick-metrics/AverageUptimeCard.vue";
 import ExpiringContainersCard from "../components/quick-metrics/ExpiringContainersCard.vue";
-import RecentLogsCard from "../components/quick-metrics/RecentLogsCard.vue";
 import WatchtowerNextCheckCard from "../components/quick-metrics/WatchtowerNextCheckCard.vue";
 
 const router = useRouter();
@@ -427,7 +426,7 @@ onUnmounted(() => {
                 <WatchtowerNextCheckCard :containers="containers" :current-time="currentTime" :interval-hours="3" />
               </div>
 
-              <div v-if="reclaimableStats.show" class="h-full">
+              <div v-if="reclaimableStats.show" class="h-full lg:col-span-2 xl:col-span-2">
                 <SystemCleaner
                   :api-url="apiUrl"
                   :initial-image-stats="reclaimableStats.imageStats"
@@ -440,28 +439,23 @@ onUnmounted(() => {
                 <AverageUptimeCard :containers="containers" :current-time="currentTime" />
               </div>
 
-              <div v-if="containers.length > 0" class="lg:col-span-3 xl:col-span-3">
-                <AppCategoriesCard :containers="containers" />
-              </div>
-
-              <div v-if="images.length > 0" class="lg:col-span-3 xl:col-span-3">
-                <BiggestStorageCard :images="images" />
-              </div>
-
-              <div>
+              <div class="lg:col-span-3 xl:col-span-3">
                 <ExpiringContainersCard :containers="containers" :current-time="currentTime" />
               </div>
-
-              <div class="lg:col-span-3 xl:col-span-3">
-                <RecentLogsCard :api-url="apiUrl" :limit="3" />
-              </div>
-
               <div v-if="images.length > 0">
                 <ImageDiskUsageCard :images="images" />
               </div>
 
               <div v-if="volumes.length > 0">
                 <VolumeDiskUsageCard :volumes="volumes" />
+              </div>
+
+              <div v-if="containers.length > 0" class="lg:col-span-3 xl:col-span-3">
+                <AppCategoriesCard :containers="containers" />
+              </div>
+
+              <div v-if="images.length > 0" class="lg:col-span-3 xl:col-span-3">
+                <BiggestStorageCard :images="images" />
               </div>
             </div>
           </div>
