@@ -11,6 +11,7 @@ import DiskUsageCard from "../components/quick-metrics/DiskUsageCard.vue";
 import AverageUptimeCard from "../components/quick-metrics/AverageUptimeCard.vue";
 import ExpiringContainersCard from "../components/quick-metrics/ExpiringContainersCard.vue";
 import RecentLogsCard from "../components/quick-metrics/RecentLogsCard.vue";
+import WatchtowerNextCheckCard from "../components/quick-metrics/WatchtowerNextCheckCard.vue";
 
 const router = useRouter();
 
@@ -383,6 +384,10 @@ onUnmounted(() => {
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
               <div v-if="showWatchtowerAlert" class="h-full">
                 <WatchtowerAlert />
+              </div>
+
+              <div v-else class="h-full">
+                <WatchtowerNextCheckCard :containers="containers" :current-time="currentTime" :interval-hours="3" />
               </div>
 
               <div class="lg:col-span-2 xl:col-span-2">
