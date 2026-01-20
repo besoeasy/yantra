@@ -246,8 +246,12 @@ onUnmounted(() => {
 
           <!-- Quick Metrics (Cards) -->
           <div class="space-y-6">
-            <div v-if="yantraContainers.length > 0">
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-5">
+              <div class="lg:col-span-2 xl:col-span-2">
+                <GreetingCard :running-apps="runningApps" :total-volumes="totalVolumes" />
+              </div>
+
+              <template v-if="yantraContainers.length > 0">
                 <div
                   v-for="(container, index) in yantraContainers"
                   :key="container.id"
@@ -285,13 +289,8 @@ onUnmounted(() => {
                           </div>
 
                           <!-- Status Indicator Dot -->
-                          <div
-                            class="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-900/90 border border-white/10 rounded-full flex items-center justify-center"
-                          >
-                            <div
-                              :class="container.state === 'running' ? 'bg-emerald-400' : 'bg-gray-400'"
-                              class="w-3 h-3 rounded-full animate-pulse"
-                            ></div>
+                          <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-900/90 border border-white/10 rounded-full flex items-center justify-center">
+                            <div :class="container.state === 'running' ? 'bg-emerald-400' : 'bg-gray-400'" class="w-3 h-3 rounded-full animate-pulse"></div>
                           </div>
                         </div>
 
@@ -356,11 +355,9 @@ onUnmounted(() => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </template>
 
-            <div v-if="volumeContainers.length > 0">
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-5">
+              <template v-if="volumeContainers.length > 0">
                 <div
                   v-for="(container, index) in volumeContainers"
                   :key="container.id"
@@ -420,20 +417,14 @@ onUnmounted(() => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </template>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-5">
               <div v-if="showWatchtowerAlert" class="h-full">
                 <WatchtowerAlert />
               </div>
 
               <div v-else class="h-full">
                 <WatchtowerNextCheckCard :containers="containers" :current-time="currentTime" :interval-hours="3" />
-              </div>
-
-              <div class="lg:col-span-2 xl:col-span-2">
-                <GreetingCard :running-apps="runningApps" :total-volumes="totalVolumes" />
               </div>
 
               <div v-if="reclaimableStats.show" class="h-full">
