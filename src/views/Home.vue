@@ -252,70 +252,106 @@ onUnmounted(() => {
                   :key="container.id"
                   :style="{ animationDelay: `${index * 50}ms` }"
                   @click="viewContainerDetail(container)"
-                  class="group bg-white rounded-3xl p-6 shadow-[0_2px_20px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 cursor-pointer animate-fadeIn relative overflow-hidden flex flex-col h-full hover:-translate-y-1"
+                  class="relative h-full overflow-hidden group rounded-2xl cursor-pointer transition-all duration-500 hover:-translate-y-1 animate-fadeIn"
                 >
-                  <!-- Card Header -->
-                  <div class="flex items-start justify-between mb-6">
-                    <div class="flex items-center gap-4">
-                      <div class="relative">
-                        <img
-                          v-if="container.app && container.app.logo"
-                          :src="container.app.logo"
-                          :alt="container.name"
-                          class="w-16 h-16 object-contain filter group-hover:brightness-105 transition-all"
-                        />
-                        <div v-else class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-3xl">🐳</div>
-                        <!-- Status Indicator Dot -->
-                        <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm">
-                          <div :class="container.state === 'running' ? 'bg-green-500' : 'bg-gray-400'" class="w-3 h-3 rounded-full animate-pulse"></div>
-                        </div>
-                      </div>
+                  <div class="absolute inset-0 bg-gray-900">
+                    <div class="absolute inset-0 bg-linear-to-br from-slate-600/25 via-blue-600/10 to-gray-900 z-10"></div>
+                    <div
+                      class="absolute top-0 right-0 w-64 h-64 bg-blue-500/15 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-500/25 transition-colors duration-700"
+                    ></div>
+                    <div
+                      class="absolute bottom-0 left-0 w-48 h-48 bg-slate-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 group-hover:bg-slate-500/30 transition-colors duration-700"
+                    ></div>
+                  </div>
 
-                      <div>
-                        <h3 class="font-bold text-xl text-gray-900 line-clamp-1 mb-1">
-                          {{ container.app ? container.app.name : container.name.replace(/^\//, "") }}
-                        </h3>
-                        <div class="flex items-center gap-2">
-                          <span
-                            class="text-xs font-semibold px-2.5 py-1 rounded-lg"
-                            :class="container.state === 'running' ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'"
+                  <div
+                    class="relative z-20 h-full p-6 flex flex-col justify-between border border-white/5 rounded-2xl backdrop-blur-sm group-hover:border-blue-500/30 transition-colors duration-500"
+                  >
+                    <!-- Card Header -->
+                    <div class="flex items-start justify-between mb-6">
+                      <div class="flex items-center gap-4 min-w-0">
+                        <div class="relative shrink-0">
+                          <div class="absolute inset-0 bg-blue-500/15 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
+
+                          <div class="relative w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+                            <img
+                              v-if="container.app && container.app.logo"
+                              :src="container.app.logo"
+                              :alt="container.name"
+                              class="w-14 h-14 object-contain filter group-hover:brightness-110 transition-all"
+                            />
+                            <div v-else class="text-3xl">🐳</div>
+                          </div>
+
+                          <!-- Status Indicator Dot -->
+                          <div
+                            class="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-900/90 border border-white/10 rounded-full flex items-center justify-center"
                           >
-                            {{ container.state }}
-                          </span>
-                          <span v-if="isTemporary(container)" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-orange-50 text-orange-700"> Temp </span>
+                            <div
+                              :class="container.state === 'running' ? 'bg-emerald-400' : 'bg-gray-400'"
+                              class="w-3 h-3 rounded-full animate-pulse"
+                            ></div>
+                          </div>
+                        </div>
+
+                        <div class="min-w-0">
+                          <h3 class="font-bold text-xl text-white line-clamp-1 mb-1 group-hover:text-blue-200 transition-colors">
+                            {{ container.app ? container.app.name : container.name.replace(/^\//, "") }}
+                          </h3>
+                          <div class="flex items-center gap-2 flex-wrap">
+                            <span
+                              class="text-xs font-semibold px-2.5 py-1 rounded-lg border"
+                              :class="
+                                container.state === 'running'
+                                  ? 'bg-emerald-500/10 text-emerald-200 border-emerald-500/20'
+                                  : 'bg-white/5 text-gray-300 border-white/10'
+                              "
+                            >
+                              {{ container.state }}
+                            </span>
+                            <span
+                              v-if="isTemporary(container)"
+                              class="text-xs font-semibold px-2.5 py-1 rounded-lg border bg-orange-500/10 text-orange-200 border-orange-500/20"
+                            >
+                              Temp
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <!-- Metrics -->
-                  <div class="space-y-3 mb-6 flex-1">
-                    <div
-                      v-if="container.state === 'running' && formatUptime(container)"
-                      class="flex items-center justify-between text-sm py-2 border-b border-gray-50 last:border-0 border-dashed"
-                    >
-                      <span class="text-gray-400 font-medium">Uptime</span>
-                      <span class="text-gray-700 font-semibold font-mono">{{ formatUptime(container) }}</span>
+                    <!-- Metrics -->
+                    <div class="space-y-3 mb-6 flex-1">
+                      <div
+                        v-if="container.state === 'running' && formatUptime(container)"
+                        class="flex items-center justify-between text-sm py-2 border-b border-white/10 last:border-0 border-dashed"
+                      >
+                        <span class="text-gray-400 font-medium">Uptime</span>
+                        <span class="text-gray-200 font-semibold font-mono tabular-nums">{{ formatUptime(container) }}</span>
+                      </div>
+
+                      <div
+                        v-if="isTemporary(container)"
+                        class="flex items-center justify-between text-sm py-2 border-b border-white/10 last:border-0 border-dashed"
+                      >
+                        <span class="text-gray-400 font-medium">Expires</span>
+                        <span
+                          :class="getExpirationInfo(container).isExpiringSoon ? 'text-red-300 animate-pulse' : 'text-orange-200'"
+                          class="font-bold font-mono tabular-nums"
+                        >
+                          {{ getExpirationInfo(container).timeRemaining }}
+                        </span>
+                      </div>
                     </div>
 
-                    <div
-                      v-if="isTemporary(container)"
-                      class="flex items-center justify-between text-sm py-2 border-b border-gray-50 last:border-0 border-dashed"
-                    >
-                      <span class="text-gray-400 font-medium">Expires</span>
-                      <span :class="getExpirationInfo(container).isExpiringSoon ? 'text-red-600 animate-pulse' : 'text-orange-600'" class="font-bold font-mono">
-                        {{ getExpirationInfo(container).timeRemaining }}
-                      </span>
-                    </div>
-                  </div>
-
-                  <!-- Footer -->
-                  <div class="mt-auto pt-4 flex items-center justify-between text-sm border-t border-gray-50">
-                    <span class="text-gray-400 font-medium group-hover:text-blue-600 transition-colors">Manage App</span>
-                    <div
-                      class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors"
-                    >
-                      <ArrowRight :size="16" class="transform group-hover:translate-x-0.5 transition-transform" />
+                    <!-- Footer -->
+                    <div class="mt-auto pt-4 flex items-center justify-between text-sm border-t border-white/5 group-hover:border-white/10 transition-colors">
+                      <span class="text-gray-400 font-medium group-hover:text-blue-200 transition-colors">Manage App</span>
+                      <div
+                        class="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white group-hover:border-blue-500/30 group-hover:bg-blue-500/10 transition-colors"
+                      >
+                        <ArrowRight :size="16" class="transform group-hover:translate-x-0.5 transition-transform" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -329,33 +365,58 @@ onUnmounted(() => {
                   :key="container.id"
                   :style="{ animationDelay: `${index * 50}ms` }"
                   @click="viewContainerDetail(container)"
-                  class="group bg-white rounded-3xl p-6 shadow-[0_2px_15px_rgb(0,0,0,0.03)] border border-indigo-50 hover:border-indigo-100 hover:shadow-[0_8px_30px_rgb(79,70,229,0.06)] transition-all duration-300 cursor-pointer animate-fadeIn relative overflow-hidden flex flex-col h-full hover:-translate-y-1"
+                  class="relative h-full overflow-hidden group rounded-2xl cursor-pointer transition-all duration-500 hover:-translate-y-1 animate-fadeIn"
                 >
-                  <div class="flex items-center gap-4 mb-4">
-                    <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-105 transition-transform">
-                      📂
-                    </div>
-                    <div>
-                      <h3 class="font-bold text-lg text-gray-900 line-clamp-1 mb-1">
-                        {{ container.labels?.["yantra.volume-browser"] || container.name }}
-                      </h3>
-                      <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-green-50 text-green-700"> Active </span>
-                    </div>
+                  <div class="absolute inset-0 bg-gray-900">
+                    <div class="absolute inset-0 bg-linear-to-br from-indigo-600/25 via-purple-600/10 to-gray-900 z-10"></div>
+                    <div
+                      class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/15 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-indigo-500/25 transition-colors duration-700"
+                    ></div>
+                    <div
+                      class="absolute bottom-0 left-0 w-48 h-48 bg-purple-600/15 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 group-hover:bg-purple-600/25 transition-colors duration-700"
+                    ></div>
                   </div>
 
-                  <!-- Expiration Timer -->
-                  <div v-if="isTemporary(container)" class="mb-4 px-1">
-                    <div class="flex items-center justify-between text-xs py-1.5 px-3 bg-orange-50 text-orange-800 rounded-lg border border-orange-100">
-                      <span class="font-medium">Expires in</span>
-                      <span :class="getExpirationInfo(container).isExpiringSoon ? 'text-red-600 animate-pulse font-bold' : 'font-semibold'">
-                        {{ getExpirationInfo(container).timeRemaining }}
-                      </span>
-                    </div>
-                  </div>
+                  <div
+                    class="relative z-20 h-full p-6 flex flex-col justify-between border border-white/5 rounded-2xl backdrop-blur-sm group-hover:border-indigo-500/30 transition-colors duration-500"
+                  >
+                    <div class="flex items-center gap-4 mb-4">
+                      <div class="relative shrink-0">
+                        <div class="absolute inset-0 bg-indigo-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
+                        <div
+                          class="relative w-14 h-14 bg-linear-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500"
+                        >
+                          <span class="text-2xl">📂</span>
+                        </div>
+                      </div>
 
-                  <div class="mt-auto pt-3 flex items-center justify-between text-sm border-t border-gray-50">
-                    <span class="text-gray-400 font-medium group-hover:text-indigo-600 transition-colors">Manage Files</span>
-                    <ArrowRight :size="16" class="text-gray-300 group-hover:text-indigo-600 transform group-hover:translate-x-0.5 transition-all" />
+                      <div class="min-w-0">
+                        <h3 class="font-bold text-lg text-white line-clamp-1 mb-1 group-hover:text-indigo-200 transition-colors">
+                          {{ container.labels?.["yantra.volume-browser"] || container.name }}
+                        </h3>
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-lg border bg-emerald-500/10 text-emerald-200 border-emerald-500/20">
+                          Active
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Expiration Timer -->
+                    <div v-if="isTemporary(container)" class="mb-4 px-1">
+                      <div class="flex items-center justify-between text-xs py-1.5 px-3 rounded-lg border border-orange-500/20 bg-orange-500/10">
+                        <span class="font-medium text-orange-200">Expires in</span>
+                        <span
+                          :class="getExpirationInfo(container).isExpiringSoon ? 'text-red-300 animate-pulse font-bold' : 'text-orange-200 font-semibold'"
+                          class="font-mono tabular-nums"
+                        >
+                          {{ getExpirationInfo(container).timeRemaining }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="mt-auto pt-3 flex items-center justify-between text-sm border-t border-white/5 group-hover:border-white/10 transition-colors">
+                      <span class="text-gray-400 font-medium group-hover:text-indigo-200 transition-colors">Manage Files</span>
+                      <ArrowRight :size="16" class="text-white/70 group-hover:text-indigo-200 transform group-hover:translate-x-0.5 transition-all" />
+                    </div>
                   </div>
                 </div>
               </div>
