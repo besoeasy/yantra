@@ -7,7 +7,8 @@ import WatchtowerAlert from "../components/WatchtowerAlert.vue";
 import GreetingCard from "../components/home/GreetingCard.vue";
 import AppCategoriesCard from "../components/quick-metrics/AppCategoriesCard.vue";
 import BiggestStorageCard from "../components/quick-metrics/BiggestStorageCard.vue";
-import DiskUsageCard from "../components/quick-metrics/DiskUsageCard.vue";
+import ImageDiskUsageCard from "../components/quick-metrics/ImageDiskUsageCard.vue";
+import VolumeDiskUsageCard from "../components/quick-metrics/VolumeDiskUsageCard.vue";
 import AverageUptimeCard from "../components/quick-metrics/AverageUptimeCard.vue";
 import ExpiringContainersCard from "../components/quick-metrics/ExpiringContainersCard.vue";
 import RecentLogsCard from "../components/quick-metrics/RecentLogsCard.vue";
@@ -246,7 +247,7 @@ onUnmounted(() => {
           <!-- Quick Metrics (Cards) -->
           <div class="space-y-6">
             <div v-if="yantraContainers.length > 0">
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-5">
                 <div
                   v-for="(container, index) in yantraContainers"
                   :key="container.id"
@@ -359,7 +360,7 @@ onUnmounted(() => {
             </div>
 
             <div v-if="volumeContainers.length > 0">
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-5">
                 <div
                   v-for="(container, index) in volumeContainers"
                   :key="container.id"
@@ -422,7 +423,7 @@ onUnmounted(() => {
               </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-5">
               <div v-if="showWatchtowerAlert" class="h-full">
                 <WatchtowerAlert />
               </div>
@@ -448,11 +449,11 @@ onUnmounted(() => {
                 <AverageUptimeCard :containers="containers" :current-time="currentTime" />
               </div>
 
-              <div v-if="containers.length > 0" class="lg:col-span-2 xl:col-span-2">
+              <div v-if="containers.length > 0" class="lg:col-span-3 xl:col-span-3">
                 <AppCategoriesCard :containers="containers" />
               </div>
 
-              <div v-if="images.length > 0" class="lg:col-span-2 xl:col-span-2">
+              <div v-if="images.length > 0" class="lg:col-span-3 xl:col-span-3">
                 <BiggestStorageCard :images="images" />
               </div>
 
@@ -460,12 +461,16 @@ onUnmounted(() => {
                 <ExpiringContainersCard :containers="containers" :current-time="currentTime" />
               </div>
 
-              <div class="lg:col-span-2 xl:col-span-2">
+              <div class="lg:col-span-3 xl:col-span-3">
                 <RecentLogsCard :api-url="apiUrl" :limit="3" />
               </div>
 
-              <div v-if="images.length > 0 || volumes.length > 0" class="lg:col-span-2 xl:col-span-2">
-                <DiskUsageCard :images="images" :volumes="volumes" />
+              <div v-if="images.length > 0">
+                <ImageDiskUsageCard :images="images" />
+              </div>
+
+              <div v-if="volumes.length > 0">
+                <VolumeDiskUsageCard :volumes="volumes" />
               </div>
             </div>
           </div>
