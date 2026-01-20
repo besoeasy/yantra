@@ -37,6 +37,28 @@ const props = defineProps({
   }
 })
 
+const safeSeries = computed(() => {
+  const list = Array.isArray(props.series) ? props.series : []
+  return list.map((n) => {
+    const v = Number(n)
+    if (!Number.isFinite(v)) return 0
+    return v < 0 ? 0 : v
+  })
+})
+
+const chartKey = computed(() => {
+  const labels = Array.isArray(props.labels) ? props.labels : []
+  const colors = Array.isArray(props.colors) ? props.colors : []
+  return [
+    String(props.theme || ''),
+    String(props.donutLabel || ''),
+    String(props.height || ''),
+    labels.join('|'),
+    safeSeries.value.join(','),
+    colors.join(',')
+  ].join('::')
+})
+
 const chartOptions = computed(() => {
   const formatValue = (val) => {
     if (typeof props.valueFormatter === 'function') return props.valueFormatter(val)
@@ -50,7 +72,8 @@ const chartOptions = computed(() => {
   return {
     chart: {
       type: 'donut',
-      sparkline: { enabled: true }
+      sparkline: { enabled: true },
+      background: 'transparent'
     },
     theme: { mode: isDark ? 'dark' : 'light' },
     tooltip: {
@@ -93,7 +116,7 @@ const chartOptions = computed(() => {
               color: subLabelColor,
               formatter: () => {
                 if (typeof props.totalFormatter === 'function') return props.totalFormatter()
-                const sum = (props.series || []).reduce((s, n) => s + (Number(n) || 0), 0)
+                const sum = (safeSeries.value || []).reduce((s, n) => s + (Number(n) || 0), 0)
                 return formatValue(sum)
               }
             }
@@ -106,5 +129,13 @@ const chartOptions = computed(() => {
 </script>
 
 <template>
-  <VueApexCharts type="donut" :height="height" :options="chartOptions" :series="series" />
+  <VueApexCharts :key="chartKey" type="donut" :height="height" :options="chartOptions" :series="safeSeries" />
 </template>
+
+<style scoped>
+/* Ensure the chart container never paints its own background */
+:deep(.apexcharts-canvas),
+:deep(.apexcharts-svg) {
+  background: transparent !important;
+}
+</style>

@@ -42,7 +42,8 @@ const chartOptions = computed(() => {
   return {
     chart: {
       type: 'bar',
-      sparkline: { enabled: true }
+      sparkline: { enabled: true },
+      background: 'transparent'
     },
     theme: { mode: isDark ? 'dark' : 'light' },
     tooltip: {
@@ -83,3 +84,10 @@ const chartOptions = computed(() => {
 <template>
   <VueApexCharts type="bar" :height="height" :options="chartOptions" :series="series" />
 </template>
+
+<style scoped>
+:deep(.apexcharts-canvas),
+:deep(.apexcharts-svg) {
+  background: transparent !important;
+}
+</style>
