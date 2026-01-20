@@ -374,13 +374,6 @@ onUnmounted(() => {
 
           <!-- Quick Metrics (Cards) -->
           <div class="space-y-6">
-            <div class="flex items-center gap-3">
-              <div class="p-2 bg-emerald-100 text-emerald-700 rounded-xl">
-                <div class="font-bold text-lg px-1">✦</div>
-              </div>
-              <h2 class="text-2xl font-bold text-gray-900">Quick Metrics</h2>
-            </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
               <div v-if="showWatchtowerAlert" class="h-full">
                 <WatchtowerAlert />
