@@ -5,7 +5,7 @@ import { Terminal, AlertCircle, Info, ArrowRight } from 'lucide-vue-next'
 
 const props = defineProps({
   apiUrl: { type: String, default: '' },
-  limit: { type: Number, default: 7 },
+  limit: { type: Number, default: 3 },
   refreshMs: { type: Number, default: 10000 }
 })
 

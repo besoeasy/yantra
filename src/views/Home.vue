@@ -415,7 +415,7 @@ onUnmounted(() => {
               </div>
 
               <div class="lg:col-span-2 xl:col-span-2">
-                <RecentLogsCard :api-url="apiUrl" :limit="7" />
+                <RecentLogsCard :api-url="apiUrl" :limit="3" />
               </div>
 
               <div v-if="images.length > 0 || volumes.length > 0" class="lg:col-span-2 xl:col-span-2">
