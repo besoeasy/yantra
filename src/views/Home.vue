@@ -10,6 +10,7 @@ import BiggestStorageCard from "../components/quick-metrics/BiggestStorageCard.v
 import DiskUsageCard from "../components/quick-metrics/DiskUsageCard.vue";
 import AverageUptimeCard from "../components/quick-metrics/AverageUptimeCard.vue";
 import ExpiringContainersCard from "../components/quick-metrics/ExpiringContainersCard.vue";
+import RecentLogsCard from "../components/quick-metrics/RecentLogsCard.vue";
 
 const router = useRouter();
 
@@ -411,6 +412,10 @@ onUnmounted(() => {
 
               <div>
                 <ExpiringContainersCard :containers="containers" :current-time="currentTime" />
+              </div>
+
+              <div class="lg:col-span-2 xl:col-span-2">
+                <RecentLogsCard :api-url="apiUrl" :limit="7" />
               </div>
 
               <div v-if="images.length > 0 || volumes.length > 0" class="lg:col-span-2 xl:col-span-2">

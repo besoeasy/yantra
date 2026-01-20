@@ -115,7 +115,7 @@ onUnmounted(() => {
           <span class="text-sm font-semibold text-gray-300">Console Output</span>
           <span class="text-xs text-gray-500 ml-auto">{{ logsData.count || 0 }} entries</span>
         </div>
-        <div class="flex-1 min-h-0 overflow-y-auto font-mono text-xs sm:text-sm bg-gray-950">
+        <div class="flex-1 min-h-0 overflow-y-auto font-mono text-[11px] sm:text-xs bg-gray-950">
           <div v-if="!logsData.logs || logsData.logs.length === 0" class="p-8 sm:p-12 text-center">
             <div class="w-16 h-16 bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <FileText class="w-8 h-8 text-gray-600" />
@@ -139,7 +139,7 @@ onUnmounted(() => {
                   {{ logEntry.level }}
                 </span>
               </div>
-              <span class="text-gray-300 flex-1 break-all text-xs sm:text-sm leading-relaxed">
+              <span class="text-gray-300 flex-1 break-all leading-relaxed">
                 {{ logEntry.message }}
                 <span v-if="logEntry.args" class="text-gray-500">
                   {{ logEntry.args.join(' ') }}
