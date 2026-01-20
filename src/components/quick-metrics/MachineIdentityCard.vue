@@ -101,7 +101,7 @@ const ispText = computed(() => {
       </div>
 
       <div class="mt-5 flex-1">
-        <div v-if="loading" class="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div v-if="loading" class="rounded-2xl  p-4">
           <div class="h-4 w-40 bg-white/10 rounded animate-pulse"></div>
           <div class="mt-3 h-3 w-56 bg-white/10 rounded animate-pulse"></div>
           <div class="mt-3 h-3 w-44 bg-white/10 rounded animate-pulse"></div>
@@ -113,7 +113,7 @@ const ispText = computed(() => {
           <div class="mt-3 text-xs text-gray-300">Tip: this needs outbound internet access from the daemon.</div>
         </div>
 
-        <div v-else class="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div v-else class="rounded-2xl  p-4">
           <div class="flex items-start justify-between gap-4">
             <div class="min-w-0">
               <div class="text-xs font-semibold text-gray-400">Public IP</div>

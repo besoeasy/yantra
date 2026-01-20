@@ -62,11 +62,11 @@ const greeting = computed(() => {
       </div>
 
       <div class="mt-5 grid grid-cols-2 gap-3">
-        <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+        <div class="rounded-2xl  px-4 py-3">
           <div class="text-3xl font-extrabold text-white leading-none tabular-nums">{{ props.runningApps }}</div>
           <div class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mt-1">Running Apps</div>
         </div>
-        <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+        <div class="rounded-2xl  px-4 py-3">
           <div class="text-3xl font-extrabold text-white leading-none tabular-nums">{{ props.totalVolumes }}</div>
           <div class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mt-1">Volumes</div>
         </div>

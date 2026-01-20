@@ -78,7 +78,7 @@ const topCategories = computed(() => {
       </div>
 
       <div class="mt-5 space-y-4">
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div class="rounded-2xl  p-4">
           <div class="flex items-center justify-between gap-3 mb-3">
             <div>
               <div class="text-sm font-bold text-white">Category distribution</div>

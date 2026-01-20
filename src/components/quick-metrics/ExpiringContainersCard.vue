@@ -99,7 +99,7 @@ const expiringTop = computed(() => {
         </div>
       </div>
 
-      <div class="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4" v-if="expiringTop.items.length > 0">
+      <div class="mt-5 rounded-2xl  p-4" v-if="expiringTop.items.length > 0">
         <div class="flex items-center justify-between gap-3 mb-3">
           <div>
             <div class="text-sm font-bold text-white">Next 4 expiring</div>

@@ -88,7 +88,7 @@ const unusedPercent = computed(() => {
           <div class="text-xs text-gray-400 mt-1">Nothing to visualize yet.</div>
         </div>
 
-        <div v-else class="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div v-else class="rounded-2xl  p-4">
           <div class="flex items-center justify-between gap-3 mb-3">
             <div>
               <div class="text-sm font-bold text-white">Breakdown</div>
@@ -112,7 +112,7 @@ const unusedPercent = computed(() => {
             </div>
 
             <div class="sm:col-span-3 space-y-3">
-              <div class="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+              <div class="rounded-xl  px-3 py-2">
                 <div class="flex items-center justify-between gap-3 text-xs">
                   <div class="inline-flex items-center gap-2 min-w-0">
                     <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: donut.colors[0] }"></span>
@@ -128,7 +128,7 @@ const unusedPercent = computed(() => {
                 </div>
               </div>
 
-              <div class="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+              <div class="rounded-xl  px-3 py-2">
                 <div class="flex items-center justify-between gap-3 text-xs">
                   <div class="inline-flex items-center gap-2 min-w-0">
                     <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: donut.colors[1] }"></span>

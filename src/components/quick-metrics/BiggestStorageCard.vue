@@ -63,7 +63,7 @@ const totalTop10Bytes = computed(() => biggestImages.value.reduce((sum, img) => 
           <div class="text-xs text-gray-400 mt-1">Start a container to pull images.</div>
         </div>
 
-        <div v-else class="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div v-else class="rounded-2xl  p-4">
           <TreemapChart :data="treemapData" :height="240" theme="dark" :value-formatter="formatBytes" />
           <div class="mt-2 text-[11px] text-gray-400">Sized by image bytes</div>
         </div>
