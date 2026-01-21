@@ -58,34 +58,34 @@ onUnmounted(() => {
     <div class="mb-6 md:mb-8">
       <div class="flex items-center gap-3 mb-2">
         <Terminal class="w-8 h-8 text-blue-600" />
-        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">Application Logs</h2>
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Application Logs</h2>
       </div>
-      <p class="text-sm sm:text-base text-gray-600">Monitor system events and troubleshoot issues</p>
+      <p class="text-sm sm:text-base text-gray-600 dark:text-slate-400">Monitor system events and troubleshoot issues</p>
     </div>
     
     <div v-if="loading" class="flex-1 flex items-center justify-center text-center">
       <div class="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-      <div class="text-gray-500 font-medium">Loading logs...</div>
+      <div class="text-gray-500 dark:text-slate-400 font-medium">Loading logs...</div>
     </div>
     <div v-else class="flex-1 min-h-0 flex flex-col">
       <!-- Controls -->
-      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 smooth-shadow mb-5">
+      <div class="bg-white dark:bg-slate-900/70 rounded-2xl p-4 sm:p-5 border border-gray-200 dark:border-slate-800 smooth-shadow mb-5">
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
             <button @click="logFilter = 'all'; fetchLogs()"
-              :class="logFilter === 'all' ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white smooth-shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+              :class="logFilter === 'all' ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white smooth-shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'"
               class="px-4 py-2.5 rounded-xl text-sm font-semibold active:scale-95 transition-all whitespace-nowrap touch-manipulation flex items-center gap-2">
               <FileText class="w-4 h-4" />
               <span>All ({{ logsData.count || 0 }})</span>
             </button>
             <button @click="logFilter = 'info'; fetchLogs()"
-              :class="logFilter === 'info' ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white smooth-shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+              :class="logFilter === 'info' ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white smooth-shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'"
               class="px-4 py-2.5 rounded-xl text-sm font-semibold active:scale-95 transition-all whitespace-nowrap touch-manipulation flex items-center gap-2">
               <Info class="w-4 h-4" />
               <span>Info</span>
             </button>
             <button @click="logFilter = 'error'; fetchLogs()"
-              :class="logFilter === 'error' ? 'bg-gradient-to-r from-red-500 to-red-600 text-white smooth-shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+              :class="logFilter === 'error' ? 'bg-gradient-to-r from-red-500 to-red-600 text-white smooth-shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'"
               class="px-4 py-2.5 rounded-xl text-sm font-semibold active:scale-95 transition-all whitespace-nowrap touch-manipulation flex items-center gap-2">
               <AlertCircle class="w-4 h-4" />
               <span>Errors</span>
@@ -93,7 +93,7 @@ onUnmounted(() => {
           </div>
           <div class="flex gap-2">
             <button @click="autoRefresh = !autoRefresh"
-              :class="autoRefresh ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'"
+              :class="autoRefresh ? 'bg-green-100 text-green-700 border-green-200 dark:bg-emerald-500/15 dark:text-emerald-200 dark:border-emerald-500/40' : 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'"
               class="px-4 py-2.5 rounded-xl text-sm font-semibold transition-all active:scale-95 touch-manipulation flex items-center gap-2 border whitespace-nowrap"
               :title="autoRefresh ? 'Auto-refresh enabled' : 'Auto-refresh disabled'">
               <div :class="autoRefresh ? 'animate-spin' : ''"><RefreshCw class="w-4 h-4" /></div>
@@ -109,8 +109,8 @@ onUnmounted(() => {
       </div>
 
       <!-- Logs List -->
-      <div class="bg-gray-900 rounded-2xl overflow-hidden smooth-shadow border border-gray-800 flex flex-col flex-1 min-h-0">
-        <div class="bg-gradient-to-r from-gray-800 to-gray-900 px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+      <div class="bg-gray-900 rounded-2xl overflow-hidden smooth-shadow border border-gray-800 dark:border-slate-800 flex flex-col flex-1 min-h-0">
+        <div class="bg-gradient-to-r from-gray-800 to-gray-900 px-4 py-3 border-b border-gray-700 dark:border-slate-800 flex items-center gap-2">
           <Terminal class="w-4 h-4 text-gray-400" />
           <span class="text-sm font-semibold text-gray-300">Console Output</span>
           <span class="text-xs text-gray-500 ml-auto">{{ logsData.count || 0 }} entries</span>
@@ -120,14 +120,14 @@ onUnmounted(() => {
             <div class="w-16 h-16 bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <FileText class="w-8 h-8 text-gray-600" />
             </div>
-            <div class="text-gray-400 font-medium text-sm sm:text-base">No logs available</div>
-            <div class="text-gray-600 text-xs mt-1">Logs will appear here as events occur</div>
+            <div class="text-gray-400 dark:text-slate-400 font-medium text-sm sm:text-base">No logs available</div>
+            <div class="text-gray-600 dark:text-slate-500 text-xs mt-1">Logs will appear here as events occur</div>
           </div>
           <div v-for="(logEntry, index) in logsData.logs" :key="index"
             :class="logEntry.level === 'error' ? 'bg-red-950/30 border-l-4 border-red-500' : 'border-b border-gray-800/50'"
             class="px-4 sm:px-5 py-2.5 sm:py-3 hover:bg-gray-900/50 transition-colors">
             <div class="flex items-start gap-2.5 sm:gap-3">
-              <span class="text-gray-500 text-[10px] sm:text-xs whitespace-nowrap pt-0.5 font-medium">
+              <span class="text-gray-500 dark:text-slate-500 text-[10px] sm:text-xs whitespace-nowrap pt-0.5 font-medium">
                 {{ formatTimestamp(logEntry.timestamp) }}
               </span>
               <div class="flex items-center gap-1.5">
@@ -141,7 +141,7 @@ onUnmounted(() => {
               </div>
               <span class="text-gray-300 flex-1 break-all leading-relaxed">
                 {{ logEntry.message }}
-                <span v-if="logEntry.args" class="text-gray-500">
+                <span v-if="logEntry.args" class="text-gray-500 dark:text-slate-500">
                   {{ logEntry.args.join(' ') }}
                 </span>
               </span>

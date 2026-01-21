@@ -11,6 +11,30 @@ const props = defineProps({
   hoverCooldownMs: { type: Number, default: 3_000 },
 });
 
+const isDark = ref(false);
+let themeObserver = null;
+
+function syncTheme() {
+  isDark.value = document.documentElement.classList.contains('dark');
+}
+
+onMounted(() => {
+  syncTheme();
+  themeObserver = new MutationObserver(syncTheme);
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  media.addEventListener('change', syncTheme);
+});
+
+onUnmounted(() => {
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  media.removeEventListener('change', syncTheme);
+  if (themeObserver) {
+    themeObserver.disconnect();
+    themeObserver = null;
+  }
+});
+
 const hovered = ref(false);
 const active = ref("images"); // 'images' | 'volumes'
 const lastHoverFlipAt = ref(0);
@@ -145,14 +169,14 @@ const ui = computed(() => {
   return {
     title: isImages ? "Image Usage" : "Volume Usage",
     subtitle: isImages ? "Used vs unused storage" : "Used vs unused storage",
-    accentText: isImages ? "group-hover:text-blue-200" : "group-hover:text-indigo-200",
-    borderHover: isImages ? "group-hover:border-blue-500/30" : "group-hover:border-indigo-500/30",
-    orbA: isImages ? "bg-blue-500/20 group-hover:bg-blue-500/30" : "bg-indigo-500/20 group-hover:bg-indigo-500/30",
-    orbB: isImages ? "bg-slate-500/20 group-hover:bg-slate-500/30" : "bg-purple-600/20 group-hover:bg-purple-600/30",
-    iconGlow: isImages ? "bg-blue-500/20" : "bg-indigo-500/20",
+    accentText: isImages ? "group-hover:text-blue-700 dark:group-hover:text-blue-200" : "group-hover:text-indigo-700 dark:group-hover:text-indigo-200",
+    borderHover: isImages ? "group-hover:border-blue-300/60 dark:group-hover:border-blue-500/30" : "group-hover:border-indigo-300/60 dark:group-hover:border-indigo-500/30",
+    orbA: isImages ? "bg-blue-300/35 group-hover:bg-blue-400/45 dark:bg-blue-500/20 dark:group-hover:bg-blue-500/30" : "bg-indigo-300/35 group-hover:bg-indigo-400/45 dark:bg-indigo-500/20 dark:group-hover:bg-indigo-500/30",
+    orbB: isImages ? "bg-slate-300/30 group-hover:bg-slate-400/40 dark:bg-slate-500/20 dark:group-hover:bg-slate-500/30" : "bg-purple-300/30 group-hover:bg-purple-400/40 dark:bg-purple-600/20 dark:group-hover:bg-purple-600/30",
+    iconGlow: isImages ? "bg-blue-400/25 dark:bg-blue-500/20" : "bg-indigo-400/25 dark:bg-indigo-500/20",
     iconBg: isImages ? "from-blue-500 to-slate-600" : "from-indigo-500 to-purple-600",
     icon: isImages ? Boxes : HardDrive,
-    gradient: isImages ? "from-blue-600/25 via-slate-600/10 to-gray-900" : "from-indigo-600/25 via-purple-600/10 to-gray-900",
+    gradient: isImages ? "from-blue-200/60 via-slate-200/30 to-white/80 dark:from-blue-600/25 dark:via-slate-600/10 dark:to-gray-900" : "from-indigo-200/60 via-purple-200/30 to-white/80 dark:from-indigo-600/25 dark:via-purple-600/10 dark:to-gray-900",
   };
 });
 </script>
@@ -163,7 +187,7 @@ const ui = computed(() => {
     @mouseenter="onEnter"
     @mouseleave="onLeave"
   >
-    <div class="absolute inset-0 bg-gray-900">
+    <div class="absolute inset-0 bg-white dark:bg-gray-900">
       <div class="absolute inset-0 bg-linear-to-br z-10" :class="ui.gradient"></div>
       <div
         class="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-colors duration-700"
@@ -176,7 +200,7 @@ const ui = computed(() => {
     </div>
 
     <div
-      class="relative z-20 h-full p-6 flex flex-col border border-white/5 rounded-2xl backdrop-blur-sm transition-colors duration-500"
+      class="relative z-20 h-full p-6 flex flex-col border border-slate-200/80 dark:border-slate-700/60 rounded-2xl backdrop-blur-sm transition-none"
       :class="ui.borderHover"
     >
       <div class="flex items-start justify-between gap-4">
@@ -192,36 +216,36 @@ const ui = computed(() => {
           </div>
 
           <div>
-            <h3 class="text-lg font-bold text-white mb-1 transition-colors" :class="ui.accentText">Disk Usage</h3>
-            <p class="text-sm font-medium text-gray-400 group-hover:text-gray-300 transition-colors">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1 transition-colors" :class="ui.accentText">Disk Usage</h3>
+            <p class="text-sm font-medium text-slate-600 dark:text-gray-400 group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors">
               {{ ui.title }}
-              <span v-if="availableModes.length > 1" class="text-gray-500">• flips every 10s</span>
+              <span v-if="availableModes.length > 1" class="text-slate-500 dark:text-gray-500">• flips every 10s</span>
             </p>
           </div>
         </div>
 
-        <div class="inline-flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-3 py-1.5">
-          <span class="text-xs font-semibold text-gray-300">Total</span>
-          <span class="text-xs font-extrabold text-white tabular-nums">{{ formatBytes(donut.total) }}</span>
+        <div class="inline-flex items-center gap-2 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-slate-700/60 px-3 py-1.5">
+          <span class="text-xs font-semibold text-slate-600 dark:text-gray-300">Total</span>
+          <span class="text-xs font-extrabold text-slate-900 dark:text-white tabular-nums">{{ formatBytes(donut.total) }}</span>
         </div>
       </div>
 
       <div class="mt-5 flex-1">
-        <div v-if="donut.total === 0" class="rounded-2xl border border-dashed border-white/10 bg-white/5 px-4 py-6 text-center">
-          <div class="text-sm font-semibold text-gray-200">No disk usage data</div>
-          <div class="text-xs text-gray-400 mt-1">Nothing to visualize yet.</div>
+        <div v-if="donut.total === 0" class="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700/60 bg-white/70 dark:bg-white/5 px-4 py-6 text-center">
+          <div class="text-sm font-semibold text-slate-700 dark:text-gray-200">No disk usage data</div>
+          <div class="text-xs text-slate-500 dark:text-gray-400 mt-1">Nothing to visualize yet.</div>
         </div>
 
         <div v-else class="disk-flip-surface rounded-2xl">
           <transition name="disk-flip" mode="out-in">
-            <div :key="active" class="rounded-2xl  p-4">
+            <div :key="active" class="rounded-2xl p-4 bg-white/60 dark:bg-transparent">
               <div class="flex items-center justify-between gap-3 mb-3">
                 <div>
-                  <div class="text-sm font-bold text-white">Breakdown</div>
-                  <div class="text-xs text-gray-400">{{ ui.subtitle }}</div>
+                  <div class="text-sm font-bold text-slate-900 dark:text-white">Breakdown</div>
+                  <div class="text-xs text-slate-500 dark:text-gray-400">{{ ui.subtitle }}</div>
                 </div>
-                <div class="text-xs font-semibold text-gray-400">
-                  <span v-if="hovered" class="text-gray-300">Hover: instant flip</span>
+                <div class="text-xs font-semibold text-slate-500 dark:text-gray-400">
+                  <span v-if="hovered" class="text-slate-700 dark:text-gray-300">Hover: instant flip</span>
                   <span v-else>Hover to flip</span>
                 </div>
               </div>
@@ -234,41 +258,41 @@ const ui = computed(() => {
                     :colors="donut.colors"
                     :height="180"
                     :donut-label="donut.donutLabel"
-                    theme="dark"
+                    :theme="isDark ? 'dark' : 'light'"
                     :value-formatter="formatBytes"
                     :total-formatter="() => formatBytes(donut.total)"
                   />
                 </div>
 
                 <div class="sm:col-span-3 space-y-3">
-                  <div class="rounded-xl  px-3 py-2">
+                  <div class="rounded-xl px-3 py-2">
                     <div class="flex items-center justify-between gap-3 text-xs">
                       <div class="inline-flex items-center gap-2 min-w-0">
                         <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: donut.colors[0] }"></span>
-                        <span class="text-gray-300 font-semibold">Used</span>
+                        <span class="text-slate-600 dark:text-gray-300 font-semibold">Used</span>
                       </div>
-                      <div class="shrink-0 text-gray-200 font-bold tabular-nums">
+                      <div class="shrink-0 text-slate-800 dark:text-gray-200 font-bold tabular-nums">
                         {{ formatBytes(donut.used) }}
-                        <span class="text-gray-400 font-semibold">({{ usedPercent }}%)</span>
+                        <span class="text-slate-500 dark:text-gray-400 font-semibold">({{ usedPercent }}%)</span>
                       </div>
                     </div>
-                    <div class="mt-2 h-2 rounded-full bg-black/20 overflow-hidden">
+                    <div class="mt-2 h-2 rounded-full bg-slate-200/70 dark:bg-black/20 overflow-hidden">
                       <div class="h-full rounded-full" :style="{ width: `${usedPercent}%`, backgroundColor: donut.colors[0] }"></div>
                     </div>
                   </div>
 
-                  <div class="rounded-xl  px-3 py-2">
+                  <div class="rounded-xl px-3 py-2">
                     <div class="flex items-center justify-between gap-3 text-xs">
                       <div class="inline-flex items-center gap-2 min-w-0">
                         <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: donut.colors[1] }"></span>
-                        <span class="text-gray-300 font-semibold">Unused</span>
+                        <span class="text-slate-600 dark:text-gray-300 font-semibold">Unused</span>
                       </div>
-                      <div class="shrink-0 text-gray-200 font-bold tabular-nums">
+                      <div class="shrink-0 text-slate-800 dark:text-gray-200 font-bold tabular-nums">
                         {{ formatBytes(donut.unused) }}
-                        <span class="text-gray-400 font-semibold">({{ unusedPercent }}%)</span>
+                        <span class="text-slate-500 dark:text-gray-400 font-semibold">({{ unusedPercent }}%)</span>
                       </div>
                     </div>
-                    <div class="mt-2 h-2 rounded-full bg-black/20 overflow-hidden">
+                    <div class="mt-2 h-2 rounded-full bg-slate-200/70 dark:bg-black/20 overflow-hidden">
                       <div class="h-full rounded-full" :style="{ width: `${unusedPercent}%`, backgroundColor: donut.colors[1] }"></div>
                     </div>
                   </div>

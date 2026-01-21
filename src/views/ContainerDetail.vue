@@ -180,18 +180,18 @@ function getProtocolInfo(protocol, labeledProtocol) {
   const proto = (labeledProtocol || protocol || 'tcp').toLowerCase()
   
   const protocolMap = {
-    'http': { icon: Globe, color: 'text-blue-600', bg: 'bg-blue-100', label: 'HTTP' },
-    'https': { icon: Lock, color: 'text-green-600', bg: 'bg-green-100', label: 'HTTPS' },
-    'smb': { icon: Share2, color: 'text-purple-600', bg: 'bg-purple-100', label: 'SMB' },
-    'ftp': { icon: FolderOpen, color: 'text-orange-600', bg: 'bg-orange-100', label: 'FTP' },
-    'sftp': { icon: ShieldCheck, color: 'text-teal-600', bg: 'bg-teal-100', label: 'SFTP' },
-    'webdav': { icon: Database, color: 'text-indigo-600', bg: 'bg-indigo-100', label: 'WebDAV' },
-    'ssh': { icon: Terminal, color: 'text-gray-700', bg: 'bg-gray-100', label: 'SSH' },
-    'tcp': { icon: Network, color: 'text-blue-600', bg: 'bg-blue-100', label: 'TCP' },
-    'udp': { icon: Network, color: 'text-cyan-600', bg: 'bg-cyan-100', label: 'UDP' },
+    'http': { icon: Globe, color: 'text-blue-600 dark:text-blue-300', bg: 'bg-blue-100 dark:bg-blue-500/15', label: 'HTTP' },
+    'https': { icon: Lock, color: 'text-green-600 dark:text-emerald-300', bg: 'bg-green-100 dark:bg-emerald-500/15', label: 'HTTPS' },
+    'smb': { icon: Share2, color: 'text-purple-600 dark:text-purple-300', bg: 'bg-purple-100 dark:bg-purple-500/15', label: 'SMB' },
+    'ftp': { icon: FolderOpen, color: 'text-orange-600 dark:text-orange-300', bg: 'bg-orange-100 dark:bg-orange-500/15', label: 'FTP' },
+    'sftp': { icon: ShieldCheck, color: 'text-teal-600 dark:text-teal-300', bg: 'bg-teal-100 dark:bg-teal-500/15', label: 'SFTP' },
+    'webdav': { icon: Database, color: 'text-indigo-600 dark:text-indigo-300', bg: 'bg-indigo-100 dark:bg-indigo-500/15', label: 'WebDAV' },
+    'ssh': { icon: Terminal, color: 'text-gray-700 dark:text-slate-300', bg: 'bg-gray-100 dark:bg-slate-800', label: 'SSH' },
+    'tcp': { icon: Network, color: 'text-blue-600 dark:text-blue-300', bg: 'bg-blue-100 dark:bg-blue-500/15', label: 'TCP' },
+    'udp': { icon: Network, color: 'text-cyan-600 dark:text-cyan-300', bg: 'bg-cyan-100 dark:bg-cyan-500/15', label: 'UDP' },
   }
   
-  return protocolMap[proto] || { icon: Network, color: 'text-gray-600', bg: 'bg-gray-100', label: proto.toUpperCase() }
+  return protocolMap[proto] || { icon: Network, color: 'text-gray-600 dark:text-slate-300', bg: 'bg-gray-100 dark:bg-slate-800', label: proto.toUpperCase() }
 }
 
 function formatBytes(bytes) {
@@ -337,13 +337,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-slate-950">
     <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
       <!-- Loading State -->
       <div v-if="!selectedContainer" class="flex items-center justify-center py-16 sm:py-20">
         <div class="text-center">
-          <Loader2 :size="40" class="sm:w-12 sm:h-12 animate-spin text-gray-700 mx-auto mb-3 sm:mb-4" />
-          <div class="text-gray-600 font-medium text-sm sm:text-base">Loading container details...</div>
+          <Loader2 :size="40" class="sm:w-12 sm:h-12 animate-spin text-gray-700 dark:text-slate-200 mx-auto mb-3 sm:mb-4" />
+          <div class="text-gray-600 dark:text-slate-400 font-medium text-sm sm:text-base">Loading container details...</div>
         </div>
       </div>
       
@@ -351,13 +351,13 @@ onUnmounted(() => {
       <div v-else class="space-y-4 sm:space-y-6 animate-in fade-in duration-500">
         <!-- Back Button -->
         <router-link to="/apps"
-          class="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-all group touch-manipulation active:scale-95">
+          class="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-300 transition-all group touch-manipulation active:scale-95">
           <ArrowLeft :size="16" class="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform" />
           <span class="font-medium text-sm sm:text-base">Back to Apps</span>
         </router-link>
         
         <!-- Header Section -->
-        <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 transition-shadow hover:shadow-md">
+        <div class="bg-white dark:bg-slate-900/70 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-shadow hover:shadow-md">
           <!-- Container Header -->
           <div class="flex flex-col sm:flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
             <div class="flex items-center gap-3 sm:gap-4">
@@ -366,13 +366,13 @@ onUnmounted(() => {
                 <img v-if="selectedContainer.app.logo" 
                   :src="selectedContainer.app.logo" 
                   :alt="selectedContainer.name"
-                  class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-xl sm:rounded-2xl object-cover shadow-md ring-2 sm:ring-4 ring-white">
-                <div v-else class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-xl sm:rounded-2xl bg-gray-900 flex items-center justify-center text-2xl sm:text-3xl shadow-md ring-2 sm:ring-4 ring-white">
+                  class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-xl sm:rounded-2xl object-cover shadow-md ring-2 sm:ring-4 ring-white dark:ring-slate-800">
+                <div v-else class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-xl sm:rounded-2xl bg-gray-900 dark:bg-slate-800 flex items-center justify-center text-2xl sm:text-3xl shadow-md ring-2 sm:ring-4 ring-white dark:ring-slate-800">
                   🐳
                 </div>
                 <!-- Status Indicator Badge -->
                 <div :class="[
-                  'absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shadow-lg ring-2 sm:ring-4 ring-white',
+                  'absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shadow-lg ring-2 sm:ring-4 ring-white dark:ring-slate-800',
                   selectedContainer.state === 'running' ? 'bg-green-500' : 'bg-gray-400'
                 ]">
                   <div class="w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full" :class="{ 'motion-safe:animate-pulse': selectedContainer.state === 'running' }"></div>
@@ -381,18 +381,18 @@ onUnmounted(() => {
               
               <!-- Title and ID -->
               <div class="min-w-0 flex-1">
-                <h1 class="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-1 truncate">
+                <h1 class="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 dark:text-white mb-1 truncate">
                   {{ selectedContainer.name }}
                 </h1>
                 <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                  <span class="text-[10px] sm:text-xs lg:text-sm text-gray-500 font-mono bg-gray-100 px-2 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg">
+                  <span class="text-[10px] sm:text-xs lg:text-sm text-gray-500 dark:text-slate-400 font-mono bg-gray-100 dark:bg-slate-800 px-2 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg">
                     {{ selectedContainer.id.substring(0, 12) }}
                   </span>
                   <span :class="[
                     'px-2 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-semibold uppercase tracking-wide',
                     selectedContainer.state === 'running' 
-                      ? 'bg-green-100 text-green-700' 
-                      : 'bg-gray-100 text-gray-700'
+                      ? 'bg-green-100 text-green-700 dark:bg-emerald-500/20 dark:text-emerald-200' 
+                      : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
                   ]">
                     {{ selectedContainer.state }}
                   </span>
@@ -412,46 +412,46 @@ onUnmounted(() => {
 
         <!-- Ports & Access Section -->
         <div v-if="allPortMappings.length > 0" 
-          class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 transition-shadow hover:shadow-md">
+          class="bg-white dark:bg-slate-900/70 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-shadow hover:shadow-md">
           <div class="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
-            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
-              <Network :size="16" class="sm:w-5 sm:h-5 text-indigo-600" />
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/30">
+              <Network :size="16" class="sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-300" />
             </div>
-            <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Ports & Access</h2>
-            <span class="text-xs sm:text-sm text-gray-500 font-medium">({{ allPortMappings.length }})</span>
+            <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Ports & Access</h2>
+            <span class="text-xs sm:text-sm text-gray-500 dark:text-slate-400 font-medium">({{ allPortMappings.length }})</span>
           </div>
           
           <!-- Ports Table -->
           <div class="overflow-x-auto">
             <table class="w-full">
               <thead>
-                <tr class="border-b-2 border-gray-200">
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                <tr class="border-b-2 border-gray-200 dark:border-slate-800">
+                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
                     <div class="flex items-center gap-2">
-                      <Network :size="14" class="text-indigo-600" />
+                      <Network :size="14" class="text-indigo-600 dark:text-indigo-300" />
                       Protocol
                     </div>
                   </th>
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
                     Host Port
                   </th>
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide hidden md:table-cell">
+                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide hidden md:table-cell">
                     Container Port
                   </th>
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide hidden lg:table-cell">
+                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide hidden lg:table-cell">
                     Description
                   </th>
-                  <th class="text-center py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  <th class="text-center py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
                     Access
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(mapping, index) in allPortMappings" :key="index"
-                  class="border-b border-gray-100 transition-colors animate-in"
+                  class="border-b border-gray-100 dark:border-slate-800 transition-colors animate-in"
                   :class="[
                     mapping.hostPort && mapping.protocol === 'tcp' 
-                      ? 'hover:bg-indigo-50/30 cursor-pointer' 
+                      ? 'hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 cursor-pointer' 
                       : 'opacity-60'
                   ]"
                   :style="{ animationDelay: `${Math.min(index * 20, 400)}ms` }"
@@ -475,11 +475,11 @@ onUnmounted(() => {
                   <!-- Host Port Column -->
                   <td class="py-3 px-2 sm:px-4">
                     <div class="flex flex-col gap-1">
-                      <span v-if="mapping.hostPort" class="text-xl sm:text-2xl font-black text-gray-900 font-mono leading-none tracking-tight">
+                      <span v-if="mapping.hostPort" class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white font-mono leading-none tracking-tight">
                         {{ mapping.hostPort }}
                       </span>
-                      <span v-else class="text-sm text-gray-400 font-medium">Not bound</span>
-                      <span class="text-[10px] sm:text-xs text-gray-500 font-mono md:hidden">
+                      <span v-else class="text-sm text-gray-400 dark:text-slate-500 font-medium">Not bound</span>
+                      <span class="text-[10px] sm:text-xs text-gray-500 dark:text-slate-500 font-mono md:hidden">
                         → :{{ mapping.containerPort }}
                       </span>
                     </div>
@@ -487,17 +487,17 @@ onUnmounted(() => {
                   
                   <!-- Container Port Column (hidden on mobile) -->
                   <td class="py-3 px-2 sm:px-4 hidden md:table-cell">
-                    <span class="text-sm sm:text-base text-gray-700 font-mono">
+                    <span class="text-sm sm:text-base text-gray-700 dark:text-slate-300 font-mono">
                       :{{ mapping.containerPort }}
                     </span>
                   </td>
                   
                   <!-- Description Column (hidden on mobile/tablet) -->
                   <td class="py-3 px-2 sm:px-4 hidden lg:table-cell">
-                    <span v-if="mapping.label" class="text-xs sm:text-sm text-gray-600">
+                    <span v-if="mapping.label" class="text-xs sm:text-sm text-gray-600 dark:text-slate-300">
                       {{ mapping.label }}
                     </span>
-                    <span v-else class="text-xs sm:text-sm text-gray-400 italic">
+                    <span v-else class="text-xs sm:text-sm text-gray-400 dark:text-slate-500 italic">
                       —
                     </span>
                   </td>
@@ -512,7 +512,7 @@ onUnmounted(() => {
                       <span class="hidden sm:inline">Open</span>
                       <ExternalLink :size="14" class="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </a>
-                    <span v-else class="text-xs text-gray-400 font-medium">
+                    <span v-else class="text-xs text-gray-400 dark:text-slate-500 font-medium">
                       N/A
                     </span>
                   </td>
@@ -524,59 +524,59 @@ onUnmounted(() => {
 
         <!-- Volumes Section -->
         <div v-if="containerVolumes.length > 0" 
-          class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 transition-shadow hover:shadow-md">
+          class="bg-white dark:bg-slate-900/70 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-shadow hover:shadow-md">
           <div class="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
-            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
-              <HardDrive :size="16" class="sm:w-5 sm:h-5 text-indigo-600" />
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/30">
+              <HardDrive :size="16" class="sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-300" />
             </div>
-            <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Volumes</h2>
-            <span class="text-xs sm:text-sm text-gray-500 font-medium">({{ containerVolumes.length }})</span>
+            <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Volumes</h2>
+            <span class="text-xs sm:text-sm text-gray-500 dark:text-slate-400 font-medium">({{ containerVolumes.length }})</span>
           </div>
-          
+                  
           <!-- Table -->
           <div class="overflow-x-auto">
             <table class="w-full">
               <thead>
-                <tr class="border-b border-gray-200">
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                <tr class="border-b border-gray-200 dark:border-slate-800">
+                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
                     <div class="flex items-center gap-2">
-                      <Folder :size="14" class="text-indigo-600" />
+                      <Folder :size="14" class="text-indigo-600 dark:text-indigo-300" />
                       Volume Name
                     </div>
                   </th>
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide hidden md:table-cell">
+                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide hidden md:table-cell">
                     Mount Path
                   </th>
-                  <th class="text-center py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  <th class="text-center py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
                     Access
                   </th>
-                  <th class="text-right py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  <th class="text-right py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="volume in containerVolumes" :key="volume.name"
-                  class="border-b border-gray-100 hover:bg-indigo-50/30 transition-colors">
+                  class="border-b border-gray-100 dark:border-slate-800 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors">
                   <td class="py-3 px-2 sm:px-4">
                     <div class="flex flex-col gap-1">
-                      <span class="text-sm sm:text-base font-semibold text-gray-900 break-all" :title="volume.name">
+                      <span class="text-sm sm:text-base font-semibold text-gray-900 dark:text-white break-all" :title="volume.name">
                         {{ volume.name }}
                       </span>
-                      <span class="text-xs text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded border border-gray-200 md:hidden break-all" :title="volume.destination">
+                      <span class="text-xs text-gray-600 dark:text-slate-400 font-mono bg-gray-50 dark:bg-slate-800 px-2 py-1 rounded border border-gray-200 dark:border-slate-700 md:hidden break-all" :title="volume.destination">
                         {{ volume.destination }}
                       </span>
                     </div>
                   </td>
                   <td class="py-3 px-2 sm:px-4 hidden md:table-cell">
-                    <span class="text-xs sm:text-sm text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded border border-gray-200 inline-block" :title="volume.destination">
+                    <span class="text-xs sm:text-sm text-gray-600 dark:text-slate-400 font-mono bg-gray-50 dark:bg-slate-800 px-2 py-1 rounded border border-gray-200 dark:border-slate-700 inline-block" :title="volume.destination">
                       {{ volume.destination }}
                     </span>
                   </td>
                   <td class="py-3 px-2 sm:px-4 text-center">
                     <span :class="[
                       'px-2 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-semibold uppercase inline-block',
-                      volume.rw ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                      volume.rw ? 'bg-green-100 text-green-700 dark:bg-emerald-500/20 dark:text-emerald-200' : 'bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-slate-300'
                     ]">
                       {{ volume.rw ? 'RW' : 'RO' }}
                     </span>
@@ -619,87 +619,88 @@ onUnmounted(() => {
           </div>
         </div>
 
+
         <!-- Info and Stats (Stacked) -->
         <div class="space-y-4 sm:space-y-6">
           <!-- Container Info Card -->
-          <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 transition-shadow hover:shadow-md">
+          <div class="bg-white dark:bg-slate-900/70 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-shadow hover:shadow-md">
             <div class="flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-6">
-              <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
-                <Info :size="16" class="sm:w-5 sm:h-5 text-indigo-600" />
+              <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/30">
+                <Info :size="16" class="sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-300" />
               </div>
-              <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Container Info</h2>
+              <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Container Info</h2>
             </div>
             
             <div class="space-y-3 sm:space-y-4">
               <!-- Description -->
               <div v-if="selectedContainer.app.description" 
-                class="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-200 transition-shadow hover:shadow-sm">
+                class="bg-gray-50 dark:bg-slate-800 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
                 <div class="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                  <FileText :size="14" class="sm:w-4 sm:h-4 text-indigo-600" />
-                  <div class="text-[10px] sm:text-xs text-gray-700 font-semibold uppercase tracking-wide">Description</div>
+                  <FileText :size="14" class="sm:w-4 sm:h-4 text-indigo-600 dark:text-indigo-300" />
+                  <div class="text-[10px] sm:text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Description</div>
                 </div>
-                <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">{{ selectedContainer.app.description }}</p>
+                <p class="text-xs sm:text-sm text-gray-700 dark:text-slate-300 leading-relaxed">{{ selectedContainer.app.description }}</p>
               </div>
               
               <!-- Categories -->
               <div v-if="selectedContainer.app.category && selectedContainer.app.category !== 'uncategorized'" 
-                class="bg-gray-50 rounded-xl p-4 border border-gray-200 transition-shadow hover:shadow-sm">
+                class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
                 <div class="flex items-center gap-2 mb-3">
-                  <Tags :size="16" class="text-indigo-600" />
-                  <div class="text-xs text-gray-700 font-semibold uppercase tracking-wide">Categories</div>
+                  <Tags :size="16" class="text-indigo-600 dark:text-indigo-300" />
+                  <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Categories</div>
                 </div>
                 <div class="flex flex-wrap gap-2">
                   <span v-for="cat in selectedContainer.app.category.split(',')" :key="cat"
-                    class="px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold shadow-sm hover:shadow-md transition-all">
+                    class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-500/15 border border-indigo-100 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-200 text-xs font-semibold shadow-sm hover:shadow-md transition-all">
                     {{ cat.trim() }}
                   </span>
                 </div>
               </div>
               
               <!-- Docker Image -->
-              <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 transition-shadow hover:shadow-sm">
+              <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
                 <div class="flex items-center gap-2 mb-2">
-                  <Box :size="16" class="text-gray-600" />
-                  <div class="text-xs text-gray-700 font-semibold uppercase tracking-wide">Docker Image</div>
+                  <Box :size="16" class="text-gray-600 dark:text-slate-300" />
+                  <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Docker Image</div>
                 </div>
-                <div class="text-sm font-mono text-gray-900 bg-white px-3 py-2.5 rounded-lg border border-gray-200 break-all shadow-sm">
+                <div class="text-sm font-mono text-gray-900 dark:text-slate-100 bg-white dark:bg-slate-900 px-3 py-2.5 rounded-lg border border-gray-200 dark:border-slate-700 break-all shadow-sm">
                   {{ selectedContainer.image }}
                 </div>
               </div>
               
               <!-- Image ID -->
               <div v-if="selectedContainer.imageId" 
-                class="bg-gray-50 rounded-xl p-4 border border-gray-200 transition-shadow hover:shadow-sm">
+                class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
                 <div class="flex items-center gap-2 mb-2">
-                  <Box :size="16" class="text-gray-600" />
-                  <div class="text-xs text-gray-700 font-semibold uppercase tracking-wide">Image SHA256</div>
+                  <Box :size="16" class="text-gray-600 dark:text-slate-300" />
+                  <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Image SHA256</div>
                 </div>
-                <div class="text-xs font-mono text-gray-700 bg-white px-3 py-2.5 rounded-lg border border-gray-200 break-all shadow-sm">
+                <div class="text-xs font-mono text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-900 px-3 py-2.5 rounded-lg border border-gray-200 dark:border-slate-700 break-all shadow-sm">
                   {{ selectedContainer.imageId.replace('sha256:', '') }}
                 </div>
               </div>
               
               <!-- Status -->
-              <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 transition-shadow hover:shadow-sm">
+              <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
                 <div class="flex items-center gap-2 mb-2">
-                  <Activity :size="16" class="text-gray-700" />
-                  <div class="text-xs text-gray-700 font-semibold uppercase tracking-wide">Status</div>
+                  <Activity :size="16" class="text-gray-700 dark:text-slate-300" />
+                  <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Status</div>
                 </div>
                 <div class="flex items-center gap-2">
                   <div :class="[
                     'w-3 h-3 rounded-full',
                     selectedContainer.state === 'running' ? 'bg-green-500 motion-safe:animate-pulse' : 'bg-gray-400'
                   ]"></div>
-                  <span class="text-sm font-semibold text-gray-900 capitalize">{{ selectedContainer.status }}</span>
+                  <span class="text-sm font-semibold text-gray-900 dark:text-white capitalize">{{ selectedContainer.status }}</span>
                 </div>
               </div>
               
               <!-- Website Link -->
               <div v-if="selectedContainer.app.website" 
-                class="bg-gray-50 rounded-xl p-4 border border-gray-200 transition-shadow hover:shadow-sm">
+                class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
                 <div class="flex items-center gap-2 mb-3">
-                  <Globe :size="16" class="text-indigo-600" />
-                  <div class="text-xs text-gray-700 font-semibold uppercase tracking-wide">Documentation</div>
+                  <Globe :size="16" class="text-indigo-600 dark:text-indigo-300" />
+                  <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Documentation</div>
                 </div>
                 <a :href="selectedContainer.app.website" target="_blank"
                   class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 group">
@@ -711,43 +712,43 @@ onUnmounted(() => {
           </div>
 
           <!-- Resource Stats Card -->
-          <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 transition-shadow hover:shadow-md">
+          <div class="bg-white dark:bg-slate-900/70 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-shadow hover:shadow-md">
             <div class="flex items-center gap-3 mb-6">
-              <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
-                <TrendingUp :size="20" class="text-indigo-600" />
+              <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/30">
+                <TrendingUp :size="20" class="text-indigo-600 dark:text-indigo-300" />
               </div>
-              <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Resource Usage</h2>
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Resource Usage</h2>
             </div>
             
             <div v-if="containerStats" class="space-y-6">
               <!-- CPU Usage -->
-              <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700">
                 <div class="flex items-center justify-between mb-3">
                   <div class="flex items-center gap-2">
-                    <Cpu :size="18" class="text-indigo-600" />
-                    <span class="text-sm font-semibold text-gray-700 uppercase tracking-wide">CPU Usage</span>
+                    <Cpu :size="18" class="text-indigo-600 dark:text-indigo-300" />
+                    <span class="text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">CPU Usage</span>
                   </div>
-                  <span class="text-lg font-bold text-indigo-600">{{ containerStats.cpu.percent }}%</span>
+                  <span class="text-lg font-bold text-indigo-600 dark:text-indigo-300">{{ containerStats.cpu.percent }}%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
+                <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden shadow-inner">
                   <div class="bg-indigo-600 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" 
                     :style="`width: ${Math.min(containerStats.cpu.percent, 100)}%`"></div>
                 </div>
               </div>
               
               <!-- Memory Usage -->
-              <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700">
                 <div class="flex items-center justify-between mb-3">
                   <div class="flex items-center gap-2">
-                    <MemoryStick :size="18" class="text-indigo-600" />
-                    <span class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Memory</span>
+                    <MemoryStick :size="18" class="text-indigo-600 dark:text-indigo-300" />
+                    <span class="text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">Memory</span>
                   </div>
-                  <span class="text-lg font-bold text-indigo-600">{{ containerStats.memory.percent }}%</span>
+                  <span class="text-lg font-bold text-indigo-600 dark:text-indigo-300">{{ containerStats.memory.percent }}%</span>
                 </div>
-                <div class="text-xs text-gray-600 mb-2 font-medium">
+                <div class="text-xs text-gray-600 dark:text-slate-400 mb-2 font-medium">
                   {{ formatBytes(containerStats.memory.usage) }} / {{ formatBytes(containerStats.memory.limit) }}
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
+                <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden shadow-inner">
                   <div class="bg-indigo-600 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" 
                     :style="`width: ${Math.min(containerStats.memory.percent, 100)}%`"></div>
                 </div>
@@ -755,86 +756,86 @@ onUnmounted(() => {
               
               <!-- Network I/O -->
               <div class="grid grid-cols-2 gap-3">
-                <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 transition-shadow hover:shadow-sm">
+                <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
                   <div class="flex items-center gap-2 mb-2">
-                    <Network :size="16" class="text-indigo-600" />
-                    <div class="text-xs text-gray-700 font-semibold uppercase tracking-wide">Net RX</div>
+                    <Network :size="16" class="text-indigo-600 dark:text-indigo-300" />
+                    <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Net RX</div>
                   </div>
-                  <div class="text-xl font-bold text-gray-900">{{ formatBytes(containerStats.network.rx) }}</div>
+                  <div class="text-xl font-bold text-gray-900 dark:text-white">{{ formatBytes(containerStats.network.rx) }}</div>
                 </div>
-                <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 transition-shadow hover:shadow-sm">
+                <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
                   <div class="flex items-center gap-2 mb-2">
-                    <Network :size="16" class="text-indigo-600" />
-                    <div class="text-xs text-gray-700 font-semibold uppercase tracking-wide">Net TX</div>
+                    <Network :size="16" class="text-indigo-600 dark:text-indigo-300" />
+                    <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Net TX</div>
                   </div>
-                  <div class="text-xl font-bold text-gray-900">{{ formatBytes(containerStats.network.tx) }}</div>
+                  <div class="text-xl font-bold text-gray-900 dark:text-white">{{ formatBytes(containerStats.network.tx) }}</div>
                 </div>
               </div>
               
               <!-- Block I/O -->
               <div class="grid grid-cols-2 gap-3">
-                <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 transition-shadow hover:shadow-sm">
+                <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
                   <div class="flex items-center gap-2 mb-2">
-                    <HardDrive :size="16" class="text-indigo-600" />
-                    <div class="text-xs text-gray-700 font-semibold uppercase tracking-wide">Disk Read</div>
+                    <HardDrive :size="16" class="text-indigo-600 dark:text-indigo-300" />
+                    <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Disk Read</div>
                   </div>
-                  <div class="text-xl font-bold text-gray-900">{{ formatBytes(containerStats.blockIO.read) }}</div>
+                  <div class="text-xl font-bold text-gray-900 dark:text-white">{{ formatBytes(containerStats.blockIO.read) }}</div>
                 </div>
-                <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 transition-shadow hover:shadow-sm">
+                <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
                   <div class="flex items-center gap-2 mb-2">
-                    <HardDrive :size="16" class="text-indigo-600" />
-                    <div class="text-xs text-gray-700 font-semibold uppercase tracking-wide">Disk Write</div>
+                    <HardDrive :size="16" class="text-indigo-600 dark:text-indigo-300" />
+                    <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Disk Write</div>
                   </div>
-                  <div class="text-xl font-bold text-gray-900">{{ formatBytes(containerStats.blockIO.write) }}</div>
+                  <div class="text-xl font-bold text-gray-900 dark:text-white">{{ formatBytes(containerStats.blockIO.write) }}</div>
                 </div>
               </div>
             </div>
             
             <div v-else class="flex flex-col items-center justify-center py-12">
-              <Loader2 :size="32" class="animate-spin text-indigo-600 mb-3" />
-              <div class="text-sm text-gray-600 font-medium">Loading statistics...</div>
+              <Loader2 :size="32" class="animate-spin text-indigo-600 dark:text-indigo-300 mb-3" />
+              <div class="text-sm text-gray-600 dark:text-slate-400 font-medium">Loading statistics...</div>
             </div>
           </div>
         </div>
 
         <!-- Environment Variables -->
         <div v-if="selectedContainer.env && selectedContainer.env.length > 0" 
-          class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 transition-shadow hover:shadow-md">
+          class="bg-white dark:bg-slate-900/70 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 transition-shadow hover:shadow-md">
           <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-100">
-              <Settings :size="20" class="text-indigo-600" />
+            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/30">
+              <Settings :size="20" class="text-indigo-600 dark:text-indigo-300" />
             </div>
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Environment Variables</h2>
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Environment Variables</h2>
           </div>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 max-h-80 overflow-y-auto custom-scrollbar">
             <div v-for="(envVar, index) in selectedContainer.env" :key="index" 
-              class="text-sm font-mono bg-gray-50 px-4 py-3 rounded-lg border border-gray-200 hover:shadow-sm transition-shadow break-all">
-              <span class="text-indigo-700 font-semibold">{{ envVar.split('=')[0] }}</span>
-              <span class="text-gray-500">=</span>
-              <span class="text-gray-700">{{ envVar.split('=').slice(1).join('=') }}</span>
+              class="text-sm font-mono bg-gray-50 dark:bg-slate-800 px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 hover:shadow-sm transition-shadow break-all">
+              <span class="text-indigo-700 dark:text-indigo-300 font-semibold">{{ envVar.split('=')[0] }}</span>
+              <span class="text-gray-500 dark:text-slate-500">=</span>
+              <span class="text-gray-700 dark:text-slate-300">{{ envVar.split('=').slice(1).join('=') }}</span>
             </div>
           </div>
         </div>
 
         <!-- Container Logs -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 transition-shadow hover:shadow-md">
+        <div class="bg-white dark:bg-slate-900/70 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 transition-shadow hover:shadow-md">
           <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center shadow-md">
+              <div class="w-10 h-10 rounded-xl bg-gray-900 dark:bg-slate-800 flex items-center justify-center shadow-md">
                 <Terminal :size="20" class="text-white" />
               </div>
-              <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Container Logs</h2>
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Container Logs</h2>
             </div>
             <button @click="fetchContainerLogs"
               :disabled="refreshingLogs"
-              class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-gray-700 rounded-lg font-medium transition-all shadow-sm hover:shadow-md active:scale-95 disabled:transform-none">
+              class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 disabled:opacity-50 text-gray-700 dark:text-slate-200 rounded-lg font-medium transition-all shadow-sm hover:shadow-md active:scale-95 disabled:transform-none">
               <RefreshCw :size="16" :class="{ 'animate-spin': refreshingLogs }" />
               Refresh
             </button>
           </div>
           <div class="bg-gray-900 rounded-xl overflow-hidden shadow-inner border border-gray-700">
             <div class="max-h-96 overflow-y-auto font-mono text-xs leading-relaxed custom-scrollbar">
-              <div v-if="containerLogs.length === 0" class="flex flex-col items-center justify-center text-gray-500 py-12">
+              <div v-if="containerLogs.length === 0" class="flex flex-col items-center justify-center text-gray-500 dark:text-slate-500 py-12">
                 <Terminal :size="48" class="mb-3 opacity-30" />
                 <div class="text-sm">No logs available</div>
               </div>
@@ -863,13 +864,25 @@ onUnmounted(() => {
   border-radius: 4px;
 }
 
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.15);
+}
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 4px;
 }
 
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.45);
+}
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.5);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.6);
 }
 
 @keyframes fade-in {

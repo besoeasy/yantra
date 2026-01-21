@@ -54,7 +54,6 @@ const chartKey = computed(() => {
     String(props.donutLabel || ''),
     String(props.height || ''),
     labels.join('|'),
-    safeSeries.value.join(','),
     colors.join(',')
   ].join('::')
 })
@@ -66,14 +65,21 @@ const chartOptions = computed(() => {
   }
 
   const isDark = String(props.theme).toLowerCase() === 'dark'
-  const labelColor = isDark ? '#e5e7eb' : '#111827'
-  const subLabelColor = isDark ? '#9ca3af' : '#6b7280'
+  const labelColor = isDark ? '#e5e7eb' : '#0f172a'
+  const subLabelColor = isDark ? '#9ca3af' : '#475569'
 
   return {
     chart: {
       type: 'donut',
       sparkline: { enabled: true },
-      background: 'transparent'
+      background: 'transparent',
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
+        speed: 650,
+        animateGradually: { enabled: true, delay: 120 },
+        dynamicAnimation: { enabled: true, speed: 650 }
+      }
     },
     theme: { mode: isDark ? 'dark' : 'light' },
     tooltip: {
@@ -87,32 +93,35 @@ const chartOptions = computed(() => {
     dataLabels: { enabled: false },
     legend: { show: false },
     stroke: { width: 0 },
+    states: {
+      hover: { filter: { type: 'none' } },
+      active: { filter: { type: 'none' } }
+    },
     plotOptions: {
       pie: {
+        expandOnClick: false,
         donut: {
           size: '72%',
           labels: {
             show: true,
             name: {
-              show: true,
-              fontSize: '12px',
-              fontWeight: 700,
-              offsetY: 18,
-              color: subLabelColor
+              show: false
             },
             value: {
               show: true,
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: 800,
-              offsetY: -2,
+              offsetY: -6,
               color: labelColor,
               formatter: (val) => formatValue(val)
             },
             total: {
               show: true,
+              showAlways: true,
               label: props.donutLabel || 'Total',
-              fontSize: '12px',
+              fontSize: '11px',
               fontWeight: 700,
+              offsetY: 16,
               color: subLabelColor,
               formatter: () => {
                 if (typeof props.totalFormatter === 'function') return props.totalFormatter()
@@ -129,7 +138,7 @@ const chartOptions = computed(() => {
 </script>
 
 <template>
-  <VueApexCharts :key="chartKey" type="donut" :height="height" :options="chartOptions" :series="safeSeries" />
+  <VueApexCharts type="donut" :height="height" :options="chartOptions" :series="safeSeries" />
 </template>
 
 <style scoped>

@@ -201,36 +201,36 @@ onUnmounted(() => {
             v-model="appSearch"
             type="text"
             placeholder="Search apps..."
-            class="w-full px-4 sm:px-5 py-3 sm:py-4 pl-11 sm:pl-12 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all text-base"
+            class="w-full px-4 sm:px-5 py-3 sm:py-4 pl-11 sm:pl-12 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 transition-all text-base dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100 dark:placeholder-slate-500"
           />
           <span class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-lg sm:text-xl">🔍</span>
           <button
             v-if="appSearch"
             @click="appSearch = ''"
-            class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 touch-manipulation"
+            class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors p-1 touch-manipulation"
             title="Clear search"
           >
             ✕
           </button>
         </div>
-        <div class="mt-2 text-sm text-gray-500 flex items-center justify-between">
+        <div class="mt-2 text-sm text-gray-500 dark:text-slate-400 flex items-center justify-between">
           <span v-if="combinedApps.length < allAppsCount || selectedCategory">
             Showing {{ combinedApps.length }} of {{ allAppsCount }} apps
             <span v-if="selectedCategory" class="inline-flex items-center gap-1">
-              in <span class="font-semibold text-blue-600">{{ selectedCategory }}</span>
-              <button @click="selectedCategory = null" class="ml-1 text-gray-400 hover:text-gray-600 transition-colors" title="Clear filter">✕</button>
+              in <span class="font-semibold text-blue-600 dark:text-blue-400">{{ selectedCategory }}</span>
+              <button @click="selectedCategory = null" class="ml-1 text-gray-400 hover:text-gray-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors" title="Clear filter">✕</button>
             </span>
           </span>
         </div>
       </div>
 
       <div v-if="loading" class="text-center py-16">
-        <div class="text-gray-500 font-medium">Loading apps...</div>
+        <div class="text-gray-500 dark:text-slate-400 font-medium">Loading apps...</div>
       </div>
       <div v-else-if="combinedApps.length === 0" class="text-center py-16">
         <div class="text-5xl mb-4">🔍</div>
-        <div class="text-gray-500 font-medium">No apps found</div>
-        <div class="text-sm text-gray-400 mt-2">Try a different search term</div>
+        <div class="text-gray-500 dark:text-slate-300 font-medium">No apps found</div>
+        <div class="text-sm text-gray-400 dark:text-slate-500 mt-2">Try a different search term</div>
       </div>
       <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         <AppCard
@@ -245,30 +245,30 @@ onUnmounted(() => {
     </div>
 
     <!-- Categories Sidebar - Fixed to right side on larger screens -->
-    <aside class="hidden lg:block fixed top-0 right-0 w-64 xl:w-72 h-screen bg-white border-l border-gray-200 z-40 overflow-y-auto custom-scrollbar">
+    <aside class="hidden lg:block fixed top-0 right-0 w-64 xl:w-72 h-screen bg-white border-l border-gray-200 dark:bg-slate-950 dark:border-slate-800 z-40 overflow-y-auto custom-scrollbar">
       <div class="p-6">
-        <div class="flex items-center gap-2 mb-6 pb-4 border-b border-gray-100">
-          <Tag :size="20" class="text-gray-900" />
-          <h3 class="text-lg font-bold text-gray-900">Categories</h3>
+        <div class="flex items-center gap-2 mb-6 pb-4 border-b border-gray-100 dark:border-slate-800">
+          <Tag :size="20" class="text-gray-900 dark:text-white" />
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Categories</h3>
         </div>
 
         <div class="space-y-1.5">
           <!-- All Apps Option -->
           <button
             @click="selectedCategory = null"
-            :class="selectedCategory === null ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-50'"
+            :class="selectedCategory === null ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-gray-600 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-slate-900'"
             class="w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group"
           >
             <component
               :is="Grid3x3"
               :size="20"
-              :class="selectedCategory === null ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'"
+              :class="selectedCategory === null ? 'text-white dark:text-slate-900' : 'text-gray-400 group-hover:text-gray-600 dark:text-slate-500 dark:group-hover:text-slate-300'"
               class="flex-shrink-0 transition-colors"
             />
             <span class="text-sm font-medium flex-1 text-left">All apps</span>
             <span
               class="text-xs font-bold px-2 py-1 rounded-full min-w-[28px] text-center"
-              :class="selectedCategory === null ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200'"
+              :class="selectedCategory === null ? 'bg-gray-800 text-white dark:bg-slate-200 dark:text-slate-900' : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-700'"
             >
               {{ allAppsCount }}
             </span>
@@ -279,19 +279,19 @@ onUnmounted(() => {
             v-for="category in categories"
             :key="category.name"
             @click="selectedCategory = category.name"
-            :class="selectedCategory === category.name ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-50'"
+            :class="selectedCategory === category.name ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-gray-600 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-slate-900'"
             class="w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group"
           >
             <component
               :is="Tag"
               :size="18"
-              :class="selectedCategory === category.name ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'"
+              :class="selectedCategory === category.name ? 'text-white dark:text-slate-900' : 'text-gray-400 group-hover:text-gray-600 dark:text-slate-500 dark:group-hover:text-slate-300'"
               class="flex-shrink-0 transition-colors"
             />
             <span class="text-sm font-medium capitalize flex-1 text-left">{{ category.name }}</span>
             <span
               class="text-xs font-bold px-2 py-1 rounded-full min-w-[28px] text-center"
-              :class="selectedCategory === category.name ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200'"
+              :class="selectedCategory === category.name ? 'bg-gray-800 text-white dark:bg-slate-200 dark:text-slate-900' : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-300 dark:group-hover:bg-slate-700'"
             >
               {{ category.count }}
             </span>
@@ -316,8 +316,16 @@ onUnmounted(() => {
   border-radius: 3px;
 }
 
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #d1d5db;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
 @keyframes fadeIn {

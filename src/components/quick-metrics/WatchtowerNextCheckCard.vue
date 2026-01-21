@@ -72,25 +72,25 @@ const status = computed(() => {
 
 <template>
   <div class="relative h-full overflow-hidden group rounded-2xl transition-all duration-500 hover:-translate-y-1">
-    <div class="absolute inset-0 bg-gray-900">
-      <div class="absolute inset-0 bg-linear-to-br from-emerald-600/25 via-cyan-600/10 to-gray-900 z-10"></div>
-      <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/30 transition-colors duration-700"></div>
-      <div class="absolute bottom-0 left-0 w-48 h-48 bg-cyan-600/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 group-hover:bg-cyan-600/30 transition-colors duration-700"></div>
+    <div class="absolute inset-0 bg-white dark:bg-gray-900">
+      <div class="absolute inset-0 bg-linear-to-br from-emerald-200/60 via-cyan-200/30 to-white/80 dark:from-emerald-600/25 dark:via-cyan-600/10 dark:to-gray-900 z-10"></div>
+      <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-300/35 dark:bg-emerald-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-400/45 dark:group-hover:bg-emerald-500/30 transition-colors duration-700"></div>
+      <div class="absolute bottom-0 left-0 w-48 h-48 bg-cyan-300/30 dark:bg-cyan-600/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 group-hover:bg-cyan-400/40 dark:group-hover:bg-cyan-600/30 transition-colors duration-700"></div>
     </div>
 
-    <div class="relative z-20 h-full p-6 flex flex-col justify-between border border-white/5 rounded-2xl backdrop-blur-sm group-hover:border-emerald-500/30 transition-colors duration-500">
+    <div class="relative z-20 h-full p-6 flex flex-col justify-between border border-slate-200/80 dark:border-slate-700/60 rounded-2xl backdrop-blur-sm group-hover:border-emerald-300/60 dark:group-hover:border-emerald-500/30 transition-colors duration-500">
       <div class="flex items-start justify-between gap-4">
         <div class="flex items-center gap-4">
           <div class="relative">
-            <div class="absolute inset-0 bg-emerald-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
+            <div class="absolute inset-0 bg-emerald-400/25 dark:bg-emerald-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
             <div class="relative w-12 h-12 bg-linear-to-br from-emerald-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
               <RefreshCw class="w-6 h-6 text-white" />
             </div>
           </div>
 
           <div>
-            <h3 class="text-lg font-bold text-white mb-1 group-hover:text-emerald-200 transition-colors">Next Update Check</h3>
-            <p class="text-sm font-medium text-gray-400 group-hover:text-gray-300 transition-colors">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-emerald-700 dark:group-hover:text-emerald-200 transition-colors">Next Update Check</h3>
+            <p class="text-sm font-medium text-slate-600 dark:text-gray-400 group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors">
               {{ status.title }}
             </p>
           </div>
@@ -98,28 +98,28 @@ const status = computed(() => {
       </div>
 
       <div class="mt-5">
-        <div v-if="status.state !== 'running'" class="rounded-2xl border border-dashed border-white/10 bg-white/5 px-4 py-6 text-center">
-          <div class="text-sm font-semibold text-gray-200">{{ status.subtitle }}</div>
-          <div class="text-xs text-gray-400 mt-1">Watchtower checks run on an interval.</div>
+        <div v-if="status.state !== 'running'" class="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700/60 bg-white/70 dark:bg-white/5 px-4 py-6 text-center">
+          <div class="text-sm font-semibold text-slate-700 dark:text-gray-200">{{ status.subtitle }}</div>
+          <div class="text-xs text-slate-500 dark:text-gray-400 mt-1">Watchtower checks run on an interval.</div>
         </div>
 
         <div v-else class="flex flex-col items-center justify-center py-1">
-          <div class="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-200 to-cyan-200 tabular-nums">
+          <div class="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-600 to-cyan-600 dark:from-emerald-200 dark:to-cyan-200 tabular-nums">
             {{ formatDuration(remainingMs) }}
           </div>
-          <div class="text-xs text-gray-400 font-medium mt-1">
-            Next run at <span class="font-mono text-gray-300">{{ nextCheckTime || '—' }}</span>
-            <span v-if="uptimeMs" class="text-gray-500"> • uptime {{ formatDuration(uptimeMs) }}</span>
+          <div class="text-xs text-slate-500 dark:text-gray-400 font-medium mt-1">
+            Next run at <span class="font-mono text-slate-700 dark:text-gray-300">{{ nextCheckTime || '—' }}</span>
+            <span v-if="uptimeMs" class="text-slate-400 dark:text-gray-500"> • uptime {{ formatDuration(uptimeMs) }}</span>
           </div>
 
           <div class="mt-5 w-full">
-            <div class="h-2 rounded-full bg-white/5 border border-white/10 overflow-hidden">
+            <div class="h-2 rounded-full bg-slate-200/70 dark:bg-white/5 border border-slate-200/80 dark:border-slate-700/60 overflow-hidden">
               <div
-                class="h-full bg-linear-to-r from-emerald-400/70 to-cyan-400/70 transition-all duration-700"
+                class="h-full bg-linear-to-r from-emerald-500/80 to-cyan-500/80 transition-all duration-700"
                 :style="{ width: `${progressPct}%` }"
               ></div>
             </div>
-            <div class="mt-2 flex items-center justify-between text-[10px] text-gray-500">
+            <div class="mt-2 flex items-center justify-between text-[10px] text-slate-500 dark:text-gray-500">
               <span class="font-semibold uppercase tracking-wider">{{ status.subtitle }}</span>
               <span class="font-mono">{{ Math.round(progressPct) }}%</span>
             </div>

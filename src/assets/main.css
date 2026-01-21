@@ -1,9 +1,24 @@
+@config "../../tailwind.config.js";
 @import "tailwindcss";
 
 :root {
-    --bg-body: #ffffff;
-    --bg-glass: #f5f5f7;
-    --border-glass: rgba(0, 0, 0, 0.05);
+    --bg-body: #f8fafc;
+    --bg-glass: rgba(255, 255, 255, 0.78);
+    --border-glass: rgba(15, 23, 42, 0.08);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --surface: #ffffff;
+    --surface-muted: #f1f5f9;
+}
+
+:root.dark {
+    --bg-body: #0b1220;
+    --bg-glass: rgba(15, 23, 42, 0.6);
+    --border-glass: rgba(148, 163, 184, 0.2);
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --surface: #0f172a;
+    --surface-muted: #111827;
 }
 
 * {
@@ -16,7 +31,8 @@
 
 body {
     background: var(--bg-body);
-    transition: background-color 0.3s ease;
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
     /* Prevent overscroll on mobile */
     overscroll-behavior: none;
 }
@@ -44,8 +60,8 @@ body {
 }
 
 .glass-dark {
-    background: var(--bg-glass-dark);
-    border: 1px solid var(--border-glass-dark);
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
 }
 
 .card-hover {
@@ -88,8 +104,14 @@ a {
 input:focus,
 textarea:focus {
     outline: none;
-    border-color: #007AFF;
-    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.dark input:focus,
+.dark textarea:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.35);
 }
 
 ::-webkit-scrollbar {
@@ -98,17 +120,29 @@ textarea:focus {
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(15, 23, 42, 0.06);
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(15, 23, 42, 0.25);
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(15, 23, 42, 0.35);
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: rgba(148, 163, 184, 0.12);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.55);
 }
 
 .line-clamp-1 {
