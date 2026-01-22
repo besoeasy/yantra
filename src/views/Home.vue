@@ -521,7 +521,6 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- Other Containers Section -->
         <div v-if="otherContainers.length > 0">
           <div class="flex items-center gap-3 mb-6">
             <div class="p-2 bg-gray-200 text-gray-600 rounded-xl dark:bg-slate-800 dark:text-slate-300">
