@@ -245,120 +245,99 @@ onUnmounted(() => {
             </router-link>
           </div>
 
-          <!-- Quick Metrics (Cards) -->
-          <div class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2 md:gap-3">
-              <div class="lg:col-span-2 xl:col-span-2">
-                <GreetingCard :running-apps="runningApps" :total-volumes="totalVolumes" />
-              </div>
+          <!-- Unified Dashboard Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2 md:gap-3">
+            <!-- Quick Metrics Cards -->
+            <div class="lg:col-span-2 xl:col-span-2">
+              <GreetingCard :running-apps="runningApps" :total-volumes="totalVolumes" />
+            </div>
 
+            <div v-if="showWatchtowerAlert" class="h-full">
+              <WatchtowerAlert />
+            </div>
 
-              <div v-if="showWatchtowerAlert" class="h-full">
-                <WatchtowerAlert />
-              </div>
+            <div v-else class="h-full">
+              <WatchtowerNextCheckCard :containers="containers" :current-time="currentTime" :interval-hours="3" />
+            </div>
 
-              <div v-else class="h-full">
-                <WatchtowerNextCheckCard :containers="containers" :current-time="currentTime" :interval-hours="3" />
-              </div>
+            <div v-if="reclaimableStats.show" class="h-full lg:col-span-2 xl:col-span-2">
+              <SystemCleaner
+                :api-url="apiUrl"
+                :initial-image-stats="reclaimableStats.imageStats"
+                :initial-volume-stats="reclaimableStats.volumeStats"
+                @cleaned="refreshAll"
+              />
+            </div>
 
-              <div v-if="reclaimableStats.show" class="h-full lg:col-span-2 xl:col-span-2">
-                <SystemCleaner
-                  :api-url="apiUrl"
-                  :initial-image-stats="reclaimableStats.imageStats"
-                  :initial-volume-stats="reclaimableStats.volumeStats"
-                  @cleaned="refreshAll"
-                />
-              </div>
+            <div>
+              <AverageUptimeCard :containers="containers" :current-time="currentTime" />
+            </div>
 
-              <div>
-                <AverageUptimeCard :containers="containers" :current-time="currentTime" />
-              </div>
+            <div v-if="temporaryContainersCount > 0" class="lg:col-span-2 xl:col-span-2">
+              <ExpiringContainersCard :containers="containers" :current-time="currentTime" />
+            </div>
 
-              <div v-if="temporaryContainersCount > 0" class="lg:col-span-2 xl:col-span-2">
-                <ExpiringContainersCard :containers="containers" :current-time="currentTime" />
-              </div>
+            <div class="lg:col-span-2 xl:col-span-2" v-if="images.length > 0 || volumes.length > 0">
+              <RotatingDiskUsageCard :images="images" :volumes="volumes" :interval-ms="10000" />
+            </div>
 
-              <div class="lg:col-span-2 xl:col-span-2" v-if="images.length > 0 || volumes.length > 0">
-                <RotatingDiskUsageCard :images="images" :volumes="volumes" :interval-ms="10000" />
-              </div>
+            <div class="lg:col-span-2 xl:col-span-2">
+              <MachineIdentityCard />
+            </div>
 
-              <div class="lg:col-span-2 xl:col-span-2">
-                <MachineIdentityCard />
-              </div>
+            <div v-if="images.length > 0" class="lg:col-span-2 xl:col-span-2">
+              <BiggestStorageCard :images="images" />
+            </div>
 
-              <div v-if="images.length > 0" class="lg:col-span-2 xl:col-span-2">
-                <BiggestStorageCard :images="images" />
-              </div>
+            <div v-if="containers.length > 0" class="lg:col-span-2 xl:col-span-2">
+              <AppCategoriesCard :containers="containers" />
+            </div>
 
-              
-              <div v-if="containers.length > 0" class="lg:col-span-3 xl:col-span-3">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-3">
+            <div v-if="containers.length > 0" class="h-full">
+              <div class="relative h-full overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 p-6">
+                <div class="absolute inset-0 bg-linear-to-br from-amber-100/70 via-orange-100/30 to-white/80 dark:from-amber-500/10 dark:via-orange-500/10 dark:to-slate-900/60"></div>
+                <div class="relative z-10 flex h-full flex-col justify-between gap-6">
                   <div>
-                    <AppCategoriesCard :containers="containers" />
+                    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Operations Pulse</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Signals to keep your stack healthy</p>
                   </div>
 
-                  <div>
-                    <div class="relative h-full overflow-hidden rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 p-6">
-                      <div class="absolute inset-0 bg-linear-to-br from-amber-100/70 via-orange-100/30 to-white/80 dark:from-amber-500/10 dark:via-orange-500/10 dark:to-slate-900/60"></div>
-                      <div class="relative z-10 flex h-full flex-col justify-between gap-6">
-                        <div>
-                          <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Operations Pulse</h3>
-                          <p class="text-sm text-slate-600 dark:text-slate-400">Signals to keep your stack healthy</p>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                          <div class="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 px-4 py-3">
-                            <div class="text-xs text-slate-500 dark:text-slate-400">Running apps</div>
-                            <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ runningApps }}</div>
-                          </div>
-                          <div class="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 px-4 py-3">
-                            <div class="text-xs text-slate-500 dark:text-slate-400">Temporary installs</div>
-                            <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ temporaryContainersCount }}</div>
-                          </div>
-                          <div class="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 px-4 py-3">
-                            <div class="text-xs text-slate-500 dark:text-slate-400">Images cached</div>
-                            <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ images.length }}</div>
-                          </div>
-                          <div class="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 px-4 py-3">
-                            <div class="text-xs text-slate-500 dark:text-slate-400">Updates status</div>
-                            <div class="text-sm font-semibold" :class="showWatchtowerAlert ? 'text-orange-600 dark:text-orange-300' : 'text-emerald-600 dark:text-emerald-300'">
-                              {{ showWatchtowerAlert ? 'Watchtower missing' : 'Auto-checks active' }}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="text-xs text-slate-500 dark:text-slate-400">
-                          {{ runningApps === 0 ? 'Install an app to start tracking health signals.' : 'Keep an eye on temporary installs and update checks.' }}
-                        </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 px-4 py-3">
+                      <div class="text-xs text-slate-500 dark:text-slate-400">Running apps</div>
+                      <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ runningApps }}</div>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 px-4 py-3">
+                      <div class="text-xs text-slate-500 dark:text-slate-400">Temporary installs</div>
+                      <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ temporaryContainersCount }}</div>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 px-4 py-3">
+                      <div class="text-xs text-slate-500 dark:text-slate-400">Images cached</div>
+                      <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ images.length }}</div>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/80 dark:bg-slate-900/70 px-4 py-3">
+                      <div class="text-xs text-slate-500 dark:text-slate-400">Updates status</div>
+                      <div class="text-sm font-semibold" :class="showWatchtowerAlert ? 'text-orange-600 dark:text-orange-300' : 'text-emerald-600 dark:text-emerald-300'">
+                        {{ showWatchtowerAlert ? 'Watchtower missing' : 'Auto-checks active' }}
                       </div>
                     </div>
+                  </div>
+
+                  <div class="text-xs text-slate-500 dark:text-slate-400">
+                    {{ runningApps === 0 ? 'Install an app to start tracking health signals.' : 'Keep an eye on temporary installs and update checks.' }}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div v-if="yantraContainers.length > 0 || volumeContainers.length > 0" class="mt-12">
-          <div class="flex items-center justify-between gap-3 mb-6">
-            <div>
-              <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Running Containers</h2>
-              <p class="text-sm text-slate-500 dark:text-slate-400">Active apps and services</p>
-            </div>
-            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-              {{ yantraContainers.length + volumeContainers.length }} total
-            </span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-            <template v-if="yantraContainers.length > 0">
-              <div
-                v-for="(container, index) in yantraContainers"
-                :key="container.id"
-                :style="{ animationDelay: `${index * 50}ms` }"
-                @click="viewContainerDetail(container)"
-                class="relative h-full overflow-hidden group cursor-pointer transition-colors duration-300 animate-fadeIn"
-              >
+            <!-- Yantra Containers -->
+            <div
+              v-for="(container, index) in yantraContainers"
+              :key="container.id"
+              :style="{ animationDelay: `${index * 50}ms` }"
+              @click="viewContainerDetail(container)"
+              class="relative h-full overflow-hidden group cursor-pointer transition-colors duration-300 animate-fadeIn"
+            >
                 <div class="absolute inset-0 bg-white dark:bg-gray-900">
                   <div class="absolute inset-0 bg-linear-to-br from-slate-200/70 via-blue-200/25 to-white/80 dark:from-slate-600/25 dark:via-blue-600/10 dark:to-gray-900 z-10"></div>
                   <div
@@ -454,18 +433,17 @@ onUnmounted(() => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </template>
+            </div>
 
-            <template v-if="volumeContainers.length > 0">
-              <div
-                v-for="(container, index) in volumeContainers"
-                :key="container.id"
-                :style="{ animationDelay: `${index * 50}ms` }"
-                @click="viewContainerDetail(container)"
-                class="relative h-full overflow-hidden group rounded-2xl cursor-pointer transition-all duration-500 hover:-translate-y-1 animate-fadeIn"
-              >
-                <div class="absolute inset-0 bg-white dark:bg-gray-900">
+            <!-- Volume Containers -->
+            <div
+              v-for="(container, index) in volumeContainers"
+              :key="container.id"
+              :style="{ animationDelay: `${index * 50}ms` }"
+              @click="viewContainerDetail(container)"
+              class="relative h-full overflow-hidden group rounded-2xl cursor-pointer transition-all duration-500 hover:-translate-y-1 animate-fadeIn"
+            >
+              <div class="absolute inset-0 bg-white dark:bg-gray-900">
                   <div class="absolute inset-0 bg-linear-to-br from-indigo-200/60 via-purple-200/30 to-white/80 dark:from-indigo-600/25 dark:via-purple-600/10 dark:to-gray-900 z-10"></div>
                   <div
                     class="absolute top-0 right-0 w-64 h-64 bg-indigo-300/35 dark:bg-indigo-500/15 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-indigo-400/45 dark:group-hover:bg-indigo-500/25 transition-colors duration-700"
@@ -516,24 +494,12 @@ onUnmounted(() => {
                     <ArrowRight :size="16" class="text-slate-600 dark:text-white/70 group-hover:text-indigo-600 dark:group-hover:text-indigo-200 transform group-hover:translate-x-0.5 transition-all" />
                   </div>
                 </div>
-              </div>
-            </template>
-          </div>
-        </div>
-
-        <div v-if="otherContainers.length > 0">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="p-2 bg-gray-200 text-gray-600 rounded-xl dark:bg-slate-800 dark:text-slate-300">
-              <div class="font-bold text-lg px-1">#</div>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Other Containers</h2>
-            <span class="px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs font-bold dark:bg-slate-800 dark:text-slate-300">{{ otherContainers.length }}</span>
-          </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+            <!-- Other Containers -->
             <div
               v-for="(container, index) in otherContainers"
-              :key="container.id"
+              :key="'other-' + container.id"
               :style="{ animationDelay: `${index * 50}ms` }"
               @click="viewContainerDetail(container)"
               class="group bg-white dark:bg-slate-900/70 rounded-3xl p-6 shadow-sm border border-gray-200 dark:border-slate-800 hover:shadow-lg transition-all duration-300 cursor-pointer animate-fadeIn relative overflow-hidden flex flex-col h-full hover:-translate-y-1"
