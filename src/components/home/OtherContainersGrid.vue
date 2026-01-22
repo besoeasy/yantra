@@ -24,11 +24,11 @@ const emit = defineEmits(["select"]);
             {{ container.name.replace(/^\//, "") }}
           </h3>
           <span
-            class="text-xs font-semibold px-2 py-0.5 rounded-md"
+            class="text-xs font-semibold px-2 py-0.5 rounded-md border"
             :class="
               container.state === 'running'
-                ? 'bg-green-100 text-green-800 dark:bg-emerald-500/15 dark:text-emerald-200'
-                : 'bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-slate-300'
+                ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white'
+                : 'bg-white/70 text-black/70 border-black/10 dark:bg-white/5 dark:text-white/70 dark:border-white/10'
             "
           >
             {{ container.state }}
