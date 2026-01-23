@@ -799,8 +799,19 @@ app.get("/api/containers/:id/stats", async (req, res) => {
     const cpuPercent = systemDelta > 0 ? (cpuDelta / systemDelta) * stats.cpu_stats.online_cpus * 100 : 0;
 
     // Calculate memory usage
-    const memoryUsage = stats.memory_stats.usage || 0;
-    const memoryLimit = stats.memory_stats.limit || 0;
+    // Docker's raw `memory_stats.usage` includes page cache/buffers, which often makes UI
+    // appear "higher" than what users expect from tools like `docker stats`.
+    // Prefer an "excluding cache" metric when available.
+    const memoryRawUsage = stats?.memory_stats?.usage || 0;
+    const memoryLimit = stats?.memory_stats?.limit || 0;
+    const memStats = stats?.memory_stats?.stats || {};
+    const memoryCache =
+      typeof memStats.inactive_file === "number"
+        ? memStats.inactive_file // cgroup v2
+        : typeof memStats.cache === "number"
+          ? memStats.cache // cgroup v1
+          : 0;
+    const memoryUsage = Math.max(0, memoryRawUsage - memoryCache);
     const memoryPercent = memoryLimit > 0 ? (memoryUsage / memoryLimit) * 100 : 0;
 
     // Network I/O
@@ -832,6 +843,8 @@ app.get("/api/containers/:id/stats", async (req, res) => {
         },
         memory: {
           usage: memoryUsage,
+          rawUsage: memoryRawUsage,
+          cache: memoryCache,
           limit: memoryLimit,
           percent: memoryPercent.toFixed(2),
         },

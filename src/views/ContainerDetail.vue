@@ -741,12 +741,15 @@ onUnmounted(() => {
                 <div class="flex items-center justify-between mb-3">
                   <div class="flex items-center gap-2">
                     <MemoryStick :size="18" class="text-indigo-600 dark:text-indigo-300" />
-                    <span class="text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">Memory</span>
+                    <span class="text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">Memory (excl. cache)</span>
                   </div>
                   <span class="text-lg font-bold text-indigo-600 dark:text-indigo-300">{{ containerStats.memory.percent }}%</span>
                 </div>
                 <div class="text-xs text-gray-600 dark:text-slate-400 mb-2 font-medium">
                   {{ formatBytes(containerStats.memory.usage) }} / {{ formatBytes(containerStats.memory.limit) }}
+                  <span v-if="typeof containerStats.memory.cache === 'number' && containerStats.memory.cache > 0" class="ml-2 opacity-80">
+                    (cache {{ formatBytes(containerStats.memory.cache) }})
+                  </span>
                 </div>
                 <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden shadow-inner">
                   <div class="bg-indigo-600 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" 
