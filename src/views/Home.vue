@@ -249,7 +249,7 @@ onUnmounted(() => {
           <!-- Unified Dashboard Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4 xl:gap-3">
             <!-- Combined Greeting + Operations Pulse -->
-            <div class="lg:col-span-2 xl:col-span-2">
+            <div>
               <OverviewPulseCard
                 :running-apps="runningApps"
                 :total-volumes="totalVolumes"
@@ -276,6 +276,10 @@ onUnmounted(() => {
               @select="viewContainerDetail"
             />
 
+            <div>
+              <AverageUptimeCard :containers="containers" :current-time="currentTime" />
+            </div>
+
             <VolumeContainersGrid
               v-if="volumeContainers.length > 0"
               :containers="volumeContainers"
@@ -293,10 +297,6 @@ onUnmounted(() => {
                 :initial-volume-stats="reclaimableStats.volumeStats"
                 @cleaned="refreshAll"
               />
-            </div>
-
-            <div>
-              <AverageUptimeCard :containers="containers" :current-time="currentTime" />
             </div>
 
             <div v-if="temporaryContainersCount > 0">
