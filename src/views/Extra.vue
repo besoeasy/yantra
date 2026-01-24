@@ -1,5 +1,5 @@
 <script setup>
-import { Box, ClipboardList, HardDrive, Home, Layers, Check, ChevronRight, Settings, Heart, Github, Send, Bug } from "lucide-vue-next";
+import { Box, ClipboardList, HardDrive, Home, Layers, Check, ChevronRight, Heart, Github, Send, Bug } from "lucide-vue-next";
 
 const navItems = [
   {
@@ -49,14 +49,6 @@ const navItems = [
       arrow: "text-rose-400",
     },
     features: ["Tail logs", "Debug quickly"],
-  },
-];
-
-const comingSoon = [
-  {
-    title: "Settings",
-    description: "Preferences and advanced configuration",
-    icon: Settings,
   },
 ];
 
@@ -230,24 +222,6 @@ const externalItems = [
             </div>
           </div>
         </a>
-
-        <div
-          v-for="item in comingSoon"
-          :key="item.title"
-          class="group relative overflow-hidden bg-gray-900/50 rounded-3xl p-8 border border-gray-700 opacity-60 cursor-not-allowed"
-          :aria-label="`${item.title}: Coming Soon`"
-        >
-          <div class="relative z-10">
-            <div class="flex items-center justify-center w-20 h-20 bg-gray-800 rounded-2xl mb-6">
-              <component :is="item.icon" :size="40" class="text-white" />
-            </div>
-
-            <h2 class="text-2xl font-bold text-white mb-2">{{ item.title }}</h2>
-            <p class="text-gray-300 leading-relaxed mb-6">{{ item.description }}</p>
-
-            <div class="inline-block bg-gray-800 text-gray-300 px-4 py-2 rounded-full text-sm font-semibold">Coming Soon</div>
-          </div>
-        </div>
       </section>
 
       <!-- Back Button -->
