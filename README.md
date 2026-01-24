@@ -3,8 +3,6 @@
 > **Turn your Laptop into a Private Homelab.**
 > Yantra is a sleek, self-hosted app store that runs _alongside_ your OS. Take back control of your data without dedicated hardware.
 
-[![Join Community](https://img.shields.io/badge/Telegram-Join%20Chat-blue?logo=telegram)](https://t.me/+Qu06yCZHBAU3NTk1)
-
 ---
 
 ## 🚀 Quick Start (Copy & Paste)
