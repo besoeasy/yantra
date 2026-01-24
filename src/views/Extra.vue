@@ -86,22 +86,6 @@ const externalItems = [
     features: ["Track updates", "Report bugs"],
   },
   {
-    title: "Telegram",
-    href: "https://t.me/+Qu06yCZHBAU3NTk1",
-    description: "Join the community chat",
-    icon: Send,
-    accent: {
-      ring: "focus:ring-sky-500",
-      glow: "bg-sky-200",
-      iconBg: "bg-sky-900/30",
-      iconHover: "group-hover:bg-sky-800/40",
-      textHover: "group-hover:text-sky-400",
-      check: "text-sky-400",
-      arrow: "text-sky-400",
-    },
-    features: ["Get help", "Share feedback"],
-  },
-  {
     title: "Report Issue",
     href: "https://github.com/besoeasy/yantra/issues",
     description: "Open a bug report or request a feature",
@@ -117,6 +101,22 @@ const externalItems = [
     },
     features: ["Bug reports", "Feature requests"],
   },
+  {
+    title: "Telegram",
+    href: "https://t.me/+Qu06yCZHBAU3NTk1",
+    description: "Join the community chat",
+    icon: Send,
+    accent: {
+      ring: "focus:ring-sky-500",
+      glow: "bg-sky-200",
+      iconBg: "bg-sky-900/30",
+      iconHover: "group-hover:bg-sky-800/40",
+      textHover: "group-hover:text-sky-400",
+      check: "text-sky-400",
+      arrow: "text-sky-400",
+    },
+    features: ["Get help", "Share feedback"],
+  },
 ];
 </script>
 
@@ -124,7 +124,7 @@ const externalItems = [
   <main class="flex flex-col items-center justify-center min-h-screen bg-slate-50 text-slate-900 dark:bg-black dark:text-white px-4 py-12">
     <div class="w-full mx-auto animate-fade-in-up">
       <!-- Navigation Grid -->
-      <section aria-label="Navigation" class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      <section aria-label="Navigation" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
         <router-link
           v-for="item in navItems"
           :key="item.to"
@@ -223,17 +223,6 @@ const externalItems = [
           </div>
         </a>
       </section>
-
-      <!-- Back Button -->
-      <div class="text-center mt-10">
-        <router-link
-          to="/home"
-          class="inline-flex items-center text-slate-500 hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400 transition-colors font-semibold"
-        >
-          <ChevronRight :size="18" class="mr-2 rotate-180" />
-          Back to Home
-        </router-link>
-      </div>
     </div>
   </main>
 </template>
