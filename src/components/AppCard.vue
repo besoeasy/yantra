@@ -1,92 +1,123 @@
 <script setup>
-defineProps({
+import { computed, toRefs } from "vue";
+import { Check, ChevronRight } from "lucide-vue-next";
+
+const props = defineProps({
   app: {
     type: Object,
-    required: true
+    required: true,
   },
   instanceCount: {
     type: Number,
-    default: 0
+    default: 0,
+  },
+});
+
+const { app, instanceCount } = toRefs(props);
+
+const categories = computed(() => {
+  const raw = app.value?.category ?? "";
+  const parts = raw
+    .split(",")
+    .map((c) => c.trim())
+    .filter(Boolean);
+  return {
+    shown: parts.slice(0, 2),
+    remaining: Math.max(0, parts.length - 2),
+  };
+});
+
+const accent = computed(() => {
+  const installed = Boolean(app.value?.isInstalled);
+  if (installed) {
+    return {
+      ring: "focus:ring-emerald-500",
+      glow: "bg-emerald-200 dark:bg-emerald-400/20",
+      iconBg: "bg-emerald-900/10 dark:bg-emerald-900/30",
+      iconHover: "group-hover:bg-emerald-900/15 dark:group-hover:bg-emerald-800/40",
+      textHover: "group-hover:text-emerald-600 dark:group-hover:text-emerald-400",
+      check: "text-emerald-500 dark:text-emerald-400",
+      arrow: "text-emerald-600 dark:text-emerald-400",
+      badge: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-200",
+    };
   }
-})
+
+  return {
+    ring: "focus:ring-sky-500",
+    glow: "bg-sky-200 dark:bg-sky-400/20",
+    iconBg: "bg-slate-900/5 dark:bg-slate-900/30",
+    iconHover: "group-hover:bg-slate-900/10 dark:group-hover:bg-slate-800/40",
+    textHover: "group-hover:text-sky-700 dark:group-hover:text-sky-300",
+    check: "text-sky-600 dark:text-sky-300",
+    arrow: "text-sky-700 dark:text-sky-300",
+    badge: "bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-200",
+  };
+});
 </script>
 
 <template>
-  <div class="app-card group bg-white dark:bg-slate-900/70 rounded-2xl p-5 sm:p-6 transition-all duration-500 ease-out hover:shadow-2xl hover:shadow-gray-900/10 dark:hover:shadow-slate-950/50 hover:-translate-y-1 active:scale-[0.98] cursor-pointer flex flex-col animate-fadeIn overflow-hidden relative border border-transparent dark:border-slate-800">
-    <!-- Gradient background on hover -->
-    <div class="absolute inset-0 bg-gradient-to-br from-gray-50/0 to-gray-50/0 group-hover:from-gray-50/50 group-hover:to-gray-50/30 dark:from-slate-900/0 dark:to-slate-900/0 dark:group-hover:from-slate-800/60 dark:group-hover:to-slate-900/50 transition-all duration-500 pointer-events-none"></div>
+  <button
+    type="button"
+    class="group relative w-full text-left overflow-hidden bg-white dark:bg-gray-900 rounded-3xl p-6 sm:p-7 border border-slate-200 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 focus:outline-none focus:ring-4"
+    :class="accent.ring"
+    :aria-label="`Open ${app?.name ?? 'app'} details`"
+  >
+    <!-- Gradient Glow -->
+    <div
+      class="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-70 transition-opacity duration-500"
+      :class="accent.glow"
+    ></div>
 
-    <!-- Content wrapper -->
-    <div class="relative z-10 flex flex-col h-full">
-      <!-- Header with icon and title -->
-      <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
-        <div class="relative flex-shrink-0">
-          <img
-            :src="app.logo"
-            :alt="app.name"
-            class="w-14 h-14 sm:w-16 sm:h-16 object-contain transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
-          />
-        </div>
-
-        <div class="flex-1 min-w-0">
-          <h3 class="font-bold text-base sm:text-lg text-gray-900 dark:text-slate-100 truncate group-hover:text-gray-900 dark:group-hover:text-white transition-colors line-clamp-2">
-            {{ app.name }}
-          </h3>
-          <p v-if="app.status" class="text-xs text-gray-500 dark:text-slate-400 mt-0.5">{{ app.status }}</p>
-        </div>
-
-        <!-- Instance count badge -->
-        <div v-if="instanceCount > 1" class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-500/30 dark:to-blue-500/10">
-          <span class="text-xs font-bold text-blue-700 dark:text-blue-200">{{ instanceCount }}</span>
+    <div class="relative z-10">
+      <!-- Icon -->
+      <div
+        class="flex items-center justify-center w-20 h-20 rounded-2xl mb-5 transition-all duration-300 group-hover:scale-110"
+        :class="[accent.iconBg, accent.iconHover]"
+      >
+        <img v-if="app?.logo" :src="app.logo" :alt="app.name" class="w-12 h-12 object-contain" loading="lazy" />
+        <div v-else class="text-2xl font-bold text-slate-900 dark:text-white">
+          {{ (app?.name ?? "?").slice(0, 1).toUpperCase() }}
         </div>
       </div>
 
-      <!-- Description -->
-      <p class="text-sm text-gray-600 dark:text-slate-300 leading-relaxed line-clamp-2 mb-4 flex-grow group-hover:text-gray-700 dark:group-hover:text-slate-200 transition-colors">
+      <!-- Title + badges -->
+      <div class="flex items-start justify-between gap-3">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1 transition-colors" :class="accent.textHover">
+          {{ app.name }}
+        </h3>
+
+        <div class="flex items-center gap-2 pt-0.5">
+          <span v-if="app?.isInstalled" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold" :class="accent.badge"> Installed </span>
+          <span
+            v-if="instanceCount > 0"
+            class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+            :title="`${instanceCount} running`"
+          >
+            {{ instanceCount }}
+          </span>
+        </div>
+      </div>
+
+      <p class="text-slate-600 dark:text-gray-300 leading-relaxed line-clamp-2 mb-5">
         {{ app.description || "No description available" }}
       </p>
 
-      <!-- Categories -->
-      <div class="flex flex-wrap gap-1.5 mb-4">
-        <span
-          v-for="(cat, idx) in app.category.split(',').slice(0, 3)"
-          :key="cat"
-          class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100/60 text-gray-700 group-hover:bg-gray-100/80 dark:bg-slate-800/60 dark:text-slate-200 dark:group-hover:bg-slate-800 transition-all duration-300"
-        >
-          {{ cat.trim() }}
-        </span>
-        <span
-          v-if="app.category.split(',').length > 3"
-          class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium text-gray-500 bg-gray-50/80 group-hover:bg-gray-100/80 dark:text-slate-400 dark:bg-slate-900/60 dark:group-hover:bg-slate-800 transition-all duration-300"
-        >
-          +{{ app.category.split(',').length - 3 }}
-        </span>
-      </div>
+      <!-- “Features” (categories) -->
+      <ul v-if="categories.shown.length" class="space-y-2 text-sm text-slate-500 dark:text-gray-400">
+        <li v-for="cat in categories.shown" :key="cat" class="flex items-center gap-2">
+          <Check :size="16" :class="accent.check" />
+          <span class="capitalize">{{ cat }}</span>
+        </li>
+        <li v-if="categories.remaining" class="flex items-center gap-2">
+          <Check :size="16" :class="accent.check" />
+          <span>+{{ categories.remaining }} more</span>
+        </li>
+      </ul>
 
-      <!-- Footer action indicator -->
-      <div class="flex items-center gap-2 text-xs text-gray-400 dark:text-slate-400 group-hover:text-gray-700 dark:group-hover:text-slate-200 transition-colors mt-auto pt-3">
-        <span>View Details</span>
-        <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
+      <!-- Arrow -->
+      <div class="mt-6 flex items-center font-semibold text-sm group-hover:translate-x-2 transition-transform" :class="accent.arrow">
+        Install <ChevronRight :size="16" class="ml-1" />
       </div>
     </div>
-  </div>
+  </button>
 </template>
-
-<style scoped>
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.5s ease-out forwards;
-}
-</style>

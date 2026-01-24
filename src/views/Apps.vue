@@ -232,7 +232,7 @@ onUnmounted(() => {
         <div class="text-gray-500 dark:text-slate-300 font-medium">No apps found</div>
         <div class="text-sm text-gray-400 dark:text-slate-500 mt-2">Try a different search term</div>
       </div>
-      <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <div v-else class="grid grid-cols-1 gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         <AppCard
           v-for="(app, index) in combinedApps"
           :key="app.id"
@@ -326,63 +326,5 @@ onUnmounted(() => {
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #475569;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.4s ease-out forwards;
-}
-
-/* App card enhancements */
-.app-card {
-  border-radius: 1rem;
-  transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.app-card::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: 1rem;
-  background: linear-gradient(135deg, rgba(107, 114, 128, 0) 0%, rgba(75, 85, 99, 0) 100%);
-  opacity: 0;
-  transition: opacity 500ms ease-out;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.app-card:hover::before {
-  background: linear-gradient(135deg, rgba(107, 114, 128, 0.05) 0%, rgba(75, 85, 99, 0.03) 100%);
-  opacity: 1;
-}
-
-/* Smooth hover lift effect */
-.app-card:hover {
-  filter: drop-shadow(0 20px 25px -5px rgba(0, 0, 0, 0.08));
-}
-
-/* Category badge hover animation */
-.app-card span {
-  transition: all 300ms ease-out;
-}
-
-/* Icon container rotation on hover */
-.app-card:hover img {
-  filter: brightness(1.1);
-}
-
-/* Action indicator arrow */
-.app-card:hover svg {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 </style>
