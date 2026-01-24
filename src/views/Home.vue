@@ -13,6 +13,7 @@ import RotatingDiskUsageCard from "../components/quick-metrics/RotatingDiskUsage
 import AverageUptimeCard from "../components/quick-metrics/AverageUptimeCard.vue";
 import ExpiringContainersCard from "../components/quick-metrics/ExpiringContainersCard.vue";
 import WatchtowerNextCheckCard from "../components/quick-metrics/WatchtowerNextCheckCard.vue";
+import HostMetricsCard from "../components/quick-metrics/HostMetricsCard.vue";
 
 const router = useRouter();
 
@@ -304,6 +305,10 @@ onUnmounted(() => {
 
             <div v-if="images.length > 0 || volumes.length > 0">
               <RotatingDiskUsageCard :images="images" :volumes="volumes" :interval-ms="10000" />
+            </div>
+
+            <div>
+              <HostMetricsCard :api-url="apiUrl" />
             </div>
 
             <div>

@@ -2141,6 +2141,92 @@ app.post("/api/ports/suggest", async (req, res) => {
   }
 });
 
+// GET /api/system/info - Get host system information
+app.get("/api/system/info", async (req, res) => {
+  log("info", "💻 [GET /api/system/info] Fetching host system information");
+  try {
+    const info = await docker.info();
+
+    // Extract relevant system information
+    const systemInfo = {
+      cpu: {
+        cores: info.NCPU || 0,
+      },
+      memory: {
+        total: info.MemTotal || 0,
+      },
+      storage: {
+        driver: info.Driver || 'unknown',
+        total: info.DriverStatus ? extractStorageInfo(info.DriverStatus, 'Data Space Total') : null,
+        used: info.DriverStatus ? extractStorageInfo(info.DriverStatus, 'Data Space Used') : null,
+        available: info.DriverStatus ? extractStorageInfo(info.DriverStatus, 'Data Space Available') : null,
+      },
+      docker: {
+        version: info.ServerVersion || 'unknown',
+        containers: {
+          total: info.Containers || 0,
+          running: info.ContainersRunning || 0,
+          paused: info.ContainersPaused || 0,
+          stopped: info.ContainersStopped || 0,
+        },
+        images: info.Images || 0,
+      },
+      os: {
+        type: info.OSType || 'unknown',
+        name: info.OperatingSystem || 'unknown',
+        architecture: info.Architecture || 'unknown',
+        kernel: info.KernelVersion || 'unknown',
+      },
+      name: info.Name || 'unknown',
+    };
+
+    log("info", `✅ [GET /api/system/info] System info retrieved: ${systemInfo.cpu.cores} cores, ${formatBytes(systemInfo.memory.total)} RAM`);
+
+    res.json({
+      success: true,
+      info: systemInfo,
+    });
+  } catch (error) {
+    log("error", "❌ [GET /api/system/info] Error:", error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+// Helper function to extract storage info from DriverStatus array
+function extractStorageInfo(driverStatus, key) {
+  if (!Array.isArray(driverStatus)) return null;
+  
+  const entry = driverStatus.find(([k]) => k === key);
+  if (!entry || !entry[1]) return null;
+  
+  // Parse values like "107.4GB" or "50.5 GB"
+  const match = entry[1].match(/([\d.]+)\s*([KMGT]?B)/i);
+  if (!match) return null;
+  
+  const value = parseFloat(match[1]);
+  const unit = match[2].toUpperCase();
+  
+  const multipliers = {
+    'B': 1,
+    'KB': 1024,
+    'MB': 1024 * 1024,
+    'GB': 1024 * 1024 * 1024,
+    'TB': 1024 * 1024 * 1024 * 1024,
+  };
+  
+  return value * (multipliers[unit] || 1);
+}
+
+function formatBytes(bytes) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
+}
 
 
 // Catch-all route to serve Vue.js app for client-side routing (must be last)
