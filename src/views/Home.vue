@@ -267,6 +267,10 @@ onUnmounted(() => {
               <WatchtowerNextCheckCard :containers="containers" :current-time="currentTime" :interval-hours="3" />
             </div>
 
+            <div>
+              <HostMetricsCard :api-url="apiUrl" />
+            </div>
+
             <YantraContainersGrid
               v-if="yantraContainers.length > 0"
               :containers="yantraContainers"
@@ -305,10 +309,6 @@ onUnmounted(() => {
 
             <div v-if="images.length > 0 || volumes.length > 0">
               <RotatingDiskUsageCard :images="images" :volumes="volumes" :interval-ms="10000" />
-            </div>
-
-            <div>
-              <HostMetricsCard :api-url="apiUrl" />
             </div>
 
             <div>
