@@ -103,7 +103,7 @@ onMounted(() => {
           >
             <span
               aria-hidden="true"
-              class="flex flex-col items-center text-[11px] font-black uppercase leading-[1.05] text-gray-900 dark:text-white"
+              class="flex flex-col items-center text-[13px] font-black uppercase leading-[1] text-gray-900 dark:text-white"
             >
               <span>Y</span>
               <span>A</span>
