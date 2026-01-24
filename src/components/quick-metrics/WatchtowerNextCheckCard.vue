@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { RefreshCw } from 'lucide-vue-next'
+import { RefreshCw, Clock, PauseCircle, AlertCircle } from 'lucide-vue-next'
 import { formatDuration } from '../../utils/metrics.js'
 
 const props = defineProps({
@@ -64,65 +64,138 @@ const nextCheckTime = computed(() => {
 
 const status = computed(() => {
   const c = watchtowerContainer.value
-  if (!c) return { state: 'missing', title: 'Watchtower not detected', subtitle: 'Install Watchtower to enable auto-updates.' }
-  if (c.state !== 'running') return { state: 'stopped', title: 'Watchtower paused', subtitle: 'Start Watchtower to resume update checks.' }
-  return { state: 'running', title: 'Update checks scheduled', subtitle: `Every ${props.intervalHours} hours (based on Watchtower uptime)` }
+  if (!c) return { state: 'missing', label: 'Missing', icon: AlertCircle }
+  if (c.state !== 'running') return { state: 'stopped', label: 'Paused', icon: PauseCircle }
+  return { state: 'running', label: 'Active', icon: Clock }
+})
+
+const theme = computed(() => {
+  const s = status.value.state
+  if (s === 'running') {
+    return {
+      text: 'text-emerald-600 dark:text-emerald-400',
+      bg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
+      border: 'group-hover:border-emerald-500/30 dark:group-hover:border-emerald-400/30',
+      ring: 'text-emerald-500 dark:text-emerald-400',
+    }
+  }
+  if (s === 'stopped') {
+    return {
+      text: 'text-amber-600 dark:text-amber-400',
+      bg: 'bg-amber-500/10 dark:bg-amber-500/20',
+      border: 'group-hover:border-amber-500/30 dark:group-hover:border-amber-400/30',
+      ring: 'text-amber-500 dark:text-amber-400',
+    }
+  }
+  return {
+    text: 'text-slate-500 dark:text-slate-400',
+    bg: 'bg-slate-500/10 dark:bg-slate-500/20',
+    border: 'group-hover:border-slate-500/30 dark:group-hover:border-slate-400/30',
+    ring: 'text-slate-300 dark:text-slate-600',
+  }
+})
+
+// Circular progress calculations
+const radius = 36
+const circumference = 2 * Math.PI * radius
+const strokeDashoffset = computed(() => {
+  return circumference - (progressPct.value / 100) * circumference
 })
 </script>
 
 <template>
-  <div class="relative h-full overflow-hidden group rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
-    <div class="absolute inset-0 bg-white dark:bg-gray-900">
-      <div class="absolute inset-0 bg-linear-to-br from-emerald-200/60 via-cyan-200/30 to-white/80 dark:from-emerald-600/25 dark:via-cyan-600/10 dark:to-gray-900 z-10"></div>
-      <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-300/35 dark:bg-emerald-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-400/45 dark:group-hover:bg-emerald-500/30 transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"></div>
-      <div class="absolute bottom-0 left-0 w-48 h-48 bg-cyan-300/30 dark:bg-cyan-600/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 group-hover:bg-cyan-400/40 dark:group-hover:bg-cyan-600/30 transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"></div>
+  <div
+    class="relative h-full overflow-hidden group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-lg dark:hover:shadow-slate-900/50"
+    :class="theme.border"
+  >
+    <!-- Background Texture -->
+    <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" 
+         style="background-image: radial-gradient(circle at 1rem 1rem, currentColor 1px, transparent 0); background-size: 1rem 1rem;">
     </div>
 
-    <div class="relative z-20 h-full p-6 flex flex-col justify-between border border-slate-200/80 dark:border-slate-700/60 rounded-2xl backdrop-blur-sm group-hover:border-emerald-300/60 dark:group-hover:border-emerald-500/30 transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
-      <div class="flex items-start justify-between gap-4">
-        <div class="flex items-center gap-4">
-          <div class="relative">
-            <div class="absolute inset-0 bg-emerald-400/25 dark:bg-emerald-500/20 rounded-xl blur-lg group-hover:blur-xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"></div>
-            <div class="relative w-12 h-12 bg-linear-to-br from-emerald-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
-              <RefreshCw class="w-6 h-6 text-white" />
-            </div>
+    <div class="relative z-10 h-full p-6 flex flex-col justify-between">
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 rounded-xl transition-colors duration-300" :class="theme.bg">
+            <RefreshCw class="w-5 h-5 transition-transform duration-700 ease-in-out group-hover:rotate-180" :class="theme.text" />
           </div>
-
           <div>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-emerald-700 dark:group-hover:text-emerald-200 transition-colors">Next Update Check</h3>
-            <p class="text-sm font-medium text-slate-600 dark:text-gray-400 group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors">
-              {{ status.title }}
-            </p>
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Watchtower</h3>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="relative flex h-2 w-2">
+                <span v-if="status.state === 'running'" class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-emerald-400"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2" :class="status.state === 'running' ? 'bg-emerald-500' : (status.state === 'stopped' ? 'bg-amber-500' : 'bg-slate-500')"></span>
+              </span>
+              <span class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ status.label }}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="mt-5">
-        <div v-if="status.state !== 'running'" class="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700/60 bg-white/70 dark:bg-white/5 px-4 py-6 text-center">
-          <div class="text-sm font-semibold text-slate-700 dark:text-gray-200">{{ status.subtitle }}</div>
-          <div class="text-xs text-slate-500 dark:text-gray-400 mt-1">Watchtower checks run on an interval.</div>
+      <!-- Main Content & Gauge -->
+      <div class="flex items-end justify-between gap-4 mt-6">
+        <!-- Big Timer -->
+        <div class="flex-1 min-w-0">
+           <div v-if="status.state === 'running'">
+             <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-1">Next Run In</div>
+             <div class="text-3xl sm:text-4xl font-black tabular-nums tracking-tight text-slate-900 dark:text-white leading-none">
+               {{ formatDuration(remainingMs) }}
+             </div>
+             <div class="mt-2 text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+               <Clock class="w-3.5 h-3.5" />
+               <span>at {{ nextCheckTime }}</span>
+             </div>
+           </div>
+           
+           <div v-else>
+              <div class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed max-w-[14ch]">
+                 {{ status.state === 'missing' ? 'Container missing' : 'Container stopped' }}
+              </div>
+              <div class="mt-2 text-[10px] font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 inline-block">
+                 Interval: {{ intervalHours }}h
+              </div>
+           </div>
         </div>
 
-        <div v-else class="flex flex-col items-center justify-center py-1">
-          <div class="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-600 to-cyan-600 dark:from-emerald-200 dark:to-cyan-200 tabular-nums">
-            {{ formatDuration(remainingMs) }}
-          </div>
-          <div class="text-xs text-slate-500 dark:text-gray-400 font-medium mt-1">
-            Next run at <span class="font-mono text-slate-700 dark:text-gray-300">{{ nextCheckTime || '—' }}</span>
-            <span v-if="uptimeMs" class="text-slate-400 dark:text-gray-500"> • uptime {{ formatDuration(uptimeMs) }}</span>
-          </div>
-
-          <div class="mt-5 w-full">
-            <div class="h-2 rounded-full bg-slate-200/70 dark:bg-white/5 border border-slate-200/80 dark:border-slate-700/60 overflow-hidden">
-              <div
-                class="h-full bg-linear-to-r from-emerald-500/80 to-cyan-500/80 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                :style="{ width: `${progressPct}%` }"
-              ></div>
-            </div>
-            <div class="mt-2 flex items-center justify-between text-[10px] text-slate-500 dark:text-gray-500">
-              <span class="font-semibold uppercase tracking-wider">{{ status.subtitle }}</span>
-              <span class="font-mono">{{ Math.round(progressPct) }}%</span>
-            </div>
+        <!-- Circular Progress -->
+        <div class="relative shrink-0 w-24 h-24 flex items-center justify-center">
+          <!-- Track -->
+          <svg class="w-full h-full -rotate-90 transform" viewBox="0 0 88 88">
+            <circle
+              class="text-slate-100 dark:text-slate-800 transition-colors duration-300"
+              stroke-width="6"
+              stroke="currentColor"
+              fill="transparent"
+              :r="radius"
+              cx="44"
+              cy="44"
+            />
+            <!-- Progress -->
+            <circle
+              v-if="status.state === 'running'"
+              class="transition-all duration-1000 ease-out"
+              :class="theme.ring"
+              stroke-width="6"
+              stroke-linecap="round"
+              stroke="currentColor"
+              fill="transparent"
+              :r="radius"
+              cx="44"
+              cy="44"
+              :stroke-dasharray="circumference"
+              :stroke-dashoffset="strokeDashoffset"
+            />
+          </svg>
+          
+          <!-- Center Content -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-900 dark:text-white">
+             <template v-if="status.state === 'running'">
+                 <span class="text-lg font-bold tabular-nums leading-none">{{ Math.round(progressPct) }}<span class="text-xs align-top opacity-60">%</span></span>
+             </template>
+             <template v-else>
+                 <component :is="status.icon" class="w-8 h-8 opacity-20" />
+             </template>
           </div>
         </div>
       </div>
