@@ -1,7 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
-import { Boxes, HardDrive } from "lucide-vue-next";
-import DonutChart from "../charts/DonutChart.vue";
+import { Boxes, HardDrive, Database, RefreshCw } from "lucide-vue-next";
 import { formatBytes } from "../../utils/metrics.js";
 
 const props = defineProps({
@@ -11,29 +10,10 @@ const props = defineProps({
   hoverCooldownMs: { type: Number, default: 3_000 },
 });
 
-const isDark = ref(false);
-let themeObserver = null;
-
+const isDark = ref(false); // Legacy ref, kept if needed for heavy charts, but we use tailwind classes now
 function syncTheme() {
   isDark.value = document.documentElement.classList.contains('dark');
 }
-
-onMounted(() => {
-  syncTheme();
-  themeObserver = new MutationObserver(syncTheme);
-  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-  const media = window.matchMedia('(prefers-color-scheme: dark)');
-  media.addEventListener('change', syncTheme);
-});
-
-onUnmounted(() => {
-  const media = window.matchMedia('(prefers-color-scheme: dark)');
-  media.removeEventListener('change', syncTheme);
-  if (themeObserver) {
-    themeObserver.disconnect();
-    themeObserver = null;
-  }
-});
 
 const hovered = ref(false);
 const active = ref("images"); // 'images' | 'volumes'
@@ -134,197 +114,133 @@ const metrics = computed(() => {
   return { total, used, unused };
 });
 
-const donut = computed(() => {
-  const value = metrics.value;
+const usageStats = computed(() => {
+  const { total, used } = metrics.value;
+  if (!total) return { percent: 0, label: '0%' };
+  const pct = Math.min(100, Math.round((used / total) * 100));
+  return { percent: pct, label: `${pct}%` };
+});
+
+const theme = computed(() => {
   const isImages = active.value === "images";
-
+  if (isImages) {
+    return {
+      text: 'text-blue-600 dark:text-blue-400',
+      bg: 'bg-blue-500/10 dark:bg-blue-500/20',
+      border: 'group-hover:border-blue-500/30 dark:group-hover:border-blue-400/30',
+      progress: 'bg-blue-500 dark:bg-blue-400',
+      icon: Boxes,
+      label: 'Docker Images'
+    };
+  }
   return {
-    total: value.total,
-    used: value.used,
-    unused: value.unused,
-    series: [value.used, value.unused],
-    labels: ["Used", "Unused"],
-    colors: isImages ? ["#3b82f6", "#fdba74"] : ["#6366f1", "#fdba74"],
-    donutLabel: isImages ? "Images" : "Volumes",
-  };
-});
-
-const usedPercent = computed(() => {
-  const total = Number(donut.value.total) || 0;
-  const used = Number(donut.value.used) || 0;
-  if (!total) return 0;
-  return Math.max(0, Math.min(100, Math.round((used / total) * 100)));
-});
-
-const unusedPercent = computed(() => {
-  const total = Number(donut.value.total) || 0;
-  const unused = Number(donut.value.unused) || 0;
-  if (!total) return 0;
-  return Math.max(0, Math.min(100, Math.round((unused / total) * 100)));
-});
-
-const ui = computed(() => {
-  const isImages = active.value === "images";
-
-  return {
-    title: isImages ? "Image Usage" : "Volume Usage",
-    subtitle: isImages ? "Used vs unused storage" : "Used vs unused storage",
-    accentText: isImages ? "group-hover:text-blue-700 dark:group-hover:text-blue-200" : "group-hover:text-indigo-700 dark:group-hover:text-indigo-200",
-    borderHover: isImages ? "group-hover:border-blue-300/60 dark:group-hover:border-blue-500/30" : "group-hover:border-indigo-300/60 dark:group-hover:border-indigo-500/30",
-    orbA: isImages ? "bg-blue-300/35 group-hover:bg-blue-400/45 dark:bg-blue-500/20 dark:group-hover:bg-blue-500/30" : "bg-indigo-300/35 group-hover:bg-indigo-400/45 dark:bg-indigo-500/20 dark:group-hover:bg-indigo-500/30",
-    orbB: isImages ? "bg-slate-300/30 group-hover:bg-slate-400/40 dark:bg-slate-500/20 dark:group-hover:bg-slate-500/30" : "bg-purple-300/30 group-hover:bg-purple-400/40 dark:bg-purple-600/20 dark:group-hover:bg-purple-600/30",
-    iconGlow: isImages ? "bg-blue-400/25 dark:bg-blue-500/20" : "bg-indigo-400/25 dark:bg-indigo-500/20",
-    iconBg: isImages ? "from-blue-500 to-slate-600" : "from-indigo-500 to-purple-600",
-    icon: isImages ? Boxes : HardDrive,
-    gradient: isImages ? "from-blue-200/60 via-slate-200/30 to-white/80 dark:from-blue-600/25 dark:via-slate-600/10 dark:to-gray-900" : "from-indigo-200/60 via-purple-200/30 to-white/80 dark:from-indigo-600/25 dark:via-purple-600/10 dark:to-gray-900",
+    text: 'text-violet-600 dark:text-violet-400',
+    bg: 'bg-violet-500/10 dark:bg-violet-500/20',
+    border: 'group-hover:border-violet-500/30 dark:group-hover:border-violet-400/30',
+    progress: 'bg-violet-500 dark:bg-violet-400',
+    icon: Database,
+    label: 'Data Volumes'
   };
 });
 </script>
 
 <template>
   <div
-    class="relative h-full overflow-hidden group rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1"
+    class="relative h-full overflow-hidden group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-lg dark:hover:shadow-slate-900/50"
+    :class="theme.border"
     @mouseenter="onEnter"
     @mouseleave="onLeave"
   >
-    <div class="absolute inset-0 bg-white dark:bg-gray-900">
-      <div class="absolute inset-0 bg-linear-to-br z-10" :class="ui.gradient"></div>
-      <div
-        class="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-        :class="ui.orbA"
-      ></div>
-      <div
-        class="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-        :class="ui.orbB"
-      ></div>
+    <!-- Background Texture -->
+    <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" 
+         style="background-image: radial-gradient(circle at 1rem 1rem, currentColor 1px, transparent 0); background-size: 1rem 1rem;">
     </div>
 
-    <div
-      class="relative z-20 h-full p-6 flex flex-col border border-slate-200/80 dark:border-slate-700/60 rounded-2xl backdrop-blur-sm transition-none"
-      :class="ui.borderHover"
-    >
-      <div class="flex items-start justify-between gap-4">
-        <div class="flex items-center gap-4">
-          <div class="relative">
-            <div class="absolute inset-0 rounded-xl blur-lg group-hover:blur-xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]" :class="ui.iconGlow"></div>
-            <div
-              class="relative w-12 h-12 bg-linear-to-br rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-              :class="ui.iconBg"
-            >
-              <component :is="ui.icon" class="w-6 h-6 text-white" />
-            </div>
-          </div>
+    <!-- Rotation Progress Bar (Top) -->
+    <div v-if="availableModes.length > 1 && !hovered" class="absolute top-0 left-0 right-0 h-1 bg-slate-100 dark:bg-slate-800 overflow-hidden">
+       <div class="h-full bg-slate-300 dark:bg-slate-600 animate-progress origin-left" 
+            :style="{ animationDuration: `${intervalMs}ms` }"></div>
+    </div>
 
+    <div class="relative z-10 h-full p-6 flex flex-col justify-between">
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 rounded-xl transition-colors duration-300" :class="theme.bg">
+            <component :is="theme.icon" class="w-5 h-5 transition-transform duration-500 ease-out group-hover:scale-110" :class="theme.text" />
+          </div>
           <div>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1 transition-colors" :class="ui.accentText">Disk Usage</h3>
-            <p class="text-sm font-medium text-slate-600 dark:text-gray-400 group-hover:text-slate-700 dark:group-hover:text-gray-300 transition-colors">
-              {{ ui.title }}
-              <span v-if="availableModes.length > 1" class="text-slate-500 dark:text-gray-500">• flips every 10s</span>
-            </p>
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Storage</h3>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="text-xs font-medium text-slate-500 dark:text-slate-400 transition-colors duration-300">
+                {{ theme.label }}
+              </span>
+            </div>
           </div>
         </div>
-
-        <div class="inline-flex items-center gap-2 rounded-xl bg-white/70 dark:bg-white/5 border border-slate-200/70 dark:border-slate-700/60 px-3 py-1.5">
-          <span class="text-xs font-semibold text-slate-600 dark:text-gray-300">Total</span>
-          <span class="text-xs font-extrabold text-slate-900 dark:text-white tabular-nums">{{ formatBytes(donut.total) }}</span>
+        
+        <div class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-400"
+             :class="hovered ? 'opacity-100' : 'opacity-0'"
+             title="Click/Hover to toggle">
+          <RefreshCw class="w-4 h-4" />
         </div>
       </div>
 
-      <div class="mt-5 flex-1">
-        <div v-if="donut.total === 0" class="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700/60 bg-white/70 dark:bg-white/5 px-4 py-6 text-center">
-          <div class="text-sm font-semibold text-slate-700 dark:text-gray-200">No disk usage data</div>
-          <div class="text-xs text-slate-500 dark:text-gray-400 mt-1">Nothing to visualize yet.</div>
-        </div>
-
-        <div v-else class="disk-flip-surface rounded-2xl">
-          <transition name="disk-flip" mode="out-in">
-            <div :key="active" class="rounded-2xl p-4 bg-white/60 dark:bg-transparent">
-              <div class="flex items-center justify-between gap-3 mb-3">
-                <div>
-                  <div class="text-sm font-bold text-slate-900 dark:text-white">Breakdown</div>
-                  <div class="text-xs text-slate-500 dark:text-gray-400">{{ ui.subtitle }}</div>
+      <!-- Main Content with Flip Transition -->
+      <transition 
+          mode="out-in"
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="transform translate-y-2 opacity-0"
+          enter-to-class="transform translate-y-0 opacity-100"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="transform translate-y-0 opacity-100"
+          leave-to-class="transform -translate-y-2 opacity-0"
+      >
+        <div :key="active" class="flex flex-col gap-5 mt-4">
+          <!-- Big Metric -->
+          <div>
+             <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-1 flex justify-between">
+               <span>Used Space</span>
+               <span class="tabular-nums font-mono text-slate-600 dark:text-slate-400">{{ formatBytes(metrics.used) }}</span>
+             </div>
+             
+             <div class="flex items-end gap-3">
+                <div class="text-4xl sm:text-5xl font-black tracking-tighter leading-none text-slate-900 dark:text-white tabular-nums">
+                  {{ usageStats.percent }}<span class="text-2xl text-slate-400 dark:text-slate-600 font-bold ml-0.5">%</span>
                 </div>
-                <div class="text-xs font-semibold text-slate-500 dark:text-gray-400">
-                  <span v-if="hovered" class="text-slate-700 dark:text-gray-300">Hover: instant flip</span>
-                  <span v-else>Hover to flip</span>
-                </div>
-              </div>
+             </div>
+          </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 items-start">
-                <div class="sm:col-span-2">
-                  <DonutChart
-                    :series="donut.series"
-                    :labels="donut.labels"
-                    :colors="donut.colors"
-                    :height="180"
-                    :donut-label="donut.donutLabel"
-                    :theme="isDark ? 'dark' : 'light'"
-                    :value-formatter="formatBytes"
-                    :total-formatter="() => formatBytes(donut.total)"
-                  />
-                </div>
-
-                <div class="sm:col-span-3 space-y-3">
-                  <div class="rounded-xl px-3 py-2">
-                    <div class="flex items-center justify-between gap-3 text-xs">
-                      <div class="inline-flex items-center gap-2 min-w-0">
-                        <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: donut.colors[0] }"></span>
-                        <span class="text-slate-600 dark:text-gray-300 font-semibold">Used</span>
-                      </div>
-                      <div class="shrink-0 text-slate-800 dark:text-gray-200 font-bold tabular-nums">
-                        {{ formatBytes(donut.used) }}
-                        <span class="text-slate-500 dark:text-gray-400 font-semibold">({{ usedPercent }}%)</span>
-                      </div>
-                    </div>
-                    <div class="mt-2 h-2 rounded-full bg-slate-200/70 dark:bg-black/20 overflow-hidden">
-                      <div class="h-full rounded-full" :style="{ width: `${usedPercent}%`, backgroundColor: donut.colors[0] }"></div>
-                    </div>
-                  </div>
-
-                  <div class="rounded-xl px-3 py-2">
-                    <div class="flex items-center justify-between gap-3 text-xs">
-                      <div class="inline-flex items-center gap-2 min-w-0">
-                        <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: donut.colors[1] }"></span>
-                        <span class="text-slate-600 dark:text-gray-300 font-semibold">Unused</span>
-                      </div>
-                      <div class="shrink-0 text-slate-800 dark:text-gray-200 font-bold tabular-nums">
-                        {{ formatBytes(donut.unused) }}
-                        <span class="text-slate-500 dark:text-gray-400 font-semibold">({{ unusedPercent }}%)</span>
-                      </div>
-                    </div>
-                    <div class="mt-2 h-2 rounded-full bg-slate-200/70 dark:bg-black/20 overflow-hidden">
-                      <div class="h-full rounded-full" :style="{ width: `${unusedPercent}%`, backgroundColor: donut.colors[1] }"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <!-- Progress Bar -->
+          <div class="space-y-2">
+            <div class="h-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200/50 dark:border-slate-700/50">
+               <div class="h-full rounded-full transition-all duration-700 ease-out" 
+                    :class="theme.progress"
+                    :style="{ width: `${usageStats.percent}%` }">
+               </div>
             </div>
-          </transition>
+            
+            <div class="flex justify-between items-center text-[11px] font-medium text-slate-500 dark:text-slate-400">
+              <span>0%</span>
+              <span class="flex items-center gap-1.5">
+                 Total: <span class="text-slate-800 dark:text-slate-200">{{ formatBytes(metrics.total) }}</span>
+              </span>
+            </div>
+          </div>
         </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
 
 <style scoped>
-.disk-flip-surface {
-  /* keep a stable surface for ApexCharts */
+@keyframes progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
-
-.disk-flip-enter-active,
-.disk-flip-leave-active {
-  transition:
-    transform 260ms cubic-bezier(0.2, 0.9, 0.2, 1),
-    opacity 260ms cubic-bezier(0.2, 0.9, 0.2, 1);
-}
-
-.disk-flip-enter-from {
-  opacity: 0;
-  transform: translateY(8px);
-}
-
-.disk-flip-leave-to {
-  opacity: 0;
-  transform: translateY(-8px);
+.animate-progress {
+  animation-name: progress;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 </style>
