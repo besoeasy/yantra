@@ -121,7 +121,7 @@ const externalItems = [
 </script>
 
 <template>
-  <main class="flex flex-col items-center justify-center min-h-screen bg-black px-4 py-12">
+  <main class="flex flex-col items-center justify-center min-h-screen bg-slate-50 text-slate-900 dark:bg-black dark:text-white px-4 py-12">
     <div class="w-full max-w-6xl mx-auto animate-fade-in-up">
       <!-- Navigation Grid -->
       <section aria-label="Navigation" class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -129,7 +129,7 @@ const externalItems = [
           v-for="item in navItems"
           :key="item.to"
           :to="item.to"
-          class="group relative overflow-hidden bg-gray-900 rounded-3xl p-8 border border-gray-700 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 focus:outline-none focus:ring-4"
+          class="group relative overflow-hidden bg-white dark:bg-gray-900 rounded-3xl p-8 border border-slate-200 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 focus:outline-none focus:ring-4"
           :class="item.accent.ring"
           tabindex="0"
           :aria-label="`${item.title}: ${item.description}`"
@@ -146,19 +146,19 @@ const externalItems = [
               class="flex items-center justify-center w-20 h-20 rounded-2xl mb-6 transition-all duration-300 group-hover:scale-110"
               :class="[item.accent.iconBg, item.accent.iconHover]"
             >
-              <component :is="item.icon" :size="40" class="text-white" />
+              <component :is="item.icon" :size="40" class="text-slate-900 dark:text-white" />
             </div>
 
             <!-- Content -->
-            <h2 class="text-2xl font-bold text-white mb-2 transition-colors" :class="item.accent.textHover">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2 transition-colors" :class="item.accent.textHover">
               {{ item.title }}
             </h2>
-            <p class="text-gray-300 leading-relaxed mb-6">
+            <p class="text-slate-600 dark:text-gray-300 leading-relaxed mb-6">
               {{ item.description }}
             </p>
 
             <!-- Features -->
-            <ul class="space-y-2 text-sm text-gray-400">
+            <ul class="space-y-2 text-sm text-slate-500 dark:text-gray-400">
               <li v-for="feature in item.features" :key="feature" class="flex items-center gap-2">
                 <Check :size="16" :class="item.accent.check" />
                 {{ feature }}
@@ -179,7 +179,7 @@ const externalItems = [
           :href="item.href"
           target="_blank"
           rel="noopener noreferrer"
-          class="group relative overflow-hidden bg-gray-900 rounded-3xl p-8 border border-gray-700 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 focus:outline-none focus:ring-4"
+          class="group relative overflow-hidden bg-white dark:bg-gray-900 rounded-3xl p-8 border border-slate-200 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 focus:outline-none focus:ring-4"
           :class="item.accent.ring"
           tabindex="0"
           :aria-label="`${item.title}: ${item.description}`"
@@ -196,19 +196,19 @@ const externalItems = [
               class="flex items-center justify-center w-20 h-20 rounded-2xl mb-6 transition-all duration-300 group-hover:scale-110"
               :class="[item.accent.iconBg, item.accent.iconHover]"
             >
-              <component :is="item.icon" :size="40" class="text-white" />
+              <component :is="item.icon" :size="40" class="text-slate-900 dark:text-white" />
             </div>
 
             <!-- Content -->
-            <h2 class="text-2xl font-bold text-white mb-2 transition-colors" :class="item.accent.textHover">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2 transition-colors" :class="item.accent.textHover">
               {{ item.title }}
             </h2>
-            <p class="text-gray-300 leading-relaxed mb-6">
+            <p class="text-slate-600 dark:text-gray-300 leading-relaxed mb-6">
               {{ item.description }}
             </p>
 
             <!-- Features -->
-            <ul class="space-y-2 text-sm text-gray-400">
+            <ul class="space-y-2 text-sm text-slate-500 dark:text-gray-400">
               <li v-for="feature in item.features" :key="feature" class="flex items-center gap-2">
                 <Check :size="16" :class="item.accent.check" />
                 {{ feature }}
@@ -226,7 +226,10 @@ const externalItems = [
 
       <!-- Back Button -->
       <div class="text-center mt-10">
-        <router-link to="/home" class="inline-flex items-center text-gray-400 hover:text-purple-400 transition-colors font-semibold">
+        <router-link
+          to="/home"
+          class="inline-flex items-center text-slate-500 hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400 transition-colors font-semibold"
+        >
           <ChevronRight :size="18" class="mr-2 rotate-180" />
           Back to Home
         </router-link>
