@@ -44,7 +44,7 @@ const ports = computed(() => {
 const fixedPorts = computed(() => {
   if (!app.value?.ports) return [];
   // Filter out ports that are already described in yantra.port (isNamed)
-  return app.value.ports.filter(p => !p.isNamed);
+  return app.value.ports.filter((p) => !p.isNamed);
 });
 
 const allPorts = computed(() => {
@@ -55,38 +55,33 @@ const allPorts = computed(() => {
 
 // Port conflict detection
 function checkPortConflict(hostPort, protocol) {
-  return containers.value.find(c => 
-    c.Ports?.some(p => 
-      p.PublicPort === parseInt(hostPort) && 
-      p.Type === protocol
-    )
-  );
+  return containers.value.find((c) => c.Ports?.some((p) => p.PublicPort === parseInt(hostPort) && p.Type === protocol));
 }
 
 function getPortStatus(port) {
-  const hostPort = customPortMappings.value[port.hostPort + '/' + port.protocol] || port.hostPort;
+  const hostPort = customPortMappings.value[port.hostPort + "/" + port.protocol] || port.hostPort;
   const conflict = checkPortConflict(hostPort, port.protocol);
-  
+
   if (conflict) {
     return {
-      status: 'conflict',
-      color: 'red',
-      message: `Port in use by ${conflict.Names?.[0]?.replace(/^\//, '') || 'another container'}`
+      status: "conflict",
+      color: "red",
+      message: `Port in use by ${conflict.Names?.[0]?.replace(/^\//, "") || "another container"}`,
     };
   }
-  
+
   if (parseInt(hostPort) < 1024) {
     return {
-      status: 'warning',
-      color: 'yellow',
-      message: 'Privileged port (requires root)'
+      status: "warning",
+      color: "yellow",
+      message: "Privileged port (requires root)",
     };
   }
-  
+
   return {
-    status: 'available',
-    color: 'green',
-    message: 'Available'
+    status: "available",
+    color: "green",
+    message: "Available",
   };
 }
 
@@ -96,10 +91,9 @@ const categories = computed(() => {
 });
 
 const chatGptUrl = computed(() => {
-  if (!app.value) return '';
-  
-  const composeUrl = `https://github.com/besoeasy/yantra/blob/main/apps/${app.value.id}/compose.yml`;
-  return buildChatGptExplainUrl(composeUrl);
+  if (!app.value) return "";
+
+  return buildChatGptExplainUrl(app.value.id);
 });
 
 // Functions
@@ -107,10 +101,10 @@ async function fetchApp() {
   try {
     const response = await fetch(`${apiUrl.value}/api/apps`);
     const data = await response.json();
-    
+
     if (data.success && data.apps) {
       app.value = data.apps.find((a) => a.id === route.params.appname);
-      
+
       if (!app.value) {
         toast.error("App not found");
         router.push("/apps");
@@ -138,12 +132,12 @@ async function fetchContainers() {
 
 async function fetchImageDetails() {
   if (!app.value) return;
-  
+
   try {
     loadingImages.value = true;
     const response = await fetch(`${apiUrl.value}/api/image-details/${app.value.id}`);
     const data = await response.json();
-    
+
     if (data.success) {
       imageDetails.value = data.images;
     }
@@ -160,35 +154,35 @@ async function deployApp() {
   // Check for port conflicts if customizing ports
   if (customizePorts.value) {
     const conflicts = [];
-    allPorts.value.forEach(port => {
+    allPorts.value.forEach((port) => {
       const status = getPortStatus(port);
-      if (status.status === 'conflict') {
+      if (status.status === "conflict") {
         conflicts.push(`${port.hostPort}/${port.protocol}: ${status.message}`);
       }
     });
-    
+
     if (conflicts.length > 0) {
-      toast.error(`Port conflicts detected:\n${conflicts.join('\n')}`);
+      toast.error(`Port conflicts detected:\n${conflicts.join("\n")}`);
       return;
     }
   }
 
   deploying.value = true;
   const instanceNum = nextInstanceNumber.value;
-  const instanceSuffix = instanceNum > 1 ? ` #${instanceNum}` : '';
+  const instanceSuffix = instanceNum > 1 ? ` #${instanceNum}` : "";
   toast.info(`Deploying ${app.value.name}${instanceSuffix}... This may take a few minutes.`);
 
   try {
-    const requestBody = { 
-      appId: app.value.id, 
+    const requestBody = {
+      appId: app.value.id,
       environment: envValues.value,
-      instanceId: instanceNum // Pass instance number to backend
+      instanceId: instanceNum, // Pass instance number to backend
     };
-    
+
     if (temporaryInstall.value) {
       requestBody.expiresIn = expirationHours.value;
     }
-    
+
     if (customizePorts.value && Object.keys(customPortMappings.value).length > 0) {
       requestBody.customPortMappings = customPortMappings.value;
     }
@@ -207,7 +201,7 @@ async function deployApp() {
       } else {
         toast.success(`${app.value.name} installed successfully! 🎉`);
       }
-      
+
       // Wait a moment then redirect to containers
       setTimeout(() => {
         router.push("/");
@@ -250,7 +244,9 @@ onMounted(async () => {
 
       <!-- Loading State -->
       <div v-if="loading" class="text-center py-16">
-        <div class="w-12 h-12 border-4 border-blue-600/30 border-t-blue-600 dark:border-blue-500/30 dark:border-t-blue-400 rounded-full animate-spin mx-auto mb-4"></div>
+        <div
+          class="w-12 h-12 border-4 border-blue-600/30 border-t-blue-600 dark:border-blue-500/30 dark:border-t-blue-400 rounded-full animate-spin mx-auto mb-4"
+        ></div>
         <div class="text-gray-500 dark:text-slate-400 font-medium">Loading app details...</div>
       </div>
 
@@ -259,17 +255,16 @@ onMounted(async () => {
         <!-- Header Card -->
         <div class="bg-white dark:bg-slate-900/70 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-slate-800">
           <div class="flex items-start gap-6">
-            <img
-              :src="app.logo"
-              :alt="app.name"
-              class="w-20 h-20 sm:w-24 sm:h-24 object-contain flex-shrink-0"
-            />
-            
+            <img :src="app.logo" :alt="app.name" class="w-20 h-20 sm:w-24 sm:h-24 object-contain flex-shrink-0" />
+
             <div class="flex-1">
               <div class="flex items-start justify-between gap-4 mb-3">
                 <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">{{ app.name }}</h1>
-                
-                <div v-if="isInstalled" class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-emerald-500/15 text-green-700 dark:text-emerald-200 rounded-lg text-sm font-medium">
+
+                <div
+                  v-if="isInstalled"
+                  class="flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-emerald-500/15 text-green-700 dark:text-emerald-200 rounded-lg text-sm font-medium"
+                >
                   <Package :size="16" />
                   <span>Installed</span>
                 </div>
@@ -324,7 +319,10 @@ onMounted(async () => {
         </div>
 
         <!-- Ports Information -->
-        <div v-if="ports.length > 0 || fixedPorts.length > 0" class="bg-white dark:bg-slate-900/70 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-slate-800">
+        <div
+          v-if="ports.length > 0 || fixedPorts.length > 0"
+          class="bg-white dark:bg-slate-900/70 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-slate-800"
+        >
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
             <Package :size="24" />
             <span>Ports & Access</span>
@@ -352,15 +350,22 @@ onMounted(async () => {
         </div>
 
         <!-- Docker Image Details -->
-        <div v-if="imageDetails && imageDetails.length > 0" class="bg-white dark:bg-slate-900/70 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-slate-800">
+        <div
+          v-if="imageDetails && imageDetails.length > 0"
+          class="bg-white dark:bg-slate-900/70 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-slate-800"
+        >
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <Package :size="24" />
             <span>Docker Image Details</span>
-            <span v-if="imageDetails.length > 1" class="ml-auto text-sm font-normal text-gray-500 dark:text-slate-400">({{ imageDetails.length }} image{{ imageDetails.length !== 1 ? 's' : '' }})</span>
+            <span v-if="imageDetails.length > 1" class="ml-auto text-sm font-normal text-gray-500 dark:text-slate-400"
+              >({{ imageDetails.length }} image{{ imageDetails.length !== 1 ? "s" : "" }})</span
+            >
           </h2>
 
           <div v-if="loadingImages" class="text-center py-8">
-            <div class="w-8 h-8 border-3 border-gray-300 border-t-gray-900 dark:border-slate-600 dark:border-t-slate-200 rounded-full animate-spin mx-auto mb-2"></div>
+            <div
+              class="w-8 h-8 border-3 border-gray-300 border-t-gray-900 dark:border-slate-600 dark:border-t-slate-200 rounded-full animate-spin mx-auto mb-2"
+            ></div>
             <div class="text-sm text-gray-500 dark:text-slate-400">Loading image details...</div>
           </div>
 
@@ -440,7 +445,7 @@ onMounted(async () => {
         <!-- Installation Form -->
         <div class="bg-white dark:bg-slate-900/70 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-slate-800">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
-            {{ instanceCount > 0 ? 'Install Another Instance' : 'Installation' }}
+            {{ instanceCount > 0 ? "Install Another Instance" : "Installation" }}
           </h2>
 
           <div class="space-y-6">
@@ -473,13 +478,13 @@ onMounted(async () => {
                 <div class="flex-1">
                   <div class="flex items-center gap-2">
                     <Clock :size="18" class="text-gray-600 dark:text-slate-300" />
-                    <span class="text-base font-semibold text-gray-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
+                    <span
+                      class="text-base font-semibold text-gray-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors"
+                    >
                       Temporary Installation
                     </span>
                   </div>
-                  <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">
-                    Automatically remove this app after a specified time period
-                  </p>
+                  <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Automatically remove this app after a specified time period</p>
                 </div>
               </label>
 
@@ -500,7 +505,10 @@ onMounted(async () => {
             </div>
 
             <!-- Port Customization -->
-            <div v-if="allPorts.length > 0" :class="(app.environment?.length > 0 || temporaryInstall) ? 'pt-6 border-t border-gray-200 dark:border-slate-800' : ''">
+            <div
+              v-if="allPorts.length > 0"
+              :class="app.environment?.length > 0 || temporaryInstall ? 'pt-6 border-t border-gray-200 dark:border-slate-800' : ''"
+            >
               <label class="flex items-start gap-3 cursor-pointer group">
                 <input
                   type="checkbox"
@@ -510,7 +518,9 @@ onMounted(async () => {
                 <div class="flex-1">
                   <div class="flex items-center gap-2">
                     <Package :size="18" class="text-gray-600 dark:text-slate-300" />
-                    <span class="text-base font-semibold text-gray-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
+                    <span
+                      class="text-base font-semibold text-gray-700 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors"
+                    >
                       Advanced: Customize Port Mappings
                     </span>
                   </div>
@@ -536,11 +546,14 @@ onMounted(async () => {
                     />
                     <div :class="`w-3 h-3 rounded-full bg-${getPortStatus(port).color}-500`"></div>
                   </div>
-                  <p class="text-xs" :class="{
-                    'text-red-600': getPortStatus(port).status === 'conflict',
-                    'text-yellow-600': getPortStatus(port).status === 'warning',
-                    'text-green-600': getPortStatus(port).status === 'available'
-                  }">
+                  <p
+                    class="text-xs"
+                    :class="{
+                      'text-red-600': getPortStatus(port).status === 'conflict',
+                      'text-yellow-600': getPortStatus(port).status === 'warning',
+                      'text-green-600': getPortStatus(port).status === 'available',
+                    }"
+                  >
                     {{ getPortStatus(port).message }}
                   </p>
                 </div>
@@ -557,14 +570,14 @@ onMounted(async () => {
               >
                 <span v-if="deploying" class="inline-flex items-center gap-3 justify-center">
                   <span class="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></span>
-                  <span>Installing {{ app.name }}{{ instanceCount > 0 ? ` #${nextInstanceNumber}` : '' }}...</span>
+                  <span>Installing {{ app.name }}{{ instanceCount > 0 ? ` #${nextInstanceNumber}` : "" }}...</span>
                 </span>
                 <span v-else>
                   {{ instanceCount > 0 ? `Install Another Instance (#${nextInstanceNumber})` : `Install ${app.name}` }}
                 </span>
               </button>
               <p v-if="instanceCount > 0" class="text-sm text-gray-500 dark:text-slate-400 mt-2 text-center">
-                {{ instanceCount }} instance{{ instanceCount > 1 ? 's' : '' }} currently installed
+                {{ instanceCount }} instance{{ instanceCount > 1 ? "s" : "" }} currently installed
               </p>
             </div>
           </div>

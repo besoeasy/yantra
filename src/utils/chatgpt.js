@@ -1,9 +1,7 @@
-export function buildChatGptExplainUrl(composeUrl) {
-  const url = String(composeUrl || "").trim();
-  if (!url) return "";
+export function buildChatGptExplainUrl(appid) {
+  const composeUrl = `https://raw.githubusercontent.com/besoeasy/yantra/refs/heads/main/apps/${appid}/compose.yml`;
 
-
-  const query = `Understand this Yantra Docker stack: ${url}
+  const query = `Understand this Yantra Docker stack: ${composeUrl}
 (Yantra handles deployment, so skip Docker/installation commands)
 
 Instructions:

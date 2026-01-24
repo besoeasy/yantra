@@ -19,8 +19,7 @@ const { app, instanceCount } = toRefs(props);
 const chatGptUrl = computed(() => {
   if (!app.value) return "";
 
-  const composeUrl = `https://github.com/besoeasy/yantra/blob/main/apps/${app.value.id}/compose.yml`;
-  return buildChatGptExplainUrl(composeUrl);
+  return buildChatGptExplainUrl(app.value.id);
 });
 
 function hashStringToUint32(value) {
@@ -100,11 +99,7 @@ const accent = computed(() => {
     @keydown.space.prevent="$event.currentTarget.click()"
   >
     <!-- Installed marker -->
-    <div
-      v-if="app?.isInstalled"
-      class="absolute inset-y-0 left-0 w-1 bg-emerald-500/70 dark:bg-emerald-400/60"
-      aria-hidden="true"
-    ></div>
+    <div v-if="app?.isInstalled" class="absolute inset-y-0 left-0 w-1 bg-emerald-500/70 dark:bg-emerald-400/60" aria-hidden="true"></div>
 
     <!-- Gradient Glow -->
     <div
