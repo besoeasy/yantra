@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 import { Globe, FileCode, ArrowLeft, Package, Clock, Tag } from "lucide-vue-next";
+import { buildChatGptExplainUrl } from "../utils/chatgpt";
 
 const route = useRoute();
 const router = useRouter();
@@ -98,9 +99,7 @@ const chatGptUrl = computed(() => {
   if (!app.value) return '';
   
   const composeUrl = `https://github.com/besoeasy/yantra/blob/main/apps/${app.value.id}/compose.yml`;
-  const query = `Understand this Yantra Docker stack:\n${composeUrl}\n(Yantra handles deployment, so skip Docker/installation commands)\nTell me:\n1. What does this app do?\n2. 5 main features of this app\n\n3. What are some alternatives?\n\nNote: Yantra App List is available at https://github.com/besoeasy/yantra - when suggesting alternatives, prefer apps from this list as they're easy to install in Yantra.\n\nMake this a well-informed list, keep it short and minimal, and ask if I want to know more.`;
-  
-  return `https://chatgpt.com/?q=${encodeURIComponent(query)}`;
+  return buildChatGptExplainUrl(composeUrl, { appName: app.value?.name });
 });
 
 // Functions
