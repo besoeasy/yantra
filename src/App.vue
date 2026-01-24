@@ -96,11 +96,13 @@ onMounted(() => {
 
         <!-- Logo (Centered) -->
         <div class="flex-1 flex items-center justify-center">
-          <router-link
-            to="/home"
+          <a
+            href="https://github.com/besoeasy/Yantra"
+            target="_blank"
+            rel="noopener noreferrer"
             class="group flex flex-col items-center justify-center text-center select-none rounded-xl px-2 py-2 transition-transform duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900/20 dark:focus-visible:ring-slate-100/20"
-            aria-label="Yantra home"
-            title="Yantra"
+            aria-label="Open Yantra on GitHub"
+            title="Open on GitHub"
           >
             <span
               aria-hidden="true"
@@ -137,7 +139,7 @@ onMounted(() => {
                 >A</span
               >
             </span>
-          </router-link>
+          </a>
         </div>
 
       <!-- Bottom Actions -->
