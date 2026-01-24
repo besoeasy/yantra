@@ -20,7 +20,7 @@ const chatGptUrl = computed(() => {
   if (!app.value) return "";
 
   const composeUrl = `https://github.com/besoeasy/yantra/blob/main/apps/${app.value.id}/compose.yml`;
-  return buildChatGptExplainUrl(composeUrl, { appName: app.value?.name });
+  return buildChatGptExplainUrl(composeUrl);
 });
 
 function hashStringToUint32(value) {
