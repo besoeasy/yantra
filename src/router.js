@@ -42,6 +42,11 @@ const router = createRouter({
       path: '/logs',
       name: 'logs',
       component: () => import(/* webpackChunkName: "logs" */ './views/Logs.vue')
+    },
+    {
+      path: '/extra',
+      name: 'extra',
+      component: () => import(/* webpackChunkName: "extra" */ './views/Extra.vue')
     }
   ]
 })

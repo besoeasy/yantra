@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { Box, Boxes, Layers, HardDrive, ClipboardList, Send, Github, Heart, Home, Moon, Sun } from 'lucide-vue-next'
+import { Box, Boxes, Layers, HardDrive, ClipboardList, Send, Github, Heart, Home, Moon, Sun, Compass } from 'lucide-vue-next'
 import { onMounted, ref } from 'vue'
 
 const route = useRoute()
@@ -91,6 +91,16 @@ onMounted(() => {
           title="Logs">
           <ClipboardList :size="20" class="group-hover:scale-110 transition-transform duration-300" />
           <span class="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-slate-100 dark:text-slate-900">Logs</span>
+        </router-link>
+
+        <!-- Extra Tab -->
+        <router-link 
+          to="/extra"
+          :class="isActive('extra') ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/20 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-900/20' : 'text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:shadow-slate-900/40'"
+          class="nav-item group relative w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ease-out smooth-shadow"
+          title="Extra">
+          <Compass :size="20" class="group-hover:scale-110 transition-transform duration-300" />
+          <span class="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-slate-100 dark:text-slate-900">Extra</span>
         </router-link>
       </nav>
 
@@ -188,6 +198,15 @@ onMounted(() => {
           title="Logs">
           <ClipboardList :size="20" />
           <span class="text-xs font-medium">Logs</span>
+        </router-link>
+
+        <router-link 
+          to="/extra"
+          :class="isActive('extra') ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-gray-600 dark:text-slate-400'"
+          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
+          title="Extra">
+          <Compass :size="20" />
+          <span class="text-xs font-medium">Extra</span>
         </router-link>
 
         <button
