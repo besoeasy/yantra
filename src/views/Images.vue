@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useToast } from 'vue-toastification'
-import { HardDrive, Trash2, Check, AlertTriangle, Box, Database, Layers } from 'lucide-vue-next'
+import { HardDrive, Trash2, Check, AlertTriangle, Box, Database, Layers, Search, Filter } from 'lucide-vue-next'
 import VueApexCharts from 'vue3-apexcharts'
 
 const toast = useToast()
@@ -11,40 +11,37 @@ const loading = ref(false)
 const deletingImage = ref(null)
 const deletingAllImages = ref(false)
 const apiUrl = ref('')
+const searchQuery = ref('')
+const currentTab = ref('active') // 'active', 'unused'
 
 // Chart Data Configuration
 const treemapOptions = computed(() => ({
   chart: {
     type: 'treemap',
-    fontFamily: 'monospace',
+    fontFamily: 'inherit',
     toolbar: { show: false },
     background: 'transparent',
-    animations: { enabled: true }
+    animations: { enabled: true, speed: 600 }
   },
-  colors: ['#0ea5e9', '#ef4444', '#10b981', '#f59e0b'],
+  colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
   states: {
-    hover: {
-      filter: {
-        type: 'darken',
-        value: 0.1,
-      }
-    }
+    hover: { filter: { type: 'darken', value: 0.1 } }
   },
   plotOptions: {
     treemap: {
       distributed: true,
-      enableShades: false,
-      useFillColorAsStroke: false,
-      strokeWidth: 0,
+      enableShades: true,
+      shadeIntensity: 0.5,
+      radius: 4,
+      useFillColorAsStroke: true,
     }
   },
   dataLabels: {
     enabled: true,
     style: {
-      fontSize: '10px',
-      fontFamily: 'monospace',
-      fontWeight: 'bold',
-      colors: ['#000000', '#ffffff'] // Dark text? Or light? Depends on background.
+      fontSize: '11px',
+      fontFamily: 'inherit',
+      fontWeight: 600,
     },
     formatter: function(text, op) {
       return [text, op.value + ' MB']
@@ -54,17 +51,15 @@ const treemapOptions = computed(() => ({
   title: { text: undefined },
   tooltip: {
     theme: 'dark',
-    style: { fontFamily: 'monospace' },
+    style: { fontFamily: 'inherit', fontSize: '12px' },
     y: {
-      formatter: function(val) {
-        return val + " MB"
-      }
-    }
+      formatter: function(val) { return val + " MB" }
+    },
+    marker: { show: false }
   },
-  stroke: { show: true, width: 2, colors: ['#0c0c0e'] }
+  stroke: { show: true, width: 2, colors: ['#ffffff'] } // White stroke for separation
 }))
 
-// We need a separate reactivity system for chart refreshing to avoid issues
 const treemapSeries = computed(() => {
   if (!imagesData.value.usedImages && !imagesData.value.unusedImages) return []
   
@@ -74,7 +69,6 @@ const treemapSeries = computed(() => {
   if (imagesData.value.usedImages) {
     imagesData.value.usedImages.forEach(img => {
       const sizeVal = parseFloat(img.size)
-      // Only show significant items
       if (sizeVal > 1) {
         allImages.push({
           x: img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId,
@@ -93,16 +87,41 @@ const treemapSeries = computed(() => {
         allImages.push({
           x: img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId,
           y: sizeVal,
-          fillColor: '#ef4444'
+          fillColor: '#f59e0b' // Amber/Orange for unused
         })
       }
     })
   }
 
-  // Sort by size and take top 30
-  const sortedData = allImages.sort((a, b) => b.y - a.y).slice(0, 30)
-  
+  const sortedData = allImages.sort((a, b) => b.y - a.y).slice(0, 30) // Top 30
   return [{ data: sortedData }]
+})
+
+// Filtered Lists
+const filteredUnused = computed(() => {
+  if (!imagesData.value.unusedImages) return []
+  let imgs = imagesData.value.unusedImages
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase()
+    imgs = imgs.filter(img => 
+      img.shortId.toLowerCase().includes(q) || 
+      img.tags.some(t => t.toLowerCase().includes(q))
+    )
+  }
+  return imgs
+})
+
+const filteredUsed = computed(() => {
+  if (!imagesData.value.usedImages) return []
+  let imgs = imagesData.value.usedImages
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase()
+    imgs = imgs.filter(img => 
+      img.shortId.toLowerCase().includes(q) || 
+      img.tags.some(t => t.toLowerCase().includes(q))
+    )
+  }
+  return imgs
 })
 
 async function fetchImages() {
@@ -121,20 +140,18 @@ async function fetchImages() {
 }
 
 async function deleteImage(imageId, imageName) {
-  if (!confirm(`Delete image ${imageName}?\n\nThis will permanently remove the image from your system.`)) return
+  if (!confirm(`Delete image ${imageName}?`)) return
 
   deletingImage.value = imageId
   try {
-    const response = await fetch(`${apiUrl.value}/api/images/${imageId}`, {
-      method: 'DELETE'
-    })
+    const response = await fetch(`${apiUrl.value}/api/images/${imageId}`, { method: 'DELETE' })
     const data = await response.json()
 
     if (data.success) {
-      toast.success(`Image deleted successfully!`)
+      toast.success(`Image deleted successfully`)
       await fetchImages()
     } else {
-      toast.error(`Deletion failed: ${data.error}\n${data.message}`)
+      toast.error(`Deletion failed: ${data.message}`)
     }
   } catch (error) {
     toast.error(`Deletion failed: ${error.message}`)
@@ -146,39 +163,23 @@ async function deleteImage(imageId, imageName) {
 async function deleteAllUnusedImages() {
   const count = imagesData.value.unusedImages?.length || 0
   if (!count) return
-  
-  if (!confirm(`Delete all ${count} unused images?\n\nThis will free up ${imagesData.value.unusedSize} MB of disk space.\n\nThis action cannot be undone.`)) return
+  if (!confirm(`Delete all ${count} unused images?`)) return
 
   deletingAllImages.value = true
   let deleted = 0
-  let failed = 0
-
+  
   try {
     for (const image of imagesData.value.unusedImages) {
       try {
-        const response = await fetch(`${apiUrl.value}/api/images/${image.id}`, {
-          method: 'DELETE'
-        })
+        const response = await fetch(`${apiUrl.value}/api/images/${image.id}`, { method: 'DELETE' })
         const data = await response.json()
-        
-        if (data.success) {
-          deleted++
-        } else {
-          failed++
-        }
-      } catch (error) {
-        failed++
-      }
+        if (data.success) deleted++
+      } catch (error) {}
     }
-
-    if (deleted > 0) {
-      toast.success(`Successfully deleted ${deleted} unused image${deleted > 1 ? 's' : ''}!${failed > 0 ? `\n${failed} failed.` : ''}`)
-      await fetchImages()
-    } else {
-      toast.error(`Failed to delete images`)
-    }
+    await fetchImages()
+    toast.success(`Cleaned up ${deleted} images`)
   } catch (error) {
-    toast.error(`Deletion failed: ${error.message}`)
+    toast.error(`Cleanup interrupted: ${error.message}`)
   } finally {
     deletingAllImages.value = false
   }
@@ -190,167 +191,183 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-200 font-sans pb-20">
+  <div class="min-h-screen bg-neutral-50 dark:bg-[#0f1117] font-sans text-slate-800 dark:text-slate-200 pb-20">
     <!-- Header -->
-    <div class="bg-white dark:bg-[#0c0c0e] border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
-      <div class="max-w-7xl mx-auto px-4 lg:px-8 py-6">
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center gap-3">
-             <div class="p-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-               <Layers :size="24" class="text-indigo-600 dark:text-indigo-400" />
-             </div>
-             <div>
-                <h1 class="text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-white">Docker Images</h1>
-                <p class="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase tracking-widest">Repository & Storage Management</p>
-             </div>
+    <header class="bg-white dark:bg-[#181b21] border-b border-gray-200 dark:border-gray-800 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+            <Layers class="w-5 h-5" />
           </div>
-          
-          <div class="flex items-center gap-3">
-             <button @click="fetchImages" class="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 transition-colors">
-                <div :class="{ 'animate-spin': loading }">
-                   <database :size="18" />
-                </div>
-             </button>
+          <h1 class="text-lg font-bold text-gray-900 dark:text-white">Images</h1>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <div class="relative hidden sm:block">
+            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input 
+              v-model="searchQuery" 
+              type="text" 
+              placeholder="Search images..." 
+              class="pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-[#181b21] transition-all w-64"
+            />
           </div>
+          <button @click="fetchImages" class="p-2 bg-white dark:bg-[#181b21] border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
+            <Database class="w-4 h-4 text-gray-500" :class="{ 'animate-spin': loading }" />
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
+          <div class="flex justify-between items-start">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Images</span>
+            <Box class="w-5 h-5 text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 p-1 rounded" />
+          </div>
+          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ imagesData.total || 0 }}</span>
         </div>
 
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-             <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Box :size="48" />
-             </div>
-             <div class="text-[10px] uppercase tracking-widest text-slate-500 mb-1">Total Images</div>
-             <div class="text-2xl font-mono font-bold text-slate-900 dark:text-white">{{ imagesData.total || 0 }}</div>
+        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
+          <div class="flex justify-between items-start">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">In Use</span>
+            <Check class="w-5 h-5 text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 p-1 rounded" />
           </div>
-          
-          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-             <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Check :size="48" />
-             </div>
-             <div class="text-[10px] uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-1">Active / Used</div>
-             <div class="text-2xl font-mono font-bold text-emerald-700 dark:text-emerald-300">{{ imagesData.used || 0 }}</div>
+          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ imagesData.used || 0 }}</span>
+        </div>
+
+        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
+          <div class="flex justify-between items-start">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Unused</span>
+            <AlertTriangle class="w-5 h-5 text-amber-500 bg-amber-50 dark:bg-amber-500/10 p-1 rounded" />
           </div>
-          
-          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-             <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                <AlertTriangle :size="48" />
-             </div>
-             <div class="text-[10px] uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-1">Dangling / Unused</div>
-             <div class="text-2xl font-mono font-bold text-orange-700 dark:text-orange-300">{{ imagesData.unused || 0 }}</div>
+          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ imagesData.unused || 0 }}</span>
+        </div>
+
+        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
+          <div class="flex justify-between items-start">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Reclaimable</span>
+            <HardDrive class="w-5 h-5 text-rose-500 bg-rose-50 dark:bg-rose-500/10 p-1 rounded" />
           </div>
-          
-          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-             <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                <HardDrive :size="48" />
-             </div>
-             <div class="text-[10px] uppercase tracking-widest text-pink-600 dark:text-pink-400 mb-1">Reclaimable Space</div>
-             <div class="text-2xl font-mono font-bold text-pink-700 dark:text-pink-300">{{ imagesData.unusedSize || 0 }} <span class="text-sm font-normal text-slate-500">MB</span></div>
+          <div class="flex items-baseline gap-1">
+            <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ imagesData.unusedSize || 0 }}</span>
+            <span class="text-sm text-gray-400">MB</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-8">
-      
-      <!-- Visualization -->
-      <div v-if="treemapSeries.length > 0" class="bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-1">
-         <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500">Storage Distribution (Top 30 Largest)</h3>
-         </div>
-         <div class="p-4">
+      <!-- Treemap Chart -->
+      <div v-if="treemapSeries.length > 0" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
+         <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Storage Distribution</h3>
+         <div class="rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900/50 p-1">
             <VueApexCharts :options="treemapOptions" :series="treemapSeries" height="280" />
          </div>
       </div>
 
-      <!-- Unused Images Table -->
-      <div v-if="imagesData.unusedImages && imagesData.unusedImages.length > 0" class="space-y-4">
-         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b-2 border-orange-500">
-            <div>
-               <h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
-                  <AlertTriangle :size="20" class="text-orange-500" />
-                  Unused Images
-               </h3>
-               <p class="text-xs font-mono text-slate-500 mt-1">Candidates for deletion ({{ imagesData.unusedImages.length }} items)</p>
-            </div>
-            
-            <button @click="deleteAllUnusedImages"
-              :disabled="deletingAllImages"
-              class="px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2">
-              <Trash2 :size="14" />
-              <span>{{ deletingAllImages ? 'Cleaning...' : 'Purge All Unused' }}</span>
+      <!-- Content Tabs -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-1">
+          <div class="flex gap-6">
+            <button 
+              @click="currentTab = 'active'"
+              :class="currentTab === 'active' ? 'text-indigo-600 dark:text-indigo-400 border-indigo-600 dark:border-indigo-400' : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300'"
+              class="pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2">
+              <Check class="w-4 h-4" />
+              Active Images
+              <span class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ filteredUsed.length }}</span>
             </button>
-         </div>
+            <button 
+              @click="currentTab = 'unused'"
+              :class="currentTab === 'unused' ? 'text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-400' : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300'"
+              class="pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2">
+              <AlertTriangle class="w-4 h-4" />
+              Unused Images
+              <span class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ filteredUnused.length }}</span>
+            </button>
+          </div>
+          
+          <button v-if="currentTab === 'unused' && filteredUnused.length > 0"
+            @click="deleteAllUnusedImages"
+            :disabled="deletingAllImages"
+            class="text-xs font-semibold uppercase text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400 transition-colors flex items-center gap-1">
+             <Trash2 class="w-3 h-3" />
+             {{ deletingAllImages ? 'Cleaning...' : 'Prune All' }}
+          </button>
+        </div>
 
-         <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c0c0e]">
-            <table class="w-full text-left border-collapse">
-               <thead>
-                  <tr class="bg-slate-50 dark:bg-slate-900/50 text-[10px] uppercase text-slate-500 font-bold tracking-wider border-b border-slate-200 dark:border-slate-800">
-                     <th class="p-3 font-mono">ID</th>
-                     <th class="p-3 font-mono">Tag / Repository</th>
-                     <th class="p-3 font-mono">Size</th>
-                     <th class="p-3 font-mono">Created</th>
-                     <th class="p-3 text-right font-mono">Action</th>
-                  </tr>
-               </thead>
-               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 font-mono text-xs">
-                  <tr v-for="image in imagesData.unusedImages" :key="image.id" class="hover:bg-orange-50 dark:hover:bg-orange-900/10 transition-colors group">
-                     <td class="p-3 text-slate-500 truncate max-w-[80px]" :title="image.id">{{ image.shortId }}</td>
-                     <td class="p-3 font-bold text-slate-700 dark:text-slate-300 break-all">
-                        <span v-for="tag in image.tags" :key="tag" class="block">{{ tag }}</span>
-                     </td>
-                     <td class="p-3 text-slate-600 dark:text-slate-400">{{ image.size }} MB</td>
-                     <td class="p-3 text-slate-500">{{ image.created }}</td>
-                     <td class="p-3 text-right">
-                        <button @click="deleteImage(image.id, image.tags[0])" 
-                           class="bg-slate-100 dark:bg-slate-800 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 border border-slate-200 dark:border-slate-700 hover:border-red-500 dark:hover:border-red-500 text-slate-500 dark:text-slate-400 p-1.5 transition-all">
-                           <Trash2 :size="14" />
-                        </button>
-                     </td>
-                  </tr>
-               </tbody>
-            </table>
-         </div>
+        <!-- Active View -->
+        <div v-if="currentTab === 'active'" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+           <table class="w-full text-left border-collapse">
+              <thead>
+                 <tr class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
+                    <th class="px-6 py-4 font-medium">Tag</th>
+                    <th class="px-6 py-4 font-medium w-32">Short ID</th>
+                    <th class="px-6 py-4 font-medium w-32">Size</th>
+                    <th class="px-6 py-4 font-medium w-48">Created</th>
+                    <th class="px-4 py-4 w-24"></th>
+                 </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
+                 <tr v-if="filteredUsed.length === 0" class="bg-gray-50/50 dark:bg-gray-900/20">
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-400">No active images found</td>
+                 </tr>
+                 <tr v-for="image in filteredUsed" :key="image.id" class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <td class="px-6 py-4 text-gray-900 dark:text-white font-medium">
+                       <div class="flex flex-col">
+                          <span v-for="tag in image.tags" :key="tag">{{ tag }}</span>
+                       </div>
+                    </td>
+                    <td class="px-6 py-4 font-mono text-gray-500 text-xs">{{ image.shortId }}</td>
+                    <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ image.size }} MB</td>
+                    <td class="px-6 py-4 text-gray-500">{{ image.created }}</td>
+                    <td class="px-4 py-4 text-right">
+                       <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20">In Use</span>
+                    </td>
+                 </tr>
+              </tbody>
+           </table>
+        </div>
+
+        <!-- Unused View -->
+        <div v-if="currentTab === 'unused'" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+           <table class="w-full text-left border-collapse">
+              <thead>
+                 <tr class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
+                    <th class="px-6 py-4 font-medium">Tag</th>
+                    <th class="px-6 py-4 font-medium w-32">Short ID</th>
+                    <th class="px-6 py-4 font-medium w-32">Size</th>
+                    <th class="px-6 py-4 font-medium w-48">Created</th>
+                    <th class="px-4 py-4 w-24"></th>
+                 </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
+                 <tr v-if="filteredUnused.length === 0" class="bg-gray-50/50 dark:bg-gray-900/20">
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-400">No unused images found on disk</td>
+                 </tr>
+                 <tr v-for="image in filteredUnused" :key="image.id" class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <td class="px-6 py-4 text-gray-900 dark:text-white font-medium">
+                       <div class="flex flex-col">
+                          <span v-for="tag in image.tags" :key="tag">{{ tag }}</span>
+                       </div>
+                    </td>
+                    <td class="px-6 py-4 font-mono text-gray-500 text-xs">{{ image.shortId }}</td>
+                    <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ image.size }} MB</td>
+                    <td class="px-6 py-4 text-gray-500">{{ image.created }}</td>
+                    <td class="px-4 py-4 text-right">
+                       <button @click="deleteImage(image.id, image.tags[0])" 
+                          class="p-2 text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100">
+                          <Trash2 class="w-4 h-4" />
+                       </button>
+                    </td>
+                 </tr>
+              </tbody>
+           </table>
+        </div>
+
       </div>
-
-      <!-- Used Images Table -->
-      <div v-if="imagesData.usedImages && imagesData.usedImages.length > 0" class="space-y-4">
-         <div class="flex items-center gap-2 pb-2 border-b-2 border-emerald-500">
-             <Check :size="20" class="text-emerald-500" />
-             <h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">Active Images</h3>
-         </div>
-         
-         <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c0c0e]">
-            <table class="w-full text-left border-collapse">
-               <thead>
-                  <tr class="bg-slate-50 dark:bg-slate-900/50 text-[10px] uppercase text-slate-500 font-bold tracking-wider border-b border-slate-200 dark:border-slate-800">
-                     <th class="p-3 font-mono">ID</th>
-                     <th class="p-3 font-mono">Tag / Repository</th>
-                     <th class="p-3 font-mono">Size</th>
-                     <th class="p-3 font-mono">Created</th>
-                     <th class="p-3 text-right font-mono">Status</th>
-                  </tr>
-               </thead>
-               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 font-mono text-xs">
-                  <tr v-for="image in imagesData.usedImages" :key="image.id" class="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors">
-                     <td class="p-3 text-slate-500 truncate max-w-[80px]" :title="image.id">{{ image.shortId }}</td>
-                     <td class="p-3 font-bold text-slate-700 dark:text-slate-300 break-all">
-                        <span v-for="tag in image.tags" :key="tag" class="block">{{ tag }}</span>
-                     </td>
-                     <td class="p-3 text-slate-600 dark:text-slate-400">{{ image.size }} MB</td>
-                     <td class="p-3 text-slate-500">{{ image.created }}</td>
-                     <td class="p-3 text-right">
-                        <span class="inline-block px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider border border-emerald-200 dark:border-emerald-800">
-                           In Use
-                        </span>
-                     </td>
-                  </tr>
-               </tbody>
-            </table>
-         </div>
-      </div>
-
-    </div>
+    </main>
   </div>
 </template>

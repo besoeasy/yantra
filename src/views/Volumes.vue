@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { HardDrive, Eye, EyeOff, ExternalLink, Loader2, RefreshCw, Trash2, AlertCircle, Box, Database, Layers, Check } from 'lucide-vue-next'
+import { HardDrive, Eye, EyeOff, ExternalLink, Loader2, RefreshCw, Trash2, AlertCircle, Box, Check, Search } from 'lucide-vue-next'
 import { useToast } from 'vue-toastification'
 import VueApexCharts from 'vue3-apexcharts'
 
@@ -12,40 +12,37 @@ const actionLoading = ref({})
 const volumePorts = ref({})
 const deletingVolume = ref(null)
 const deletingAllVolumes = ref(false)
+const searchQuery = ref('')
+const currentTab = ref('active') // 'active', 'unused', 'browsing'
 
 // Chart Configuration
 const treemapOptions = computed(() => ({
   chart: {
     type: 'treemap',
-    fontFamily: 'monospace',
+    fontFamily: 'inherit',
     toolbar: { show: false },
     background: 'transparent',
-    animations: { enabled: true }
+    animations: { enabled: true, speed: 600 }
   },
-  colors: ['#0ea5e9', '#8b5cf6', '#f59e0b', '#ef4444'],
+  colors: ['#8b5cf6', '#ef4444', '#f59e0b', '#3b82f6'],
   states: {
-    hover: {
-      filter: {
-        type: 'darken',
-        value: 0.1,
-      }
-    }
+    hover: { filter: { type: 'darken', value: 0.1 } }
   },
   plotOptions: {
     treemap: {
       distributed: true,
-      enableShades: false,
-      useFillColorAsStroke: false,
-      strokeWidth: 0,
+      enableShades: true,
+      shadeIntensity: 0.5,
+      radius: 4,
+      useFillColorAsStroke: true,
     }
   },
   dataLabels: {
     enabled: true,
     style: {
-      fontSize: '10px',
-      fontFamily: 'monospace',
-      fontWeight: 'bold',
-      colors: ['#000000']
+      fontSize: '11px',
+      fontFamily: 'inherit',
+      fontWeight: 600,
     },
     formatter: function(text, op) {
       if (op.value < 1) return [text, '< 1 MB']
@@ -56,14 +53,13 @@ const treemapOptions = computed(() => ({
   title: { text: undefined },
   tooltip: {
     theme: 'dark',
-    style: { fontFamily: 'monospace' },
+    style: { fontFamily: 'inherit', fontSize: '12px' },
     y: {
-      formatter: function(val) {
-        return val + " MB"
-      }
-    }
+      formatter: function(val) { return val + " MB" }
+    },
+    marker: { show: false }
   },
-  stroke: { show: true, width: 2, colors: ['#0c0c0e'] }
+  stroke: { show: true, width: 2, colors: ['#ffffff'] }
 }))
 
 const treemapSeries = computed(() => {
@@ -74,8 +70,6 @@ const treemapSeries = computed(() => {
   // Add used volume
   if (volumesData.value.usedVolumes) {
     volumesData.value.usedVolumes.forEach(vol => {
-      // Mock random size if not available or very small for visualization demo if real size is 0
-      // But let's trust the API. If size is 0 or null, we might skip it or show minimal
       let sizeVal = parseFloat(vol.size)
       if (isNaN(sizeVal)) sizeVal = 0
       
@@ -101,10 +95,34 @@ const treemapSeries = computed(() => {
     })
   }
   
-  // Return top 30 largest
-  const sortedData = allVolumes.sort((a, b) => b.y - a.y).slice(0, 30)
-  
+  const sortedData = allVolumes.sort((a, b) => b.y - a.y).slice(0, 30) // top 30
   return [{ data: sortedData }]
+})
+
+// Filters
+const filteredUsed = computed(() => {
+  if (!volumesData.value.usedVolumes) return []
+  let vols = volumesData.value.usedVolumes.filter(v => !v.isBrowsing)
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase()
+    vols = vols.filter(v => v.name.toLowerCase().includes(q))
+  }
+  return vols
+})
+
+const filteredUnused = computed(() => {
+  if (!volumesData.value.unusedVolumes) return []
+  let vols = volumesData.value.unusedVolumes
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase()
+    vols = vols.filter(v => v.name.toLowerCase().includes(q))
+  }
+  return vols
+})
+
+const browsingVolumes = computed(() => {
+  if (!volumesData.value.volumes) return []
+  return volumesData.value.volumes.filter(v => v.isBrowsing)
 })
 
 async function fetchVolumes() {
@@ -115,7 +133,6 @@ async function fetchVolumes() {
     if (data.success) {
       volumesData.value = data
       
-      // Fetch ports for browsing volumes
       const containers = await fetch('/api/containers')
       const containersData = await containers.json()
       if (containersData.success) {
@@ -133,7 +150,6 @@ async function fetchVolumes() {
       }
     }
   } catch (error) {
-    toast.error('Failed to fetch volumes')
     console.error(error)
   } finally {
     loading.value = false
@@ -143,30 +159,19 @@ async function fetchVolumes() {
 async function startBrowsing(volumeName) {
   actionLoading.value[volumeName] = true
   try {
-    const response = await fetch(`/api/volumes/${volumeName}/browse`, {
-      method: 'POST',
-    })
+    const response = await fetch(`/api/volumes/${volumeName}/browse`, { method: 'POST' })
     const data = await response.json()
     if (data.success) {
-      toast.success(`Volume browser started on port ${data.port}`)
-      
-      // Store the port immediately
-      if (data.port) {
-        volumePorts.value[volumeName] = data.port
-      }
-      
+      toast.success(`Browser started`)
+      if (data.port) volumePorts.value[volumeName] = data.port
       await fetchVolumes()
-      
-      // Open browser in new tab
       if (data.port) {
-        const host = window.location.hostname || 'localhost'
-        const url = `http://${host}:${data.port}`
+        const url = `http://${window.location.hostname || 'localhost'}:${data.port}`
         window.open(url, '_blank')
       }
     }
   } catch (error) {
-    toast.error('Failed to start volume browser')
-    console.error(error)
+    toast.error('Failed to start browser')
   } finally {
     delete actionLoading.value[volumeName]
   }
@@ -175,44 +180,35 @@ async function startBrowsing(volumeName) {
 async function stopBrowsing(volumeName) {
   actionLoading.value[volumeName] = true
   try {
-    const response = await fetch(`/api/volumes/${volumeName}/browse`, {
-      method: 'DELETE',
-    })
+    const response = await fetch(`/api/volumes/${volumeName}/browse`, { method: 'DELETE' })
     const data = await response.json()
     if (data.success) {
-      toast.success('Volume browser stopped')
-      
-      // Remove the port from storage
+      toast.success('Browser stopped')
       delete volumePorts.value[volumeName]
-      
       await fetchVolumes()
     }
   } catch (error) {
-    toast.error('Failed to stop volume browser')
-    console.error(error)
+    toast.error('Failed to stop browser')
   } finally {
     delete actionLoading.value[volumeName]
   }
 }
 
 async function deleteVolume(volumeName) {
-  if (!confirm(`Delete volume ${volumeName}?\n\nThis will permanently remove all data stored in this volume.\n\nThis action cannot be undone.`)) return
+  if (!confirm(`Delete volume ${volumeName}?`)) return
 
   deletingVolume.value = volumeName
   try {
-    const response = await fetch(`/api/volumes/${volumeName}`, {
-      method: 'DELETE'
-    })
+    const response = await fetch(`/api/volumes/${volumeName}`, { method: 'DELETE' })
     const data = await response.json()
-
     if (data.success) {
-      toast.success(`Volume deleted successfully!`)
+      toast.success(`Volume deleted`)
       await fetchVolumes()
     } else {
-      toast.error(`Deletion failed: ${data.error}\n${data.message}`)
+      toast.error(`Deletion failed: ${data.message}`)
     }
   } catch (error) {
-    toast.error(`Deletion failed: ${error.message}`)
+    toast.error(error.message)
   } finally {
     deletingVolume.value = null
   }
@@ -221,39 +217,22 @@ async function deleteVolume(volumeName) {
 async function deleteAllUnusedVolumes() {
   const count = volumesData.value.unusedVolumes?.length || 0
   if (!count) return
-  
-  if (!confirm(`Delete all ${count} unused volumes?\n\nThis will permanently remove all data stored in these volumes.\n\nThis action cannot be undone.`)) return
+  if (!confirm(`Delete all ${count} unused volumes?`)) return
 
   deletingAllVolumes.value = true
   let deleted = 0
-  let failed = 0
-
   try {
     for (const volume of volumesData.value.unusedVolumes) {
       try {
-        const response = await fetch(`/api/volumes/${volume.name}`, {
-          method: 'DELETE'
-        })
+        const response = await fetch(`/api/volumes/${volume.name}`, { method: 'DELETE' })
         const data = await response.json()
-        
-        if (data.success) {
-          deleted++
-        } else {
-          failed++
-        }
-      } catch (error) {
-        failed++
-      }
+        if (data.success) deleted++
+      } catch (error) {}
     }
-
-    if (deleted > 0) {
-      toast.success(`Successfully deleted ${deleted} unused volume${deleted > 1 ? 's' : ''}!${failed > 0 ? `\n${failed} failed.` : ''}`)
-      await fetchVolumes()
-    } else {
-      toast.error(`Failed to delete volumes`)
-    }
+    toast.success(`Cleaned up ${deleted} volumes`)
+    await fetchVolumes()
   } catch (error) {
-    toast.error(`Deletion failed: ${error.message}`)
+    toast.error(error.message)
   } finally {
     deletingAllVolumes.value = false
   }
@@ -268,7 +247,6 @@ function formatDate(dateString) {
   })
 }
 
-// Auto-refresh every 10 seconds
 let refreshInterval = null
 onMounted(() => {
   fetchVolumes()
@@ -276,219 +254,226 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (refreshInterval) {
-    clearInterval(refreshInterval)
-  }
+  if (refreshInterval) clearInterval(refreshInterval)
 })
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-200 font-sans pb-20">
+  <div class="min-h-screen bg-neutral-50 dark:bg-[#0f1117] font-sans text-slate-800 dark:text-slate-200 pb-20">
     <!-- Header -->
-    <div class="bg-white dark:bg-[#0c0c0e] border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-6">
-            <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                <HardDrive :size="24" class="text-purple-600 dark:text-purple-400" />
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-white">Docker Volumes</h1>
-                    <p class="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase tracking-widest">Data Persistence & Storage</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-3">
-                <button @click="fetchVolumes" class="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 transition-colors">
-                    <div :class="{ 'animate-spin': loading }">
-                    <RefreshCw :size="18" />
-                    </div>
-                </button>
-            </div>
-            </div>
-
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-                <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Box :size="48" />
-                </div>
-                <div class="text-[10px] uppercase tracking-widest text-slate-500 mb-1">Total Volumes</div>
-                <div class="text-2xl font-mono font-bold text-slate-900 dark:text-white">{{ volumesData.total || 0 }}</div>
-            </div>
-            
-            <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-                <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Check :size="48" />
-                </div>
-                <div class="text-[10px] uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-1">Mounted / In Use</div>
-                <div class="text-2xl font-mono font-bold text-emerald-700 dark:text-emerald-300">{{ volumesData.used || 0 }}</div>
-            </div>
-            
-            <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-                <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <AlertTriangle :size="48" />
-                </div>
-                <div class="text-[10px] uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-1">Unused / Reclaimable</div>
-                <div class="text-2xl font-mono font-bold text-orange-700 dark:text-orange-300">{{ volumesData.unused || 0 }}</div>
-            </div>
-            
-            <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
-                <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Eye :size="48" />
-                </div>
-                <div class="text-[10px] uppercase tracking-widest text-purple-600 dark:text-purple-400 mb-1">Active Browsers</div>
-                <div class="text-2xl font-mono font-bold text-purple-700 dark:text-purple-300">{{ volumesData.volumes?.filter(v => v.isBrowsing).length || 0 }}</div>
-            </div>
-            </div>
+    <header class="bg-white dark:bg-[#181b21] border-b border-gray-200 dark:border-gray-800 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-purple-50 dark:bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-600 dark:text-purple-400">
+            <HardDrive class="w-5 h-5" />
+          </div>
+          <h1 class="text-lg font-bold text-gray-900 dark:text-white">Volumes</h1>
         </div>
-    </div>
+        
+        <div class="flex items-center gap-3">
+          <div class="relative hidden sm:block">
+            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input 
+              v-model="searchQuery" 
+              type="text" 
+              placeholder="Search volumes..." 
+              class="pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:bg-white dark:focus:bg-[#181b21] transition-all w-64"
+            />
+          </div>
+          <button @click="fetchVolumes" class="p-2 bg-white dark:bg-[#181b21] border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
+            <RefreshCw class="w-4 h-4 text-gray-500" :class="{ 'animate-spin': loading }" />
+          </button>
+        </div>
+      </div>
+    </header>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
+          <div class="flex justify-between items-start">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Volumes</span>
+            <Box class="w-5 h-5 text-purple-500 bg-purple-50 dark:bg-purple-500/10 p-1 rounded" />
+          </div>
+          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ volumesData.total || 0 }}</span>
+        </div>
 
-      <!-- Visualization -->
-      <div v-if="treemapSeries.length > 0 && treemapSeries[0].data.length > 0" class="bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-1">
-         <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500">Volume Size Distribution (Top 30 Largest)</h3>
-         </div>
-         <div class="p-4">
+        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
+          <div class="flex justify-between items-start">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">In Use</span>
+            <Check class="w-5 h-5 text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 p-1 rounded" />
+          </div>
+          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ volumesData.used || 0 }}</span>
+        </div>
+
+        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
+          <div class="flex justify-between items-start">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Unused</span>
+            <AlertCircle class="w-5 h-5 text-amber-500 bg-amber-50 dark:bg-amber-500/10 p-1 rounded" />
+          </div>
+          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ volumesData.unused || 0 }}</span>
+        </div>
+
+        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
+          <div class="flex justify-between items-start">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Browsing</span>
+            <Eye class="w-5 h-5 text-blue-500 bg-blue-50 dark:bg-blue-500/10 p-1 rounded" />
+          </div>
+          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ browsingVolumes.length || 0 }}</span>
+        </div>
+      </div>
+
+      <!-- Treemap -->
+      <div v-if="treemapSeries.length > 0" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
+         <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Volume Size</h3>
+         <div class="rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900/50 p-1">
             <VueApexCharts :options="treemapOptions" :series="treemapSeries" height="280" />
          </div>
       </div>
-      
-      <!-- Unused Volumes List -->
-      <div v-if="volumesData.unusedVolumes && volumesData.unusedVolumes.length > 0" class="space-y-4">
-         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b-2 border-orange-500">
-            <div>
-               <h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
-                  <AlertTriangle :size="20" class="text-orange-500" />
-                  Unused Volumes
-               </h3>
-               <p class="text-xs font-mono text-slate-500 mt-1">Orphaned data ({{ volumesData.unusedVolumes.length }} items)</p>
-            </div>
-            
-            <button @click="deleteAllUnusedVolumes"
-              :disabled="deletingAllVolumes"
-              class="px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2">
-              <Trash2 :size="14" />
-              <span>{{ deletingAllVolumes ? 'Purging...' : 'Purge All Unused' }}</span>
-            </button>
-         </div>
 
-         <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c0c0e]">
-            <table class="w-full text-left border-collapse">
-               <thead>
-                  <tr class="bg-slate-50 dark:bg-slate-900/50 text-[10px] uppercase text-slate-500 font-bold tracking-wider border-b border-slate-200 dark:border-slate-800">
-                     <th class="p-3 font-mono text-left">Volume Name</th>
-                     <th class="p-3 font-mono">Driver</th>
-                     <th class="p-3 font-mono">Created</th>
-                     <th class="p-3 font-mono">Size</th>
-                     <th class="p-3 text-right font-mono">Actions</th>
-                  </tr>
-               </thead>
-               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 font-mono text-xs">
-                  <tr v-for="volume in volumesData.unusedVolumes" :key="volume.name" class="hover:bg-orange-50 dark:hover:bg-orange-900/10 transition-colors group">
-                     <td class="p-3 font-bold text-slate-700 dark:text-slate-300 break-all max-w-[200px]">{{ volume.name }}</td>
-                     <td class="p-3 text-slate-500">{{ volume.driver }}</td>
-                     <td class="p-3 text-slate-500">{{ formatDate(volume.createdAt) }}</td>
-                     <td class="p-3 text-slate-600 dark:text-slate-400">{{ volume.size }} MB</td>
-                     <td class="p-3 text-right flex justify-end gap-2">
-                        <button @click="startBrowsing(volume.name)"
-                            :disabled="actionLoading[volume.name]"
-                            class="bg-slate-100 dark:bg-slate-800 hover:bg-purple-500 hover:text-white border border-slate-200 dark:border-slate-700 p-1.5 transition-all text-slate-500"
-                            title="Browse Files">
-                            <Loader2 v-if="actionLoading[volume.name]" :size="14" class="animate-spin" />
-                            <Eye v-else :size="14" />
-                        </button>
-                        <button @click="deleteVolume(volume.name)" 
-                           class="bg-slate-100 dark:bg-slate-800 hover:bg-red-500 hover:text-white border border-slate-200 dark:border-slate-700 text-slate-500 p-1.5 transition-all"
-                           title="Delete Volume">
-                           <Trash2 :size="14" />
-                        </button>
-                     </td>
-                  </tr>
-               </tbody>
-            </table>
+       <!-- Browsing Section - Show prominent if active -->
+       <div v-if="browsingVolumes.length > 0" class="space-y-4">
+         <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+             <Eye class="w-5 h-5" />
+             <h3 class="font-bold text-lg">Active Sessions</h3>
          </div>
-      </div>
-
-      <!-- Active Browsing Sessions -->
-      <div v-if="volumesData.volumes && volumesData.volumes.filter(v => v.isBrowsing).length > 0" class="space-y-4">
-         <div class="flex items-center gap-2 pb-2 border-b-2 border-purple-500">
-             <Eye :size="20" class="text-purple-500" />
-             <h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">Active File Browsers</h3>
-         </div>
-         
          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div v-for="volume in volumesData.volumes.filter(v => v.isBrowsing)" :key="volume.name" 
-                class="bg-white dark:bg-[#0c0c0e] border border-purple-500 dark:border-purple-500 p-4 relative group">
-                <div class="flex justify-between items-start mb-4">
-                    <HardDrive class="text-purple-500" :size="24" />
-                    <div class="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-[10px] font-bold uppercase tracking-wider">
-                        Browsing
-                    </div>
-                </div>
-                <h4 class="font-mono font-bold text-sm text-slate-900 dark:text-white truncate mb-2" :title="volume.name">{{ volume.name }}</h4>
-                <div class="flex gap-2 mt-4">
-                     <a
-                        v-if="volumePorts[volume.name]"
-                        :href="`http://${window.location.hostname || 'localhost'}:${volumePorts[volume.name]}`"
-                        target="_blank"
-                        class="flex-1 flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold uppercase tracking-wider py-2 transition-colors">
-                        <ExternalLink :size="14" />
-                        <span>Open</span>
-                    </a>
-                    <button @click="stopBrowsing(volume.name)"
-                        :disabled="actionLoading[volume.name]"
-                        class="px-3 bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 transition-colors">
-                        <Loader2 v-if="actionLoading[volume.name]" :size="14" class="animate-spin" />
-                        <EyeOff v-else :size="14" />
+            <div v-for="volume in browsingVolumes" :key="volume.name" 
+                 class="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 rounded-xl p-5 flex flex-col">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-white dark:bg-blue-900/50 px-2 py-1 rounded">Browsing</span>
+                    <button @click="stopBrowsing(volume.name)" class="text-gray-400 hover:text-red-500 transition-colors">
+                        <EyeOff class="w-4 h-4" />
                     </button>
                 </div>
+                <h4 class="font-mono font-medium text-sm text-gray-900 dark:text-white truncate mb-4" :title="volume.name">{{ volume.name }}</h4>
+                <div class="mt-auto flex gap-2">
+                    <a v-if="volumePorts[volume.name]"
+                       :href="`http://${window.location.hostname || 'localhost'}:${volumePorts[volume.name]}`"
+                       target="_blank"
+                       class="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors shadow-sm">
+                       <ExternalLink class="w-4 h-4" />
+                       Open Finder
+                    </a>
+                </div>
             </div>
          </div>
       </div>
 
-      <!-- Used Volumes List -->
-      <div v-if="volumesData.usedVolumes && volumesData.usedVolumes.filter(v => !v.isBrowsing).length > 0" class="space-y-4">
-         <div class="flex items-center gap-2 pb-2 border-b-2 border-emerald-500">
-             <Check :size="20" class="text-emerald-500" />
-             <h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">Active Volumes</h3>
-         </div>
-         
-         <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c0c0e]">
-            <table class="w-full text-left border-collapse">
-               <thead>
-                  <tr class="bg-slate-50 dark:bg-slate-900/50 text-[10px] uppercase text-slate-500 font-bold tracking-wider border-b border-slate-200 dark:border-slate-800">
-                     <th class="p-3 font-mono text-left">Volume Name</th>
-                     <th class="p-3 font-mono">Driver</th>
-                     <th class="p-3 font-mono">Created</th>
-                     <th class="p-3 font-mono">Size</th>
-                     <th class="p-3 text-right font-mono">Actions</th>
-                  </tr>
-               </thead>
-               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 font-mono text-xs">
-                  <tr v-for="volume in volumesData.usedVolumes.filter(v => !v.isBrowsing)" :key="volume.name" class="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors">
-                     <td class="p-3 font-bold text-slate-700 dark:text-slate-300 break-all max-w-[200px]">{{ volume.name }}</td>
-                     <td class="p-3 text-slate-500">{{ volume.driver }}</td>
-                     <td class="p-3 text-slate-500">{{ formatDate(volume.createdAt) }}</td>
-                     <td class="p-3 text-slate-600 dark:text-slate-400">{{ volume.size }} MB</td>
-                     <td class="p-3 text-right">
-                        <button @click="startBrowsing(volume.name)"
-                            :disabled="actionLoading[volume.name]"
-                            class="bg-slate-100 dark:bg-slate-800 hover:bg-purple-500 hover:text-white border border-slate-200 dark:border-slate-700 p-1.5 transition-all text-slate-500 mr-2"
-                            title="Browse Files">
-                            <Loader2 v-if="actionLoading[volume.name]" :size="14" class="animate-spin" />
-                            <Eye v-else :size="14" />
-                        </button>
-                     </td>
-                  </tr>
-               </tbody>
-            </table>
-         </div>
-      </div>
+      <!-- Main Tabs -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-1">
+          <div class="flex gap-6">
+            <button 
+              @click="currentTab = 'active'"
+              :class="currentTab === 'active' ? 'text-purple-600 dark:text-purple-400 border-purple-600 dark:border-purple-400' : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300'"
+              class="pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2">
+              <Check class="w-4 h-4" />
+              Active Volumes
+              <span class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ filteredUsed.length }}</span>
+            </button>
+            <button 
+              @click="currentTab = 'unused'"
+              :class="currentTab === 'unused' ? 'text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-400' : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300'"
+              class="pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2">
+              <AlertCircle class="w-4 h-4" />
+              Unused Volumes
+              <span class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ filteredUnused.length }}</span>
+            </button>
+          </div>
+          
+           <button v-if="currentTab === 'unused' && filteredUnused.length > 0"
+            @click="deleteAllUnusedVolumes"
+            :disabled="deletingAllVolumes"
+            class="text-xs font-semibold uppercase text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400 transition-colors flex items-center gap-1">
+             <Trash2 class="w-3 h-3" />
+             {{ deletingAllVolumes ? 'Cleaning...' : 'Prune All' }}
+           </button>
+        </div>
 
-    </div>
+        <!-- Active Grid -->
+         <div v-if="currentTab === 'active'" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+           <table class="w-full text-left border-collapse">
+              <thead>
+                 <tr class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
+                    <th class="px-6 py-4 font-medium w-1/3">Name</th>
+                    <th class="px-6 py-4 font-medium">Driver</th>
+                    <th class="px-6 py-4 font-medium">Size</th>
+                    <th class="px-6 py-4 font-medium">Created</th>
+                    <th class="px-4 py-4 w-32 text-right">Actions</th>
+                 </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
+                 <tr v-if="filteredUsed.length === 0" class="bg-gray-50/50 dark:bg-gray-900/20">
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-400">No active/mounted volumes found</td>
+                 </tr>
+                 <tr v-for="volume in filteredUsed" :key="volume.name" class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="font-medium text-gray-900 dark:text-white truncate max-w-[250px]" :title="volume.name">{{ volume.name }}</div>
+                    </td>
+                    <td class="px-6 py-4 text-gray-500">{{ volume.driver }}</td>
+                    <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ volume.size }} MB</td>
+                    <td class="px-6 py-4 text-gray-500">{{ formatDate(volume.createdAt) }}</td>
+                    <td class="px-4 py-4 text-right">
+                       <button @click="startBrowsing(volume.name)" 
+                          :disabled="actionLoading[volume.name]"
+                          class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 rounded-lg text-xs font-medium transition-colors">
+                          <Loader2 v-if="actionLoading[volume.name]" class="w-3 h-3 animate-spin" />
+                          <Eye v-else class="w-3 h-3" />
+                          Browse
+                       </button>
+                    </td>
+                 </tr>
+              </tbody>
+           </table>
+        </div>
+
+        <!-- Unused Grid -->
+        <div v-if="currentTab === 'unused'" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+           <div class="overflow-x-auto">
+           <table class="w-full text-left border-collapse">
+              <thead>
+                 <tr class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
+                    <th class="px-6 py-4 font-medium w-1/3">Name</th>
+                    <th class="px-6 py-4 font-medium">Driver</th>
+                    <th class="px-6 py-4 font-medium">Size</th>
+                    <th class="px-6 py-4 font-medium">Created</th>
+                    <th class="px-4 py-4 w-32 text-right">Actions</th>
+                 </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
+                 <tr v-if="filteredUnused.length === 0" class="bg-gray-50/50 dark:bg-gray-900/20">
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-400">No unused volumes found</td>
+                 </tr>
+                 <tr v-for="volume in filteredUnused" :key="volume.name" class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="font-medium text-gray-900 dark:text-white truncate max-w-[250px]" :title="volume.name">{{ volume.name }}</div>
+                    </td>
+                    <td class="px-6 py-4 text-gray-500">{{ volume.driver }}</td>
+                    <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ volume.size }} MB</td>
+                    <td class="px-6 py-4 text-gray-500">{{ formatDate(volume.createdAt) }}</td>
+                    <td class="px-4 py-4 text-right flex items-center justify-end gap-2">
+                       <button @click="startBrowsing(volume.name)" 
+                          :disabled="actionLoading[volume.name]"
+                          class="p-2 text-gray-400 hover:text-purple-500 rounded-lg transition-colors"
+                          title="Browse">
+                           <Loader2 v-if="actionLoading[volume.name]" class="w-4 h-4 animate-spin" />
+                           <Eye v-else class="w-4 h-4" />
+                       </button>
+                       <button @click="deleteVolume(volume.name)" 
+                          class="p-2 text-gray-400 hover:text-rose-500 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          title="Delete">
+                          <Trash2 class="w-4 h-4" />
+                       </button>
+                    </td>
+                 </tr>
+              </tbody>
+           </table>
+           </div>
+        </div>
+
+      </div>
+    </main>
   </div>
 </template>

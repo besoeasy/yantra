@@ -1,12 +1,13 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { FileText, AlertCircle, Info, RefreshCw, Terminal, Pause, Play, Trash2, Filter } from 'lucide-vue-next'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { FileText, AlertCircle, Info, RefreshCw, Terminal, Pause, Play, Trash2, Search, ArrowDown } from 'lucide-vue-next'
 
 const logsData = ref({})
 const logFilter = ref('all')
 const loading = ref(false)
 const apiUrl = ref('')
 const autoRefresh = ref(true)
+const searchQuery = ref('')
 let refreshInterval = null
 const logContainer = ref(null)
 
@@ -22,7 +23,6 @@ function formatTimestamp(timestamp) {
 }
 
 async function fetchLogs() {
-  // Don't show global loading spinner on refresh to avoid flicker
   if (!logsData.value.logs) loading.value = true
   
   try {
@@ -30,10 +30,15 @@ async function fetchLogs() {
     const url = level ? `${apiUrl.value}/api/logs?level=${level}` : `${apiUrl.value}/api/logs`
     const response = await fetch(url)
     const data = await response.json()
+    
+    // Only update if changes detected (naive check) or initial load
     if (data.success) {
-      // Only update if logs changed to avoid DOM churn (simple check)
-      if (!logsData.value.logs || data.logs.length !== logsData.value.logs.length || data.logs[0]?.timestamp !== logsData.value.logs[0]?.timestamp) {
-          logsData.value = data
+      const currentLen = logsData.value.logs?.length || 0
+      if (!logsData.value.logs || data.logs.length !== currentLen || (data.logs.length > 0 && data.logs[0].timestamp !== logsData.value.logs[0].timestamp)) {
+        logsData.value = data
+        if (autoRefresh.value) {
+            scrollToBottom()
+        }
       }
     }
   } catch (error) {
@@ -43,14 +48,20 @@ async function fetchLogs() {
   }
 }
 
+function scrollToBottom() {
+  nextTick(() => {
+    if (logContainer.value) {
+      logContainer.value.scrollTop = logContainer.value.scrollHeight
+    }
+  })
+}
+
 function clearLogs() {
   logsData.value = { ...logsData.value, logs: [], count: 0 }
-  // Ideally this would clear backend logs too if API supported it
 }
 
 onMounted(() => {
   fetchLogs()
-  // Auto-refresh logs every 2 seconds for "live" feel
   refreshInterval = setInterval(() => {
     if (autoRefresh.value) {
       fetchLogs()
@@ -59,102 +70,128 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (refreshInterval) {
-    clearInterval(refreshInterval)
-  }
+  if (refreshInterval) clearInterval(refreshInterval)
 })
 </script>
 
 <template>
-  <div class="h-[calc(100vh-64px)] flex flex-col bg-[#0c0c0e] text-slate-300 font-mono text-sm">
+  <div class="h-screen flex flex-col bg-[#1e1e1e] text-gray-300 font-mono text-[13px] overflow-hidden">
     <!-- Toolbar -->
-    <div class="border-b border-slate-800 bg-[#0c0c0e] px-4 py-3 flex items-center justify-between shrink-0 z-20">
-      <div class="flex items-center gap-4">
-         <div class="flex items-center gap-2 text-indigo-400">
-            <Terminal :size="18" />
-            <h1 class="font-bold text-white uppercase tracking-wider text-sm">System Logs</h1>
-         </div>
-         <div class="h-4 w-px bg-slate-800 mx-2"></div>
-         <!-- Filters -->
-         <div class="flex items-center gap-1">
-            <button @click="logFilter = 'all'; fetchLogs()" 
-               :class="['px-3 py-1 text-xs font-bold uppercase tracking-wider transition-colors border', logFilter === 'all' ? 'bg-slate-800 text-white border-slate-600' : 'text-slate-500 border-transparent hover:text-slate-300']">
-               All
-            </button>
-            <button @click="logFilter = 'info'; fetchLogs()" 
-               :class="['px-3 py-1 text-xs font-bold uppercase tracking-wider transition-colors border', logFilter === 'info' ? 'bg-blue-900/30 text-blue-400 border-blue-800' : 'text-slate-500 border-transparent hover:text-blue-400']">
-               Info
-            </button>
-            <button @click="logFilter = 'error'; fetchLogs()" 
-               :class="['px-3 py-1 text-xs font-bold uppercase tracking-wider transition-colors border', logFilter === 'error' ? 'bg-red-900/30 text-red-500 border-red-800' : 'text-slate-500 border-transparent hover:text-red-500']">
-               Errors
-            </button>
-         </div>
-      </div>
+    <div class="flex items-center justify-between px-4 py-2 bg-[#252526] border-b border-[#333333] shrink-0">
+       <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2 text-blue-400">
+             <Terminal class="w-4 h-4" />
+             <span class="font-bold text-gray-100 uppercase tracking-wide text-xs">Output</span>
+          </div>
+          <div class="h-4 w-px bg-[#333333]"></div>
+          
+          <div class="flex bg-[#1e1e1e] rounded border border-[#3c3c3c] overflow-hidden">
+             <button @click="logFilter = 'all'; fetchLogs()" 
+                :class="logFilter === 'all' ? 'bg-[#37373d] text-white' : 'text-gray-400 hover:text-gray-200'"
+                class="px-3 py-1 text-xs transition-colors">
+                All
+             </button>
+             <div class="w-px bg-[#3c3c3c]"></div>
+             <button @click="logFilter = 'info'; fetchLogs()" 
+                :class="logFilter === 'info' ? 'bg-[#37373d] text-blue-400' : 'text-gray-400 hover:text-blue-300'"
+                class="px-3 py-1 text-xs transition-colors">
+                Info
+             </button>
+             <div class="w-px bg-[#3c3c3c]"></div>
+             <button @click="logFilter = 'error'; fetchLogs()" 
+                :class="logFilter === 'error' ? 'bg-[#37373d] text-red-400' : 'text-gray-400 hover:text-red-300'"
+                class="px-3 py-1 text-xs transition-colors">
+                Errors
+             </button>
+          </div>
+       </div>
 
-      <div class="flex items-center gap-2">
-         <span class="text-xs text-slate-500 mr-2">{{ logsData.count || 0 }} Events</span>
-         <button @click="autoRefresh = !autoRefresh" 
-            :class="['p-1.5 border transition-colors', autoRefresh ? 'bg-emerald-900/20 text-emerald-500 border-emerald-800' : 'text-slate-500 border-slate-800 hover:text-slate-300']"
-            :title="autoRefresh ? 'Pause Auto-Scroll' : 'Resume Auto-Scroll'">
-            <Pause v-if="autoRefresh" :size="16" />
-            <Play v-else :size="16" />
-         </button>
-         <button @click="clearLogs" class="p-1.5 text-slate-500 hover:text-red-400 border border-slate-800 hover:border-red-900 transition-colors" title="Clear Console">
-            <Trash2 :size="16" />
-         </button>
-      </div>
+       <div class="flex items-center gap-2">
+          <div class="relative group">
+             <input v-model="searchQuery" type="text" placeholder="Filter..." class="bg-[#1e1e1e] border border-[#3c3c3c] text-gray-300 px-2 py-1 rounded text-xs w-32 focus:w-48 focus:border-blue-500 outline-none transition-all placeholder-gray-600" />
+          </div>
+          
+          <div class="h-4 w-px bg-[#333333] mx-1"></div>
+
+          <button @click="autoRefresh = !autoRefresh" 
+             :class="autoRefresh ? 'text-green-400 bg-green-500/10' : 'text-gray-400 hover:text-gray-200'"
+             class="p-1.5 rounded transition-colors" 
+             :title="autoRefresh ? 'Pause Auto-scroll' : 'Resume Auto-scroll'">
+             <Pause v-if="autoRefresh" class="w-4 h-4" />
+             <Play v-else class="w-4 h-4" />
+          </button>
+          
+          <button @click="clearLogs" class="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-[#333] rounded transition-colors" title="Clear Console">
+             <Trash2 class="w-4 h-4" />
+          </button>
+       </div>
     </div>
 
-    <!-- Log Console -->
-    <div class="flex-1 overflow-y-auto bg-[#09090b] p-2 custom-scrollbar" ref="logContainer">
-       <div v-if="loading && !logsData.logs" class="flex items-center justify-center h-full text-slate-600 gap-2">
-          <RefreshCw class="animate-spin" :size="16" />
-          <span>Connecting to stream...</span>
-       </div>
-       
-       <div v-else-if="!logsData.logs || logsData.logs.length === 0" class="flex flex-col items-center justify-center h-full text-slate-600 gap-2 opacity-50">
-          <Terminal :size="32" />
-          <span>No logs available</span>
+    <!-- Log Viewer -->
+    <div ref="logContainer" class="flex-1 overflow-y-auto p-2 scrollbar-thin">
+       <div v-if="loading && !logsData.logs" class="flex flex-col items-center justify-center h-full text-gray-500 gap-2">
+          <RefreshCw class="w-6 h-6 animate-spin" />
+          <span>Connecting...</span>
        </div>
 
-       <div v-else class="space-y-0.5">
+       <div v-else-if="!logsData.logs || logsData.logs.length === 0" class="flex flex-col items-center justify-center h-full text-gray-600 gap-2">
+          <Terminal class="w-8 h-8 opacity-20" />
+          <span class="opacity-50">No output to display</span>
+       </div>
+
+       <div v-else class="font-mono">
           <div v-for="(log, idx) in logsData.logs" :key="idx" 
-             class="group flex items-start hover:bg-slate-900/50 px-2 py-0.5 font-mono text-xs leading-5">
+             v-show="!searchQuery || log.message.toLowerCase().includes(searchQuery.toLowerCase())"
+             class="flex gap-3 px-2 py-[2px] hover:bg-[#2a2d2e] rounded-sm group selection:bg-blue-500/30">
              
-             <!-- Line Number (Virtual) -->
-             <div class="w-8 text-slate-700 text-right select-none mr-3 shrink-0 opacity-50">{{ idx + 1 }}</div>
+             <!-- Line Num -->
+             <div class="select-none text-gray-600 w-8 text-right opacity-50 text-[11px] pt-[2px]">{{ idx + 1 }}</div>
              
-             <!-- Timestamp -->
-             <div class="text-slate-500 mr-3 shrink-0 select-none opacity-70 w-24">{{ formatTimestamp(log.timestamp) }}</div>
+             <!-- Time -->
+             <div class="select-none text-[#569cd6] w-24 shrink-0 text-[11px] pt-[2px] opacity-80">{{ formatTimestamp(log.timestamp) }}</div>
              
-             <!-- Level Marker -->
-             <div class="mr-3 w-12 shrink-0">
-                <span v-if="log.level === 'error'" class="text-red-500 font-bold">ERR</span>
-                <span v-else class="text-blue-500 font-bold">INF</span>
-             </div>
-             
-             <!-- Message -->
-             <div class="break-all whitespace-pre-wrap flex-1" :class="log.level === 'error' ? 'text-red-400' : 'text-slate-300'">
-                {{ log.message }}
-                <span v-if="log.args" class="text-slate-500 opacity-75 ml-2">{{ log.args.join(' ') }}</span>
+             <!-- Level -->
+             <div class="select-none w-[3px] rounded-full shrink-0 my-0.5" :class="log.level === 'error' ? 'bg-red-500' : 'bg-blue-500/50'"></div>
+
+             <!-- Content -->
+             <div class="flex-1 break-all whitespace-pre-wrap text-gray-300 leading-relaxed">
+                <span :class="log.level === 'error' ? 'text-red-300' : ''">{{ log.message }}</span>
+                <span v-if="log.args && log.args.length" class="text-gray-500 pl-2 text-xs italic opacity-80">{{ log.args.join(' ') }}</span>
              </div>
           </div>
+       </div>
+    </div>
+    
+    <!-- Status Bar Footer -->
+    <div class="bg-[#007acc] text-white px-3 py-1 text-[11px] flex justify-between items-center shrink-0">
+       <div class="flex gap-4">
+          <span>Ln {{ logsData.count || 0 }}, Col 1</span>
+          <span>UTF-8</span>
+       </div>
+       <div class="flex gap-2 opacity-80 hover:opacity-100 cursor-pointer" @click="scrollToBottom">
+          <ArrowDown class="w-3 h-3" />
        </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.custom-scrollbar::-webkit-scrollbar {
+.scrollbar-thin::-webkit-scrollbar {
   width: 10px;
-  background: #0c0c0e;
+  height: 10px;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border: 2px solid #0c0c0e;
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #1e1e1e;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 0;
+  border: 2px solid #1e1e1e;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #4f4f4f;
+}
+.scrollbar-thin::-webkit-scrollbar-corner {
+  background: #1e1e1e;
 }
 </style>
