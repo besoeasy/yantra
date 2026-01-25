@@ -130,138 +130,118 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="group relative h-full overflow-hidden rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-slate-900/50 flex flex-col">
+  <div class="group relative h-full overflow-hidden rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-slate-900/50 flex flex-col font-mono text-xs">
     
-    <!-- Animated Background Mesh -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-       <div class="absolute top-[-50%] left-[-20%] w-[80%] h-[200%] bg-gradient-to-r from-transparent via-sky-100/20 dark:via-sky-900/10 to-transparent transform -rotate-12 translate-x-[-100%] animate-shine"></div>
-       <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" 
-         style="background-image: radial-gradient(circle at 1rem 1rem, currentColor 1px, transparent 0); background-size: 1rem 1rem;">
-       </div>
+    <!-- Hacker Background Texture -->
+    <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" 
+         style="background-image: linear-gradient(0deg, transparent 24%, rgba(0, 0, 0, .3) 25%, rgba(0, 0, 0, .3) 26%, transparent 27%, transparent 74%, rgba(0, 0, 0, .3) 75%, rgba(0, 0, 0, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 0, 0, .3) 25%, rgba(0, 0, 0, .3) 26%, transparent 27%, transparent 74%, rgba(0, 0, 0, .3) 75%, rgba(0, 0, 0, .3) 76%, transparent 77%, transparent); background-size: 30px 30px;">
     </div>
-
-    <!-- Decorative Background Icon -->
+    
+    <!-- Background Icon Glitch Effect -->
     <div class="absolute -right-6 -bottom-6 opacity-5 dark:opacity-10 transform rotate-12 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-700 ease-in-out pointer-events-none">
        <Server class="w-48 h-48 text-indigo-900 dark:text-indigo-100" />
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="relative z-10 p-6 flex-1 flex flex-col gap-4">
-      <div class="space-y-2">
-         <div class="h-8 w-3/4 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse"></div>
-         <div class="h-4 w-1/2 bg-slate-100 dark:bg-slate-800 rounded animate-pulse"></div>
-      </div>
-      <div class="flex-1 flex flex-col gap-3">
-        <div class="h-24 bg-slate-50 dark:bg-slate-800/50 rounded-2xl animate-pulse"></div>
-        <div class="h-24 bg-slate-50 dark:bg-slate-800/50 rounded-2xl animate-pulse"></div>
-        <div class="h-24 bg-slate-50 dark:bg-slate-800/50 rounded-2xl animate-pulse"></div>
+    <div v-if="loading" class="relative z-10 p-5 flex-1 flex flex-col items-center justify-center">
+      <div class="flex items-center gap-2 text-slate-400 animate-pulse">
+         <span class="inline-block w-2 h-4 bg-slate-400"></span>
+         <span class="uppercase tracking-widest">INITIALIZING_SCAN...</span>
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="relative z-10 p-6 flex flex-col items-center justify-center h-full text-center">
-      <div class="p-3 rounded-full bg-rose-50 dark:bg-rose-900/20 text-rose-500 mb-3">
-        <Server :size="24" />
-      </div>
-      <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">System Info Unavailable</span>
+    <div v-else-if="error" class="relative z-10 p-5 flex flex-col items-center justify-center h-full text-center">
+        <div class="border border-rose-500/30 p-4 bg-rose-500/5 text-rose-600 dark:text-rose-400 max-w-full">
+            <span class="block font-bold mb-1 uppercase tracking-wider">FATAL_ERROR</span>
+            <span class="opacity-75 break-words">{{ error }}</span>
+        </div>
     </div>
 
     <!-- Content -->
-    <div v-else class="relative z-10 p-6 flex flex-col h-full gap-6">
+    <div v-else class="relative z-10 p-5 flex flex-col h-full gap-4">
       
-      <!-- Header Section -->
-      <div class="flex flex-col gap-2">
-        <div class="flex items-center gap-2 mb-1">
-           <div class="relative flex h-2.5 w-2.5">
-             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-             <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-           </div>
-           <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Host Active</span>
-        </div>
-        
-        <div>
-          <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-tight truncate drop-shadow-sm" :title="osInfo.name">
-            {{ osInfo.name }}
-          </h2>
-          <div class="flex flex-wrap items-center gap-2 mt-2">
-             <span v-if="osInfo.type" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] text-slate-600 dark:text-slate-300 uppercase tracking-wider font-extrabold shadow-sm">
-               {{ osInfo.type }}
-             </span>
-             <span v-if="osInfo.kernel" class="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 text-[10px] text-indigo-600 dark:text-indigo-300 font-bold tabular-nums shadow-sm">
-               v{{ osInfo.kernel }}
-             </span>
-          </div>
-        </div>
+      <!-- Header -->
+      <div class="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+         <div class="min-w-0 pr-2">
+            <div class="text-[10px] text-slate-400 mb-0.5 tracking-widest">HOST__ID</div>
+            <div class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-tight truncate" :title="osInfo.name">{{ osInfo.name }}</div>
+         </div>
+         <div class="text-right shrink-0">
+             <div class="flex items-center justify-end gap-1.5 mb-0.5">
+                  <span class="relative flex h-1.5 w-1.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                  </span>
+                  <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">ONLINE</span>
+             </div>
+             <div class="text-[10px] text-slate-400 tabular-nums font-bold">KRNL: {{ osInfo.kernel }}</div>
+         </div>
       </div>
 
-      <!-- Metrics Section -->
-      <div class="grid grid-cols-2 gap-3">
-        
-        <!-- CPU -->
-        <div class="relative overflow-hidden p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/60 group/stat hover:bg-white dark:hover:bg-slate-800 transition-colors duration-200 hover:shadow-sm">
-           <div class="absolute right-0 top-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
-              <Cpu class="w-10 h-10 text-blue-500 transform rotate-12" />
-           </div>
-           <div class="relative z-10 flex flex-col justify-between gap-1.5">
-             <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-               <span class="p-1 rounded-md bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-700 text-blue-500">
-                 <Cpu class="w-3 h-3" />
-               </span>
-               <span class="text-[10px] font-bold uppercase tracking-wider">CPU</span>
+      <!-- Specs Grid -->
+      <div class="grid grid-cols-2 gap-x-4 gap-y-4 flex-1">
+         
+         <!-- CPU section -->
+         <div class="flex flex-col gap-1">
+             <div class="flex justify-between items-end border-b border-slate-100 dark:border-slate-800/50 pb-1 mb-1">
+                <span class="font-bold text-slate-500 tracking-wider">CPU_CORE</span>
+                <Cpu class="w-3 h-3 text-slate-400" />
              </div>
-             <div>
-                <div class="text-xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">{{ cpuInfo.cores }} <span class="text-xs font-bold text-slate-400">Cores</span></div>
-                <div class="h-1 w-8 bg-blue-500 rounded-full mt-1.5 opacity-80"></div>
+             <div class="flex items-baseline gap-1 mt-auto">
+                 <span class="text-2xl font-bold text-slate-800 dark:text-slate-200 tabular-nums">{{ cpuInfo.cores }}</span>
+                 <span class="text-[10px] text-slate-400 font-bold">THREADS</span>
              </div>
-           </div>
-        </div>
+             <!-- Fake activity bar -->
+             <div class="flex gap-0.5 mt-1 h-1">
+                <div v-for="i in 5" :key="i" class="flex-1 bg-blue-500/10 dark:bg-blue-400/10 rounded-sm overflow-hidden">
+                    <div class="h-full bg-blue-500 dark:bg-blue-400 animate-pulse" :style="{ width: `${30 + Math.random() * 70}%`, animationDuration: `${0.5 + Math.random()}s` }"></div>
+                </div>
+             </div>
+         </div>
 
-        <!-- RAM -->
-        <div class="relative overflow-hidden p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/60 group/stat hover:bg-white dark:hover:bg-slate-800 transition-colors duration-200 hover:shadow-sm">
-           <div class="absolute right-0 top-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
-              <MemoryStick class="w-10 h-10 text-violet-500 transform -rotate-12" />
-           </div>
-           <div class="relative z-10 flex flex-col justify-between gap-1.5">
-             <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-               <span class="p-1 rounded-md bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-700 text-violet-500">
-                 <MemoryStick class="w-3 h-3" />
-               </span>
-               <span class="text-[10px] font-bold uppercase tracking-wider">RAM</span>
+         <!-- RAM section -->
+         <div class="flex flex-col gap-1">
+            <div class="flex justify-between items-end border-b border-slate-100 dark:border-slate-800/50 pb-1 mb-1">
+                <span class="font-bold text-slate-500 tracking-wider">MEM_ALLOC</span>
+                <MemoryStick class="w-3 h-3 text-slate-400" />
              </div>
-             <div>
-                <div class="text-xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight truncate">
-                  {{ memoryInfo.totalFormatted.split(' ')[0] }}
-                  <span class="text-xs font-bold text-slate-400">{{ memoryInfo.totalFormatted.split(' ')[1] }}</span>
-                </div>
-                <div class="h-1 w-8 bg-violet-500 rounded-full mt-1.5 opacity-80"></div>
+             <div class="flex items-baseline gap-1 mt-auto">
+                 <span class="text-xl font-bold text-slate-800 dark:text-slate-200 tabular-nums">{{ memoryInfo.totalFormatted.split(' ')[0] }}</span>
+                 <span class="text-[10px] text-slate-400 font-bold">{{ memoryInfo.totalFormatted.split(' ')[1] }}</span>
              </div>
-           </div>
-        </div>
-
-        <!-- Storage -->
-        <div v-if="storageInfo.hasData" class="col-span-2 relative overflow-hidden p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/60 group/stat hover:bg-white dark:hover:bg-slate-800 transition-colors duration-200 hover:shadow-sm">
-           <div class="absolute right-0 top-0 p-2 opacity-10 group-hover/stat:opacity-20 transition-opacity">
-              <HardDrive class="w-10 h-10 text-emerald-500 transform rotate-6" />
-           </div>
-           <div class="relative z-10 flex flex-col justify-between gap-1.5">
-             <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-               <span class="p-1 rounded-md bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-700 text-emerald-500">
-                 <HardDrive class="w-3 h-3" />
-               </span>
-               <span class="text-[10px] font-bold uppercase tracking-wider">Storage</span>
+             <div class="h-1 w-full bg-violet-500/10 dark:bg-violet-400/10 rounded-sm">
+                <div class="h-full bg-violet-500 dark:bg-violet-400 w-full rounded-sm opacity-50"></div>
              </div>
-             <div class="flex items-baseline justify-between">
-                <div class="text-xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
-                  {{ storageInfo.usedFormatted }}
-                </div>
-                <div class="text-[10px] font-bold text-slate-400 tabular-nums">
-                   <span class="opacity-50 mr-1">of</span> {{ storageInfo.totalFormatted }}
-                </div>
+         </div>
+         
+         <!-- Storage Section (Full Width) -->
+         <div v-if="storageInfo.hasData" class="col-span-2 mt-auto pt-2">
+             <div class="flex justify-between items-center mb-1.5">
+                 <div class="flex items-center gap-2">
+                    <span class="font-bold text-slate-500 tracking-wider">STORAGE_VOL</span>
+                    <span class="px-1 py-0.5 bg-slate-100 dark:bg-slate-800/50 rounded-[1px] text-[9px] text-slate-500 dark:text-slate-400 tabular-nums font-bold border border-slate-200 dark:border-slate-700">{{ storageInfo.percent }}%</span>
+                 </div>
+                 <div class="text-[10px] text-slate-400 tabular-nums font-bold">{{ storageInfo.usedFormatted }} <span class="opacity-50">/</span> {{ storageInfo.totalFormatted }}</div>
              </div>
-           </div>
-        </div>
+             
+             <!-- Segmented Progress Bar -->
+             <div class="flex gap-0.5 h-1.5 w-full">
+                 <div v-for="i in 20" :key="i" 
+                      class="flex-1 rounded-[1px] transition-colors duration-500"
+                      :class="i <= (storageInfo.percent / 5) ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_5px_rgba(16,185,129,0.5)]' : 'bg-slate-100 dark:bg-slate-800'">
+                 </div>
+             </div>
+         </div>
 
       </div>
+
+      <!-- Footer / Deco -->
+      <div class="text-[9px] text-slate-300 dark:text-slate-700 flex justify-between uppercase tracking-widest pt-2 border-t border-slate-50 dark:border-slate-800/50">
+          <span>SYS.MON.V1</span>
+          <span>// READY</span>
+      </div>
+
     </div>
   </div>
 </template>
