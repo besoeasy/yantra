@@ -81,7 +81,7 @@ const theme = {
 </script>
 
 <template>
-  <div class="relative h-full overflow-hidden group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-lg dark:hover:shadow-slate-900/50" :class="theme.border">
+  <div class="relative h-full overflow-hidden group rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-lg dark:hover:shadow-slate-900/50" :class="theme.border">
     <!-- Background Texture -->
     <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" 
          style="background-image: radial-gradient(circle at 1rem 1rem, currentColor 1px, transparent 0); background-size: 1rem 1rem;">

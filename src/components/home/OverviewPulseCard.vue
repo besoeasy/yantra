@@ -29,7 +29,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative h-full overflow-hidden group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-slate-900/50" :class="theme.border">
+  <div class="relative h-full overflow-hidden group rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-slate-900/50" :class="theme.border">
     <!-- Animated Background Mesh -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
        <div class="absolute top-[-50%] left-[-20%] w-[80%] h-[200%] bg-gradient-to-r from-transparent via-sky-100/20 dark:via-sky-900/10 to-transparent transform -rotate-12 translate-x-[-100%] animate-shine"></div>

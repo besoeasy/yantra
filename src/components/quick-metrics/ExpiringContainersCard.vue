@@ -68,7 +68,7 @@ const urgencyLabel = computed(() => {
 <template>
   <div
     v-if="stats.count > 0"
-    class="relative h-full overflow-hidden group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-lg dark:hover:shadow-slate-900/50"
+    class="relative h-full overflow-hidden group rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-lg dark:hover:shadow-slate-900/50"
     :class="theme.border"
   >
     <!-- Background Texture -->

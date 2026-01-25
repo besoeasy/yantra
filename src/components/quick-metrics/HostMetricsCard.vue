@@ -130,7 +130,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="group relative h-full overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-slate-900/50 flex flex-col">
+  <div class="group relative h-full overflow-hidden rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-slate-900/50 flex flex-col">
     
     <!-- Animated Background Mesh -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">

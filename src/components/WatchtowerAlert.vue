@@ -8,7 +8,7 @@ const router = useRouter()
 <template>
   <div
     @click="router.push('/apps/watchtower')"
-    class="relative h-full overflow-hidden group rounded-2xl cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1"
+    class="relative h-full overflow-hidden group rounded-none cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1"
   >
     <!-- Animated Background Mesh -->
     <div class="absolute inset-0 bg-white dark:bg-gray-900">

@@ -109,7 +109,7 @@ async function cleanSystem() {
 </script>
 
 <template>
-  <div class="relative h-full overflow-hidden group rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
+  <div class="relative h-full overflow-hidden group rounded-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1">
     <!-- Animated Background Mesh -->
     <div class="absolute inset-0 bg-white dark:bg-gray-900">
       <div class="absolute inset-0 bg-gradient-to-br from-blue-200/60 via-cyan-200/30 to-white/80 dark:from-blue-600/20 dark:via-cyan-600/10 dark:to-gray-900 z-10"></div>
@@ -120,7 +120,7 @@ async function cleanSystem() {
     </div>
 
     <!-- Content Container -->
-    <div class="relative z-20 h-full p-6 flex flex-col justify-between border border-slate-200/80 dark:border-slate-700/60 rounded-2xl backdrop-blur-sm group-hover:border-blue-300/70 dark:group-hover:border-blue-500/30 transition-none">
+    <div class="relative z-20 h-full p-6 flex flex-col justify-between border border-slate-200/80 dark:border-slate-700/60 rounded-none backdrop-blur-sm group-hover:border-blue-300/70 dark:group-hover:border-blue-500/30 transition-none">
       
       <!-- Header -->
       <div class="flex items-start justify-between mb-6">
