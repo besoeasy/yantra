@@ -218,18 +218,14 @@ onUnmounted(() => {
          <!-- Storage Section (Full Width) -->
          <div v-if="storageInfo.hasData" class="col-span-2 mt-auto pt-2">
              <div class="flex justify-between items-center mb-1.5">
-                 <div class="flex items-center gap-2">
-                    <span class="font-bold text-slate-500 tracking-wider">STORAGE_VOL</span>
-                    <span class="px-1 py-0.5 bg-slate-100 dark:bg-slate-800/50 rounded-[1px] text-[9px] text-slate-500 dark:text-slate-400 tabular-nums font-bold border border-slate-200 dark:border-slate-700">{{ storageInfo.percent }}%</span>
-                 </div>
-                 <div class="text-[10px] text-slate-400 tabular-nums font-bold">{{ storageInfo.usedFormatted }} <span class="opacity-50">/</span> {{ storageInfo.totalFormatted }}</div>
+                 <span class="font-bold text-slate-500 tracking-wider">DOCKER_USED</span>
+                 <div class="text-xl font-bold text-slate-800 dark:text-slate-200 tabular-nums">{{ storageInfo.usedFormatted }}</div>
              </div>
              
-             <!-- Segmented Progress Bar -->
+             <!-- Static Visual Bar -->
              <div class="flex gap-0.5 h-1.5 w-full">
                  <div v-for="i in 20" :key="i" 
-                      class="flex-1 rounded-[1px] transition-colors duration-500"
-                      :class="i <= (storageInfo.percent / 5) ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_5px_rgba(16,185,129,0.5)]' : 'bg-slate-100 dark:bg-slate-800'">
+                      class="flex-1 rounded-[1px] bg-emerald-500/40 dark:bg-emerald-400/40">
                  </div>
              </div>
          </div>
