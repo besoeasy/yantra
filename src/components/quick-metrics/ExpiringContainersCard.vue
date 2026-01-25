@@ -110,7 +110,10 @@ const urgencyLabel = computed(() => {
            </div>
            
            <div class="text-3xl sm:text-4xl font-black tabular-nums tracking-tight leading-none" 
-                :class="stats.next?.isUrgent || stats.next?.isExpired ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'">
+                :class="[
+                  stats.next?.isUrgent || stats.next?.isExpired ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white',
+                  {'animate-pulse': stats.next?.isUrgent || stats.next?.isExpired}
+                ]">
              {{ stats.next?.formatted.replace(' ago', '') }}
            </div>
            
