@@ -164,6 +164,13 @@ textarea:focus {
     overflow: hidden;
 }
 
+svg.lucide {
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
