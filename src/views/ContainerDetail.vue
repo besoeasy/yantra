@@ -409,30 +409,53 @@ onUnmounted(() => {
                <h3 class="text-sm font-mono uppercase tracking-widest text-slate-500 dark:text-slate-500">Network Bindings</h3>
              </div>
              
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <div v-for="(mapping, i) in allPortMappings" :key="i" class="bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-4 relative group hover:border-indigo-500/30 transition-colors">
-                    <div class="flex items-start justify-between mb-2">
-                       <div class="flex items-center gap-2">
-                          <Network :size="14" class="text-indigo-500" />
-                          <span class="text-xs font-bold uppercase text-slate-500">{{ mapping.protocol }}</span>
-                       </div>
-                       <span v-if="mapping.label" class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">{{ mapping.label }}</span>
-                    </div>
-                    
-                    <div class="flex items-baseline gap-2 font-mono">
-                       <span class="text-lg font-bold text-slate-900 dark:text-white">{{ mapping.hostPort || '---' }}</span>
-                       <span class="text-slate-400 text-xs">→</span>
-                       <span class="text-slate-500 text-sm">{{ mapping.containerPort }}</span>
-                    </div>
-                    
-                    <a v-if="mapping.hostPort && mapping.protocol === 'tcp'"
-                       :href="appUrl(mapping.hostPort, mapping.labeledProtocol || 'http')"
-                       target="_blank"
-                       class="absolute top-2 right-2 p-2 text-slate-400 hover:text-indigo-500 transition-colors"
-                    >
-                       <ExternalLink :size="16" />
-                    </a>
-                 </div>
+             <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c0c0e] overflow-hidden">
+                <div class="overflow-x-auto">
+                   <table class="w-full text-left border-collapse">
+                      <thead>
+                         <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase text-slate-500 font-bold tracking-wider">
+                            <th class="py-3 px-4 font-mono whitespace-nowrap">Protocol</th>
+                            <th class="py-3 px-4 font-mono whitespace-nowrap">Host Port</th>
+                            <th class="py-3 px-4 font-mono whitespace-nowrap">Container Port</th>
+                            <th class="py-3 px-4 font-mono w-full">Description</th>
+                            <th class="py-3 px-4 text-right font-mono whitespace-nowrap">Access</th>
+                         </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
+                         <tr v-for="(mapping, i) in allPortMappings" :key="i" class="hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors group">
+                            <td class="py-3 px-4">
+                               <div class="flex items-center gap-2">
+                                  <Network :size="14" :class="mapping.protocol === 'tcp' ? 'text-indigo-500' : 'text-slate-500'" />
+                                  <span class="font-mono font-bold uppercase text-slate-700 dark:text-slate-300 text-xs">{{ mapping.protocol }}</span>
+                                  <span v-if="mapping.labeledProtocol" class="text-[9px] px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded uppercase font-bold border border-slate-200 dark:border-slate-700">{{ mapping.labeledProtocol }}</span>
+                               </div>
+                            </td>
+                            <td class="py-3 px-4 font-mono">
+                               <span v-if="mapping.hostPort" class="text-slate-900 dark:text-white font-bold text-sm">{{ mapping.hostPort }}</span>
+                               <span v-else class="text-slate-400 italic text-xs">unbound</span>
+                            </td>
+                            <td class="py-3 px-4 font-mono text-slate-600 dark:text-slate-400 text-sm">
+                               {{ mapping.containerPort }}
+                            </td>
+                            <td class="py-3 px-4">
+                               <span v-if="mapping.label" class="text-slate-600 dark:text-slate-400 font-mono text-xs">{{ mapping.label }}</span>
+                               <span v-else class="text-slate-400 italic text-xs opacity-50">--</span>
+                            </td>
+                            <td class="py-3 px-4 text-right">
+                               <a v-if="mapping.hostPort && mapping.protocol === 'tcp'"
+                                  :href="appUrl(mapping.hostPort, mapping.labeledProtocol || 'http')"
+                                  target="_blank"
+                                  class="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/30 rounded-sm text-[10px] font-bold uppercase tracking-wide transition-colors"
+                               >
+                                  <span>Open</span>
+                                  <ExternalLink :size="12" />
+                               </a>
+                               <span v-else class="text-[10px] text-slate-400 uppercase tracking-wide opacity-50 cursor-not-allowed">Local</span>
+                            </td>
+                         </tr>
+                      </tbody>
+                   </table>
+                </div>
              </div>
           </div>
 
