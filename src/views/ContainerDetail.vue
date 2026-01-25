@@ -342,7 +342,7 @@ onUnmounted(() => {
     <!-- Top Navigation -->
     <nav class="sticky top-0 z-40 bg-white/80 dark:bg-[#09090b]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
       <div class="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-        <router-link to="/apps"
+        <router-link to="/"
           class="flex items-center gap-2 text-sm font-semibold tracking-wide uppercase text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
           <ArrowLeft :size="18" />
           <span>Dashboard</span>
