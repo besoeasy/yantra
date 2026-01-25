@@ -1,7 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useToast } from 'vue-toastification'
-import { HardDrive, Trash2, CheckCircle2, AlertCircle, Image as ImageIcon } from 'lucide-vue-next'
+import { HardDrive, Trash2, Check, AlertTriangle, Box, Database, Layers } from 'lucide-vue-next'
+import VueApexCharts from 'vue3-apexcharts'
 
 const toast = useToast()
 
@@ -10,6 +11,99 @@ const loading = ref(false)
 const deletingImage = ref(null)
 const deletingAllImages = ref(false)
 const apiUrl = ref('')
+
+// Chart Data Configuration
+const treemapOptions = computed(() => ({
+  chart: {
+    type: 'treemap',
+    fontFamily: 'monospace',
+    toolbar: { show: false },
+    background: 'transparent',
+    animations: { enabled: true }
+  },
+  colors: ['#0ea5e9', '#ef4444', '#10b981', '#f59e0b'],
+  states: {
+    hover: {
+      filter: {
+        type: 'darken',
+        value: 0.1,
+      }
+    }
+  },
+  plotOptions: {
+    treemap: {
+      distributed: true,
+      enableShades: false,
+      useFillColorAsStroke: false,
+      strokeWidth: 0,
+    }
+  },
+  dataLabels: {
+    enabled: true,
+    style: {
+      fontSize: '10px',
+      fontFamily: 'monospace',
+      fontWeight: 'bold',
+      colors: ['#000000', '#ffffff'] // Dark text? Or light? Depends on background.
+    },
+    formatter: function(text, op) {
+      return [text, op.value + ' MB']
+    },
+    offsetY: -4
+  },
+  title: { text: undefined },
+  tooltip: {
+    theme: 'dark',
+    style: { fontFamily: 'monospace' },
+    y: {
+      formatter: function(val) {
+        return val + " MB"
+      }
+    }
+  },
+  stroke: { show: true, width: 2, colors: ['#0c0c0e'] }
+}))
+
+// We need a separate reactivity system for chart refreshing to avoid issues
+const treemapSeries = computed(() => {
+  if (!imagesData.value.usedImages && !imagesData.value.unusedImages) return []
+  
+  const allImages = []
+  
+  // Add used images
+  if (imagesData.value.usedImages) {
+    imagesData.value.usedImages.forEach(img => {
+      const sizeVal = parseFloat(img.size)
+      // Only show significant items
+      if (sizeVal > 1) {
+        allImages.push({
+          x: img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId,
+          y: sizeVal,
+          fillColor: '#10b981'
+        })
+      }
+    })
+  }
+  
+  // Add unused images
+  if (imagesData.value.unusedImages) {
+    imagesData.value.unusedImages.forEach(img => {
+      const sizeVal = parseFloat(img.size)
+      if (sizeVal > 1) {
+        allImages.push({
+          x: img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId,
+          y: sizeVal,
+          fillColor: '#ef4444'
+        })
+      }
+    })
+  }
+
+  // Sort by size and take top 30
+  const sortedData = allImages.sort((a, b) => b.y - a.y).slice(0, 30)
+  
+  return [{ data: sortedData }]
+})
 
 async function fetchImages() {
   loading.value = true
@@ -96,151 +190,167 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="p-4 sm:p-6 md:p-10 lg:p-12">
-    <div class="mb-6 md:mb-8">
-      <div class="flex items-center gap-3 mb-2">
-        <HardDrive class="w-8 h-8 text-blue-600" />
-        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Docker Images</h2>
+  <div class="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-200 font-sans pb-20">
+    <!-- Header -->
+    <div class="bg-white dark:bg-[#0c0c0e] border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 lg:px-8 py-6">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+             <div class="p-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+               <Layers :size="24" class="text-indigo-600 dark:text-indigo-400" />
+             </div>
+             <div>
+                <h1 class="text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-white">Docker Images</h1>
+                <p class="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase tracking-widest">Repository & Storage Management</p>
+             </div>
+          </div>
+          
+          <div class="flex items-center gap-3">
+             <button @click="fetchImages" class="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 transition-colors">
+                <div :class="{ 'animate-spin': loading }">
+                   <database :size="18" />
+                </div>
+             </button>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
+             <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Box :size="48" />
+             </div>
+             <div class="text-[10px] uppercase tracking-widest text-slate-500 mb-1">Total Images</div>
+             <div class="text-2xl font-mono font-bold text-slate-900 dark:text-white">{{ imagesData.total || 0 }}</div>
+          </div>
+          
+          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
+             <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Check :size="48" />
+             </div>
+             <div class="text-[10px] uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-1">Active / Used</div>
+             <div class="text-2xl font-mono font-bold text-emerald-700 dark:text-emerald-300">{{ imagesData.used || 0 }}</div>
+          </div>
+          
+          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
+             <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                <AlertTriangle :size="48" />
+             </div>
+             <div class="text-[10px] uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-1">Dangling / Unused</div>
+             <div class="text-2xl font-mono font-bold text-orange-700 dark:text-orange-300">{{ imagesData.unused || 0 }}</div>
+          </div>
+          
+          <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 relative overflow-hidden group">
+             <div class="absolute right-0 top-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                <HardDrive :size="48" />
+             </div>
+             <div class="text-[10px] uppercase tracking-widest text-pink-600 dark:text-pink-400 mb-1">Reclaimable Space</div>
+             <div class="text-2xl font-mono font-bold text-pink-700 dark:text-pink-300">{{ imagesData.unusedSize || 0 }} <span class="text-sm font-normal text-slate-500">MB</span></div>
+          </div>
+        </div>
       </div>
-      <p class="text-sm sm:text-base text-gray-600 dark:text-slate-400">Manage your Docker images and free up disk space</p>
     </div>
-    
-    <div v-if="loading" class="text-center py-16">
-      <div class="w-8 h-8 border-3 border-blue-600 border-t-transparent dark:border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-      <div class="text-gray-500 dark:text-slate-400 font-medium">Loading images...</div>
-    </div>
-    <div v-else>
-      <!-- Summary Stats -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-8 md:mb-10">
-        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-500/15 dark:to-indigo-500/10 rounded-2xl p-5 sm:p-6 smooth-shadow border border-blue-100 dark:border-blue-500/20 transition-all hover:shadow-lg hover:-translate-y-0.5">
-          <div class="flex items-center gap-2 mb-3">
-            <ImageIcon class="w-4 h-4 text-blue-600 dark:text-blue-300" />
-            <div class="text-blue-700 dark:text-blue-200 text-xs font-bold uppercase tracking-wider">Total</div>
-          </div>
-          <div class="text-3xl sm:text-4xl font-bold text-blue-900 dark:text-white">{{ imagesData.total || 0 }}</div>
-        </div>
-        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-emerald-500/15 dark:to-green-500/10 rounded-2xl p-5 sm:p-6 smooth-shadow border border-green-100 dark:border-emerald-500/20 transition-all hover:shadow-lg hover:-translate-y-0.5">
-          <div class="flex items-center gap-2 mb-3">
-            <CheckCircle2 class="w-4 h-4 text-green-600 dark:text-emerald-300" />
-            <div class="text-green-700 dark:text-emerald-200 text-xs font-bold uppercase tracking-wider">In Use</div>
-          </div>
-          <div class="text-3xl sm:text-4xl font-bold text-green-900 dark:text-white">{{ imagesData.used || 0 }}</div>
-        </div>
-        <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-500/15 dark:to-amber-500/10 rounded-2xl p-5 sm:p-6 smooth-shadow border border-orange-100 dark:border-orange-500/20 transition-all hover:shadow-lg hover:-translate-y-0.5">
-          <div class="flex items-center gap-2 mb-3">
-            <AlertCircle class="w-4 h-4 text-orange-600 dark:text-orange-300" />
-            <div class="text-orange-700 dark:text-orange-200 text-xs font-bold uppercase tracking-wider">Unused</div>
-          </div>
-          <div class="text-3xl sm:text-4xl font-bold text-orange-900 dark:text-white">{{ imagesData.unused || 0 }}</div>
-        </div>
-        <div class="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-500/15 dark:to-rose-500/10 rounded-2xl p-5 sm:p-6 smooth-shadow border border-red-100 dark:border-red-500/20 transition-all hover:shadow-lg hover:-translate-y-0.5">
-          <div class="flex items-center gap-2 mb-3">
-            <HardDrive class="w-4 h-4 text-red-600 dark:text-red-300" />
-            <div class="text-red-700 dark:text-red-200 text-xs font-bold uppercase tracking-wider">Space</div>
-          </div>
-          <div class="text-2xl sm:text-3xl font-bold text-red-900 dark:text-white">{{ imagesData.unusedSize || 0 }} <span class="text-base sm:text-lg font-semibold">MB</span></div>
-        </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-8">
+      
+      <!-- Visualization -->
+      <div v-if="treemapSeries.length > 0" class="bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-1">
+         <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500">Storage Distribution (Top 30 Largest)</h3>
+         </div>
+         <div class="p-4">
+            <VueApexCharts :options="treemapOptions" :series="treemapSeries" height="280" />
+         </div>
       </div>
 
-      <!-- Unused Images Section -->
-      <div v-if="imagesData.unusedImages && imagesData.unusedImages.length > 0" class="mb-8 md:mb-10">
-        <div class="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-500/15 dark:to-red-500/10 rounded-2xl p-4 sm:p-5 mb-5 border border-orange-200 dark:border-orange-500/30">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <!-- Unused Images Table -->
+      <div v-if="imagesData.unusedImages && imagesData.unusedImages.length > 0" class="space-y-4">
+         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b-2 border-orange-500">
             <div>
-              <div class="flex items-center gap-2.5 mb-1">
-                <AlertCircle class="w-5 h-5 text-orange-600 dark:text-orange-300" />
-                <h3 class="text-lg sm:text-xl font-bold text-orange-900 dark:text-orange-100">Unused Images</h3>
-              </div>
-              <p class="text-xs sm:text-sm text-orange-700 dark:text-orange-200">These images are not used by any containers and can be safely deleted</p>
+               <h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+                  <AlertTriangle :size="20" class="text-orange-500" />
+                  Unused Images
+               </h3>
+               <p class="text-xs font-mono text-slate-500 mt-1">Candidates for deletion ({{ imagesData.unusedImages.length }} items)</p>
             </div>
+            
             <button @click="deleteAllUnusedImages"
               :disabled="deletingAllImages"
-              class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold transition-all smooth-shadow active:scale-95 touch-manipulation flex items-center justify-center gap-2 whitespace-nowrap">
-              <Trash2 class="w-4 h-4" />
-              <span>{{ deletingAllImages ? 'Deleting...' : 'Delete All' }}</span>
+              class="px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2">
+              <Trash2 :size="14" />
+              <span>{{ deletingAllImages ? 'Cleaning...' : 'Purge All Unused' }}</span>
             </button>
-          </div>
-        </div>
-        <div class="space-y-3">
-          <div v-for="image in imagesData.unusedImages" :key="image.id"
-            class="bg-white dark:bg-slate-900/70 rounded-2xl p-4 sm:p-5 border border-gray-200 dark:border-slate-800 hover:border-orange-300 dark:hover:border-orange-400 transition-all smooth-shadow hover:shadow-lg">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div class="flex-1 w-full sm:w-auto">
-                <div class="flex items-center gap-3 mb-2">
-                  <div class="p-2 bg-orange-100 dark:bg-orange-500/15 rounded-lg">
-                    <ImageIcon class="w-5 h-5 text-orange-600 dark:text-orange-300" />
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="font-bold text-gray-900 dark:text-white text-sm sm:text-base break-all">{{ image.tags.join(', ') }}</div>
-                    <div class="text-xs text-gray-500 dark:text-slate-400 font-mono mt-0.5">{{ image.shortId }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                <div class="px-3 py-1.5 bg-gray-100 dark:bg-slate-800 rounded-lg">
-                  <div class="text-xs text-gray-500 dark:text-slate-400 font-semibold mb-0.5">Size</div>
-                  <div class="font-bold text-gray-900 dark:text-white text-sm">{{ image.size }} MB</div>
-                </div>
-                <button @click="deleteImage(image.id, image.tags[0])"
-                  :disabled="deletingImage === image.id"
-                  class="px-4 py-2.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold transition-all smooth-shadow active:scale-95 touch-manipulation flex items-center gap-2 whitespace-nowrap"
-                  title="Delete this image">
-                  <Trash2 class="w-4 h-4" />
-                  <span>{{ deletingImage === image.id ? 'Deleting...' : 'Delete' }}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+         </div>
+
+         <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c0c0e]">
+            <table class="w-full text-left border-collapse">
+               <thead>
+                  <tr class="bg-slate-50 dark:bg-slate-900/50 text-[10px] uppercase text-slate-500 font-bold tracking-wider border-b border-slate-200 dark:border-slate-800">
+                     <th class="p-3 font-mono">ID</th>
+                     <th class="p-3 font-mono">Tag / Repository</th>
+                     <th class="p-3 font-mono">Size</th>
+                     <th class="p-3 font-mono">Created</th>
+                     <th class="p-3 text-right font-mono">Action</th>
+                  </tr>
+               </thead>
+               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 font-mono text-xs">
+                  <tr v-for="image in imagesData.unusedImages" :key="image.id" class="hover:bg-orange-50 dark:hover:bg-orange-900/10 transition-colors group">
+                     <td class="p-3 text-slate-500 truncate max-w-[80px]" :title="image.id">{{ image.shortId }}</td>
+                     <td class="p-3 font-bold text-slate-700 dark:text-slate-300 break-all">
+                        <span v-for="tag in image.tags" :key="tag" class="block">{{ tag }}</span>
+                     </td>
+                     <td class="p-3 text-slate-600 dark:text-slate-400">{{ image.size }} MB</td>
+                     <td class="p-3 text-slate-500">{{ image.created }}</td>
+                     <td class="p-3 text-right">
+                        <button @click="deleteImage(image.id, image.tags[0])" 
+                           class="bg-slate-100 dark:bg-slate-800 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 border border-slate-200 dark:border-slate-700 hover:border-red-500 dark:hover:border-red-500 text-slate-500 dark:text-slate-400 p-1.5 transition-all">
+                           <Trash2 :size="14" />
+                        </button>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
       </div>
 
-      <!-- Used Images Section -->
-      <div v-if="imagesData.usedImages && imagesData.usedImages.length > 0">
-        <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-emerald-500/15 dark:to-green-500/10 rounded-2xl p-4 sm:p-5 mb-5 border border-green-200 dark:border-emerald-500/30">
-          <div class="flex items-center gap-2.5">
-            <CheckCircle2 class="w-5 h-5 text-green-600 dark:text-emerald-300" />
-            <h3 class="text-lg sm:text-xl font-bold text-green-900 dark:text-emerald-100">Images in Use</h3>
-          </div>
-          <p class="text-xs sm:text-sm text-green-700 dark:text-emerald-200 mt-1 ml-7">These images are actively used by running containers</p>
-        </div>
-        <div class="space-y-3">
-          <div v-for="image in imagesData.usedImages" :key="image.id"
-            class="bg-white dark:bg-slate-900/70 rounded-2xl p-4 sm:p-5 border border-gray-200 dark:border-slate-800 hover:border-green-300 dark:hover:border-emerald-400 transition-all smooth-shadow hover:shadow-lg">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div class="flex-1 w-full sm:w-auto">
-                <div class="flex items-center gap-3 mb-2">
-                  <div class="p-2 bg-green-100 dark:bg-emerald-500/15 rounded-lg">
-                    <ImageIcon class="w-5 h-5 text-green-600 dark:text-emerald-300" />
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="font-bold text-gray-900 dark:text-white text-sm sm:text-base break-all">{{ image.tags.join(', ') }}</div>
-                    <div class="text-xs text-gray-500 dark:text-slate-400 font-mono mt-0.5">{{ image.shortId }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                <div class="px-3 py-1.5 bg-gray-100 dark:bg-slate-800 rounded-lg">
-                  <div class="text-xs text-gray-500 dark:text-slate-400 font-semibold mb-0.5">Size</div>
-                  <div class="font-bold text-gray-900 dark:text-white text-sm">{{ image.size }} MB</div>
-                </div>
-                <div class="px-4 py-2.5 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-emerald-500/20 dark:to-green-500/10 border border-green-200 dark:border-emerald-500/30 text-green-700 dark:text-emerald-200 rounded-xl text-sm font-semibold flex items-center gap-2 whitespace-nowrap">
-                  <CheckCircle2 class="w-4 h-4" />
-                  <span>In Use</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- Used Images Table -->
+      <div v-if="imagesData.usedImages && imagesData.usedImages.length > 0" class="space-y-4">
+         <div class="flex items-center gap-2 pb-2 border-b-2 border-emerald-500">
+             <Check :size="20" class="text-emerald-500" />
+             <h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">Active Images</h3>
+         </div>
+         
+         <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c0c0e]">
+            <table class="w-full text-left border-collapse">
+               <thead>
+                  <tr class="bg-slate-50 dark:bg-slate-900/50 text-[10px] uppercase text-slate-500 font-bold tracking-wider border-b border-slate-200 dark:border-slate-800">
+                     <th class="p-3 font-mono">ID</th>
+                     <th class="p-3 font-mono">Tag / Repository</th>
+                     <th class="p-3 font-mono">Size</th>
+                     <th class="p-3 font-mono">Created</th>
+                     <th class="p-3 text-right font-mono">Status</th>
+                  </tr>
+               </thead>
+               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50 font-mono text-xs">
+                  <tr v-for="image in imagesData.usedImages" :key="image.id" class="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors">
+                     <td class="p-3 text-slate-500 truncate max-w-[80px]" :title="image.id">{{ image.shortId }}</td>
+                     <td class="p-3 font-bold text-slate-700 dark:text-slate-300 break-all">
+                        <span v-for="tag in image.tags" :key="tag" class="block">{{ tag }}</span>
+                     </td>
+                     <td class="p-3 text-slate-600 dark:text-slate-400">{{ image.size }} MB</td>
+                     <td class="p-3 text-slate-500">{{ image.created }}</td>
+                     <td class="p-3 text-right">
+                        <span class="inline-block px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider border border-emerald-200 dark:border-emerald-800">
+                           In Use
+                        </span>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
       </div>
 
-      <div v-if="!imagesData.unusedImages || (imagesData.unusedImages.length === 0 && imagesData.usedImages.length === 0)"
-        class="text-center py-16 sm:py-20">
-        <div class="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <ImageIcon class="w-8 h-8 text-gray-400 dark:text-slate-500" />
-        </div>
-        <div class="text-gray-900 dark:text-white font-bold text-xl mb-2">No Images Found</div>
-        <div class="text-gray-500 dark:text-slate-400 text-sm">Docker images will appear here once you install apps</div>
-      </div>
     </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { FileText, AlertCircle, Info, RefreshCw, Terminal } from 'lucide-vue-next'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { FileText, AlertCircle, Info, RefreshCw, Terminal, Pause, Play, Trash2, Filter } from 'lucide-vue-next'
 
 const logsData = ref({})
 const logFilter = ref('all')
@@ -8,6 +8,7 @@ const loading = ref(false)
 const apiUrl = ref('')
 const autoRefresh = ref(true)
 let refreshInterval = null
+const logContainer = ref(null)
 
 function formatTimestamp(timestamp) {
   const date = new Date(timestamp)
@@ -15,19 +16,25 @@ function formatTimestamp(timestamp) {
     hour12: false,
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit'
+    second: '2-digit',
+    fractionalSecondDigits: 3
   })
 }
 
 async function fetchLogs() {
-  loading.value = true
+  // Don't show global loading spinner on refresh to avoid flicker
+  if (!logsData.value.logs) loading.value = true
+  
   try {
     const level = logFilter.value === 'all' ? '' : logFilter.value
     const url = level ? `${apiUrl.value}/api/logs?level=${level}` : `${apiUrl.value}/api/logs`
     const response = await fetch(url)
     const data = await response.json()
     if (data.success) {
-      logsData.value = data
+      // Only update if logs changed to avoid DOM churn (simple check)
+      if (!logsData.value.logs || data.logs.length !== logsData.value.logs.length || data.logs[0]?.timestamp !== logsData.value.logs[0]?.timestamp) {
+          logsData.value = data
+      }
     }
   } catch (error) {
     console.error('Failed to fetch logs:', error)
@@ -36,14 +43,19 @@ async function fetchLogs() {
   }
 }
 
+function clearLogs() {
+  logsData.value = { ...logsData.value, logs: [], count: 0 }
+  // Ideally this would clear backend logs too if API supported it
+}
+
 onMounted(() => {
   fetchLogs()
-  // Auto-refresh logs every 5 seconds
+  // Auto-refresh logs every 2 seconds for "live" feel
   refreshInterval = setInterval(() => {
     if (autoRefresh.value) {
       fetchLogs()
     }
-  }, 5000)
+  }, 2000)
 })
 
 onUnmounted(() => {
@@ -54,101 +66,95 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="h-screen flex flex-col p-4 sm:p-6 md:p-10 lg:p-12">
-    <div class="mb-6 md:mb-8">
-      <div class="flex items-center gap-3 mb-2">
-        <Terminal class="w-8 h-8 text-blue-600" />
-        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Application Logs</h2>
-      </div>
-      <p class="text-sm sm:text-base text-gray-600 dark:text-slate-400">Monitor system events and troubleshoot issues</p>
-    </div>
-    
-    <div v-if="loading" class="flex-1 flex items-center justify-center text-center">
-      <div class="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-      <div class="text-gray-500 dark:text-slate-400 font-medium">Loading logs...</div>
-    </div>
-    <div v-else class="flex-1 min-h-0 flex flex-col">
-      <!-- Controls -->
-      <div class="bg-white dark:bg-slate-900/70 rounded-2xl p-4 sm:p-5 border border-gray-200 dark:border-slate-800 smooth-shadow mb-5">
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-            <button @click="logFilter = 'all'; fetchLogs()"
-              :class="logFilter === 'all' ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white smooth-shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'"
-              class="px-4 py-2.5 rounded-xl text-sm font-semibold active:scale-95 transition-all whitespace-nowrap touch-manipulation flex items-center gap-2">
-              <FileText class="w-4 h-4" />
-              <span>All ({{ logsData.count || 0 }})</span>
+  <div class="h-[calc(100vh-64px)] flex flex-col bg-[#0c0c0e] text-slate-300 font-mono text-sm">
+    <!-- Toolbar -->
+    <div class="border-b border-slate-800 bg-[#0c0c0e] px-4 py-3 flex items-center justify-between shrink-0 z-20">
+      <div class="flex items-center gap-4">
+         <div class="flex items-center gap-2 text-indigo-400">
+            <Terminal :size="18" />
+            <h1 class="font-bold text-white uppercase tracking-wider text-sm">System Logs</h1>
+         </div>
+         <div class="h-4 w-px bg-slate-800 mx-2"></div>
+         <!-- Filters -->
+         <div class="flex items-center gap-1">
+            <button @click="logFilter = 'all'; fetchLogs()" 
+               :class="['px-3 py-1 text-xs font-bold uppercase tracking-wider transition-colors border', logFilter === 'all' ? 'bg-slate-800 text-white border-slate-600' : 'text-slate-500 border-transparent hover:text-slate-300']">
+               All
             </button>
-            <button @click="logFilter = 'info'; fetchLogs()"
-              :class="logFilter === 'info' ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white smooth-shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'"
-              class="px-4 py-2.5 rounded-xl text-sm font-semibold active:scale-95 transition-all whitespace-nowrap touch-manipulation flex items-center gap-2">
-              <Info class="w-4 h-4" />
-              <span>Info</span>
+            <button @click="logFilter = 'info'; fetchLogs()" 
+               :class="['px-3 py-1 text-xs font-bold uppercase tracking-wider transition-colors border', logFilter === 'info' ? 'bg-blue-900/30 text-blue-400 border-blue-800' : 'text-slate-500 border-transparent hover:text-blue-400']">
+               Info
             </button>
-            <button @click="logFilter = 'error'; fetchLogs()"
-              :class="logFilter === 'error' ? 'bg-gradient-to-r from-red-500 to-red-600 text-white smooth-shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'"
-              class="px-4 py-2.5 rounded-xl text-sm font-semibold active:scale-95 transition-all whitespace-nowrap touch-manipulation flex items-center gap-2">
-              <AlertCircle class="w-4 h-4" />
-              <span>Errors</span>
+            <button @click="logFilter = 'error'; fetchLogs()" 
+               :class="['px-3 py-1 text-xs font-bold uppercase tracking-wider transition-colors border', logFilter === 'error' ? 'bg-red-900/30 text-red-500 border-red-800' : 'text-slate-500 border-transparent hover:text-red-500']">
+               Errors
             </button>
-          </div>
-          <div class="flex gap-2">
-            <button @click="autoRefresh = !autoRefresh"
-              :class="autoRefresh ? 'bg-green-100 text-green-700 border-green-200 dark:bg-emerald-500/15 dark:text-emerald-200 dark:border-emerald-500/40' : 'bg-gray-100 text-gray-600 border-gray-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'"
-              class="px-4 py-2.5 rounded-xl text-sm font-semibold transition-all active:scale-95 touch-manipulation flex items-center gap-2 border whitespace-nowrap"
-              :title="autoRefresh ? 'Auto-refresh enabled' : 'Auto-refresh disabled'">
-              <div :class="autoRefresh ? 'animate-spin' : ''"><RefreshCw class="w-4 h-4" /></div>
-              <span class="hidden sm:inline">{{ autoRefresh ? 'Live' : 'Paused' }}</span>
-            </button>
-            <button @click="fetchLogs()"
-              class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-all active:scale-95 touch-manipulation flex items-center gap-2 smooth-shadow">
-              <RefreshCw class="w-4 h-4" />
-              <span class="hidden sm:inline">Refresh</span>
-            </button>
-          </div>
-        </div>
+         </div>
       </div>
 
-      <!-- Logs List -->
-      <div class="bg-gray-900 rounded-2xl overflow-hidden smooth-shadow border border-gray-800 dark:border-slate-800 flex flex-col flex-1 min-h-0">
-        <div class="bg-gradient-to-r from-gray-800 to-gray-900 px-4 py-3 border-b border-gray-700 dark:border-slate-800 flex items-center gap-2">
-          <Terminal class="w-4 h-4 text-gray-400" />
-          <span class="text-sm font-semibold text-gray-300">Console Output</span>
-          <span class="text-xs text-gray-500 ml-auto">{{ logsData.count || 0 }} entries</span>
-        </div>
-        <div class="flex-1 min-h-0 overflow-y-auto font-mono text-[11px] sm:text-xs bg-gray-950">
-          <div v-if="!logsData.logs || logsData.logs.length === 0" class="p-8 sm:p-12 text-center">
-            <div class="w-16 h-16 bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <FileText class="w-8 h-8 text-gray-600" />
-            </div>
-            <div class="text-gray-400 dark:text-slate-400 font-medium text-sm sm:text-base">No logs available</div>
-            <div class="text-gray-600 dark:text-slate-500 text-xs mt-1">Logs will appear here as events occur</div>
-          </div>
-          <div v-for="(logEntry, index) in logsData.logs" :key="index"
-            :class="logEntry.level === 'error' ? 'bg-red-950/30 border-l-4 border-red-500' : 'border-b border-gray-800/50'"
-            class="px-4 sm:px-5 py-2.5 sm:py-3 hover:bg-gray-900/50 transition-colors">
-            <div class="flex items-start gap-2.5 sm:gap-3">
-              <span class="text-gray-500 dark:text-slate-500 text-[10px] sm:text-xs whitespace-nowrap pt-0.5 font-medium">
-                {{ formatTimestamp(logEntry.timestamp) }}
-              </span>
-              <div class="flex items-center gap-1.5">
-                <component :is="logEntry.level === 'error' ? AlertCircle : Info"
-                  :class="logEntry.level === 'error' ? 'text-red-400' : 'text-blue-400'"
-                  class="w-3.5 h-3.5" />
-                <span :class="logEntry.level === 'error' ? 'text-red-400' : 'text-blue-400'"
-                  class="text-[10px] sm:text-xs font-bold uppercase whitespace-nowrap">
-                  {{ logEntry.level }}
-                </span>
-              </div>
-              <span class="text-gray-300 flex-1 break-all leading-relaxed">
-                {{ logEntry.message }}
-                <span v-if="logEntry.args" class="text-gray-500 dark:text-slate-500">
-                  {{ logEntry.args.join(' ') }}
-                </span>
-              </span>
-            </div>
-          </div>
-        </div>
+      <div class="flex items-center gap-2">
+         <span class="text-xs text-slate-500 mr-2">{{ logsData.count || 0 }} Events</span>
+         <button @click="autoRefresh = !autoRefresh" 
+            :class="['p-1.5 border transition-colors', autoRefresh ? 'bg-emerald-900/20 text-emerald-500 border-emerald-800' : 'text-slate-500 border-slate-800 hover:text-slate-300']"
+            :title="autoRefresh ? 'Pause Auto-Scroll' : 'Resume Auto-Scroll'">
+            <Pause v-if="autoRefresh" :size="16" />
+            <Play v-else :size="16" />
+         </button>
+         <button @click="clearLogs" class="p-1.5 text-slate-500 hover:text-red-400 border border-slate-800 hover:border-red-900 transition-colors" title="Clear Console">
+            <Trash2 :size="16" />
+         </button>
       </div>
+    </div>
+
+    <!-- Log Console -->
+    <div class="flex-1 overflow-y-auto bg-[#09090b] p-2 custom-scrollbar" ref="logContainer">
+       <div v-if="loading && !logsData.logs" class="flex items-center justify-center h-full text-slate-600 gap-2">
+          <RefreshCw class="animate-spin" :size="16" />
+          <span>Connecting to stream...</span>
+       </div>
+       
+       <div v-else-if="!logsData.logs || logsData.logs.length === 0" class="flex flex-col items-center justify-center h-full text-slate-600 gap-2 opacity-50">
+          <Terminal :size="32" />
+          <span>No logs available</span>
+       </div>
+
+       <div v-else class="space-y-0.5">
+          <div v-for="(log, idx) in logsData.logs" :key="idx" 
+             class="group flex items-start hover:bg-slate-900/50 px-2 py-0.5 font-mono text-xs leading-5">
+             
+             <!-- Line Number (Virtual) -->
+             <div class="w-8 text-slate-700 text-right select-none mr-3 shrink-0 opacity-50">{{ idx + 1 }}</div>
+             
+             <!-- Timestamp -->
+             <div class="text-slate-500 mr-3 shrink-0 select-none opacity-70 w-24">{{ formatTimestamp(log.timestamp) }}</div>
+             
+             <!-- Level Marker -->
+             <div class="mr-3 w-12 shrink-0">
+                <span v-if="log.level === 'error'" class="text-red-500 font-bold">ERR</span>
+                <span v-else class="text-blue-500 font-bold">INF</span>
+             </div>
+             
+             <!-- Message -->
+             <div class="break-all whitespace-pre-wrap flex-1" :class="log.level === 'error' ? 'text-red-400' : 'text-slate-300'">
+                {{ log.message }}
+                <span v-if="log.args" class="text-slate-500 opacity-75 ml-2">{{ log.args.join(' ') }}</span>
+             </div>
+          </div>
+       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  background: #0c0c0e;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border: 2px solid #0c0c0e;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+</style>

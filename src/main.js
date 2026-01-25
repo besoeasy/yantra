@@ -5,6 +5,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 
 import router from './router.js'
+import VueApexCharts from "vue3-apexcharts";
 
 // Toast notifications
 import Toast from "vue-toastification";
@@ -14,6 +15,7 @@ import "./assets/toast.css"; // Custom toast styling
 const app = createApp(App)
 
 app.use(router)
+app.use(VueApexCharts)
 
 // Toast configuration
 app.use(Toast, {
