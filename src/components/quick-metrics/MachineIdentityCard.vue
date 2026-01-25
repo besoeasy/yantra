@@ -9,6 +9,8 @@ const props = defineProps({
 const loading = ref(true);
 const error = ref(null);
 const identity = ref(null);
+const isIpHovered = ref(false);
+const isLocationHovered = ref(false);
 let refreshHandle = null;
 
 async function loadIdentity({ force } = { force: false }) {
@@ -56,6 +58,19 @@ const locationText = computed(() => {
 const ispText = computed(() => {
   const v = identity.value;
   return v?.isp || v?.org || "N/A";
+});
+
+const displayIp = computed(() => {
+  if (!identity.value?.ip) return "—";
+  if (isIpHovered.value) return identity.value.ip;
+  // Make it look cool as requested 'XXX.XX'
+  return "XXX.XX.XXX.XX"; 
+});
+
+const displayLocation = computed(() => {
+  if (!locationText.value) return "—";
+  if (isLocationHovered.value) return locationText.value;
+  return "XXX, XX";
 });
 
 const theme = {
@@ -117,26 +132,26 @@ const theme = {
         <!-- Success/Loading State -->
         <template v-else>
            <!-- IP Address -->
-           <div class="relative group/ip">
+           <div class="relative group/ip" @mouseenter="isIpHovered = true" @mouseleave="isIpHovered = false">
              <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mb-1 flex items-center gap-2">
                Public Endpoint
                <ShieldCheck v-if="identity?.ip" class="w-3 h-3 text-emerald-500" />
              </div>
              
              <div v-if="loading && !identity" class="h-8 w-32 bg-slate-200 dark:bg-slate-800 rounded animate-pulse"></div>
-             <div v-else class="text-2xl font-black font-mono tracking-tight text-slate-900 dark:text-white break-all transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-               {{ identity?.ip || '—' }}
+             <div v-else class="text-2xl font-black font-mono tracking-tight text-slate-900 dark:text-white break-all transition-colors duration-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+               {{ displayIp }}
              </div>
            </div>
 
            <!-- Details Grid -->
            <div class="grid grid-cols-1 gap-2 border-t border-slate-100 dark:border-slate-800 pt-4">
-             <div class="flex items-center gap-3">
+             <div class="flex items-center gap-3 group/location" @mouseenter="isLocationHovered = true" @mouseleave="isLocationHovered = false">
                 <MapPin class="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />
                 <div class="min-w-0">
                   <div class="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-600">Location</div>
                   <div v-if="loading && !identity" class="h-4 w-24 bg-slate-200 dark:bg-slate-800 rounded animate-pulse mt-1"></div>
-                  <div v-else class="text-sm font-medium text-slate-700 dark:text-slate-300 truncate" :title="locationText">{{ locationText }}</div>
+                  <div v-else class="text-sm font-medium text-slate-700 dark:text-slate-300 truncate transition-colors duration-300" :title="locationText">{{ displayLocation }}</div>
                 </div>
              </div>
              
