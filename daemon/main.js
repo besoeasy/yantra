@@ -314,8 +314,8 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
           logo: labels.logo
             ? labels.logo.includes("://")
               ? labels.logo
-              : `https://dweb.link/ipfs/${labels.logo}`
-            : "https://dweb.link/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i",
+              : `https://ipfs.io/ipfs/${labels.logo}`
+            : "https://ipfs.io/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i",
           category: labels.category || "uncategorized",
           port: labels.port || null,
           description: labels.description || "",
@@ -663,7 +663,7 @@ app.get("/api/containers", async (req, res) => {
           id: baseAppId, // Base app ID without instance suffix
           projectId: composeProject || container.Names[0]?.replace("/", "") || "unknown", // Full project ID with instance suffix
           name: appLabels.name || container.Names[0]?.replace("/", "") || "unknown",
-          logo: appLabels.logo ? (appLabels.logo.includes("://") ? appLabels.logo : `https://dweb.link/ipfs/${appLabels.logo}`) : null,
+          logo: appLabels.logo ? (appLabels.logo.includes("://") ? appLabels.logo : `https://ipfs.io/ipfs/${appLabels.logo}`) : null,
           category: appLabels.category || "uncategorized",
           port: appLabels.port || null,
           description: appLabels.description || "",
@@ -767,8 +767,8 @@ app.get("/api/containers/:id", async (req, res) => {
           logo: appLabels.logo
             ? appLabels.logo.includes("://")
               ? appLabels.logo
-              : `https://dweb.link/ipfs/${appLabels.logo}`
-            : "https://dweb.link/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i",
+              : `https://ipfs.io/ipfs/${appLabels.logo}`
+            : "https://ipfs.io/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i",
           category: appLabels.category || "uncategorized",
           port: appLabels.port || null,
           description: appLabels.description || "",
