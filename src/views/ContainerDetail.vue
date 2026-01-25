@@ -337,520 +337,225 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-slate-950">
-    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-      <!-- Loading State -->
-      <div v-if="!selectedContainer" class="flex items-center justify-center py-16 sm:py-20">
-        <div class="text-center">
-          <Loader2 :size="40" class="sm:w-12 sm:h-12 animate-spin text-gray-700 dark:text-slate-200 mx-auto mb-3 sm:mb-4" />
-          <div class="text-gray-600 dark:text-slate-400 font-medium text-sm sm:text-base">Loading container details...</div>
-        </div>
-      </div>
-      
-      <!-- Main Content -->
-      <div v-else class="space-y-4 sm:space-y-6 animate-in fade-in duration-500">
-        <!-- Back Button -->
+  <div class="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-200 font-sans pb-32">
+    
+    <!-- Top Navigation -->
+    <nav class="sticky top-0 z-40 bg-white/80 dark:bg-[#09090b]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
         <router-link to="/apps"
-          class="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-300 transition-all group touch-manipulation active:scale-95">
-          <ArrowLeft :size="16" class="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform" />
-          <span class="font-medium text-sm sm:text-base">Back to Apps</span>
+          class="flex items-center gap-2 text-sm font-semibold tracking-wide uppercase text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
+          <ArrowLeft :size="18" />
+          <span>Dashboard</span>
         </router-link>
         
-        <!-- Header Section -->
-        <div class="bg-white dark:bg-slate-900/70 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-shadow hover:shadow-md">
-          <!-- Container Header -->
-          <div class="flex flex-col sm:flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
-            <div class="flex items-center gap-3 sm:gap-4">
-              <!-- Logo -->
-              <div class="relative">
-                <img v-if="selectedContainer.app.logo" 
-                  :src="selectedContainer.app.logo" 
-                  :alt="selectedContainer.name"
-                  class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-xl sm:rounded-2xl object-cover shadow-md ring-2 sm:ring-4 ring-white dark:ring-slate-800">
-                <div v-else class="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-xl sm:rounded-2xl bg-gray-900 dark:bg-slate-800 flex items-center justify-center text-2xl sm:text-3xl shadow-md ring-2 sm:ring-4 ring-white dark:ring-slate-800">
-                  🐳
-                </div>
-                <!-- Status Indicator Badge -->
-                <div :class="[
-                  'absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shadow-lg ring-2 sm:ring-4 ring-white dark:ring-slate-800',
-                  selectedContainer.state === 'running' ? 'bg-green-500' : 'bg-gray-400'
-                ]">
-                  <div class="w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full" :class="{ 'motion-safe:animate-pulse': selectedContainer.state === 'running' }"></div>
+        <div v-if="selectedContainer" class="flex items-center gap-3">
+          <span class="text-xs font-mono text-slate-400 dark:text-slate-600">{{ selectedContainer.id.substring(0, 12) }}</span>
+          <div :class="[
+            'flex items-center gap-1.5 px-2 py-0.5 border text-xs font-bold uppercase tracking-wider',
+            selectedContainer.state === 'running' 
+              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' 
+              : 'bg-slate-500/10 border-slate-500/20 text-slate-600 dark:text-slate-400'
+          ]">
+            <div :class="['w-1.5 h-1.5 rounded-full', selectedContainer.state === 'running' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500']"></div>
+            {{ selectedContainer.state }}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Loading State -->
+    <div v-if="!selectedContainer" class="flex flex-col items-center justify-center min-h-[60vh]">
+      <div class="relative">
+        <div class="w-16 h-16 border-2 border-slate-200 dark:border-slate-800 rounded-none transform rotate-45"></div>
+        <div class="absolute inset-0 w-16 h-16 border-2 border-sky-500 border-t-transparent border-l-transparent rounded-none animate-spin"></div>
+      </div>
+      <div class="mt-8 font-mono text-sm tracking-widest text-slate-400 uppercase">Connecting to Host...</div>
+    </div>
+
+    <!-- Main Content -->
+    <div v-else class="max-w-7xl mx-auto px-4 lg:px-8 py-8 lg:py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Left Column: Metrics & Logs -->
+        <div class="lg:col-span-8 space-y-10">
+          
+          <!-- Identity Card -->
+          <div class="flex flex-col sm:flex-row gap-6 sm:gap-8 border-b border-dashed border-slate-300 dark:border-slate-800 pb-10">
+            <div class="w-24 h-24 sm:w-32 sm:h-32 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-center shrink-0">
+              <img v-if="selectedContainer.app.logo" :src="selectedContainer.app.logo" :alt="selectedContainer.name" class="w-full h-full object-contain" />
+              <div v-else class="text-4xl">📦</div>
+            </div>
+            
+            <div class="flex-1 space-y-4">
+              <div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-2">{{ selectedContainer.name }}</h1>
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 text-xs font-mono border border-slate-200 dark:border-slate-700 uppercase"
+                    :title="selectedContainer.image">
+                    {{ selectedContainer.image }}
+                  </span>
                 </div>
               </div>
               
-              <!-- Title and ID -->
-              <div class="min-w-0 flex-1">
-                <h1 class="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 dark:text-white mb-1 truncate">
-                  {{ selectedContainer.name }}
-                </h1>
-                <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                  <span class="text-[10px] sm:text-xs lg:text-sm text-gray-500 dark:text-slate-400 font-mono bg-gray-100 dark:bg-slate-800 px-2 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg">
-                    {{ selectedContainer.id.substring(0, 12) }}
-                  </span>
-                  <span :class="[
-                    'px-2 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-semibold uppercase tracking-wide',
-                    selectedContainer.state === 'running' 
-                      ? 'bg-green-100 text-green-700 dark:bg-emerald-500/20 dark:text-emerald-200' 
-                      : 'bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-slate-300'
-                  ]">
-                    {{ selectedContainer.state }}
-                  </span>
-                </div>
-              </div>
+              <p class="text-base sm:text-lg leading-relaxed text-slate-600 dark:text-slate-300 max-w-3xl">
+                {{ selectedContainer.app.description || "Container running without specific application metadata." }}
+              </p>
             </div>
-            
-            <!-- Action Button -->
-            <button @click="deleteContainer"
-              :disabled="deleting"
-              class="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl font-semibold shadow-sm hover:shadow-md disabled:shadow-none transition-all active:scale-95 touch-manipulation text-sm sm:text-base w-full sm:w-auto">
-              <Trash2 :size="16" class="w-4 h-4 sm:w-5 sm:h-5" :class="{ 'animate-pulse': deleting }" />
-              {{ deleting ? 'Deleting...' : 'Delete Container' }}
-            </button>
           </div>
-        </div>
 
-        <!-- Ports & Access Section -->
-        <div v-if="allPortMappings.length > 0" 
-          class="bg-white dark:bg-slate-900/70 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-shadow hover:shadow-md">
-          <div class="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
-            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/30">
-              <Network :size="16" class="sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-300" />
-            </div>
-            <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Ports & Access</h2>
-            <span class="text-xs sm:text-sm text-gray-500 dark:text-slate-400 font-medium">({{ allPortMappings.length }})</span>
-          </div>
-          
-          <!-- Ports Table -->
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="border-b-2 border-gray-200 dark:border-slate-800">
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
-                    <div class="flex items-center gap-2">
-                      <Network :size="14" class="text-indigo-600 dark:text-indigo-300" />
-                      Protocol
-                    </div>
-                  </th>
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
-                    Host Port
-                  </th>
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide hidden md:table-cell">
-                    Container Port
-                  </th>
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide hidden lg:table-cell">
-                    Description
-                  </th>
-                  <th class="text-center py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
-                    Access
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(mapping, index) in allPortMappings" :key="index"
-                  class="border-b border-gray-100 dark:border-slate-800 transition-colors animate-in"
-                  :class="[
-                    mapping.hostPort && mapping.protocol === 'tcp' 
-                      ? 'hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 cursor-pointer' 
-                      : 'opacity-60'
-                  ]"
-                  :style="{ animationDelay: `${Math.min(index * 20, 400)}ms` }"
-                  @click="mapping.hostPort && mapping.protocol === 'tcp' ? window.open(appUrl(mapping.hostPort, mapping.labeledProtocol || 'http'), '_blank') : null">
-                  
-                  <!-- Protocol Column -->
-                  <td class="py-3 px-2 sm:px-4">
-                    <div class="flex items-center gap-2">
-                      <component
-                        :is="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).icon"
-                        :size="18"
-                        :class="getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color"
-                      />
-                      <span class="text-[9px] sm:text-xs font-bold uppercase tracking-wider px-2 py-1 rounded whitespace-nowrap"
-                        :class="[getProtocolInfo(mapping.protocol, mapping.labeledProtocol).bg, getProtocolInfo(mapping.protocol, mapping.labeledProtocol).color]">
-                        {{ getProtocolInfo(mapping.protocol, mapping.labeledProtocol).label }}
-                      </span>
-                    </div>
-                  </td>
-                  
-                  <!-- Host Port Column -->
-                  <td class="py-3 px-2 sm:px-4">
-                    <div class="flex flex-col gap-1">
-                      <span v-if="mapping.hostPort" class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white font-mono leading-none tracking-tight">
-                        {{ mapping.hostPort }}
-                      </span>
-                      <span v-else class="text-sm text-gray-400 dark:text-slate-500 font-medium">Not bound</span>
-                      <span class="text-[10px] sm:text-xs text-gray-500 dark:text-slate-500 font-mono md:hidden">
-                        → :{{ mapping.containerPort }}
-                      </span>
-                    </div>
-                  </td>
-                  
-                  <!-- Container Port Column (hidden on mobile) -->
-                  <td class="py-3 px-2 sm:px-4 hidden md:table-cell">
-                    <span class="text-sm sm:text-base text-gray-700 dark:text-slate-300 font-mono">
-                      :{{ mapping.containerPort }}
-                    </span>
-                  </td>
-                  
-                  <!-- Description Column (hidden on mobile/tablet) -->
-                  <td class="py-3 px-2 sm:px-4 hidden lg:table-cell">
-                    <span v-if="mapping.label" class="text-xs sm:text-sm text-gray-600 dark:text-slate-300">
-                      {{ mapping.label }}
-                    </span>
-                    <span v-else class="text-xs sm:text-sm text-gray-400 dark:text-slate-500 italic">
-                      —
-                    </span>
-                  </td>
-                  
-                  <!-- Access Column -->
-                  <td class="py-3 px-2 sm:px-4 text-center">
-                    <a v-if="mapping.hostPort && mapping.protocol === 'tcp'"
-                      :href="appUrl(mapping.hostPort, mapping.labeledProtocol || 'http')"
-                      target="_blank"
-                      @click.stop
-                      class="inline-flex items-center justify-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold shadow-sm hover:shadow-md transition-all active:scale-95 text-xs sm:text-sm group">
-                      <span class="hidden sm:inline">Open</span>
-                      <ExternalLink :size="14" class="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </a>
-                    <span v-else class="text-xs text-gray-400 dark:text-slate-500 font-medium">
-                      N/A
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Volumes Section -->
-        <div v-if="containerVolumes.length > 0" 
-          class="bg-white dark:bg-slate-900/70 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-shadow hover:shadow-md">
-          <div class="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
-            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/30">
-              <HardDrive :size="16" class="sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-300" />
-            </div>
-            <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Volumes</h2>
-            <span class="text-xs sm:text-sm text-gray-500 dark:text-slate-400 font-medium">({{ containerVolumes.length }})</span>
-          </div>
-                  
-          <!-- Table -->
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="border-b border-gray-200 dark:border-slate-800">
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
-                    <div class="flex items-center gap-2">
-                      <Folder :size="14" class="text-indigo-600 dark:text-indigo-300" />
-                      Volume Name
-                    </div>
-                  </th>
-                  <th class="text-left py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide hidden md:table-cell">
-                    Mount Path
-                  </th>
-                  <th class="text-center py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
-                    Access
-                  </th>
-                  <th class="text-right py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="volume in containerVolumes" :key="volume.name"
-                  class="border-b border-gray-100 dark:border-slate-800 hover:bg-indigo-50/30 dark:hover:bg-indigo-500/10 transition-colors">
-                  <td class="py-3 px-2 sm:px-4">
-                    <div class="flex flex-col gap-1">
-                      <span class="text-sm sm:text-base font-semibold text-gray-900 dark:text-white break-all" :title="volume.name">
-                        {{ volume.name }}
-                      </span>
-                      <span class="text-xs text-gray-600 dark:text-slate-400 font-mono bg-gray-50 dark:bg-slate-800 px-2 py-1 rounded border border-gray-200 dark:border-slate-700 md:hidden break-all" :title="volume.destination">
-                        {{ volume.destination }}
-                      </span>
-                    </div>
-                  </td>
-                  <td class="py-3 px-2 sm:px-4 hidden md:table-cell">
-                    <span class="text-xs sm:text-sm text-gray-600 dark:text-slate-400 font-mono bg-gray-50 dark:bg-slate-800 px-2 py-1 rounded border border-gray-200 dark:border-slate-700 inline-block" :title="volume.destination">
-                      {{ volume.destination }}
-                    </span>
-                  </td>
-                  <td class="py-3 px-2 sm:px-4 text-center">
-                    <span :class="[
-                      'px-2 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-semibold uppercase inline-block',
-                      volume.rw ? 'bg-green-100 text-green-700 dark:bg-emerald-500/20 dark:text-emerald-200' : 'bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-slate-300'
-                    ]">
-                      {{ volume.rw ? 'RW' : 'RO' }}
-                    </span>
-                  </td>
-                  <td class="py-3 px-2 sm:px-4 text-right">
-                    <div v-if="!showVolumeMenu[volume.name]" class="inline-flex gap-2">
-                      <button
-                        @click="showVolumeMenu[volume.name] = true"
-                        :disabled="browsingVolume[volume.name]"
-                        class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white rounded-lg font-semibold shadow-sm hover:shadow-md disabled:shadow-none transition-all active:scale-95 disabled:transform-none disabled:cursor-not-allowed text-xs sm:text-sm">
-                        <Loader2 v-if="browsingVolume[volume.name]" :size="14" class="animate-spin" />
-                        <Eye v-else :size="14" />
-                        <span class="hidden sm:inline">Browse</span>
-                      </button>
+          <!-- Network Config -->
+          <div v-if="allPortMappings.length > 0" class="space-y-6">
+             <div class="flex items-center justify-between border-l-2 border-indigo-500 pl-3">
+               <h3 class="text-sm font-mono uppercase tracking-widest text-slate-500 dark:text-slate-500">Network Bindings</h3>
+             </div>
+             
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div v-for="(mapping, i) in allPortMappings" :key="i" class="bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-4 relative group hover:border-indigo-500/30 transition-colors">
+                    <div class="flex items-start justify-between mb-2">
+                       <div class="flex items-center gap-2">
+                          <Network :size="14" class="text-indigo-500" />
+                          <span class="text-xs font-bold uppercase text-slate-500">{{ mapping.protocol }}</span>
+                       </div>
+                       <span v-if="mapping.label" class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">{{ mapping.label }}</span>
                     </div>
                     
-                    <!-- Two option buttons -->
-                    <div v-else class="inline-flex gap-2 animate-in fade-in">
-                      <button
-                        @click="browseVolume(volume.name, 60)"
-                        :disabled="browsingVolume[volume.name]"
-                        :title="'Temporary (1 hour)'"
-                        class="inline-flex items-center gap-1.5 px-3 py-2 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white rounded-lg font-semibold shadow-sm hover:shadow-md disabled:shadow-none transition-all active:scale-95 disabled:transform-none disabled:cursor-not-allowed text-xs sm:text-sm group">
-                        <span class="text-base">⏱️</span>
-                        <span class="hidden lg:inline">Temporary</span>
-                      </button>
-                      <button
-                        @click="browseVolume(volume.name, 0)"
-                        :disabled="browsingVolume[volume.name]"
-                        :title="'Permanent (no expiry)'"
-                        class="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white rounded-lg font-semibold shadow-sm hover:shadow-md disabled:shadow-none transition-all active:scale-95 disabled:transform-none disabled:cursor-not-allowed text-xs sm:text-sm group">
-                        <span class="text-base">♾️</span>
-                        <span class="hidden lg:inline">Permanent</span>
-                      </button>
+                    <div class="flex items-baseline gap-2 font-mono">
+                       <span class="text-lg font-bold text-slate-900 dark:text-white">{{ mapping.hostPort || '---' }}</span>
+                       <span class="text-slate-400 text-xs">→</span>
+                       <span class="text-slate-500 text-sm">{{ mapping.containerPort }}</span>
                     </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    
+                    <a v-if="mapping.hostPort && mapping.protocol === 'tcp'"
+                       :href="appUrl(mapping.hostPort, mapping.labeledProtocol || 'http')"
+                       target="_blank"
+                       class="absolute top-2 right-2 p-2 text-slate-400 hover:text-indigo-500 transition-colors"
+                    >
+                       <ExternalLink :size="16" />
+                    </a>
+                 </div>
+             </div>
           </div>
+
+          <!-- Volumes -->
+          <div v-if="containerVolumes.length > 0" class="space-y-6">
+             <div class="flex items-center justify-between border-l-2 border-orange-500 pl-3">
+               <h3 class="text-sm font-mono uppercase tracking-widest text-slate-500 dark:text-slate-500">Storage & File Browser</h3>
+             </div>
+             
+             <div class="grid gap-4">
+                <div v-for="volume in containerVolumes" :key="volume.name" class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c0c0e]">
+                   <div class="min-w-0 flex-1">
+                      <div class="flex items-center gap-2 mb-1">
+                         <HardDrive :size="16" class="text-orange-500" />
+                         <span class="font-mono text-sm font-bold truncate" :title="volume.name">{{ volume.name }}</span>
+                      </div>
+                      <div class="text-xs font-mono text-slate-500 truncate pl-6">{{ volume.destination }}</div>
+                   </div>
+                   
+                   <div class="flex items-center gap-3 shrink-0">
+                      <span :class="['text-[10px] font-bold uppercase px-2 py-0.5 border', volume.rw ? 'border-emerald-500/30 text-emerald-600 dark:text-emerald-400' : 'border-slate-500/30 text-slate-500']">
+                         {{ volume.rw ? 'RW' : 'RO' }}
+                      </span>
+                      
+                      <div class="flex items-center gap-2">
+                        <button v-if="!showVolumeMenu[volume.name]" @click="showVolumeMenu[volume.name] = true" class="group flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-900 hover:bg-orange-50 dark:hover:bg-orange-950/30 border border-slate-200 dark:border-slate-800 hover:border-orange-500/50 dark:hover:border-orange-500/50 text-slate-600 dark:text-slate-400 hover:text-orange-600 dark:hover:text-orange-500 transition-all cursor-pointer">
+                           <FolderOpen :size="14" class="group-hover:scale-110 transition-transform" />
+                           <span class="text-[10px] font-bold uppercase tracking-wider">Browse Files</span>
+                        </button>
+                        
+                        <div v-else class="flex items-center gap-2 animate-fadeIn bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-1 rounded-sm">
+                           <button @click="browseVolume(volume.name, 60)" class="text-[10px] font-bold uppercase px-3 py-1 bg-orange-500 hover:bg-orange-600 text-white transition-colors shadow-sm" title="Mount for 1 hour">Temp (1h)</button>
+                           <button @click="browseVolume(volume.name, 0)" class="text-[10px] font-bold uppercase px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white transition-colors shadow-sm" title="Mount permanently">Perm</button>
+                        </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+
+          <!-- Logs Console -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-mono uppercase tracking-widest text-slate-500 dark:text-slate-500 border-l-2 border-slate-500 pl-3">System Output</h3>
+              <button @click="fetchContainerLogs" class="text-xs font-mono uppercase text-sky-500 hover:text-sky-400 flex items-center gap-2">
+                 <RefreshCw :size="12" :class="{ 'animate-spin': refreshingLogs }" />
+                 Refresh Logs
+              </button>
+            </div>
+            
+            <div class="bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-4 font-mono text-xs h-96 overflow-y-auto custom-scrollbar text-slate-300">
+               <div v-if="containerLogs.length === 0" class="h-full flex flex-col items-center justify-center text-slate-600">
+                  <Terminal :size="32" class="mb-2 opacity-50" />
+                  <span>No output detected</span>
+               </div>
+               <div v-else class="space-y-1">
+                  <div v-for="(log, i) in containerLogs" :key="i" class="break-all whitespace-pre-wrap font-mono">{{ log }}</div>
+               </div>
+            </div>
+          </div>
+          
         </div>
 
-
-        <!-- Info and Stats (Stacked) -->
-        <div class="space-y-4 sm:space-y-6">
-          <!-- Container Info Card -->
-          <div class="bg-white dark:bg-slate-900/70 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-shadow hover:shadow-md">
-            <div class="flex items-center gap-2.5 sm:gap-3 mb-4 sm:mb-6">
-              <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/30">
-                <Info :size="16" class="sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-300" />
-              </div>
-              <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Container Info</h2>
-            </div>
-            
-            <div class="space-y-3 sm:space-y-4">
-              <!-- Description -->
-              <div v-if="selectedContainer.app.description" 
-                class="bg-gray-50 dark:bg-slate-800 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
-                <div class="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-                  <FileText :size="14" class="sm:w-4 sm:h-4 text-indigo-600 dark:text-indigo-300" />
-                  <div class="text-[10px] sm:text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Description</div>
-                </div>
-                <p class="text-xs sm:text-sm text-gray-700 dark:text-slate-300 leading-relaxed">{{ selectedContainer.app.description }}</p>
-              </div>
-              
-              <!-- Categories -->
-              <div v-if="selectedContainer.app.category && selectedContainer.app.category !== 'uncategorized'" 
-                class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
-                <div class="flex items-center gap-2 mb-3">
-                  <Tags :size="16" class="text-indigo-600 dark:text-indigo-300" />
-                  <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Categories</div>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                  <span v-for="cat in selectedContainer.app.category.split(',')" :key="cat"
-                    class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-500/15 border border-indigo-100 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-200 text-xs font-semibold shadow-sm hover:shadow-md transition-all">
-                    {{ cat.trim() }}
-                  </span>
-                </div>
-              </div>
-              
-              <!-- Docker Image -->
-              <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
-                <div class="flex items-center gap-2 mb-2">
-                  <Box :size="16" class="text-gray-600 dark:text-slate-300" />
-                  <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Docker Image</div>
-                </div>
-                <div class="text-sm font-mono text-gray-900 dark:text-slate-100 bg-white dark:bg-slate-900 px-3 py-2.5 rounded-lg border border-gray-200 dark:border-slate-700 break-all shadow-sm">
-                  {{ selectedContainer.image }}
-                </div>
-              </div>
-              
-              <!-- Image ID -->
-              <div v-if="selectedContainer.imageId" 
-                class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
-                <div class="flex items-center gap-2 mb-2">
-                  <Box :size="16" class="text-gray-600 dark:text-slate-300" />
-                  <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Image SHA256</div>
-                </div>
-                <div class="text-xs font-mono text-gray-700 dark:text-slate-200 bg-white dark:bg-slate-900 px-3 py-2.5 rounded-lg border border-gray-200 dark:border-slate-700 break-all shadow-sm">
-                  {{ selectedContainer.imageId.replace('sha256:', '') }}
-                </div>
-              </div>
-              
-              <!-- Status -->
-              <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
-                <div class="flex items-center gap-2 mb-2">
-                  <Activity :size="16" class="text-gray-700 dark:text-slate-300" />
-                  <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Status</div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <div :class="[
-                    'w-3 h-3 rounded-full',
-                    selectedContainer.state === 'running' ? 'bg-green-500 motion-safe:animate-pulse' : 'bg-gray-400'
-                  ]"></div>
-                  <span class="text-sm font-semibold text-gray-900 dark:text-white capitalize">{{ selectedContainer.status }}</span>
-                </div>
-              </div>
-              
-              <!-- Website Link -->
-              <div v-if="selectedContainer.app.website" 
-                class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
-                <div class="flex items-center gap-2 mb-3">
-                  <Globe :size="16" class="text-indigo-600 dark:text-indigo-300" />
-                  <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Documentation</div>
-                </div>
-                <a :href="selectedContainer.app.website" target="_blank"
-                  class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 group">
-                  Visit Website
-                  <ExternalLink :size="16" class="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Resource Stats Card -->
-          <div class="bg-white dark:bg-slate-900/70 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-shadow hover:shadow-md">
-            <div class="flex items-center gap-3 mb-6">
-              <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/30">
-                <TrendingUp :size="20" class="text-indigo-600 dark:text-indigo-300" />
-              </div>
-              <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Resource Usage</h2>
-            </div>
-            
-            <div v-if="containerStats" class="space-y-6">
-              <!-- CPU Usage -->
-              <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700">
-                <div class="flex items-center justify-between mb-3">
-                  <div class="flex items-center gap-2">
-                    <Cpu :size="18" class="text-indigo-600 dark:text-indigo-300" />
-                    <span class="text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">CPU Usage</span>
-                  </div>
-                  <span class="text-lg font-bold text-indigo-600 dark:text-indigo-300">{{ containerStats.cpu.percent }}%</span>
-                </div>
-                <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden shadow-inner">
-                  <div class="bg-indigo-600 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" 
-                    :style="`width: ${Math.min(containerStats.cpu.percent, 100)}%`"></div>
-                </div>
-              </div>
-              
-              <!-- Memory Usage -->
-              <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700">
-                <div class="flex items-center justify-between mb-3">
-                  <div class="flex items-center gap-2">
-                    <MemoryStick :size="18" class="text-indigo-600 dark:text-indigo-300" />
-                    <span class="text-sm font-semibold text-gray-700 dark:text-slate-300 uppercase tracking-wide">Memory (excl. cache)</span>
-                  </div>
-                  <span class="text-lg font-bold text-indigo-600 dark:text-indigo-300">{{ containerStats.memory.percent }}%</span>
-                </div>
-                <div class="text-xs text-gray-600 dark:text-slate-400 mb-2 font-medium">
-                  {{ formatBytes(containerStats.memory.usage) }} / {{ formatBytes(containerStats.memory.limit) }}
-                  <span v-if="typeof containerStats.memory.cache === 'number' && containerStats.memory.cache > 0" class="ml-2 opacity-80">
-                    (cache {{ formatBytes(containerStats.memory.cache) }})
-                  </span>
-                </div>
-                <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden shadow-inner">
-                  <div class="bg-indigo-600 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" 
-                    :style="`width: ${Math.min(containerStats.memory.percent, 100)}%`"></div>
-                </div>
-              </div>
-              
-              <!-- Network I/O -->
+        <!-- Right Column: Network & Actions -->
+        <div class="lg:col-span-4 space-y-8">
+           
+           <!-- Resource Usage -->
+           <div v-if="containerStats">
+              <h3 class="text-sm font-mono uppercase tracking-widest text-slate-500 dark:text-slate-500 border-l-2 border-pink-500 pl-3 mb-4">Resource Usage</h3>
               <div class="grid grid-cols-2 gap-3">
-                <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
-                  <div class="flex items-center gap-2 mb-2">
-                    <Network :size="16" class="text-indigo-600 dark:text-indigo-300" />
-                    <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Net RX</div>
-                  </div>
-                  <div class="text-xl font-bold text-gray-900 dark:text-white">{{ formatBytes(containerStats.network.rx) }}</div>
+                <div class="bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-3">
+                   <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">CPU</div>
+                   <div class="text-lg font-mono font-bold text-slate-900 dark:text-white">{{ containerStats.cpu.percent }}%</div>
                 </div>
-                <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
-                  <div class="flex items-center gap-2 mb-2">
-                    <Network :size="16" class="text-indigo-600 dark:text-indigo-300" />
-                    <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Net TX</div>
-                  </div>
-                  <div class="text-xl font-bold text-gray-900 dark:text-white">{{ formatBytes(containerStats.network.tx) }}</div>
+                <div class="bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-3">
+                   <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Memory</div>
+                   <div class="text-lg font-mono font-bold text-slate-900 dark:text-white">{{ containerStats.memory.percent }}%</div>
+                </div>
+                <div class="bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-3">
+                   <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Net I/O</div>
+                   <div class="text-lg font-mono font-bold text-slate-900 dark:text-white text-xs truncate">{{ formatBytes(containerStats.network.rx) }} / {{ formatBytes(containerStats.network.tx) }}</div>
+                </div>
+                <div class="bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-3">
+                   <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Block I/O</div>
+                   <div class="text-lg font-mono font-bold text-slate-900 dark:text-white text-xs truncate">{{ formatBytes(containerStats.blockIO.read) }} / {{ formatBytes(containerStats.blockIO.write) }}</div>
                 </div>
               </div>
+           </div>
+
+           <!-- Environment Vars Small View -->
+           <div v-if="selectedContainer.env && selectedContainer.env.length > 0">
+              <h3 class="text-sm font-mono uppercase tracking-widest text-slate-500 dark:text-slate-500 border-l-2 border-emerald-500 pl-3 mb-4">Runtime Env</h3>
+              <div class="bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-4 max-h-64 overflow-y-auto custom-scrollbar">
+                 <div v-for="(envVar, i) in selectedContainer.env" :key="i" class="font-mono text-[10px] mb-2 break-all border-b border-slate-800 pb-2 last:border-0 last:mb-0 last:pb-0">
+                    <span class="text-emerald-500 block mb-0.5">{{ envVar.split('=')[0] }}</span>
+                    <span class="text-slate-300 block pl-2">{{ envVar.split('=').slice(1).join('=') }}</span>
+                 </div>
+              </div>
+           </div>
+
+           <!-- Action Panel -->
+           <div class="bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 p-6 shadow-xl shadow-slate-200/50 dark:shadow-black/50">
+              <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6 uppercase tracking-tight flex items-center gap-3">
+                <span class="w-2 h-8 bg-red-500 block"></span>
+                Control
+              </h2>
+
+              <button 
+                @click="deleteContainer"
+                :disabled="deleting"
+                class="w-full relative group overflow-hidden bg-red-500 hover:bg-red-600 text-white p-4 font-bold uppercase tracking-widest text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+              >
+                  <Trash2 :size="16" />
+                  <span>{{ deleting ? 'Terminating...' : 'Terminate Container' }}</span>
+              </button>
               
-              <!-- Block I/O -->
-              <div class="grid grid-cols-2 gap-3">
-                <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
-                  <div class="flex items-center gap-2 mb-2">
-                    <HardDrive :size="16" class="text-indigo-600 dark:text-indigo-300" />
-                    <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Disk Read</div>
-                  </div>
-                  <div class="text-xl font-bold text-gray-900 dark:text-white">{{ formatBytes(containerStats.blockIO.read) }}</div>
-                </div>
-                <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-slate-700 transition-shadow hover:shadow-sm">
-                  <div class="flex items-center gap-2 mb-2">
-                    <HardDrive :size="16" class="text-indigo-600 dark:text-indigo-300" />
-                    <div class="text-xs text-gray-700 dark:text-slate-300 font-semibold uppercase tracking-wide">Disk Write</div>
-                  </div>
-                  <div class="text-xl font-bold text-gray-900 dark:text-white">{{ formatBytes(containerStats.blockIO.write) }}</div>
-                </div>
-              </div>
-            </div>
-            
-            <div v-else class="flex flex-col items-center justify-center py-12">
-              <Loader2 :size="32" class="animate-spin text-indigo-600 dark:text-indigo-300 mb-3" />
-              <div class="text-sm text-gray-600 dark:text-slate-400 font-medium">Loading statistics...</div>
-            </div>
-          </div>
+              <p class="text-[10px] text-slate-500 mt-4 text-center leading-relaxed">
+                 Warning: This action is irreversible. All associated volumes and data will be permanently destroyed.
+              </p>
+           </div>
+
         </div>
 
-        <!-- Environment Variables -->
-        <div v-if="selectedContainer.env && selectedContainer.env.length > 0" 
-          class="bg-white dark:bg-slate-900/70 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 transition-shadow hover:shadow-md">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center border border-indigo-100 dark:border-indigo-500/30">
-              <Settings :size="20" class="text-indigo-600 dark:text-indigo-300" />
-            </div>
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Environment Variables</h2>
-          </div>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 max-h-80 overflow-y-auto custom-scrollbar">
-            <div v-for="(envVar, index) in selectedContainer.env" :key="index" 
-              class="text-sm font-mono bg-gray-50 dark:bg-slate-800 px-4 py-3 rounded-lg border border-gray-200 dark:border-slate-700 hover:shadow-sm transition-shadow break-all">
-              <span class="text-indigo-700 dark:text-indigo-300 font-semibold">{{ envVar.split('=')[0] }}</span>
-              <span class="text-gray-500 dark:text-slate-500">=</span>
-              <span class="text-gray-700 dark:text-slate-300">{{ envVar.split('=').slice(1).join('=') }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Container Logs -->
-        <div class="bg-white dark:bg-slate-900/70 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 transition-shadow hover:shadow-md">
-          <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-gray-900 dark:bg-slate-800 flex items-center justify-center shadow-md">
-                <Terminal :size="20" class="text-white" />
-              </div>
-              <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Container Logs</h2>
-            </div>
-            <button @click="fetchContainerLogs"
-              :disabled="refreshingLogs"
-              class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 disabled:opacity-50 text-gray-700 dark:text-slate-200 rounded-lg font-medium transition-all shadow-sm hover:shadow-md active:scale-95 disabled:transform-none">
-              <RefreshCw :size="16" :class="{ 'animate-spin': refreshingLogs }" />
-              Refresh
-            </button>
-          </div>
-          <div class="bg-gray-900 rounded-xl overflow-hidden shadow-inner border border-gray-700">
-            <div class="max-h-96 overflow-y-auto font-mono text-xs leading-relaxed custom-scrollbar">
-              <div v-if="containerLogs.length === 0" class="flex flex-col items-center justify-center text-gray-500 dark:text-slate-500 py-12">
-                <Terminal :size="48" class="mb-3 opacity-30" />
-                <div class="text-sm">No logs available</div>
-              </div>
-              <div v-else class="p-4 space-y-1">
-                <div v-for="(log, index) in containerLogs" :key="index" 
-                  class="text-gray-300 hover:bg-gray-800 px-3 py-1.5 rounded transition-colors">
-                  {{ log }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
