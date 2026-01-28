@@ -1,7 +1,7 @@
 # =========================
 # Builder stage (Vue build)
 # =========================
-FROM docker.io/oven/bun:debian AS builder
+FROM docker.io/oven/bun:1-debian-baseline AS builder
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN bun run build
 # =========================
 # Production stage
 # =========================
-FROM docker.io/oven/bun:1.3.7-debian
+FROM docker.io/oven/bun:1-debian-baseline
 
 # Install Docker CLI (needed by your app)
 RUN apt-get update \
