@@ -1,0 +1,27 @@
+services:
+  remote-torrent-downloader:
+    image: ghcr.io/besoeasy/remote-torrent-downloader:latest
+    container_name: remote-torrent-downloader
+    labels:
+      yantra.name: "Remote Torrent Downloader"
+      yantra.logo: "QmWneNtuWTRCzU8C97UX66PpR2dhh9dLqhDBTifpbwZVBj"
+      yantra.category: "media,download,utility"
+      yantra.port: "6798 (HTTP - Web UI), 6799 (HTTP - DOWNLOADS), 4445 (SMB - Samba Drive)"
+      yantra.description: "Media streaming and sharing platform with Telegram integration"
+      yantra.website: "https://github.com/besoeasy/Remote-Torrent-Downloader"
+    ports:
+      - "6798"
+      - "6799"
+      - "4445"
+      - "6888/tcp"
+      - "6888/udp"
+    environment:
+      - TELEGRAMBOT=${TELEGRAM_BOT_TOKEN}
+      - NSEC=${NOSTR_NSEC}
+      - AUTHCODE=${AUTHCODE}
+    volumes:
+      - remote-torrent-downloader_data:/tmp/remote-torrent-downloader
+    restart: unless-stopped
+
+volumes:
+  remote-torrent-downloader_data:
