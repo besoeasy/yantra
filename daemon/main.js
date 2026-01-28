@@ -55,6 +55,41 @@ function spawnProcess(command, args, options = {}) {
   });
 }
 
+let composeCommandCache = null;
+
+async function resolveComposeCommand() {
+  if (composeCommandCache) {
+    return composeCommandCache;
+  }
+
+  const env = {
+    ...process.env,
+    DOCKER_HOST: `unix://${socketPath}`,
+  };
+
+  try {
+    const { exitCode } = await spawnProcess("docker", ["compose", "version"], { env });
+    if (exitCode === 0) {
+      composeCommandCache = { command: "docker", args: ["compose"] };
+      return composeCommandCache;
+    }
+  } catch (err) {
+    // ignore and try docker-compose
+  }
+
+  try {
+    const { exitCode } = await spawnProcess("docker-compose", ["version"], { env });
+    if (exitCode === 0) {
+      composeCommandCache = { command: "docker-compose", args: [] };
+      return composeCommandCache;
+    }
+  } catch (err) {
+    // ignore and fail below
+  }
+
+  throw new Error("docker compose is not available (docker compose or docker-compose not found)");
+}
+
 // System architecture cache
 let systemArchitecture = null;
 
@@ -1294,17 +1329,23 @@ app.post("/api/deploy", async (req, res) => {
     // Set unique project name for multi-instance deployments
     const projectName = (instanceId && instanceId > 1) ? `${appId}-${instanceId}` : appId;
 
-    const command = `docker compose -p "${projectName}" -f "${composeFile}" up -d`;
+    const composeCmd = await resolveComposeCommand();
+    const commandPrefix = composeCmd.command === "docker" ? "docker compose" : "docker-compose";
+    const command = `${commandPrefix} -p "${projectName}" -f "${composeFile}" up -d`;
     log("info", `🚀 [POST /api/deploy] Executing: ${command}`);
 
     try {
-      const { stdout, stderr, exitCode } = await spawnProcess("docker", ["compose", "-p", projectName, "-f", composeFile, "up", "-d"], {
-        cwd: appPath,
-        env: {
-          ...process.env,
-          DOCKER_HOST: `unix://${socketPath}`,
-        },
-      });
+      const { stdout, stderr, exitCode } = await spawnProcess(
+        composeCmd.command,
+        [...composeCmd.args, "-p", projectName, "-f", composeFile, "up", "-d"],
+        {
+          cwd: appPath,
+          env: {
+            ...process.env,
+            DOCKER_HOST: `unix://${socketPath}`,
+          },
+        }
+      );
 
       if (exitCode !== 0) {
         throw new Error(`docker compose failed with exit code ${exitCode}: ${stderr}`);
@@ -1610,13 +1651,18 @@ app.delete("/api/containers/:id", async (req, res) => {
         log("info", `🗑️  [DELETE /api/containers/:id] Found managed app at ${appPath}, shutting down stack...`);
 
         // Execute docker compose down with project name to target specific instance
-        const { stdout, stderr, exitCode } = await spawnProcess("docker", ["compose", "-p", composeProject, "down"], {
-          cwd: appPath,
-          env: {
-            ...process.env,
-            DOCKER_HOST: `unix://${socketPath}`,
-          },
-        });
+        const composeCmd = await resolveComposeCommand();
+        const { stdout, stderr, exitCode } = await spawnProcess(
+          composeCmd.command,
+          [...composeCmd.args, "-p", composeProject, "down"],
+          {
+            cwd: appPath,
+            env: {
+              ...process.env,
+              DOCKER_HOST: `unix://${socketPath}`,
+            },
+          }
+        );
 
         if (exitCode !== 0) {
           throw new Error(`docker compose down failed: ${stderr}`);

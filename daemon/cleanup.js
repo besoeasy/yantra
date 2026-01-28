@@ -47,6 +47,41 @@ function spawnProcess(command, args, options = {}) {
   });
 }
 
+let composeCommandCache = null;
+
+async function resolveComposeCommand() {
+  if (composeCommandCache) {
+    return composeCommandCache;
+  }
+
+  const env = {
+    ...process.env,
+    DOCKER_HOST: `unix://${socketPath}`,
+  };
+
+  try {
+    const { exitCode } = await spawnProcess("docker", ["compose", "version"], { env });
+    if (exitCode === 0) {
+      composeCommandCache = { command: "docker", args: ["compose"] };
+      return composeCommandCache;
+    }
+  } catch (err) {
+    // ignore and try docker-compose
+  }
+
+  try {
+    const { exitCode } = await spawnProcess("docker-compose", ["version"], { env });
+    if (exitCode === 0) {
+      composeCommandCache = { command: "docker-compose", args: [] };
+      return composeCommandCache;
+    }
+  } catch (err) {
+    // ignore and fail below
+  }
+
+  throw new Error("docker compose is not available (docker compose or docker-compose not found)");
+}
+
 /**
  * Logger utility for cleanup operations
  */
@@ -133,13 +168,18 @@ export async function cleanupExpiredApps() {
               log("info", `Removing compose stack: ${composeProject}`);
 
               // Execute docker compose down without volume removal
-              const { stdout, stderr, exitCode } = await spawnProcess("docker", ["compose", "down"], {
-                cwd: appPath,
-                env: {
-                  ...process.env,
-                  DOCKER_HOST: `unix://${socketPath}`,
-                },
-              });
+              const composeCmd = await resolveComposeCommand();
+              const { stdout, stderr, exitCode } = await spawnProcess(
+                composeCmd.command,
+                [...composeCmd.args, "down"],
+                {
+                  cwd: appPath,
+                  env: {
+                    ...process.env,
+                    DOCKER_HOST: `unix://${socketPath}`,
+                  },
+                }
+              );
 
               if (exitCode !== 0) {
                 throw new Error(`docker compose down failed: ${stderr}`);
