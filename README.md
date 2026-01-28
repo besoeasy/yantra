@@ -24,8 +24,8 @@ sudo apt update
 # Install Docker Engine from Debian repository
 sudo apt install -y docker.io
 
-# Install Docker Compose v2 plugin (docker compose)
-sudo apt install -y docker-compose-plugin
+# Install Docker Compose plugin (docker compose)
+sudo apt install -y docker-compose
 
 # Enable Docker to start on boot and start it now
 sudo systemctl enable --now docker
