@@ -70,8 +70,9 @@ const treemapSeries = computed(() => {
     imagesData.value.usedImages.forEach(img => {
       const sizeVal = parseFloat(img.size)
       if (sizeVal > 1) {
+        const tagName = img.tags?.[0] && img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId
         allImages.push({
-          x: img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId,
+          x: tagName,
           y: sizeVal,
           fillColor: '#10b981'
         })
@@ -84,8 +85,9 @@ const treemapSeries = computed(() => {
     imagesData.value.unusedImages.forEach(img => {
       const sizeVal = parseFloat(img.size)
       if (sizeVal > 1) {
+        const tagName = img.tags?.[0] && img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId
         allImages.push({
-          x: img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId,
+          x: tagName,
           y: sizeVal,
           fillColor: '#f59e0b' // Amber/Orange for unused
         })
