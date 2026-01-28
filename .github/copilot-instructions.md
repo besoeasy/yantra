@@ -1,6 +1,6 @@
 # Project Development Guidelines
 
-Use BUNJS as runtime environment for all JavaScript and TypeScript code.
+Use Node.js as runtime environment for all JavaScript and TypeScript code.
 
 Backend is located in the `/daemon/` directory. Follow these guidelines when creating or modifying API endpoints.
 

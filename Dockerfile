@@ -1,27 +1,26 @@
 # =========================
 # Builder stage (Vue build)
 # =========================
-FROM docker.io/oven/bun:debian AS builder
+FROM docker.io/library/node:lts AS builder
 
 WORKDIR /app
 
 # Copy dependency files
-COPY package.json bun.lock ./
+COPY package.json package-lock.json* ./
 
 # Install ALL deps (including dev)
-RUN bun install
+RUN npm ci || npm install
 
 # Copy source
 COPY . .
 
 # Build Vue app
-RUN bun run build
+RUN npm run build
 
 # =========================
 # Production stage
 # =========================
-FROM docker.io/oven/bun:debian
-
+FROM docker.io/library/node:slim
 # Install Docker CLI (needed by your app)
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends docker.io docker-compose \
@@ -30,10 +29,10 @@ RUN apt-get update \
 WORKDIR /app
 
 # Copy dependency files
-COPY package.json bun.lock ./
+COPY package.json package-lock.json* ./
 
 # Install only production deps
-RUN bun install --production
+RUN npm ci --omit=dev || npm install --omit=dev
 
 # Copy built frontend
 COPY --from=builder /app/dist ./dist
@@ -52,4 +51,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
 ENV PORT=5252
 ENV NODE_ENV=production
 
-CMD ["bun", "run", "server"]
+CMD ["node", "daemon/main.js"]

@@ -1,5 +1,6 @@
 import Docker from "dockerode";
-import { $ } from "bun";
+import { readFile } from "fs/promises";
+import { spawn } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -10,6 +11,41 @@ const __dirname = dirname(__filename);
 // Docker socket path
 const socketPath = process.env.DOCKER_SOCKET || "/var/run/docker.sock";
 const docker = new Docker({ socketPath });
+
+/**
+ * Helper function to spawn a process and capture output
+ */
+function spawnProcess(command, args, options = {}) {
+  return new Promise((resolve, reject) => {
+    const proc = spawn(command, args, {
+      ...options,
+      env: options.env || process.env,
+    });
+
+    let stdout = '';
+    let stderr = '';
+
+    if (proc.stdout) {
+      proc.stdout.on('data', (data) => {
+        stdout += data.toString();
+      });
+    }
+
+    if (proc.stderr) {
+      proc.stderr.on('data', (data) => {
+        stderr += data.toString();
+      });
+    }
+
+    proc.on('close', (code) => {
+      resolve({ stdout, stderr, exitCode: code });
+    });
+
+    proc.on('error', (err) => {
+      reject(err);
+    });
+  });
+}
 
 /**
  * Logger utility for cleanup operations
@@ -87,36 +123,38 @@ export async function cleanupExpiredApps() {
             const composePath = path.join(appPath, "compose.yml");
 
             try {
-              const composeFile = Bun.file(composePath);
-              if (await composeFile.exists()) {
-                log("info", `Removing compose stack: ${composeProject}`);
-
-                // Execute docker compose down without volume removal
-                const proc = Bun.spawn(["docker", "compose", "down"], {
-                  cwd: appPath,
-                  env: {
-                    ...process.env,
-                    DOCKER_HOST: `unix://${socketPath}`,
-                  },
-                  stdout: "pipe",
-                  stderr: "pipe",
-                });
-
-                const stdout = await new Response(proc.stdout).text();
-                const stderr = await new Response(proc.stderr).text();
-                await proc.exited;
-
-                log("info", `Successfully removed stack: ${composeProject}`);
-                results.removed.push({
-                  name: composeProject,
-                  type: "stack",
-                  containers: [containerName],
-                  expiredAt: new Date(expirationTime * 1000).toISOString(),
-                });
-
-                // Skip individual container processing since stack was removed
-                continue;
+              const fs = await import("fs/promises");
+              try {
+                await fs.access(composePath);
+              } catch {
+                throw new Error("Compose file not found");
               }
+              
+              log("info", `Removing compose stack: ${composeProject}`);
+
+              // Execute docker compose down without volume removal
+              const { stdout, stderr, exitCode } = await spawnProcess("docker", ["compose", "down"], {
+                cwd: appPath,
+                env: {
+                  ...process.env,
+                  DOCKER_HOST: `unix://${socketPath}`,
+                },
+              });
+
+              if (exitCode !== 0) {
+                throw new Error(`docker compose down failed: ${stderr}`);
+              }
+
+              log("info", `Successfully removed stack: ${composeProject}`);
+              results.removed.push({
+                name: composeProject,
+                type: "stack",
+                containers: [containerName],
+                expiredAt: new Date(expirationTime * 1000).toISOString(),
+              });
+
+              // Skip individual container processing since stack was removed
+              continue;
             } catch (err) {
               log("warn", `Compose file not found for ${composeProject}, falling back to individual removal`);
             }

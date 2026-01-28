@@ -2,14 +2,15 @@ import express from "express";
 import Docker from "dockerode";
 import cors from "cors";
 import path from "path";
-import { $ } from "bun";
+import { readFile, writeFile, unlink } from "fs/promises";
+import { spawn } from "child_process";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 import { startCleanupScheduler } from "./cleanup.js";
 
-// Import package.json using Bun's native JSON import
-const packageJson = await Bun.file(new URL("../package.json", import.meta.url)).json();
+// Import package.json
+const packageJson = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf-8"));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,6 +21,39 @@ const app = express();
 const socketPath = process.env.DOCKER_SOCKET || "/var/run/docker.sock";
 
 const docker = new Docker({ socketPath });
+
+// Helper function to spawn a process and capture output (replaces Bun.spawn)
+function spawnProcess(command, args, options = {}) {
+  return new Promise((resolve, reject) => {
+    const proc = spawn(command, args, {
+      ...options,
+      env: options.env || process.env,
+    });
+
+    let stdout = '';
+    let stderr = '';
+
+    if (proc.stdout) {
+      proc.stdout.on('data', (data) => {
+        stdout += data.toString();
+      });
+    }
+
+    if (proc.stderr) {
+      proc.stderr.on('data', (data) => {
+        stderr += data.toString();
+      });
+    }
+
+    proc.on('close', (code) => {
+      resolve({ stdout, stderr, exitCode: code });
+    });
+
+    proc.on('error', (err) => {
+      reject(err);
+    });
+  });
+}
 
 // System architecture cache
 let systemArchitecture = null;
@@ -236,10 +270,15 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
       const composePath = path.join(appPath, "compose.yml");
 
       try {
-        const composeFile = Bun.file(composePath);
-        if (!(await composeFile.exists())) continue;
+        // Check if compose.yml exists using fs
+        const fs = await import("fs/promises");
+        try {
+          await fs.access(composePath);
+        } catch {
+          continue; // File doesn't exist, skip
+        }
 
-        const composeContent = await composeFile.text();
+        const composeContent = await readFile(composePath, "utf-8");
         const labels = {};
 
         // Format 1: yantra.name: "value"
@@ -425,8 +464,11 @@ async function getSystemArchitecture() {
   }
 
   try {
-    // Use Bun's native shell execution
-    const arch = (await $`uname -m`.text()).trim();
+    const { stdout, stderr, exitCode } = await spawnProcess("uname", ["-m"]);
+    if (exitCode !== 0) {
+      throw new Error(stderr || `uname exited with code ${exitCode}`);
+    }
+    const arch = stdout.trim();
 
     // Map common architecture names to Docker platform names
     const archMap = {
@@ -465,7 +507,10 @@ async function checkImageArchitectureSupport(imageName) {
     const command = `docker image inspect ${imageName} --format='{{.Architecture}}' 2>/dev/null || docker manifest inspect ${imageName} 2>/dev/null`;
 
     try {
-      const stdout = await $`sh -c ${command}`.text();
+      const { stdout, stderr, exitCode } = await spawnProcess("sh", ["-c", command]);
+      if (exitCode !== 0) {
+        throw new Error(stderr || `shell command exited with code ${exitCode}`);
+      }
       const output = stdout.trim();
 
       // If we get architecture directly
@@ -526,7 +571,7 @@ async function checkImageArchitectureSupport(imageName) {
 // Helper function to extract image name from compose file
 async function getImageFromCompose(composePath) {
   try {
-    const content = await Bun.file(composePath).text();
+    const content = await readFile(composePath, "utf-8");
     const imageMatch = content.match(/image:\s*([^\s\n]+)/);
     if (imageMatch) {
       return imageMatch[1];
@@ -1007,7 +1052,7 @@ app.post("/api/deploy", async (req, res) => {
     // Verify compose file exists
     let composeContent;
     try {
-      composeContent = await Bun.file(composePath).text();
+      composeContent = await readFile(composePath, "utf-8");
       log("info", `🚀 [POST /api/deploy] Compose file exists, proceeding with deployment`);
     } catch (err) {
       log("error", `❌ [POST /api/deploy] Compose file not found for ${appId}`);
@@ -1053,7 +1098,7 @@ app.post("/api/deploy", async (req, res) => {
 
       // Only create .env file if there are non-empty variables
       if (envContent.length > 0) {
-        await Bun.write(envPath, envContent);
+        await writeFile(envPath, envContent, "utf-8");
         log("info", `🚀 [POST /api/deploy] Created .env file with custom variables`);
       }
     }
@@ -1099,7 +1144,7 @@ app.post("/api/deploy", async (req, res) => {
 
         // Write modified compose to a temporary file
         const tempComposePath = path.join(appPath, ".compose.tmp.yml");
-        await Bun.write(tempComposePath, modifiedComposeContent);
+        await writeFile(tempComposePath, modifiedComposeContent, "utf-8");
         log("info", `🚀 [POST /api/deploy] Created temporary compose file with expiration labels`);
       }
     }
@@ -1178,7 +1223,7 @@ app.post("/api/deploy", async (req, res) => {
 
       // Write to temporary file
       const tempComposePath = path.join(appPath, ".compose.tmp.yml");
-      await Bun.write(tempComposePath, modifiedComposeContent);
+      await writeFile(tempComposePath, modifiedComposeContent, "utf-8");
       log("info", `🚀 [POST /api/deploy] Created temporary compose file with instance naming`);
     }
 
@@ -1239,7 +1284,7 @@ app.post("/api/deploy", async (req, res) => {
 
       // Write to temporary file
       const tempComposePath = path.join(appPath, ".compose.tmp.yml");
-      await Bun.write(tempComposePath, modifiedComposeContent);
+      await writeFile(tempComposePath, modifiedComposeContent, "utf-8");
       log("info", `🚀 [POST /api/deploy] Created temporary compose file with custom ports`);
     }
 
@@ -1253,19 +1298,17 @@ app.post("/api/deploy", async (req, res) => {
     log("info", `🚀 [POST /api/deploy] Executing: ${command}`);
 
     try {
-      const proc = Bun.spawn(["docker", "compose", "-p", projectName, "-f", composeFile, "up", "-d"], {
+      const { stdout, stderr, exitCode } = await spawnProcess("docker", ["compose", "-p", projectName, "-f", composeFile, "up", "-d"], {
         cwd: appPath,
         env: {
           ...process.env,
           DOCKER_HOST: `unix://${socketPath}`,
         },
-        stdout: "pipe",
-        stderr: "pipe",
       });
 
-      const stdout = await new Response(proc.stdout).text();
-      const stderr = await new Response(proc.stderr).text();
-      await proc.exited;
+      if (exitCode !== 0) {
+        throw new Error(`docker compose failed with exit code ${exitCode}: ${stderr}`);
+      }
 
       log("info", `✅ [POST /api/deploy] Deployment successful for ${appId}`);
       log("info", `   stdout: ${stdout.trim()}`);
@@ -1275,7 +1318,8 @@ app.post("/api/deploy", async (req, res) => {
       if (expiresIn || customPortMappings || (instanceId && instanceId > 1)) {
         try {
           const tempComposePath = path.join(appPath, ".compose.tmp.yml");
-          await Bun.file(tempComposePath).unlink();
+          const fs = await import("fs/promises");
+          await fs.unlink(tempComposePath);
           log("info", `🚀 [POST /api/deploy] Cleaned up temporary compose file`);
         } catch (err) {
           log("warn", `⚠️  [POST /api/deploy] Failed to cleanup temp file: ${err.message}`);
@@ -1298,7 +1342,7 @@ app.post("/api/deploy", async (req, res) => {
       if (composeFile === ".compose.tmp.yml") {
         const tempComposePath = path.join(appPath, ".compose.tmp.yml");
         try {
-          await $`rm -f ${tempComposePath}`;
+          await unlink(tempComposePath);
           log("info", `🚀 [POST /api/deploy] Cleaned up temporary compose file after error`);
         } catch (cleanupError) {
           log("error", `⚠️ [POST /api/deploy] Failed to cleanup temp file:`, cleanupError.message);
@@ -1389,7 +1433,7 @@ app.get("/api/image-details/:appId", async (req, res) => {
     // Read compose file to extract image names
     let composeContent;
     try {
-      composeContent = await Bun.file(composePath).text();
+      composeContent = await readFile(composePath, "utf-8");
     } catch (err) {
       return res.status(404).json({
         success: false,
@@ -1556,36 +1600,38 @@ app.delete("/api/containers/:id", async (req, res) => {
       const composePath = path.join(appPath, "compose.yml");
 
       try {
-        const composeFile = Bun.file(composePath);
-        if (await composeFile.exists()) {
-          log("info", `🗑️  [DELETE /api/containers/:id] Found managed app at ${appPath}, shutting down stack...`);
-
-          // Execute docker compose down with project name to target specific instance
-          const proc = Bun.spawn(["docker", "compose", "-p", composeProject, "down"], {
-            cwd: appPath,
-            env: {
-              ...process.env,
-              DOCKER_HOST: `unix://${socketPath}`,
-            },
-            stdout: "pipe",
-            stderr: "pipe",
-          });
-
-          const stdout = await new Response(proc.stdout).text();
-          const stderr = await new Response(proc.stderr).text();
-          await proc.exited;
-
-          log("info", `✅ [DELETE /api/containers/:id] Stack removal successful`);
-          return res.json({
-            success: true,
-            message: `App stack '${composeProject}' removed successfully`,
-            container: containerName,
-            stackRemoved: true,
-            volumesRemoved: [], // Stack deletion handles volumes, return empty to satisfy UI
-            volumesFailed: [],
-            output: stdout,
-          });
+        const fs = await import("fs/promises");
+        try {
+          await fs.access(composePath);
+        } catch {
+          throw new Error("Compose file not found");
         }
+        
+        log("info", `🗑️  [DELETE /api/containers/:id] Found managed app at ${appPath}, shutting down stack...`);
+
+        // Execute docker compose down with project name to target specific instance
+        const { stdout, stderr, exitCode } = await spawnProcess("docker", ["compose", "-p", composeProject, "down"], {
+          cwd: appPath,
+          env: {
+            ...process.env,
+            DOCKER_HOST: `unix://${socketPath}`,
+          },
+        });
+
+        if (exitCode !== 0) {
+          throw new Error(`docker compose down failed: ${stderr}`);
+        }
+
+        log("info", `✅ [DELETE /api/containers/:id] Stack removal successful`);
+        return res.json({
+          success: true,
+          message: `App stack '${composeProject}' removed successfully`,
+          container: containerName,
+          stackRemoved: true,
+          volumesRemoved: [], // Stack deletion handles volumes, return empty to satisfy UI
+          volumesFailed: [],
+          output: stdout,
+        });
       } catch (err) {
         log("info", `⚠️  [DELETE /api/containers/:id] Compose file not found at ${composePath}, falling back to single container deletion`);
       }

@@ -2,7 +2,7 @@
   "name": "yantra",
   "type": "module",
   "scripts": {
-    "server": "bun daemon/main.js",
+    "server": "node daemon/main.js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"

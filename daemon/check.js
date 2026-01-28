@@ -2,6 +2,7 @@ import path from 'path';
 import YAML from 'yaml';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { readFile } from 'fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -297,7 +298,7 @@ async function detectPortConflict() {
         const composePathForOutput = path.relative(__dirname, composePath).replace(/\\/g, '/');
         let composeContent;
         try {
-            composeContent = await Bun.file(composePath).text();
+            composeContent = await readFile(composePath, 'utf-8');
         } catch {
             continue;
         }
@@ -348,7 +349,7 @@ async function validateAllApps() {
         
         let composeContent;
         try {
-            composeContent = await Bun.file(composePath).text();
+            composeContent = await readFile(composePath, 'utf-8');
         } catch {
             validationResults.push({
                 app: appName,
