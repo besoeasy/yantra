@@ -11,38 +11,7 @@
 
 Get up and running in seconds. No complicated setup.
 
-### 1) Install Docker (minimal)
-
-> These commands install Docker Engine + Docker Compose plugin.
-
-**Raspberry Pi OS / Debian / Ubuntu:**
-
-```bash
-# Update package index
-sudo apt update
-
-# Install Docker Engine from Debian repository
-sudo apt install -y docker.io
-
-# Install Docker Compose plugin (docker compose)
-sudo apt install -y docker-compose
-
-# Enable Docker to start on boot and start it now
-sudo systemctl enable --now docker
-
-# Allow current user to run docker without sudo
-sudo usermod -aG docker $USER
-
-# Reload group membership (or re-login)
-newgrp docker
-
-```
-
-If you prefer the official step-by-step instructions instead of the convenience script:
-
-- https://docs.docker.com/engine/install/
-
-### 2) Run Yantra
+### Run Yantra
 
 **Using Docker:**
 
@@ -56,8 +25,6 @@ docker run -d \
   ghcr.io/besoeasy/yantra
 ```
 
-_[New to Docker? Learn how to install it here.](https://chatgpt.com/?prompt=how%20to%20install%20docker%20on%20my%20system%20%3F%0A%0Ai%20want%20to%20install%20yantra%20https%3A%2F%2Fgithub.com%2Fbesoeasy%2Fyantra%0A%0Ahere%20is%20the%20docker%20command%2C%20in%20cli%20mode%0Adocker%20run%20-d%20%5C%0A%20%20--name%20yantra%20%5C%0A%20%20-p%2080%3A5252%20%5C%0A%20%20-p%20443%3A5252%20%5C%0A%20%20-v%20%2Fvar%2Frun%2Fdocker.sock%3A%2Fvar%2Frun%2Fdocker.sock%20%5C%0A%20%20--restart%20unless-stopped%20%5C%0A%20%20ghcr.io%2Fbesoeasy%2Fyantra%0A%0Aas%20ai%20agent%2C%20your%20aim%20is%20to%20help%20me%20install%20this%20software)_
-
 ---
 
 ## ✨ Why Yantra?
@@ -68,7 +35,7 @@ Most homelab platforms (Umbrel, CasaOS, etc.) treat your hardware like an **oper
 
 ### Yantra's Philosophy: An App Store, Not an OS
 
-Yantra takes a fundamentally different approach. It's a **lightweight app store** that runs _alongside_ your existing operating system, not instead of it. Think of it like Homebrew or apt, but for self-hosted applications with beautiful UI. 
+Yantra takes a fundamentally different approach. It's a **lightweight app store** that runs _alongside_ your existing operating system, not instead of it. Think of it like Homebrew or apt, but for self-hosted applications with beautiful UI.
 
 Your laptop remains yours. Your OS stays untouched. Yantra just gives you one-click access to powerful self-hosted apps whenever you need them.
 
