@@ -1,7 +1,7 @@
 # =========================
 # Builder stage (Vue build)
 # =========================
-FROM docker.io/oven/bun:latest AS builder
+FROM docker.io/oven/bun:1.3.7 AS builder
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ RUN bun run build
 # =========================
 # Production stage
 # =========================
-FROM docker.io/oven/bun:alpine
+FROM docker.io/oven/bun:1.3.7-alpine
 
 # Install Docker CLI (needed by your app)
 RUN apk add --no-cache docker-cli docker-cli-compose
