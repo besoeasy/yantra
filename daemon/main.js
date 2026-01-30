@@ -3,10 +3,10 @@ import Docker from "dockerode";
 import cors from "cors";
 import path from "path";
 import { readFile, writeFile, unlink } from "fs/promises";
-import { spawn } from "child_process";
 import { resolveComposeCommand } from "./compose.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { spawnProcess } from "./utils.js";
 
 import { startCleanupScheduler } from "./cleanup.js";
 
@@ -22,39 +22,6 @@ const app = express();
 const socketPath = process.env.DOCKER_SOCKET || "/var/run/docker.sock";
 
 const docker = new Docker({ socketPath });
-
-// Helper function to spawn a process and capture output (replaces Bun.spawn)
-function spawnProcess(command, args, options = {}) {
-  return new Promise((resolve, reject) => {
-    const proc = spawn(command, args, {
-      ...options,
-      env: options.env || process.env,
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    if (proc.stdout) {
-      proc.stdout.on('data', (data) => {
-        stdout += data.toString();
-      });
-    }
-
-    if (proc.stderr) {
-      proc.stderr.on('data', (data) => {
-        stderr += data.toString();
-      });
-    }
-
-    proc.on('close', (code) => {
-      resolve({ stdout, stderr, exitCode: code });
-    });
-
-    proc.on('error', (err) => {
-      reject(err);
-    });
-  });
-}
 
 // Compose resolver moved to compose.js
 

@@ -1,39 +1,7 @@
-import { spawn } from "child_process";
+import { spawnProcess } from "./utils.js";
 
 let composeCommandCache = null;
 let composeCommandLogged = false;
-
-function spawnProcess(command, args, options = {}) {
-  return new Promise((resolve, reject) => {
-    const proc = spawn(command, args, {
-      ...options,
-      env: options.env || process.env,
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    if (proc.stdout) {
-      proc.stdout.on('data', (data) => {
-        stdout += data.toString();
-      });
-    }
-
-    if (proc.stderr) {
-      proc.stderr.on('data', (data) => {
-        stderr += data.toString();
-      });
-    }
-
-    proc.on('close', (code) => {
-      resolve({ stdout, stderr, exitCode: code });
-    });
-
-    proc.on('error', (err) => {
-      reject(err);
-    });
-  });
-}
 
 function getComposeEnv(socketPath) {
   return {
