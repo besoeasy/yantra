@@ -75,22 +75,22 @@ const urgencyLabel = computed(() => {
       <div 
         class="absolute inset-0 z-10"
         :class="stats.next?.isUrgent || stats.next?.isExpired 
-          ? 'bg-gradient-to-br from-rose-200/60 via-red-200/30 to-white/80 dark:from-rose-600/20 dark:via-red-600/10 dark:to-gray-900'
-          : 'bg-gradient-to-br from-orange-200/60 via-amber-200/30 to-white/80 dark:from-orange-600/20 dark:via-amber-600/10 dark:to-gray-900'"
+          ? 'bg-gradient-to-br from-orange-200/70 via-pink-200/40 to-white/80 dark:from-orange-600/25 dark:via-pink-600/15 dark:to-gray-900'
+          : 'bg-gradient-to-br from-orange-200/60 via-yellow-200/35 to-white/80 dark:from-orange-600/20 dark:via-yellow-600/12 dark:to-gray-900'"
       ></div>
       
       <!-- Animated Orbs -->
       <div 
         class="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
         :class="stats.next?.isUrgent || stats.next?.isExpired
-          ? 'bg-rose-300/35 dark:bg-rose-500/20 group-hover:bg-rose-400/45 dark:group-hover:bg-rose-500/30'
+          ? 'bg-orange-400/40 dark:bg-orange-500/25 group-hover:bg-orange-500/50 dark:group-hover:bg-orange-500/35'
           : 'bg-orange-300/35 dark:bg-orange-500/20 group-hover:bg-orange-400/45 dark:group-hover:bg-orange-500/30'"
       ></div>
       <div 
         class="absolute bottom-0 left-0 w-48 h-48 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
         :class="stats.next?.isUrgent || stats.next?.isExpired
-          ? 'bg-red-300/30 dark:bg-red-600/20 group-hover:bg-red-400/40 dark:group-hover:bg-red-600/30'
-          : 'bg-amber-300/30 dark:bg-amber-600/20 group-hover:bg-amber-400/40 dark:group-hover:bg-amber-600/30'"
+          ? 'bg-pink-400/35 dark:bg-pink-600/25 group-hover:bg-pink-500/45 dark:group-hover:bg-pink-600/35'
+          : 'bg-yellow-300/30 dark:bg-yellow-600/20 group-hover:bg-yellow-400/40 dark:group-hover:bg-yellow-600/30'"
       ></div>
     </div>
 
@@ -99,7 +99,7 @@ const urgencyLabel = computed(() => {
       <div 
         class="absolute inset-0 animate-spin-slow"
         :class="stats.next?.isUrgent || stats.next?.isExpired
-          ? 'bg-gradient-to-r from-rose-500/0 via-rose-500/60 to-rose-500/0'
+          ? 'bg-gradient-to-r from-orange-500/0 via-pink-500/70 to-orange-500/0'
           : 'bg-gradient-to-r from-orange-500/0 via-orange-500/60 to-orange-500/0'"
         style="animation-duration: 3s;"
       ></div>
@@ -109,7 +109,7 @@ const urgencyLabel = computed(() => {
          :class="[
            'border-slate-200/80 dark:border-slate-700/60',
            stats.next?.isUrgent || stats.next?.isExpired 
-             ? 'group-hover:border-rose-400/50 dark:group-hover:border-rose-500/40 group-hover:shadow-[0_0_20px_rgba(244,63,94,0.3)]'
+             ? 'group-hover:border-pink-400/50 dark:group-hover:border-pink-500/40 group-hover:shadow-[0_0_20px_rgba(236,72,153,0.3)]'
              : 'group-hover:border-orange-400/50 dark:group-hover:border-orange-500/40 group-hover:shadow-[0_0_20px_rgba(251,146,60,0.3)]'
          ]">
       <!-- Header -->
