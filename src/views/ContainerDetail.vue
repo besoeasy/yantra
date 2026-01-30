@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
-import { ArrowLeft, ExternalLink, RefreshCw, Trash2, Network, FolderOpen, Terminal, Activity, Cpu, HardDrive, ShieldCheck, Share2, Globe, Database, Lock, Folder, Pause, Play, Download } from 'lucide-vue-next'
+import { ArrowLeft, ExternalLink, RefreshCw, Trash2, Network, FolderOpen, Terminal, Activity, Cpu, HardDrive, ShieldCheck, Share2, Globe, Database, Lock, Folder, Pause, Play, Download, Clock, AlertCircle } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -18,6 +18,10 @@ const browsingVolume = ref({})
 const showVolumeMenu = ref({})
 let statsInterval = null
 const autoScrollLogs = ref(true)
+const currentTime = ref(Date.now())
+
+// Update current time every second for live countdown
+let timeUpdateInterval = null
 
 // Extract volume names from container mounts
 const containerVolumes = computed(() => {
@@ -97,6 +101,54 @@ const allPortMappings = computed(() => {
     if (!a.hostPort && b.hostPort) return 1
     return parseInt(a.containerPort) - parseInt(b.containerPort)
   })
+})
+
+// Check if container has expiration
+const expirationInfo = computed(() => {
+  if (!selectedContainer.value?.expireAt) return null
+  
+  const expireAtTimestamp = parseInt(selectedContainer.value.expireAt, 10)
+  if (isNaN(expireAtTimestamp)) return null
+  
+  const expireAtMs = expireAtTimestamp * 1000
+  const timeLeftMs = expireAtMs - currentTime.value
+  
+  if (timeLeftMs <= 0) {
+    return {
+      expired: true,
+      timeLeft: 'Expired',
+      urgency: 'critical'
+    }
+  }
+  
+  const seconds = Math.floor(timeLeftMs / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+  
+  let timeLeft = ''
+  let urgency = 'normal'
+  
+  if (days > 0) {
+    timeLeft = `${days}d ${hours % 24}h`
+    urgency = days < 1 ? 'warning' : 'normal'
+  } else if (hours > 0) {
+    timeLeft = `${hours}h ${minutes % 60}m`
+    urgency = hours < 2 ? 'critical' : 'warning'
+  } else if (minutes > 0) {
+    timeLeft = `${minutes}m ${seconds % 60}s`
+    urgency = 'critical'
+  } else {
+    timeLeft = `${seconds}s`
+    urgency = 'critical'
+  }
+  
+  return {
+    expired: false,
+    timeLeft,
+    urgency,
+    expireAt: new Date(expireAtMs).toLocaleString()
+  }
 })
 
 function appUrl(port, protocol = 'http') {
@@ -256,11 +308,19 @@ onMounted(async () => {
   statsInterval = setInterval(() => {
     fetchContainerStats()
   }, 2000)
+  
+  // Update current time every second for expiration countdown
+  timeUpdateInterval = setInterval(() => {
+    currentTime.value = Date.now()
+  }, 1000)
 })
 
 onUnmounted(() => {
   if (statsInterval) {
     clearInterval(statsInterval)
+  }
+  if (timeUpdateInterval) {
+    clearInterval(timeUpdateInterval)
   }
 })
 </script>
@@ -286,6 +346,20 @@ onUnmounted(() => {
         </div>
 
         <div v-if="selectedContainer" class="flex items-center gap-3">
+          <!-- Expiration Badge -->
+          <div v-if="expirationInfo" 
+               class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold uppercase tracking-wide"
+               :class="{
+                 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400': expirationInfo.urgency === 'critical',
+                 'bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-400': expirationInfo.urgency === 'warning',
+                 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400': expirationInfo.urgency === 'normal'
+               }"
+               :title="`Expires at: ${expirationInfo.expireAt}`">
+            <Clock :size="14" :class="expirationInfo.urgency === 'critical' ? 'animate-pulse' : ''" />
+            <span>{{ expirationInfo.timeLeft }}</span>
+          </div>
+          
+          <!-- Running State Badge -->
           <div class="flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold uppercase tracking-wide"
             :class="selectedContainer.state === 'running' 
               ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400' 
@@ -328,6 +402,48 @@ onUnmounted(() => {
                  </div>
               </div>
            </div>
+        </div>
+
+        <!-- Expiration Warning Banner -->
+        <div v-if="expirationInfo" 
+             class="rounded-lg border p-4 flex items-start gap-3"
+             :class="{
+               'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800': expirationInfo.urgency === 'critical',
+               'bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800': expirationInfo.urgency === 'warning',
+               'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800': expirationInfo.urgency === 'normal'
+             }">
+          <div class="shrink-0 mt-0.5">
+            <AlertCircle :size="20" 
+                        :class="{
+                          'text-red-600 dark:text-red-400': expirationInfo.urgency === 'critical',
+                          'text-orange-600 dark:text-orange-400': expirationInfo.urgency === 'warning',
+                          'text-blue-600 dark:text-blue-400': expirationInfo.urgency === 'normal'
+                        }" />
+          </div>
+          <div class="flex-1">
+            <div class="font-semibold text-sm mb-1"
+                 :class="{
+                   'text-red-900 dark:text-red-200': expirationInfo.urgency === 'critical',
+                   'text-orange-900 dark:text-orange-200': expirationInfo.urgency === 'warning',
+                   'text-blue-900 dark:text-blue-200': expirationInfo.urgency === 'normal'
+                 }">
+              {{ expirationInfo.expired ? 'Container Expired' : 'Temporary Container' }}
+            </div>
+            <div class="text-xs"
+                 :class="{
+                   'text-red-700 dark:text-red-300': expirationInfo.urgency === 'critical',
+                   'text-orange-700 dark:text-orange-300': expirationInfo.urgency === 'warning',
+                   'text-blue-700 dark:text-blue-300': expirationInfo.urgency === 'normal'
+                 }">
+              <span v-if="!expirationInfo.expired">
+                This container will be automatically removed in <span class="font-mono font-bold">{{ expirationInfo.timeLeft }}</span>
+              </span>
+              <span v-else>
+                This container has expired and will be removed shortly.
+              </span>
+              <span class="block mt-1 opacity-75">Scheduled removal: {{ expirationInfo.expireAt }}</span>
+            </div>
+          </div>
         </div>
 
         <!-- Network Access (Moved from Right) -->

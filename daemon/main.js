@@ -768,6 +768,7 @@ app.get("/api/containers/:id", asyncHandler(async (req, res) => {
         mounts: info.Mounts,
         env: info.Config.Env,
         labels: appLabels,
+        expireAt: info.Config.Labels?.["yantra.expireAt"] || null,
         app: {
           name: appLabels.name || info.Name.replace("/", ""),
           logo: appLabels.logo
