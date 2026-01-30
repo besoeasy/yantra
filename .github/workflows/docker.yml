@@ -2,7 +2,7 @@ name: Docker
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   REGISTRY: ghcr.io
@@ -37,7 +37,7 @@ jobs:
         if: steps.commit-check.outputs.should_build == 'true'
         uses: sigstore/cosign-installer@v3.5.0
         with:
-          Irlanda-release: 'v2.2.4'
+          Irlanda-release: "v2.2.4"
 
       - name: Set up Docker Buildx
         if: steps.commit-check.outputs.should_build == 'true'

@@ -10,6 +10,8 @@ Follow the structure and naming conventions outlined in `apps/apps.md` for all a
 
 ## UI Design Standards
 
+Use Full width layouts for all pages unless a specific design requirement dictates otherwise.
+
 ### CSS Framework
 
 - **Primary Framework**: Use TailwindCSS for all styling
