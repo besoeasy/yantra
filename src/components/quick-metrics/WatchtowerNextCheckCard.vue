@@ -5,15 +5,46 @@ import { formatDuration } from '../../utils/metrics.js'
 
 const props = defineProps({
   containers: { type: Array, default: () => [] },
-  currentTime: { type: Number, default: () => Date.now() },
-  intervalHours: { type: Number, default: 3 }
+  currentTime: { type: Number, default: () => Date.now() }
 })
 
-const intervalMs = computed(() => {
-  const hours = Number(props.intervalHours)
-  if (!Number.isFinite(hours) || hours <= 0) return 3 * 60 * 60 * 1000
-  return hours * 60 * 60 * 1000
-})
+// Calculate next run based on cron schedule: "0 */3 * * *" (every 3 hours at :00)
+// Schedule runs at: 00:00, 03:00, 06:00, 09:00, 12:00, 15:00, 18:00, 21:00
+const getNextCronRun = (fromTime) => {
+  const now = new Date(fromTime)
+  const currentHour = now.getHours()
+  const currentMinute = now.getMinutes()
+  
+  // Calculate next 3-hour interval
+  const nextHour = Math.ceil((currentHour + 1) / 3) * 3
+  
+  if (nextHour > 23) {
+    // Next run is tomorrow at 00:00
+    const tomorrow = new Date(now)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    tomorrow.setHours(0, 0, 0, 0)
+    return tomorrow
+  }
+  
+  // If we're at or past the hour mark, go to next interval
+  if (currentHour % 3 === 0 && currentMinute === 0) {
+    // Exactly at the hour, next run is in 3 hours
+    const nextRun = new Date(now)
+    nextRun.setHours(currentHour + 3, 0, 0, 0)
+    if (nextRun.getHours() < currentHour) {
+      // Wrapped to next day
+      nextRun.setDate(nextRun.getDate() + 1)
+    }
+    return nextRun
+  }
+  
+  // Next run is at the next 3-hour mark
+  const nextRun = new Date(now)
+  nextRun.setHours(nextHour, 0, 0, 0)
+  return nextRun
+}
+
+const STARTUP_DELAY_MS = 5 * 60 * 1000 // 5 minutes
 
 const watchtowerContainer = computed(() => {
   const list = Array.isArray(props.containers) ? props.containers : []
@@ -38,21 +69,47 @@ const uptimeMs = computed(() => {
   return Math.max(0, props.currentTime - createdMs)
 })
 
+const isInStartupDelay = computed(() => {
+  const up = uptimeMs.value
+  if (!Number.isFinite(up)) return false
+  return up < STARTUP_DELAY_MS
+})
+
 const remainingMs = computed(() => {
   const up = uptimeMs.value
   if (!Number.isFinite(up)) return null
-  const interval = intervalMs.value
-  const mod = up % interval
-  const remaining = interval - mod
-  return remaining === 0 ? interval : remaining
+  
+  // If in startup delay, show time until first run (5 minutes after boot)
+  if (isInStartupDelay.value) {
+    return STARTUP_DELAY_MS - up
+  }
+  
+  // Calculate time until next cron scheduled run
+  const nextRun = getNextCronRun(props.currentTime)
+  return nextRun.getTime() - props.currentTime
 })
 
 const progressPct = computed(() => {
   const up = uptimeMs.value
   if (!Number.isFinite(up)) return 0
-  const interval = intervalMs.value
-  const mod = up % interval
-  return Math.min(100, Math.max(0, (mod / interval) * 100))
+  
+  // During startup delay, show progress toward first run
+  if (isInStartupDelay.value) {
+    return Math.min(100, Math.max(0, (up / STARTUP_DELAY_MS) * 100))
+  }
+  
+  // Calculate progress in current 3-hour interval
+  const now = new Date(props.currentTime)
+  const currentHour = now.getHours()
+  const currentMinute = now.getMinutes()
+  const currentSecond = now.getSeconds()
+  
+  // Time since last 3-hour mark
+  const hoursSinceLastInterval = currentHour % 3
+  const totalSecondsSinceInterval = (hoursSinceLastInterval * 3600) + (currentMinute * 60) + currentSecond
+  const totalSecondsInInterval = 3 * 3600
+  
+  return Math.min(100, Math.max(0, (totalSecondsSinceInterval / totalSecondsInInterval) * 100))
 })
 
 const nextCheckTime = computed(() => {
