@@ -181,26 +181,26 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-200 font-sans flex flex-col lg:flex-row">
+  <div class="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-slate-200 font-sans flex flex-col lg:flex-row">
     
     <!-- Main Content -->
     <main class="flex-1 min-w-0 order-1 lg:order-1">
         <!-- Top Bar -->
-        <div class="sticky top-0 z-30 bg-slate-50/80 dark:bg-[#09090b]/80 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-6 py-4">
-            <div class="relative max-w-2xl">
+        <div class="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-6 py-5">
+            <div class="relative">
                <input
                  v-model="appSearch"
                  type="text"
                  placeholder="Search applications..."
-                 class="w-full bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all font-sans"
+                 class="w-full bg-white dark:bg-[#0c0c0e] border-2 border-slate-200 dark:border-slate-700 rounded-xl pl-12 pr-12 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-sans placeholder:text-slate-400 shadow-sm hover:border-slate-300 dark:hover:border-slate-600"
                />
-               <Search :size="16" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+               <Search :size="18" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                <button 
                   v-if="appSearch"
                   @click="appSearch = ''"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                  class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
-                  <X :size="14" />
+                  <X :size="16" />
                </button>
             </div>
             
