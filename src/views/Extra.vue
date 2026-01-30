@@ -122,7 +122,7 @@ const externalItems = [
 
 <template>
   <main class="flex flex-col items-center justify-center min-h-screen bg-slate-50 text-slate-900 dark:bg-black dark:text-white px-4 py-12">
-    <div class="w-full p-6 sm:p-10 lg:p-14 mx-auto animate-fade-in-up">
+    <div class="w-full p-6 sm:p-10 lg:p-14 mx-auto animate-fade-in-up space-y-12">
       <!-- Navigation Grid -->
       <section aria-label="Navigation" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
         <router-link
@@ -166,7 +166,10 @@ const externalItems = [
             </ul>
           </div>
         </router-link>
+      </section>
 
+      <!-- External Links Grid -->
+      <section aria-label="External Links" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
         <a
           v-for="item in externalItems"
           :key="item.href"
