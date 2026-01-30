@@ -382,7 +382,17 @@ onUnmounted(() => {
 
         <!-- Volumes (Moved Up) -->
         <div v-if="containerVolumes.length > 0" class="space-y-4">
-           <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 px-1">Attached Storage</h3>
+           <div class="space-y-2">
+             <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 px-1">Attached Storage</h3>
+             <div class="flex items-start gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/30 rounded-lg">
+               <div class="shrink-0 mt-0.5">
+                 <Share2 :size="16" class="text-blue-600 dark:text-blue-400" />
+               </div>
+               <div class="text-xs text-blue-900 dark:text-blue-200">
+                 <span class="font-semibold">Access via WebDAV:</span> Browse volumes on any device using WebDAV protocol. Click <span class="font-mono bg-blue-100 dark:bg-blue-950/50 px-1 py-0.5 rounded">Browse Files</span> to start a temporary WebDAV server and mount volumes as network drives.
+               </div>
+             </div>
+           </div>
            <div class="grid gap-3">
               <div v-for="volume in containerVolumes" :key="volume.name" 
                    class="group bg-white dark:bg-[#0c0c0e] border border-slate-200 dark:border-slate-800 rounded-lg p-4 flex items-center justify-between hover:border-blue-500/50 transition-colors">
