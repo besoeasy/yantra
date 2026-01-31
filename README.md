@@ -1,6 +1,3 @@
-<img width="2014" height="1395" alt="image" src="https://github.com/user-attachments/assets/70b654e1-2e80-4b1b-8bf4-3ab51bea6b87" />
-
-
 <div align="center">
 
 # ⚙️ Yantra
@@ -123,6 +120,12 @@ Always ships the newest app releases regardless of your Yantra version—updates
 </table>
 
 ---
+
+## Live Screenshots (GIF)
+<img src="ipfs://QmYzGtSazMMAZQ8ebKytukketa7mtzJF29KZCPt47jv2g7?filename=main.gif" alt="Main App" />
+<img src="ipfs://QmStcRpjf7mMpyxU8FxsvqQXFyzAWQsxvktRDgDDc637EW?filename=main.gif" alt="Temporary Install" />
+<img src="ipfs://Qmeq5gJ9zDyp9y5PKMvy1C7Dp3GJsbs2pLVWpMQBjf2CkZ?filename=main.gif" alt="Virutal Volumes" />
+
 
 ## 🧭 Why Yantra
 
