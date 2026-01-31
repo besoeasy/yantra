@@ -43,13 +43,13 @@ docker run -d \
 
 ## ✨ At a Glance
 
-| | |
-|---|---|
-| **Philosophy** | 📦 App Store (not an OS replacement) |
-| **Hardware** | 💻 Use your existing PC/Laptop |
-| **Installation** | 🚀 Single Docker command |
-| **Commitment** | 🎯 Zero—install, use, delete |
-| **Ecosystem** | 🔓 100% Docker Compose (no lock-in) |
+|                    |                                                 |
+| ------------------ | ----------------------------------------------- |
+| **Philosophy**     | 📦 App Store (not an OS replacement)            |
+| **Hardware**       | 💻 Use your existing PC/Laptop                  |
+| **Installation**   | 🚀 Single Docker command                        |
+| **Commitment**     | 🎯 Zero—install, use, delete                    |
+| **Ecosystem**      | 🔓 100% Docker Compose (no lock-in)             |
 | **Resource Usage** | ⚡ On-demand (nothing runs unless you start it) |
 
 ---
@@ -61,18 +61,21 @@ docker run -d \
 <td width="33%" valign="top">
 
 ### ⚡ One-Click Deploys
+
 Instant access to popular self-hosted apps with clean defaults and smart presets.
 
 </td>
 <td width="33%" valign="top">
 
 ### ⏱️ Temporary Installations
+
 Set expiration times and auto-delete apps when you’re done.
 
 </td>
 <td width="33%" valign="top">
 
 ### 🔄 Multiple Instances
+
 Run the same app multiple times with different configurations.
 
 </td>
@@ -81,18 +84,21 @@ Run the same app multiple times with different configurations.
 <td width="33%" valign="top">
 
 ### 📂 Direct Volume Access
+
 Browse and manage app data files directly from the UI.
 
 </td>
 <td width="33%" valign="top">
 
 ### 🧹 Auto-Cleanup
+
 Removes old unused Docker images (10+ days) to free disk space.
 
 </td>
 <td width="33%" valign="top">
 
 ### 🎨 Premium UI
+
 Modern Vue.js interface that feels fast and polished.
 
 </td>
@@ -101,18 +107,21 @@ Modern Vue.js interface that feels fast and polished.
 <td width="33%" valign="top">
 
 ### 🧩 Filesystem Safe
+
 Yantra never modifies your host filesystem. App data lives in isolated Docker volumes and is removed when you uninstall an app.
 
 </td>
 <td width="33%" valign="top">
 
 ### ⚙️ Auto Configuration
+
 Automatic port mapping and smart defaults so you can launch apps without spending 10 minutes on setup.
 
 </td>
 <td width="33%" valign="top">
 
 ### 🆕 Always Latest Apps
+
 Always ships the newest app releases regardless of your Yantra version—updates come directly from the software source.
 
 </td>
@@ -122,10 +131,10 @@ Always ships the newest app releases regardless of your Yantra version—updates
 ---
 
 ## Live Screenshots (GIF)
-<img src="ipfs://QmYzGtSazMMAZQ8ebKytukketa7mtzJF29KZCPt47jv2g7?filename=main.gif" alt="Main App" />
-<img src="ipfs://QmStcRpjf7mMpyxU8FxsvqQXFyzAWQsxvktRDgDDc637EW?filename=main.gif" alt="Temporary Install" />
-<img src="ipfs://Qmeq5gJ9zDyp9y5PKMvy1C7Dp3GJsbs2pLVWpMQBjf2CkZ?filename=main.gif" alt="Virutal Volumes" />
 
+<img src="https://dweb.link/ipfs/QmYzGtSazMMAZQ8ebKytukketa7mtzJF29KZCPt47jv2g7?filename=main.gif" alt="Main App" />
+<img src="https://dweb.link/ipfs/QmStcRpjf7mMpyxU8FxsvqQXFyzAWQsxvktRDgDDc637EW?filename=main.gif" alt="Temporary Install" />
+<img src="https://dweb.link/ipfs/Qmeq5gJ9zDyp9y5PKMvy1C7Dp3GJsbs2pLVWpMQBjf2CkZ?filename=main.gif" alt="Virutal Volumes" />
 
 ## 🧭 Why Yantra
 
