@@ -133,13 +133,17 @@ Always ships the newest app releases regardless of your Yantra version—updates
 ## Live Screenshots (GIF)
 
 ### Main App
-![Main App](https://dweb.link/ipfs/QmYzGtSazMMAZQ8ebKytukketa7mtzJF29KZCPt47jv2g7?filename=main.gif)
+![main](https://github.com/user-attachments/assets/2e107ef8-2411-4d62-9886-9fb917b9993d)
 
 ### Temporary Install
-![Temporary Install](https://dweb.link/ipfs/QmStcRpjf7mMpyxU8FxsvqQXFyzAWQsxvktRDgDDc637EW?filename=main.gif)
+![temp install](https://github.com/user-attachments/assets/3a9604fa-d634-4329-aa73-ed4658145b00)
 
 ### Virtual Volumes
-![Virtual Volumes](https://dweb.link/ipfs/Qmeq5gJ9zDyp9y5PKMvy1C7Dp3GJsbs2pLVWpMQBjf2CkZ?filename=main.gif)
+![temporary browser](https://github.com/user-attachments/assets/862fb852-e52d-4f94-8372-234c1d6c6b51)
+
+### Dark Mode
+![dark mode](https://github.com/user-attachments/assets/e5dc0ad8-0181-4676-b7b1-1cc961a6b1ed)
+
 
 ## 🧭 Why Yantra
 
