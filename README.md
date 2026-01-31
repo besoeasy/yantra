@@ -97,13 +97,27 @@ Modern Vue.js interface that feels fast and polished.
 
 </td>
 </tr>
+<tr>
+<td width="33%" valign="top">
+
+### 🧩 Filesystem Safe
+Yantra never modifies your host filesystem. App data lives in isolated Docker volumes and is removed when you uninstall an app.
+
+</td>
+<td width="33%" valign="top">
+
+### ⚙️ Auto Configuration
+Automatic port mapping and smart defaults so you can launch apps without spending 10 minutes on setup.
+
+</td>
+<td width="33%" valign="top">
+
+### 🆕 Always Latest Apps
+Always ships the newest app releases regardless of your Yantra version—updates come directly from the software source.
+
+</td>
+</tr>
 </table>
-
-### What makes Yantra different
-
-- **🧩 Filesystem Safe** — Yantra never modifies your host filesystem. App data lives in isolated Docker volumes and is removed when you uninstall an app.
-- **⚙️ Auto Configuration** — Automatic port mapping and smart defaults so you can launch apps without spending 10 minutes on setup.
-- **🆕 Always Latest Apps** — Always ships the newest app releases regardless of your Yantra version—updates come directly from the software source.
 
 ---
 
