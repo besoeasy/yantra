@@ -1,7 +1,7 @@
 # =========================
 # Builder stage (Vue build)
 # =========================
-FROM docker.io/library/node:lts AS builder
+FROM docker.io/library/node:slim AS builder
 
 WORKDIR /app
 
@@ -9,13 +9,16 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install ALL deps (including dev)
-RUN npm ci || npm install
+RUN npm ci --prefer-offline --no-audit || npm install
 
 # Copy source
 COPY . .
 
 # Build Vue app
 RUN npm run build
+
+# Clean up build artifacts and cache
+RUN rm -rf node_modules .npm
 
 # =========================
 # Production stage
@@ -32,7 +35,10 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install only production deps
-RUN npm ci --omit=dev || npm install --omit=dev
+RUN npm ci --prefer-offline --no-audit --omit=dev || npm install --omit=dev
+
+# Clean npm cache
+RUN npm cache clean --force
 
 # Copy built frontend
 COPY --from=builder /app/dist ./dist
