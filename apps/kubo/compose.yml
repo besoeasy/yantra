@@ -1,6 +1,7 @@
 services:
     kubo:
         container_name: kubo
+        command: ["ipfs", "init", "--profile=lowpower"]
         volumes:
             - ipfs_staging:/export
             - ipfs_data:/data/ipfs
