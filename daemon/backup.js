@@ -63,7 +63,7 @@ export async function listBackups(s3Config, log) {
     // List directories in the backup bucket (each backup is a directory)
     const { stdout, stderr, exitCode } = await spawnProcess(
       "rclone",
-      ["lsjson", `s3:${s3Config.bucket}/yantra-backups/`],
+      ["lsjson", `s3:${s3Config.bucket}/yantra-backups/`, "--recursive"],
       { env: rcloneEnv }
     );
 
@@ -78,25 +78,27 @@ export async function listBackups(s3Config, log) {
 
     const items = JSON.parse(stdout || "[]");
 
-    // Filter directories (backups) and get metadata
+    // Filter metadata files (backups) and get metadata
     const backups = [];
     for (const item of items) {
-      if (item.IsDir && item.Name.startsWith("backup-")) {
-        try {
-          // Try to read metadata file
-          const metaResult = await spawnProcess(
-            "rclone",
-            ["cat", `s3:${s3Config.bucket}/yantra-backups/${item.Name}/metadata.json`],
-            { env: rcloneEnv }
-          );
+      if (item.IsDir) continue;
 
-          if (metaResult.exitCode === 0) {
-            const metadata = JSON.parse(metaResult.stdout);
-            backups.push(metadata);
-          }
-        } catch (err) {
-          log?.("warn", `Failed to read metadata for ${item.Name}:`, err.message);
+      const itemPath = item.Path || item.Name || "";
+      if (!itemPath.endsWith("metadata.json")) continue;
+
+      try {
+        const metaResult = await spawnProcess(
+          "rclone",
+          ["cat", `s3:${s3Config.bucket}/yantra-backups/${itemPath}`],
+          { env: rcloneEnv }
+        );
+
+        if (metaResult.exitCode === 0) {
+          const metadata = JSON.parse(metaResult.stdout);
+          backups.push(metadata);
         }
+      } catch (err) {
+        log?.("warn", `Failed to read metadata for ${itemPath}:`, err.message);
       }
     }
 
