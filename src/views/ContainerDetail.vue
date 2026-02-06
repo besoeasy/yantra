@@ -20,6 +20,7 @@ let statsInterval = null
 const autoScrollLogs = ref(true)
 const currentTime = ref(Date.now())
 const activeTab = ref('resources')
+const showOnlyDescribedPorts = ref(false)
 
 // Backup state
 const s3Configured = ref(false)
@@ -109,6 +110,14 @@ const allPortMappings = computed(() => {
     if (!a.hostPort && b.hostPort) return 1
     return parseInt(a.containerPort) - parseInt(b.containerPort)
   })
+})
+
+// Filtered port mappings based on description availability
+const filteredPortMappings = computed(() => {
+  if (!showOnlyDescribedPorts.value) {
+    return allPortMappings.value
+  }
+  return allPortMappings.value.filter(mapping => mapping.label)
 })
 
 // Check if container has expiration
@@ -645,52 +654,71 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- Network Access (Moved from Right) -->
+        <!-- Network Access -->
         <div v-if="allPortMappings.length > 0" class="space-y-3">
-           <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Network Access</h3>
-           <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden shadow-sm">
-             <div class="overflow-x-auto">
-               <table class="w-full text-left text-sm">
-                 <thead>
-                   <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold uppercase text-slate-500">
-                     <th class="px-4 py-3 font-medium">Protocol</th>
-                     <th class="px-4 py-3 font-medium">Host Port</th>
-                     <th class="px-4 py-3 font-medium">Container Port</th>
-                     <th class="px-4 py-3 font-medium w-full">Description</th>
-                     <th class="px-4 py-3 text-right">Action</th>
-                   </tr>
-                 </thead>
-                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
-                   <tr v-for="(mapping, i) in allPortMappings" :key="i" class="hover:bg-slate-50 dark:hover:bg-slate-900/20">
-                     <td class="px-4 py-3">
-                       <div class="flex items-center gap-2">
-                         <span class="font-mono text-xs font-bold uppercase text-slate-700 dark:text-slate-300">{{ mapping.protocol }}</span>
-                         <span v-if="mapping.labeledProtocol" class="text-[10px] px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded border border-slate-200 dark:border-slate-700 uppercase">{{ mapping.labeledProtocol }}</span>
-                       </div>
-                     </td>
-                     <td class="px-4 py-3 font-mono">
-                       <span v-if="mapping.hostPort" class="text-slate-900 dark:text-white font-medium">{{ mapping.hostPort }}</span>
-                       <span v-else class="text-slate-400 text-xs italic">Internal</span>
-                     </td>
-                     <td class="px-4 py-3 font-mono text-slate-600 dark:text-slate-400">
-                       {{ mapping.containerPort }}
-                     </td>
-                     <td class="px-4 py-3 text-slate-600 dark:text-slate-400 text-xs">
-                        {{ mapping.label || '-' }}
-                     </td>
-                     <td class="px-4 py-3 text-right">
-                        <a v-if="mapping.hostPort && mapping.protocol === 'tcp'"
-                           :href="appUrl(mapping.hostPort, mapping.labeledProtocol || 'http')"
-                           target="_blank"
-                           class="inline-flex items-center justify-center p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
-                           title="Open in Browser"
-                        >
-                           <ExternalLink :size="16" />
-                        </a>
-                     </td>
-                   </tr>
-                 </tbody>
-               </table>
+           <div class="flex items-center justify-between">
+             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Network Access</h3>
+             <div class="flex items-center gap-1 rounded-full bg-slate-100/80 dark:bg-slate-900/50 p-1">
+               <button
+                 @click="showOnlyDescribedPorts = false"
+                 :class="!showOnlyDescribedPorts ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+                 class="px-3 py-1.5 text-xs rounded-full transition-all font-medium"
+               >
+                 All Ports
+               </button>
+               <button
+                 @click="showOnlyDescribedPorts = true"
+                 :class="showOnlyDescribedPorts ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+                 class="px-3 py-1.5 text-xs rounded-full transition-all font-medium"
+               >
+                 Described
+               </button>
+             </div>
+           </div>
+           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+             <div v-for="(mapping, i) in filteredPortMappings" :key="i" 
+                  class="group bg-white dark:bg-[#1c1c1e] border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-5 hover:shadow-md hover:border-blue-500/50 transition-all">
+               
+               <div class="flex items-start justify-between mb-3">
+                 <div class="flex items-start gap-3 flex-1 min-w-0">
+                   <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white shrink-0 shadow-sm">
+                     <Network :size="20" />
+                   </div>
+                   <div class="min-w-0 flex-1">
+                     <div class="flex items-center gap-2 mb-1">
+                       <span class="font-mono text-xs font-bold uppercase text-slate-700 dark:text-slate-300">{{ mapping.protocol }}</span>
+                       <span v-if="mapping.labeledProtocol" class="text-[10px] px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg uppercase font-semibold">{{ mapping.labeledProtocol }}</span>
+                     </div>
+                     <div class="text-xs text-slate-500 dark:text-slate-400 truncate" :title="mapping.label">
+                       {{ mapping.label || 'Network Port' }}
+                     </div>
+                   </div>
+                 </div>
+               </div>
+
+               <div class="space-y-2">
+                 <div class="flex items-center justify-between text-xs">
+                   <span class="text-slate-500">Host Port</span>
+                   <span v-if="mapping.hostPort" class="font-mono font-semibold text-slate-900 dark:text-white">{{ mapping.hostPort }}</span>
+                   <span v-else class="text-slate-400 italic">Internal</span>
+                 </div>
+                 <div class="flex items-center justify-between text-xs">
+                   <span class="text-slate-500">Container Port</span>
+                   <span class="font-mono text-slate-700 dark:text-slate-300">{{ mapping.containerPort }}</span>
+                 </div>
+               </div>
+
+               <a v-if="mapping.hostPort && mapping.protocol === 'tcp'"
+                  :href="appUrl(mapping.hostPort, mapping.labeledProtocol || 'http')"
+                  target="_blank"
+                  class="mt-4 w-full flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all text-xs font-semibold"
+               >
+                  <ExternalLink :size="14" />
+                  Open in Browser
+               </a>
+               <div v-else class="mt-4 w-full flex items-center justify-center px-3 py-2 bg-slate-100 dark:bg-slate-800/50 text-slate-400 rounded-lg text-xs">
+                 Internal Only
+               </div>
              </div>
            </div>
         </div>
