@@ -19,6 +19,7 @@ const showVolumeMenu = ref({})
 let statsInterval = null
 const autoScrollLogs = ref(true)
 const currentTime = ref(Date.now())
+const activeTab = ref('resources')
 
 // Backup state
 const s3Configured = ref(false)
@@ -824,77 +825,129 @@ onUnmounted(() => {
            </div>
         </div>
 
-        <!-- Terminal Logs (Moved Down) -->
-        <div class="flex flex-col rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden bg-[#1e1e1e] shadow-sm">
-           <div class="flex items-center justify-between px-4 py-2 bg-[#252526] border-b border-[#333]">
-              <div class="flex items-center gap-2 text-xs font-medium text-[#cccccc]">
-                 <Terminal :size="14" />
-                 <span class="uppercase tracking-wider">Output</span>
+        <!-- System Panel (Tabs) -->
+        <div class="bg-white dark:bg-[#0c0c0e] rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+          <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <ShieldCheck :size="14" />
+              System
+            </div>
+            <div class="flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-900 p-1">
+              <button
+                @click="activeTab = 'resources'"
+                :class="activeTab === 'resources' ? 'bg-white dark:bg-[#0c0c0e] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+                class="px-3 py-1 text-xs rounded-full transition-all"
+              >
+                Resources
+              </button>
+              <button
+                @click="activeTab = 'output'"
+                :class="activeTab === 'output' ? 'bg-white dark:bg-[#0c0c0e] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+                class="px-3 py-1 text-xs rounded-full transition-all"
+              >
+                Output
+              </button>
+              <button
+                @click="activeTab = 'env'"
+                :class="activeTab === 'env' ? 'bg-white dark:bg-[#0c0c0e] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+                class="px-3 py-1 text-xs rounded-full transition-all"
+              >
+                Environment
+              </button>
+            </div>
+          </div>
+
+          <div class="p-4">
+            <!-- Resources Tab -->
+            <div v-if="activeTab === 'resources'">
+              <div v-if="containerStats" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+                  <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 mb-2">
+                    <Cpu :size="14" /> CPU
+                  </div>
+                  <div class="text-2xl font-mono font-semibold text-slate-900 dark:text-white">
+                    {{ containerStats.cpu.percent }}%
+                  </div>
+                </div>
+                
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+                  <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 mb-2">
+                    <Activity :size="14" /> RAM
+                  </div>
+                  <div class="text-2xl font-mono font-semibold text-slate-900 dark:text-white">
+                    {{ containerStats.memory.percent }}%
+                  </div>
+                </div>
+                
+                <div class="md:col-span-2 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                  <div>
+                    <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Network I/O</div>
+                    <div class="text-sm font-mono font-medium text-slate-900 dark:text-white">
+                      <span class="text-emerald-500">↓ {{ formatBytes(containerStats.network.rx) }}</span>
+                      <span class="text-slate-300 mx-2">|</span>
+                      <span class="text-blue-500">↑ {{ formatBytes(containerStats.network.tx) }}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Block I/O</div>
+                    <div class="text-sm font-mono font-medium text-slate-900 dark:text-white text-right">
+                      {{ formatBytes(containerStats.blockIO.read) }} / {{ formatBytes(containerStats.blockIO.write) }}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="flex items-center gap-2">
-                 <button @click="autoScrollLogs = !autoScrollLogs" class="p-1 rounded hover:bg-[#3c3c3c] text-[#cccccc]" :title="autoScrollLogs ? 'Pause Auto-Scroll' : 'Enable Auto-Scroll'">
+              <div v-else class="text-sm text-slate-500">No resource data available.</div>
+            </div>
+
+            <!-- Output Tab -->
+            <div v-else-if="activeTab === 'output'" class="space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                  <Terminal :size="14" /> Output Console
+                </div>
+                <div class="flex items-center gap-2">
+                  <button @click="autoScrollLogs = !autoScrollLogs" class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-500" :title="autoScrollLogs ? 'Pause Auto-Scroll' : 'Enable Auto-Scroll'">
                     <component :is="autoScrollLogs ? Pause : Play" :size="14" />
-                 </button>
-                 <button @click="fetchContainerLogs" class="p-1 rounded hover:bg-[#3c3c3c] text-[#cccccc]" :title="refreshingLogs ? 'Refreshing...' : 'Refresh'">
+                  </button>
+                  <button @click="fetchContainerLogs" class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-500" :title="refreshingLogs ? 'Refreshing...' : 'Refresh'">
                     <RefreshCw :size="14" :class="{ 'animate-spin': refreshingLogs }" />
-                 </button>
+                  </button>
+                </div>
               </div>
-           </div>
-           
-           <div 
-             id="terminal-logs"
-             class="h-96 overflow-y-auto p-4 font-mono text-xs leading-5 text-[#d4d4d4] scrollbar-thin scrollbar-thumb-[#424242] scrollbar-track-transparent"
-           >
-              <div v-if="containerLogs.length === 0" class="flex flex-col items-center justify-center h-full text-[#666]">
-                 <div class="mb-2 opacity-50">No output logs found</div>
+              
+              <div 
+                id="terminal-logs"
+                class="h-96 overflow-y-auto p-4 font-mono text-xs leading-5 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-[#1e1e1e] rounded-lg border border-slate-200 dark:border-slate-800 scrollbar-thin scrollbar-thumb-[#424242] scrollbar-track-transparent"
+              >
+                <div v-if="containerLogs.length === 0" class="flex flex-col items-center justify-center h-full text-slate-400">
+                  <div class="mb-2 opacity-70">No output logs found</div>
+                </div>
+                <div v-else class="space-y-0.5">
+                  <div v-for="(log, i) in containerLogs" :key="i" class="break-all whitespace-pre-wrap hover:bg-slate-100 dark:hover:bg-[#2a2d2e] px-1 -mx-1 rounded-sm">
+                    <span class="text-slate-400 select-none mr-2 w-6 inline-block text-right">{{ i + 1 }}</span>{{ log }}
+                  </div>
+                </div>
               </div>
-              <div v-else class="space-y-0.5">
-                 <div v-for="(log, i) in containerLogs" :key="i" class="break-all whitespace-pre-wrap hover:bg-[#2a2d2e] px-1 -mx-1 rounded-sm">
-                    <span class="text-[#569cd6] opacity-50 select-none mr-2 w-6 inline-block text-right">{{ i + 1 }}</span>{{ log }}
-                 </div>
+            </div>
+
+            <!-- Environment Tab -->
+            <div v-else class="space-y-3">
+              <div class="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
+                <Lock :size="14" /> Environment
               </div>
-           </div>
+              <div v-if="selectedContainer.env && selectedContainer.env.length > 0" class="bg-slate-50 dark:bg-[#1e1e1e] rounded-lg border border-slate-200 dark:border-slate-800 p-4 max-h-80 overflow-y-auto custom-scrollbar">
+                <div v-for="(envVar, i) in selectedContainer.env" :key="i" class="font-mono text-[10px] mb-2 last:mb-0 break-all">
+                  <div class="text-slate-500 mb-0.5">{{ envVar.split('=')[0] }}</div>
+                  <div class="text-slate-800 dark:text-slate-200 pl-2">{{ envVar.split('=').slice(1).join('=') }}</div>
+                </div>
+              </div>
+              <div v-else class="text-sm text-slate-500">No environment variables available.</div>
+            </div>
+          </div>
         </div>
 
       <!-- RIGHT COLUMN (now stacked) -->
          
-         <!-- Stats Grid -->
-         <div v-if="containerStats" class="grid grid-cols-2 gap-4">
-            <div class="bg-white dark:bg-[#0c0c0e] p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-               <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 mb-2">
-                  <Cpu :size="14" /> CPU
-               </div>
-               <div class="text-2xl font-mono font-semibold text-slate-900 dark:text-white">
-                  {{ containerStats.cpu.percent }}%
-               </div>
-            </div>
-            
-            <div class="bg-white dark:bg-[#0c0c0e] p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-               <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 mb-2">
-                  <Activity :size="14" /> RAM
-               </div>
-               <div class="text-2xl font-mono font-semibold text-slate-900 dark:text-white">
-                  {{ containerStats.memory.percent }}%
-               </div>
-            </div>
-            
-            <div class="col-span-2 bg-white dark:bg-[#0c0c0e] p-4 rounded-lg border border-slate-200 dark:border-slate-800 flex justify-between items-center">
-               <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Network I/O</div>
-                  <div class="text-sm font-mono font-medium text-slate-900 dark:text-white">
-                     <span class="text-emerald-500">↓ {{ formatBytes(containerStats.network.rx) }}</span>
-                     <span class="text-slate-300 mx-2">|</span>
-                     <span class="text-blue-500">↑ {{ formatBytes(containerStats.network.tx) }}</span>
-                  </div>
-               </div>
-               <div>
-                  <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Block I/O</div>
-                  <div class="text-sm font-mono font-medium text-slate-900 dark:text-white text-right">
-                     {{ formatBytes(containerStats.blockIO.read) }} / {{ formatBytes(containerStats.blockIO.write) }}
-                  </div>
-               </div>
-            </div>
-         </div>
 
 
          <!-- Actions -->
@@ -915,16 +968,6 @@ onUnmounted(() => {
             </p>
          </div>
 
-         <!-- Environment Vars (Simplified) -->
-         <div v-if="selectedContainer.env && selectedContainer.env.length > 0" class="space-y-4">
-             <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 px-1">Environment</h3>
-             <div class="bg-[#1e1e1e] rounded-lg border border-slate-800 p-4 max-h-60 overflow-y-auto custom-scrollbar">
-                <div v-for="(envVar, i) in selectedContainer.env" :key="i" class="font-mono text-[10px] mb-2 last:mb-0 break-all">
-                   <div class="text-[#569cd6] mb-0.5">{{ envVar.split('=')[0] }}</div>
-                   <div class="text-[#ce9178] pl-2">{{ envVar.split('=').slice(1).join('=') }}</div>
-                </div>
-             </div>
-         </div>
 
     </main>
   </div>
