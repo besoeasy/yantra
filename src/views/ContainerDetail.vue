@@ -697,132 +697,121 @@ onUnmounted(() => {
 
         <!-- Storage (Attached + Backups) -->
         <div v-if="containerVolumes.length > 0" class="space-y-3">
-           <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Storage</h3>
-           <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-5 space-y-6 shadow-sm">
-             <div class="space-y-2">
-               <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Attached Storage</div>
-               <div class="flex items-start gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/30 rounded-lg">
-                 <div class="shrink-0 mt-0.5">
-                   <Share2 :size="16" class="text-blue-600 dark:text-blue-400" />
-                 </div>
-                 <div class="text-xs text-blue-900 dark:text-blue-200">
-                   <span class="font-semibold">Access via WebDAV:</span> Browse volumes on any device using WebDAV protocol. Click <span class="font-mono bg-blue-100 dark:bg-blue-950/50 px-1 py-0.5 rounded">Browse Files</span> to start a temporary WebDAV server and mount volumes as network drives.
-                 </div>
-               </div>
-             </div>
+           <div class="flex items-center justify-between">
+             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Storage</h3>
+             <button
+               v-if="s3Configured"
+               @click="backupAllVolumes"
+               :disabled="backingUp"
+               class="text-xs px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
+             >
+               {{ backingUp ? 'Backing up...' : 'Backup All' }}
+             </button>
+           </div>
 
-             <div class="grid gap-3">
+           <div v-if="!s3Configured" class="bg-yellow-100/50 dark:bg-yellow-900/20 rounded-xl p-3.5 flex items-start gap-3">
+             <div class="text-yellow-600 dark:text-yellow-400 shrink-0">
+               <AlertCircle :size="16" />
+             </div>
+             <p class="text-xs text-yellow-900 dark:text-yellow-200">
+               <span class="font-semibold">S3 storage not configured.</span>
+               <router-link to="/minioconfig" class="underline hover:text-yellow-950 dark:hover:text-yellow-100 font-semibold ml-1">Configure now</router-link> to enable backups.
+             </p>
+           </div>
+
+           <div class="grid gap-3">
                <div v-for="volume in containerVolumes" :key="volume.name" 
-                  class="group bg-slate-50/50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800/50 rounded-xl p-4 space-y-3 hover:border-blue-500/50 transition-all">
+                  class="group bg-white dark:bg-[#1c1c1e] border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-5 hover:shadow-md hover:border-blue-500/50 transition-all">
                    
-                 <div class="flex items-center justify-between gap-4">
-                  <div class="flex items-center gap-4 min-w-0">
-                    <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
-                      <HardDrive :size="20" />
+                 <div class="flex items-start justify-between gap-4 mb-4">
+                  <div class="flex items-start gap-3.5 min-w-0 flex-1">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white shrink-0 shadow-sm">
+                      <HardDrive :size="22" />
                     </div>
-                    <div class="min-w-0">
-                      <div class="font-medium text-slate-900 dark:text-white truncate text-sm" :title="volume.name">{{ volume.name }}</div>
-                      <div class="text-xs text-slate-500 font-mono truncate">{{ volume.destination }}</div>
+                    <div class="min-w-0 flex-1">
+                      <div class="font-semibold text-slate-900 dark:text-white truncate" :title="volume.name">{{ volume.name }}</div>
+                      <div class="text-xs text-slate-500 dark:text-slate-400 font-mono truncate mt-0.5">{{ volume.destination }}</div>
+                      <div class="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5">
+                        Latest backup: <span class="font-medium">{{ getLatestBackupAge(volume.name) }}</span>
+                      </div>
                     </div>
                   </div>
+                </div>
 
-                  <div class="flex items-center gap-2">
-                    <div class="relative min-w-[120px] flex justify-end">
-                      <div v-if="browsingVolume[volume.name]" class="text-xs text-blue-500 animate-pulse font-medium">Starting...</div>
-                      <button 
-                        v-else-if="!showVolumeMenu[volume.name]"
-                        @click="showVolumeMenu[volume.name] = true"
-                        class="px-3 py-1.5 text-xs font-medium bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-blue-100 hover:text-blue-600 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 transition-all"
-                      >
-                        Browse
-                      </button>
-                           
-                      <div v-else class="flex items-center gap-1 animate-in fade-in zoom-in-95 duration-200">
-                        <button @click="browseVolume(volume.name, 60)" class="px-2 py-1 text-[10px] font-bold uppercase bg-blue-600 text-white rounded hover:bg-blue-700" title="1 Hour Access">
-                          1H
+                <div class="flex items-center gap-2 flex-wrap">
+                  <div v-if="browsingVolume[volume.name]" class="text-xs text-blue-600 dark:text-blue-400 animate-pulse font-medium px-3 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    Starting WebDAV server...
+                  </div>
+                  
+                  <button 
+                    v-else-if="!showVolumeMenu[volume.name]"
+                    @click="showVolumeMenu[volume.name] = true"
+                    class="px-3.5 py-2 text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                  >
+                    Browse Files
+                  </button>
+                       
+                  <div v-else class="flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-200">
+                    <button @click="browseVolume(volume.name, 60)" class="px-2.5 py-2 text-[10px] font-bold uppercase bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all" title="1 Hour Access">
+                      1H
+                    </button>
+                    <button @click="browseVolume(volume.name, 0)" class="px-2.5 py-2 text-[10px] font-bold uppercase bg-slate-700 dark:bg-slate-600 text-white rounded-lg hover:bg-slate-600 dark:hover:bg-slate-500 transition-all" title="Permanent Access">
+                      Perm
+                    </button>
+                  </div>
+
+                  <button
+                    @click="backupAllVolumes"
+                    :disabled="backingUp || !s3Configured"
+                    class="px-3.5 py-2 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    title="Backup this volume"
+                  >
+                    Backup
+                  </button>
+                  <button
+                    @click="toggleRestoreMenu(volume.name)"
+                    :disabled="!hasBackups(volume.name) || !s3Configured"
+                    class="px-3.5 py-2 text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  >
+                    Restore
+                  </button>
+                </div>
+
+                <div
+                  v-if="showRestoreMenu[volume.name] && hasBackups(volume.name)"
+                  class="mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-800/50"
+                >
+                  <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">Available Backups</div>
+                  <div class="space-y-1.5 max-h-40 overflow-y-auto">
+                    <div
+                      v-for="backup in volumeBackups[volume.name]"
+                      :key="backup.key"
+                      class="flex items-center justify-between py-2 px-3 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-all"
+                    >
+                      <div class="flex-1 min-w-0">
+                        <div class="font-mono text-xs text-slate-900 dark:text-white">{{ formatBackupDate(backup.timestamp) }}</div>
+                        <div class="text-slate-500 dark:text-slate-400 text-[10px] mt-0.5">{{ formatBytes(backup.size) }}</div>
+                      </div>
+                      <div class="flex gap-1.5 ml-3">
+                        <button
+                          @click="restoreBackup(volume.name, backup.key)"
+                          class="px-2.5 py-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all text-[10px] font-bold"
+                        >
+                          Restore
                         </button>
-                        <button @click="browseVolume(volume.name, 0)" class="px-2 py-1 text-[10px] font-bold uppercase bg-slate-700 text-white rounded hover:bg-slate-600" title="Permanent Access">
-                          Perm
+                        <button
+                          @click="deleteBackupFile(volume.name, backup.key)"
+                          class="px-2.5 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all text-[10px] font-bold"
+                        >
+                          Delete
                         </button>
                       </div>
                     </div>
-
-                    <button
-                      @click="backupAllVolumes"
-                      :disabled="backingUp || !s3Configured"
-                      class="text-xs px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all font-medium"
-                      title="Backup this container's volumes"
-                    >
-                      Backup
-                    </button>
-                    <button
-                      @click="toggleRestoreMenu(volume.name)"
-                      :disabled="!hasBackups(volume.name) || !s3Configured"
-                      class="text-xs px-3 py-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all font-medium"
-                    >
-                      Restore
-                    </button>
                   </div>
-                 </div>
-
-                 <div class="text-xs text-slate-500">
-                  Latest backup: {{ getLatestBackupAge(volume.name) }}
-                 </div>
-
-                 <div
-                  v-if="showRestoreMenu[volume.name] && hasBackups(volume.name)"
-                  class="bg-white dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-600 p-2 max-h-40 overflow-y-auto space-y-1"
-                 >
-                  <div
-                    v-for="backup in volumeBackups[volume.name]"
-                    :key="backup.key"
-                    class="flex items-center justify-between py-1.5 px-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-xs"
-                  >
-                    <div>
-                     <div class="font-mono text-xs">{{ formatBackupDate(backup.timestamp) }}</div>
-                     <div class="text-slate-500 text-[10px]">{{ formatBytes(backup.size) }}</div>
-                    </div>
-                    <div class="flex gap-1">
-                     <button
-                      @click="restoreBackup(volume.name, backup.key)"
-                      class="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-all text-[10px]"
-                     >
-                      Restore
-                     </button>
-                     <button
-                      @click="deleteBackupFile(volume.name, backup.key)"
-                      class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-all text-[10px]"
-                     >
-                      Delete
-                     </button>
-                    </div>
-                  </div>
-                 </div>
-
                 </div>
-             </div>
 
-             <div class="border-t border-slate-200 dark:border-slate-800 pt-5 space-y-3">
-               <div class="flex items-center justify-between">
-                 <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Volume Backups</div>
-                 <button
-                   v-if="s3Configured"
-                   @click="backupAllVolumes"
-                   :disabled="backingUp"
-                   class="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
-                 >
-                   {{ backingUp ? 'Backing up...' : 'Backup All' }}
-                 </button>
-               </div>
-
-               <div v-if="!s3Configured" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
-                 <p class="text-xs text-yellow-800 dark:text-yellow-200">
-                   Configure S3 storage to enable backups.
-                   <router-link to="/minioconfig" class="underline hover:text-yellow-900 dark:hover:text-yellow-100 font-semibold">Configure now</router-link>
-                 </p>
-               </div>
+              </div>
              </div>
-           </div>
         </div>
 
         <!-- System Panel (Tabs) -->
