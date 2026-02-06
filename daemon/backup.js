@@ -46,6 +46,7 @@ function createRcloneEnv(s3Config) {
     RCLONE_CONFIG_S3_ACCESS_KEY_ID: s3Config.accessKey,
     RCLONE_CONFIG_S3_SECRET_ACCESS_KEY: s3Config.secretKey,
     RCLONE_CONFIG_S3_REGION: s3Config.region || "us-east-1",
+    RCLONE_CONFIG_S3_FORCE_PATH_STYLE: "true",
   };
 
   if (s3Config.endpoint) {
@@ -60,52 +61,51 @@ export async function listBackups(s3Config, log) {
   try {
     const rcloneEnv = createRcloneEnv(s3Config);
 
-    // List directories in the backup bucket (each backup is a directory)
+    // List app directories in yantra-backup/
     const { stdout, stderr, exitCode } = await spawnProcess(
       "rclone",
-      ["lsjson", `s3:${s3Config.bucket}/yantra-backups/`, "--recursive"],
+      ["lsjson", `s3:${s3Config.bucket}/yantra-backup/`],
       { env: rcloneEnv }
     );
 
     if (exitCode !== 0) {
       // If directory doesn't exist yet (no backups created), return empty array
       if (stderr.includes("directory not found") || stderr.includes("not found")) {
-        log?.("info", "No backups directory found yet - returning empty list");
+        log?.("info", "No backup directory found yet - returning empty list");
         return [];
       }
       throw new Error(`rclone failed: ${stderr}`);
     }
 
-    log?.("info", `rclone lsjson output length: ${stdout.length} bytes`);
     const items = JSON.parse(stdout || "[]");
-    log?.("info", `Found ${items.length} items in S3, filtering for metadata.json files`);
+    log?.("info", `Found ${items.length} app backup folder(s)`);
 
-    // Filter metadata files (backups) and get metadata
+    // Read metadata from each app folder
     const backups = [];
     for (const item of items) {
-      if (item.IsDir) continue;
+      if (!item.IsDir) continue;
 
-      const itemPath = item.Path || item.Name || "";
-      if (!itemPath.endsWith("metadata.json")) continue;
+      const appName = item.Name || item.Path?.replace(/\/$/, "") || "";
+      if (!appName) continue;
 
-      log?.("info", `Found backup metadata at: ${itemPath}`);
+      log?.("info", `Reading backup for app: ${appName}`);
 
       try {
         const metaResult = await spawnProcess(
           "rclone",
-          ["cat", `s3:${s3Config.bucket}/yantra-backups/${itemPath}`],
+          ["cat", `s3:${s3Config.bucket}/yantra-backup/${appName}/metadata.json`],
           { env: rcloneEnv }
         );
 
         if (metaResult.exitCode === 0) {
           const metadata = JSON.parse(metaResult.stdout);
           backups.push(metadata);
-          log?.("info", `Successfully loaded backup: ${metadata.id}`);
+          log?.("info", `Successfully loaded backup for: ${appName}`);
         } else {
-          log?.("warn", `Failed to read metadata for ${itemPath}: exit code ${metaResult.exitCode}, stderr: ${metaResult.stderr}`);
+          log?.("warn", `Failed to read metadata for ${appName}`);
         }
       } catch (err) {
-        log?.("warn", `Failed to read metadata for ${itemPath}:`, err.message);
+        log?.("warn", `Failed to read metadata for ${appName}:`, err.message);
       }
     }
 
@@ -118,7 +118,8 @@ export async function listBackups(s3Config, log) {
 // Create backup of volumes
 export async function createBackup({ volumes, s3Config, name, log, appConfigs = [], apps = [] }) {
   const jobId = generateJobId();
-  const backupId = `backup-${Date.now()}`;
+  // Use first app name as backup folder, or fallback to "volumes" for manual volume backups
+  const backupId = (apps?.[0]?.appId || appConfigs?.[0]?.appId || name || "volumes").replace(/[^a-z0-9-_]/gi, "-");
   const tmpDir = "/tmp";
   let jobTmpDir = null;
   const volumeList = Array.isArray(volumes) ? volumes : [];
@@ -207,7 +208,7 @@ export async function createBackup({ volumes, s3Config, name, log, appConfigs = 
           [
             "copy",
             tarPath,
-            `s3:${s3Config.bucket}/yantra-backups/${backupId}/`,
+            `s3:${s3Config.bucket}/yantra-backup/${backupId}/`,
             "--progress",
           ],
           { env: rcloneEnv }
@@ -275,7 +276,7 @@ export async function createBackup({ volumes, s3Config, name, log, appConfigs = 
           [
             "copy",
             appTarPath,
-            `s3:${s3Config.bucket}/yantra-backups/${backupId}/app-configs/`,
+            `s3:${s3Config.bucket}/yantra-backup/${backupId}/app-configs/`,
           ],
           { env: rcloneEnv }
         );
@@ -321,7 +322,7 @@ export async function createBackup({ volumes, s3Config, name, log, appConfigs = 
         [
           "copy",
           metadataPath,
-          `s3:${s3Config.bucket}/yantra-backups/${backupId}/`,
+          `s3:${s3Config.bucket}/yantra-backup/${backupId}/`,
         ],
         { env: rcloneEnv }
       );
@@ -411,7 +412,7 @@ export async function restoreBackup(backupId, s3Config, volumesToRestore, overwr
         "rclone",
         [
           "copy",
-          `s3:${s3Config.bucket}/yantra-backups/${backupId}/metadata.json`,
+          `s3:${s3Config.bucket}/yantra-backup/${backupId}/metadata.json`,
           tmpDir,
           "--progress",
         ],
@@ -465,7 +466,7 @@ export async function restoreBackup(backupId, s3Config, volumesToRestore, overwr
             "rclone",
             [
               "copy",
-              `s3:${s3Config.bucket}/yantra-backups/${backupId}/app-configs/${tarFileName}`,
+              `s3:${s3Config.bucket}/yantra-backup/${backupId}/app-configs/${tarFileName}`,
               tmpDir,
               "--progress",
             ],
@@ -532,7 +533,7 @@ export async function restoreBackup(backupId, s3Config, volumesToRestore, overwr
           "rclone",
           [
             "copy",
-            `s3:${s3Config.bucket}/yantra-backups/${backupId}/${tarFileName}`,
+            `s3:${s3Config.bucket}/yantra-backup/${backupId}/${tarFileName}`,
             tmpDir,
             "--progress",
           ],
@@ -613,7 +614,7 @@ export async function deleteBackup(backupId, s3Config, log) {
     const rcloneEnv = createRcloneEnv(s3Config);
     const { stdout, stderr, exitCode } = await spawnProcess(
       "rclone",
-      ["purge", `s3:${s3Config.bucket}/yantra-backups/${backupId}/`],
+      ["purge", `s3:${s3Config.bucket}/yantra-backup/${backupId}/`],
       { env: rcloneEnv }
     );
 
