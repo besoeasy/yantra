@@ -76,7 +76,9 @@ export async function listBackups(s3Config, log) {
       throw new Error(`rclone failed: ${stderr}`);
     }
 
+    log?.("info", `rclone lsjson output length: ${stdout.length} bytes`);
     const items = JSON.parse(stdout || "[]");
+    log?.("info", `Found ${items.length} items in S3, filtering for metadata.json files`);
 
     // Filter metadata files (backups) and get metadata
     const backups = [];
@@ -85,6 +87,8 @@ export async function listBackups(s3Config, log) {
 
       const itemPath = item.Path || item.Name || "";
       if (!itemPath.endsWith("metadata.json")) continue;
+
+      log?.("info", `Found backup metadata at: ${itemPath}`);
 
       try {
         const metaResult = await spawnProcess(
@@ -96,6 +100,9 @@ export async function listBackups(s3Config, log) {
         if (metaResult.exitCode === 0) {
           const metadata = JSON.parse(metaResult.stdout);
           backups.push(metadata);
+          log?.("info", `Successfully loaded backup: ${metadata.id}`);
+        } else {
+          log?.("warn", `Failed to read metadata for ${itemPath}: exit code ${metaResult.exitCode}, stderr: ${metaResult.stderr}`);
         }
       } catch (err) {
         log?.("warn", `Failed to read metadata for ${itemPath}:`, err.message);
