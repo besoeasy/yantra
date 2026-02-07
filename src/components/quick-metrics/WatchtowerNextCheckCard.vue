@@ -44,7 +44,7 @@ const getNextCronRun = (fromTime) => {
   return nextRun
 }
 
-const STARTUP_DELAY_MS = 5 * 60 * 1000 // 5 minutes
+const INTERVAL_HOURS = 3
 
 const watchtowerContainer = computed(() => {
   const list = Array.isArray(props.containers) ? props.containers : []
@@ -69,21 +69,10 @@ const uptimeMs = computed(() => {
   return Math.max(0, props.currentTime - createdMs)
 })
 
-const isInStartupDelay = computed(() => {
-  const up = uptimeMs.value
-  if (!Number.isFinite(up)) return false
-  return up < STARTUP_DELAY_MS
-})
-
 const remainingMs = computed(() => {
   const up = uptimeMs.value
   if (!Number.isFinite(up)) return null
-  
-  // If in startup delay, show time until first run (5 minutes after boot)
-  if (isInStartupDelay.value) {
-    return STARTUP_DELAY_MS - up
-  }
-  
+
   // Calculate time until next cron scheduled run
   const nextRun = getNextCronRun(props.currentTime)
   return nextRun.getTime() - props.currentTime
@@ -92,11 +81,6 @@ const remainingMs = computed(() => {
 const progressPct = computed(() => {
   const up = uptimeMs.value
   if (!Number.isFinite(up)) return 0
-  
-  // During startup delay, show progress toward first run
-  if (isInStartupDelay.value) {
-    return Math.min(100, Math.max(0, (up / STARTUP_DELAY_MS) * 100))
-  }
   
   // Calculate progress in current 3-hour interval
   const now = new Date(props.currentTime)
@@ -107,7 +91,7 @@ const progressPct = computed(() => {
   // Time since last 3-hour mark
   const hoursSinceLastInterval = currentHour % 3
   const totalSecondsSinceInterval = (hoursSinceLastInterval * 3600) + (currentMinute * 60) + currentSecond
-  const totalSecondsInInterval = 3 * 3600
+  const totalSecondsInInterval = INTERVAL_HOURS * 3600
   
   return Math.min(100, Math.max(0, (totalSecondsSinceInterval / totalSecondsInInterval) * 100))
 })
@@ -118,6 +102,8 @@ const nextCheckTime = computed(() => {
   const dt = new Date(props.currentTime + remaining)
   return dt.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })
 })
+
+const intervalHours = computed(() => INTERVAL_HOURS)
 
 const status = computed(() => {
   const c = watchtowerContainer.value
