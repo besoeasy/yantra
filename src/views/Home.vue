@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
-import { Store } from "lucide-vue-next";
+import { Store, LayoutGrid, PackageCheck, Container, FolderOpen, Activity } from "lucide-vue-next";
 import YantraContainersGrid from "../components/home/YantraContainersGrid.vue";
 import VolumeContainersGrid from "../components/home/VolumeContainersGrid.vue";
 import OtherContainersGrid from "../components/home/OtherContainersGrid.vue";
@@ -244,60 +244,65 @@ onUnmounted(() => {
             <button
               @click="activeFilter = 'all'"
               :class="[
-                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all',
+                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all flex items-center gap-2',
                 activeFilter === 'all'
                   ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-lg'
                   : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700',
               ]"
             >
-              All
+              <LayoutGrid :size="16" />
+              <span>All</span>
             </button>
             <button
               v-if="yantraContainers.length > 0"
               @click="activeFilter = 'yantra'"
               :class="[
-                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all',
+                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all flex items-center gap-2',
                 activeFilter === 'yantra'
                   ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-lg'
                   : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700',
               ]"
             >
-              Yantra Apps
+              <PackageCheck :size="16" />
+              <span>Yantra Apps</span>
             </button>
             <button
               v-if="otherContainers.length > 0"
               @click="activeFilter = 'docker'"
               :class="[
-                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all',
+                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all flex items-center gap-2',
                 activeFilter === 'docker'
                   ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-lg'
                   : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700',
               ]"
             >
-              Docker Apps
+              <Container :size="16" />
+              <span>Docker Apps</span>
             </button>
             <button
               v-if="volumeContainers.length > 0"
               @click="activeFilter = 'volumes'"
               :class="[
-                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all',
+                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all flex items-center gap-2',
                 activeFilter === 'volumes'
                   ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-lg'
                   : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700',
               ]"
             >
-              Volume Browsers
+              <FolderOpen :size="16" />
+              <span>Volume Browsers</span>
             </button>
             <button
               @click="activeFilter = 'metrics'"
               :class="[
-                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all',
+                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all flex items-center gap-2',
                 activeFilter === 'metrics'
                   ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-lg'
                   : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700',
               ]"
             >
-              Metrics
+              <Activity :size="16" />
+              <span>Metrics</span>
             </button>
           </div>
 
