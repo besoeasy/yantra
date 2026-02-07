@@ -25,6 +25,7 @@ const loading = ref(false);
 const apiUrl = ref("");
 const currentTime = ref(Date.now());
 const watchtowerInstalled = ref(false);
+const activeFilter = ref("all");
 
 let containersRefreshInterval = null;
 let timeRefreshInterval = null;
@@ -87,6 +88,12 @@ const otherContainers = computed(() => {
 });
 
 const temporaryContainersCount = computed(() => containers.value.filter((c) => c?.labels?.["yantra.expireAt"]).length);
+
+// Filter visibility computed properties
+const showYantraApps = computed(() => activeFilter.value === "all" || activeFilter.value === "yantra");
+const showDockerApps = computed(() => activeFilter.value === "all" || activeFilter.value === "docker");
+const showVolumeBrowsers = computed(() => activeFilter.value === "all" || activeFilter.value === "volumes");
+const showMetrics = computed(() => activeFilter.value === "all" || activeFilter.value === "metrics");
 
 // Helper function to format time remaining
 function formatTimeRemaining(expireAt) {
@@ -232,6 +239,68 @@ onUnmounted(() => {
 
         <!-- Content -->
         <div v-else class="space-y-12 animate-fadeIn">
+          <!-- Filter Tabs -->
+          <div v-if="containers.length > 0" class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            <button
+              @click="activeFilter = 'all'"
+              :class="[
+                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all',
+                activeFilter === 'all'
+                  ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-lg'
+                  : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700',
+              ]"
+            >
+              All
+            </button>
+            <button
+              v-if="yantraContainers.length > 0"
+              @click="activeFilter = 'yantra'"
+              :class="[
+                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all',
+                activeFilter === 'yantra'
+                  ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-lg'
+                  : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700',
+              ]"
+            >
+              Yantra Apps
+            </button>
+            <button
+              v-if="otherContainers.length > 0"
+              @click="activeFilter = 'docker'"
+              :class="[
+                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all',
+                activeFilter === 'docker'
+                  ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-lg'
+                  : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700',
+              ]"
+            >
+              Docker Apps
+            </button>
+            <button
+              v-if="volumeContainers.length > 0"
+              @click="activeFilter = 'volumes'"
+              :class="[
+                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all',
+                activeFilter === 'volumes'
+                  ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-lg'
+                  : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700',
+              ]"
+            >
+              Volume Browsers
+            </button>
+            <button
+              @click="activeFilter = 'metrics'"
+              :class="[
+                'px-4 py-2 rounded-xl font-semibold text-sm whitespace-nowrap transition-all',
+                activeFilter === 'metrics'
+                  ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-lg'
+                  : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700',
+              ]"
+            >
+              Metrics
+            </button>
+          </div>
+
           <!-- Empty State -->
           <div v-if="containers.length === 0" class="text-center py-24 bg-white dark:bg-slate-900/70 rounded-3xl shadow-sm dark:shadow-slate-950/60">
             <div class="w-24 h-24 bg-gray-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -251,7 +320,7 @@ onUnmounted(() => {
           <!-- Unified Dashboard Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4 xl:gap-3">
             <!-- Combined Greeting + Operations Pulse -->
-            <div class="lg:col-span-2">
+            <div v-if="showMetrics" class="lg:col-span-2">
               <OverviewPulseCard
                 :running-apps="runningApps"
                 :total-volumes="totalVolumes"
@@ -260,24 +329,24 @@ onUnmounted(() => {
               />
             </div>
 
-            <div v-if="showWatchtowerAlert" class="h-full">
+            <div v-if="showMetrics && showWatchtowerAlert" class="h-full">
               <WatchtowerAlert />
             </div>
 
-            <div v-else class="h-full">
+            <div v-else-if="showMetrics" class="h-full">
               <WatchtowerNextCheckCard :containers="containers" :current-time="currentTime" :interval-hours="3" />
             </div>
 
-            <div>
+            <div v-if="showMetrics">
               <HostMetricsCard :api-url="apiUrl" />
             </div>
 
-            <div>
+            <div v-if="showMetrics">
               <MinioStatusCard />
             </div>
 
             <YantraContainersGrid
-              v-if="yantraContainers.length > 0"
+              v-if="showYantraApps && yantraContainers.length > 0"
               :containers="yantraContainers"
               :format-uptime="formatUptime"
               :is-temporary="isTemporary"
@@ -285,21 +354,21 @@ onUnmounted(() => {
               @select="viewContainerDetail"
             />
 
-            <div>
+            <div v-if="showMetrics">
               <AverageUptimeCard :containers="containers" :current-time="currentTime" />
             </div>
 
             <VolumeContainersGrid
-              v-if="volumeContainers.length > 0"
+              v-if="showVolumeBrowsers && volumeContainers.length > 0"
               :containers="volumeContainers"
               :is-temporary="isTemporary"
               :get-expiration-info="getExpirationInfo"
               @select="viewContainerDetail"
             />
 
-            <OtherContainersGrid v-if="otherContainers.length > 0" :containers="otherContainers" @select="viewContainerDetail" />
+            <OtherContainersGrid v-if="showDockerApps && otherContainers.length > 0" :containers="otherContainers" @select="viewContainerDetail" />
 
-            <div v-if="reclaimableStats.show" class="h-full lg:col-span-2 xl:col-span-2">
+            <div v-if="showMetrics && reclaimableStats.show" class="h-full lg:col-span-2 xl:col-span-2">
               <SystemCleaner
                 :api-url="apiUrl"
                 :initial-image-stats="reclaimableStats.imageStats"
@@ -308,15 +377,15 @@ onUnmounted(() => {
               />
             </div>
 
-            <div v-if="temporaryContainersCount > 0">
+            <div v-if="showMetrics && temporaryContainersCount > 0">
               <ExpiringContainersCard :containers="containers" :current-time="currentTime" />
             </div>
 
-            <div v-if="images.length > 0 || volumes.length > 0">
+            <div v-if="showMetrics && (images.length > 0 || volumes.length > 0)">
               <RotatingDiskUsageCard :images="images" :volumes="volumes" :interval-ms="10000" />
             </div>
 
-            <div>
+            <div v-if="showMetrics">
               <MachineIdentityCard />
             </div>
           </div>
@@ -338,5 +407,15 @@ onUnmounted(() => {
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
   }
+}
+
+/* Hide scrollbar for filter tabs */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 </style>
