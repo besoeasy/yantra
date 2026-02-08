@@ -90,6 +90,15 @@ Browse and manage app data files directly from the UI.
 </td>
 <td width="33%" valign="top">
 
+### 💾 Volume Backup & Restore
+
+Backup and restore Docker volumes with a single click for easy data migration.
+
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+
 ### 🧹 Auto-Cleanup
 
 Removes old unused Docker images (10+ days) to free disk space.
@@ -231,6 +240,32 @@ Yantra gives you **direct access** to your data with built-in WebDAV support.
 # Sync from Volume A (port 5001) to Volume B (port 5002)
 rclone sync :webdav:http://localhost:5001 :webdav:http://localhost:5002 --webdav-vendor other
 ```
+
+---
+
+## 💾 Volume Backup & Restore
+
+Yantra makes it easy to backup and restore Docker volumes to S3-compatible storage (MinIO), perfect for migrating data or creating snapshots.
+
+### Backup a Volume
+
+1. Navigate to the **Volumes** tab in the Yantra UI
+2. Click the **Backup** button next to any volume
+3. The volume will be backed up as a `.tar.gz` archive to your configured S3/MinIO storage
+
+### Restore a Volume
+
+1. Go to the **Volumes** tab
+2. Click the **Restore** button
+3. Select your backup from the S3/MinIO storage
+4. The volume will be recreated with all your data
+
+**Use Cases:**
+- 📦 Migrate data between machines
+- 🔄 Create snapshots before major changes
+- 💿 Archive app data for long-term storage
+- 🚚 Move volumes to a new Yantra installation
+- ☁️ Store backups in the cloud or self-hosted S3 storage
 
 ---
 
