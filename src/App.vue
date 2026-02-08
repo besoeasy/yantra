@@ -145,17 +145,17 @@ onMounted(() => {
       <!-- Bottom Actions -->
       <div class="flex flex-col items-center gap-3 mt-4">
         <a
-          href="https://discord.gg/pZCaeTT8DX"
+          href="https://t.me/+h4RvCk63PxUyODQ1"
           target="_blank"
           rel="noopener noreferrer"
           class="action-btn group relative w-12 h-12 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:shadow-slate-900/40 transition-all duration-300 ease-out"
-          title="Join Discord"
+          title="Join Telegram"
         >
           <MessageCircle :size="20" class="group-hover:scale-110 transition-transform duration-300" />
           <span
             class="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-slate-100 dark:text-slate-900"
           >
-            Discord
+            Telegram
           </span>
         </a>
         <!-- Theme Toggle -->
@@ -209,14 +209,14 @@ onMounted(() => {
         </router-link>
 
         <a
-          href="https://discord.gg/pZCaeTT8DX"
+          href="https://t.me/+h4RvCk63PxUyODQ1"
           target="_blank"
           rel="noopener noreferrer"
           class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95 text-gray-600 dark:text-slate-400"
-          title="Join Discord"
+          title="Join Telegram"
         >
           <MessageCircle :size="20" />
-          <span class="text-[10px] font-medium">Discord</span>
+          <span class="text-[10px] font-medium">Telegram</span>
         </a>
 
         <button
