@@ -1,0 +1,21 @@
+services:
+  perplexica:
+    image: itzcrazykns1337/perplexica:v1.11.2@sha256:6d03063aacc8b4e85e1fc95275d77a0afef6f4136c797727464d31bf73ef3439
+    container_name: perplexica
+    labels:
+      yantra.name: "Perplexica"
+      yantra.logo: "QmXkTfV5b7aUepUyRLpo9C26P34LWrRyNcQTewFSZjezYc"
+      yantra.category: "ai"
+      yantra.port: "3000 (HTTP - Web UI)"
+      yantra.description: "AI-powered search engine that delivers conversational responses with contextual understanding"
+      yantra.website: "https://github.com/ItzCrazyKns/Perplexica"
+    ports:
+      - "3000"
+    volumes:
+      - perplexica_data:/home/perplexica/data
+      - perplexica_uploads:/home/perplexica/uploads
+    restart: unless-stopped
+
+volumes:
+  perplexica_data:
+  perplexica_uploads:
