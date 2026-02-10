@@ -1,17 +1,18 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
+import { useApiUrl } from "../composables/useApiUrl";
 import AppCard from "../components/AppCard.vue";
 import { Tag, Search, Grid, LayoutGrid, X } from "lucide-vue-next";
 
 const router = useRouter();
+const { apiUrl } = useApiUrl();
 
 // State
 const apps = ref([]);
 const containers = ref([]);
 const loading = ref(false);
 const appSearch = ref("");
-const apiUrl = ref("");
 const selectedCategory = ref(null);
 
 const hourSeed = ref(getDateHourSeed());

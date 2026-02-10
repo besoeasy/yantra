@@ -2,12 +2,13 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+import { useApiUrl } from '../composables/useApiUrl'
 import { ArrowLeft, Cloud, Save, RefreshCw } from 'lucide-vue-next'
 
 const router = useRouter()
 const toast = useToast()
+const { apiUrl } = useApiUrl()
 
-const apiUrl = ref('')
 const loading = ref(false)
 const saving = ref(false)
 const configured = ref(false)
@@ -91,7 +92,6 @@ async function saveConfig() {
 }
 
 onMounted(() => {
-  apiUrl.value = window.VITE_API_URL || ''
   fetchConfig()
 })
 </script>

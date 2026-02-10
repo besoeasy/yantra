@@ -2,12 +2,15 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
+import { useApiUrl } from "../composables/useApiUrl";
+import { usePortConflict } from "../composables/usePortConflict";
 import { Globe, FileCode, ArrowLeft, Package, Clock, Tag, ExternalLink, Activity, Info, AlertTriangle, Check, Terminal, Play, CreditCard, RotateCcw } from "lucide-vue-next";
 import { buildChatGptExplainUrl } from "../utils/chatgpt";
 
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
+const { apiUrl } = useApiUrl();
 
 // State
 const app = ref(null);
@@ -17,11 +20,17 @@ const deploying = ref(false);
 const envValues = ref({});
 const temporaryInstall = ref(false);
 const expirationHours = ref(24);
-const apiUrl = ref("");
 const customizePorts = ref(false);
 const customPortMappings = ref({});
 const imageDetails = ref(null);
 const loadingImages = ref(false);
+
+// Port conflict detection
+const { checkPortConflict, getPortStatus: getPortStatusFn } = usePortConflict(containers);
+
+function getPortStatus(port) {
+  return getPortStatusFn(port, customPortMappings.value);
+}
 
 // Computed
 const isInstalled = computed(() => {
@@ -52,38 +61,6 @@ const allPorts = computed(() => {
   if (!app.value?.ports) return [];
   return app.value.ports;
 });
-
-// Port conflict detection
-function checkPortConflict(hostPort, protocol) {
-  return containers.value.find((c) => c.Ports?.some((p) => p.PublicPort === parseInt(hostPort) && p.Type === protocol));
-}
-
-function getPortStatus(port) {
-  const hostPort = customPortMappings.value[port.hostPort + "/" + port.protocol] || port.hostPort;
-  const conflict = checkPortConflict(hostPort, port.protocol);
-
-  if (conflict) {
-    return {
-      status: "conflict",
-      color: "red",
-      message: `Conflict: ${conflict.Names?.[0]?.replace(/^\//, "") || "Container"}`,
-    };
-  }
-
-  if (parseInt(hostPort) < 1024) {
-    return {
-      status: "warning",
-      color: "yellow",
-      message: "Privileged (Root req.)",
-    };
-  }
-
-  return {
-    status: "available",
-    color: "green",
-    message: "Available",
-  };
-}
 
 const categories = computed(() => {
   if (!app.value?.category) return [];

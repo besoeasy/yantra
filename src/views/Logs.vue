@@ -1,11 +1,12 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { useApiUrl } from '../composables/useApiUrl'
 import { FileText, AlertCircle, Info, RefreshCw, Terminal, Pause, Play, Trash2, Search, ArrowDown } from 'lucide-vue-next'
 
+const { apiUrl } = useApiUrl()
 const logsData = ref({})
 const logFilter = ref('all')
 const loading = ref(false)
-const apiUrl = ref('')
 const autoRefresh = ref(true)
 const searchQuery = ref('')
 let refreshInterval = null

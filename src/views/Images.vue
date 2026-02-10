@@ -1,16 +1,17 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useToast } from 'vue-toastification'
+import { useApiUrl } from '../composables/useApiUrl'
 import { HardDrive, Trash2, Check, AlertTriangle, Box, Database, Layers, Search, Filter } from 'lucide-vue-next'
 import VueApexCharts from 'vue3-apexcharts'
 
 const toast = useToast()
+const { apiUrl } = useApiUrl()
 
 const imagesData = ref({})
 const loading = ref(false)
 const deletingImage = ref(null)
 const deletingAllImages = ref(false)
-const apiUrl = ref('')
 const searchQuery = ref('')
 const currentTab = ref('active') // 'active', 'unused'
 

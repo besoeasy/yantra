@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { Store, LayoutGrid, PackageCheck, Container, FolderOpen, Activity } from "lucide-vue-next";
 import { formatDuration } from "../utils/metrics";
 import { useApiUrl } from "../composables/useApiUrl";
+import { useCurrentTime } from "../composables/useCurrentTime";
 import YantraContainersGrid from "../components/home/YantraContainersGrid.vue";
 import VolumeContainersGrid from "../components/home/VolumeContainersGrid.vue";
 import OtherContainersGrid from "../components/home/OtherContainersGrid.vue";
@@ -20,17 +21,16 @@ import MinioStatusCard from "../components/quick-metrics/MinioStatusCard.vue";
 
 const router = useRouter();
 const { apiUrl } = useApiUrl();
+const { currentTime } = useCurrentTime();
 
 const containers = ref([]);
 const volumes = ref([]);
 const images = ref([]);
 const loading = ref(false);
-const currentTime = ref(Date.now());
 const watchtowerInstalled = ref(false);
 const activeFilter = ref("all");
 
 let containersRefreshInterval = null;
-let timeRefreshInterval = null;
 
 // Metrics computed properties
 const totalApps = computed(() => containers.value.length);
@@ -200,20 +200,12 @@ onMounted(async () => {
   loading.value = false;
 
   containersRefreshInterval = setInterval(refreshAll, 10000);
-
-  timeRefreshInterval = setInterval(() => {
-    currentTime.value = Date.now();
-  }, 60000);
 });
 
 onUnmounted(() => {
   if (containersRefreshInterval) {
     clearInterval(containersRefreshInterval);
     containersRefreshInterval = null;
-  }
-  if (timeRefreshInterval) {
-    clearInterval(timeRefreshInterval);
-    timeRefreshInterval = null;
   }
 });
 </script>

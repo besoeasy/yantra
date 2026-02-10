@@ -2,18 +2,19 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+import { useApiUrl } from '../composables/useApiUrl'
 import { ArrowLeft, ExternalLink, RefreshCw, Trash2, Network, FolderOpen, Terminal, Activity, Cpu, HardDrive, ShieldCheck, Share2, Globe, Database, Lock, Folder, Pause, Play, Download, Clock, AlertCircle } from 'lucide-vue-next'
 import { formatBytes } from '../utils/metrics'
 
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
+const { apiUrl } = useApiUrl()
 
 const selectedContainer = ref(null)
 const containerStats = ref(null)
 const containerLogs = ref([])
 const deleting = ref(false)
-const apiUrl = ref('')
 const refreshingLogs = ref(false)
 const browsingVolume = ref({})
 const showVolumeMenu = ref({})
