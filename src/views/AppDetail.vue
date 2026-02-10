@@ -552,6 +552,9 @@ onMounted(async () => {
                             <option :value="12">12 Hours</option>
                             <option :value="24">1 Day</option>
                             <option :value="72">3 Days</option>
+                            <option :value="168">1 Week</option>
+                            <option :value="336">2 Weeks</option>
+                            <option :value="720">1 Month</option>
                         </select>
                     </div>
                 </div>
