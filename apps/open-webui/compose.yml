@@ -7,6 +7,12 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 28G
+    mem_swappiness: 0
+    shm_size: 8gb
 
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
