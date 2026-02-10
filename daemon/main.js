@@ -957,7 +957,7 @@ app.get("/api/apps/:id/check-arch", asyncHandler(async (req, res) => {
 app.post("/api/deploy", async (req, res) => {
   log("info", "🚀 [POST /api/deploy] Deploy request received");
   try {
-    const { appId, environment, expiresIn, customPortMappings, instanceId } = req.body;
+    const { appId, environment, expiresIn, customPortMappings, instanceId, allowMissingDependencies } = req.body;
     log("info", `🚀 [POST /api/deploy] Deploying app: ${appId}${instanceId > 1 ? ` (Instance #${instanceId})` : ''}`);
     if (environment) {
       log("info", `🚀 [POST /api/deploy] Custom environment:`, environment);
@@ -1025,6 +1025,7 @@ app.post("/api/deploy", async (req, res) => {
 
     // Check dependencies
     const dependenciesMatch = composeContent.match(/yantra\.dependencies:\s*["'](.+?)["']/);
+    let dependencyWarnings = null;
     if (dependenciesMatch) {
       const dependencies = dependenciesMatch[1].split(',').map(dep => dep.trim());
       log("info", `🔗 [POST /api/deploy] Checking dependencies: ${dependencies.join(', ')}`);
@@ -1039,13 +1040,18 @@ app.post("/api/deploy", async (req, res) => {
       const missingDeps = dependencies.filter(dep => !runningProjects.has(dep));
 
       if (missingDeps.length > 0) {
-        log("error", `❌ [POST /api/deploy] Missing dependencies: ${missingDeps.join(', ')}`);
-        return res.status(400).json({
-          success: false,
-          error: "Missing dependencies",
-          message: `This app requires the following apps to be running: ${missingDeps.join(', ')}. Please deploy ${missingDeps.length === 1 ? 'it' : 'them'} first.`,
-          missingDependencies: missingDeps,
-        });
+        if (!allowMissingDependencies) {
+          log("error", `❌ [POST /api/deploy] Missing dependencies: ${missingDeps.join(', ')}`);
+          return res.status(400).json({
+            success: false,
+            error: "Missing dependencies",
+            message: `This app requires the following apps to be running: ${missingDeps.join(', ')}. Please deploy ${missingDeps.length === 1 ? 'it' : 'them'} first.`,
+            missingDependencies: missingDeps,
+          });
+        }
+
+        dependencyWarnings = missingDeps;
+        log("warn", `⚠️  [POST /api/deploy] Proceeding with missing dependencies: ${missingDeps.join(', ')}`);
       }
 
       log("info", `✅ [POST /api/deploy] All dependencies satisfied`);
@@ -1301,6 +1307,7 @@ app.post("/api/deploy", async (req, res) => {
         appId: appId,
         output: stdout,
         warnings: stderr || null,
+        dependencyWarnings,
         temporary: !!expiresIn,
       });
     } catch (error) {

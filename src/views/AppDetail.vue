@@ -103,7 +103,7 @@ const missingDependencies = computed(() => {
 });
 
 const canDeploy = computed(() => {
-  return !deploying.value && missingDependencies.value.length === 0;
+  return !deploying.value;
 });
 
 const chatGptUrl = computed(() => {
@@ -167,12 +167,24 @@ async function fetchImageDetails() {
 async function deployApp() {
   if (deploying.value) return;
 
+  let allowMissingDependencies = false;
   if (missingDependencies.value.length > 0) {
     const depApps = missingDependencies.value.join(", ");
-    toast.error(`Missing dependencies: ${depApps}. Click dependency badges below to deploy them first.`, {
+    const proceed = confirm(
+      `Missing dependencies: ${depApps}.\n\nYou can deploy anyway, but the app may not work correctly until they are running.\n\nDeploy anyway?`
+    );
+
+    if (!proceed) {
+      toast.info("Deployment cancelled. Start required apps first to avoid issues.", {
+        timeout: 4000
+      });
+      return;
+    }
+
+    allowMissingDependencies = true;
+    toast.warning(`Deploying without dependencies: ${depApps}`, {
       timeout: 5000
     });
-    return;
   }
 
   // Check for port conflicts if customizing ports
@@ -202,6 +214,10 @@ async function deployApp() {
       environment: envValues.value,
       instanceId: instanceNum, // Pass instance number to backend
     };
+
+    if (allowMissingDependencies) {
+      requestBody.allowMissingDependencies = true;
+    }
 
     if (temporaryInstall.value) {
       requestBody.expiresIn = expirationHours.value;
@@ -574,7 +590,7 @@ onMounted(async () => {
                  <button
                    @click="deployApp"
                    :disabled="!canDeploy"
-                   :title="missingDependencies.length > 0 ? `Start required apps: ${missingDependencies.join(', ')}` : ''"
+                   :title="missingDependencies.length > 0 ? `Missing dependencies: ${missingDependencies.join(', ')} (deploy anyway)` : ''"
                    class="w-full relative group bg-indigo-600 hover:bg-indigo-700 text-white rounded-md p-3.5 font-bold uppercase tracking-wider text-xs transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-indigo-500/20"
                  >
                     <span v-if="deploying" class="flex items-center justify-center gap-3">
