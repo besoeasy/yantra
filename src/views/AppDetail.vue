@@ -452,44 +452,57 @@ onMounted(async () => {
         <div class="lg:col-span-4">
           <div class="space-y-6 sticky top-6">
             <!-- Dependencies -->
-            <div v-if="dependencies.length > 0" class="bg-white dark:bg-[#0c0c0e] rounded-lg border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-              <h2 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
-                <Package :size="16" class="text-amber-500" />
-                Dependencies
-              </h2>
+            <div v-if="dependencies.length > 0" class="bg-white dark:bg-[#0c0c0e] rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+              <div class="flex items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                  <div class="h-10 w-10 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/40 flex items-center justify-center">
+                    <Package :size="18" class="text-amber-500" />
+                  </div>
+                  <div>
+                    <div class="text-sm font-semibold text-slate-900 dark:text-white">Dependencies</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ dependencies.length }} total</div>
+                  </div>
+                </div>
 
-              <div class="mt-4 flex flex-wrap gap-2">
+                <div class="text-[10px] font-semibold uppercase tracking-wider">
+                  <span v-if="missingDependencies.length === 0" class="px-2 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50">All running</span>
+                  <span v-else class="px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50">{{ missingDependencies.length }} missing</span>
+                </div>
+              </div>
+
+              <div class="mt-4 grid gap-2">
                 <button
                   v-for="dep in dependencies"
                   :key="dep"
                   @click="router.push(`/apps/${dep}`)"
-                  class="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-mono uppercase tracking-wider rounded border transition-all hover:scale-105 active:scale-95"
+                  class="group w-full flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 transition-all hover:shadow-sm"
                   :class="missingDependencies.includes(dep)
-                    ? 'border-amber-300 text-amber-700 bg-amber-50 dark:border-amber-700 dark:text-amber-300 dark:bg-amber-950/30 hover:bg-amber-100 dark:hover:bg-amber-900/40 cursor-pointer'
-                    : 'border-emerald-200 text-emerald-700 bg-emerald-50 dark:border-emerald-800/50 dark:text-emerald-300 dark:bg-emerald-950/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 cursor-pointer'"
+                    ? 'border-amber-200 dark:border-amber-800/60 bg-amber-50/40 dark:bg-amber-900/10 hover:bg-amber-50 dark:hover:bg-amber-900/20'
+                    : 'border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/40 dark:bg-emerald-900/10 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'"
                   :title="`Click to view ${dep}`"
                 >
-                  {{ dep }}
-                  <ExternalLink :size="10" class="opacity-50" />
+                  <div class="flex items-center gap-2">
+                    <span class="h-2.5 w-2.5 rounded-full"
+                      :class="missingDependencies.includes(dep)
+                        ? 'bg-amber-500 shadow-[0_0_0_3px_rgba(245,158,11,0.15)]'
+                        : 'bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.15)]'"
+                    ></span>
+                    <span class="text-xs font-mono uppercase tracking-wider text-slate-800 dark:text-slate-200">{{ dep }}</span>
+                  </div>
+
+                  <div class="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <span v-if="missingDependencies.includes(dep)">Missing</span>
+                    <span v-else>Running</span>
+                    <ExternalLink :size="12" class="opacity-50 group-hover:opacity-80" />
+                  </div>
                 </button>
               </div>
 
-              <div v-if="missingDependencies.length > 0" class="mt-4 flex items-start gap-2 text-[11px] text-amber-600 dark:text-amber-400">
-                <AlertTriangle :size="14" />
-                <div class="flex-1">
-                  <span class="block mb-1">
-                    Start required apps first:
-                  </span>
-                  <div class="flex flex-wrap gap-1">
-                    <button
-                      v-for="dep in missingDependencies"
-                      :key="dep"
-                      @click="router.push(`/apps/${dep}`)"
-                      class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-800/40 transition-colors font-mono text-[10px] font-medium"
-                    >
-                      {{ dep }}
-                      <ExternalLink :size="8" />
-                    </button>
+              <div v-if="missingDependencies.length > 0" class="mt-4 rounded-lg border border-amber-200 dark:border-amber-800/60 bg-amber-50/50 dark:bg-amber-900/10 px-3 py-2.5">
+                <div class="flex items-start gap-2 text-[11px] text-amber-700 dark:text-amber-300">
+                  <AlertTriangle :size="14" />
+                  <div class="flex-1">
+                    Some dependencies are not running. You can still deploy, but the app may not function correctly.
                   </div>
                 </div>
               </div>
