@@ -1,0 +1,21 @@
+services:
+  opencode:
+    image: ghcr.io/besoeasy/opencode:latest
+    container_name: opencode
+    labels:
+      yantra.name: "OpenCode"
+      yantra.logo: "QmWXyiTM11psMb5VXfnkd9qcEVPh11iHJwLAeEjAQroZkq"
+      yantra.category: "development,productivity,ai"
+      yantra.port: "4096 (HTTP - Web UI)"
+      yantra.description: "Open source AI coding agent for terminal, IDE, and desktop"
+      yantra.website: "https://github.com/anomalyco/opencode"
+    ports:
+      - "4096"
+    volumes:
+      - opencode_data:/root/.opencode
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+volumes:
+  opencode_data:
