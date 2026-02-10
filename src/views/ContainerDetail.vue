@@ -257,7 +257,6 @@ async function fetchContainerLogs() {
 }
 
 const scrollToBottom = () => {
-    // Implementation via DOM manipulation in template refs would be better in Vue, but simplistic here
     setTimeout(() => {
         const el = document.getElementById('terminal-logs')
         if (el) el.scrollTop = el.scrollHeight
