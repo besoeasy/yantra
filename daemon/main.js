@@ -280,6 +280,8 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
 
         // Extract environment variables
         const envVars = [];
+
+        // Format 1: List format - VAR=${VAR:-default}
         const envRegex = /-\s+([A-Z_]+)=\$\{([A-Z_]+):?-?([^}]*)\}/g;
         while ((match = envRegex.exec(composeContent)) !== null) {
           envVars.push({
@@ -287,6 +289,20 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
             envVar: match[2],
             default: match[3] || "",
           });
+        }
+
+        // Format 2: Key-value format - VAR: ${VAR:-default}
+        const envKeyValueRegex = /^\s+([A-Z_][A-Z0-9_]*):\s*\$\{([A-Z_][A-Z0-9_]*):?-?([^}]*)\}/gm;
+        while ((match = envKeyValueRegex.exec(composeContent)) !== null) {
+          // Avoid duplicates if already captured by list format
+          const existingVar = envVars.find(v => v.envVar === match[2]);
+          if (!existingVar) {
+            envVars.push({
+              name: match[1],
+              envVar: match[2],
+              default: match[3] || "",
+            });
+          }
         }
 
         // Extract port mappings
