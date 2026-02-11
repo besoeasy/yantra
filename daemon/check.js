@@ -210,7 +210,7 @@ function validateYantraLabels(appName, composeObj) {
 
     
     // 1. Check required labels
-    const requiredLabels = ['yantra.name', 'yantra.category', 'yantra.description', 'yantra.website'];
+    const requiredLabels = ['yantra.name', 'yantra.category', 'yantra.description', 'yantra.website', 'yantra.logo'];
     for (const required of requiredLabels) {
         if (!yantraLabels[required]) {
             errors.push(`Missing required label: ${required}`);

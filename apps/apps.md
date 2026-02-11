@@ -42,7 +42,7 @@ here is the requirements
   - `"Uptime Kuma"`
   - `"Home Assistant"`
 
-### 2. yantra.logo (Optional)
+### 2. yantra.logo (Required)
 
 - **Purpose**: App logo for visual identification
 - **Format**: IPFS CID (Content Identifier)
