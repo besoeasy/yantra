@@ -150,17 +150,20 @@ Always ships the newest app releases regardless of your Yantra version—updates
 ## Live Screenshots (GIF)
 
 ### Main App
+
 ![main](https://github.com/user-attachments/assets/2e107ef8-2411-4d62-9886-9fb917b9993d)
 
 ### Temporary Install
+
 ![temp install](https://github.com/user-attachments/assets/3a9604fa-d634-4329-aa73-ed4658145b00)
 
 ### Virtual Volumes
+
 ![temporary browser](https://github.com/user-attachments/assets/862fb852-e52d-4f94-8372-234c1d6c6b51)
 
 ### Dark Mode
-![dark mode](https://github.com/user-attachments/assets/e5dc0ad8-0181-4676-b7b1-1cc961a6b1ed)
 
+![dark mode](https://github.com/user-attachments/assets/e5dc0ad8-0181-4676-b7b1-1cc961a6b1ed)
 
 ## 🧭 Why Yantra
 
@@ -275,6 +278,7 @@ Yantra makes it easy to backup and restore Docker volumes to S3-compatible stora
 4. The volume will be recreated with all your data
 
 **Use Cases:**
+
 - 📦 Migrate data between machines
 - 🔄 Create snapshots before major changes
 - 💿 Archive app data for long-term storage
