@@ -14,11 +14,11 @@ services:
     volumes:
       - maybe_storage:/rails/storage
     environment:
-      SELF_HOSTING_ENABLED: true
+      SELF_HOSTING_ENABLED: "true"
       PORT: 3063
       DATABASE_URL: postgresql://maybe:maybe@maybe-db:5432/maybe
-      RAILS_FORCE_SSL: false
-      RAILS_ASSUME_SSL: false
+      RAILS_FORCE_SSL: "false"
+      RAILS_ASSUME_SSL: "false"
       POSTGRES_DB: maybe
       POSTGRES_USER: maybe
       POSTGRES_PASSWORD: maybe
@@ -36,11 +36,11 @@ services:
     container_name: maybe-worker
     command: bundle exec sidekiq
     environment:
-      SELF_HOSTING_ENABLED: true
+      SELF_HOSTING_ENABLED: "true"
       PORT: 3063
       DATABASE_URL: postgresql://maybe:maybe@maybe-db:5432/maybe
-      RAILS_FORCE_SSL: false
-      RAILS_ASSUME_SSL: false
+      RAILS_FORCE_SSL: "false"
+      RAILS_ASSUME_SSL: "false"
       POSTGRES_DB: maybe
       POSTGRES_USER: maybe
       POSTGRES_PASSWORD: maybe
