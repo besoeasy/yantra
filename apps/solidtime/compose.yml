@@ -1,0 +1,105 @@
+services:
+  solidtime:
+    image: solidtime/solidtime:0.10.0
+    container_name: solidtime
+    labels:
+      yantra.name: "Solidtime"
+      yantra.logo: "QmV9C9odA3LUqr9EGwCoMfgDwac2qbQXjrTFLcCKizgiPW"
+      yantra.category: "productivity,time-tracking"
+      yantra.port: "8000 (HTTP - Web UI)"
+      yantra.description: "A simple, secure, and private time tracking app with detailed reports and CSV export"
+      yantra.website: "https://www.solidtime.io/"
+    ports:
+      - "8000"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_KEY=base64:your-app-key-will-be-generated
+      - CONTAINER_MODE=http
+      - DB_CONNECTION=pgsql
+      - DB_HOST=solidtime-db
+      - DB_PORT=5432
+      - DB_DATABASE=solidtime
+      - DB_USERNAME=solidtime
+      - DB_PASSWORD=solidtime
+      - QUEUE_CONNECTION=database
+      - APP_URL=http://localhost:8000
+      - GOTENBERG_URL=http://solidtime-gotenberg:3000
+    volumes:
+      - solidtime_data:/var/www/html/storage
+    depends_on:
+      - solidtime-db
+      - solidtime-gotenberg
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  solidtime-scheduler:
+    image: solidtime/solidtime:0.10.0
+    container_name: solidtime-scheduler
+    environment:
+      - APP_ENV=production
+      - CONTAINER_MODE=scheduler
+      - DB_CONNECTION=pgsql
+      - DB_HOST=solidtime-db
+      - DB_PORT=5432
+      - DB_DATABASE=solidtime
+      - DB_USERNAME=solidtime
+      - DB_PASSWORD=solidtime
+    volumes:
+      - solidtime_data:/var/www/html/storage
+    depends_on:
+      - solidtime-db
+    restart: unless-stopped
+
+  solidtime-queue:
+    image: solidtime/solidtime:0.10.0
+    container_name: solidtime-queue
+    environment:
+      - APP_ENV=production
+      - CONTAINER_MODE=worker
+      - DB_CONNECTION=pgsql
+      - DB_HOST=solidtime-db
+      - DB_PORT=5432
+      - DB_DATABASE=solidtime
+      - DB_USERNAME=solidtime
+      - DB_PASSWORD=solidtime
+      - QUEUE_CONNECTION=database
+    volumes:
+      - solidtime_data:/var/www/html/storage
+    depends_on:
+      - solidtime-db
+    restart: unless-stopped
+
+  solidtime-db:
+    image: postgres:17.3
+    container_name: solidtime-db
+    environment:
+      - POSTGRES_USER=solidtime
+      - POSTGRES_PASSWORD=solidtime
+      - POSTGRES_DB=solidtime
+    volumes:
+      - solidtime_db:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U solidtime"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  solidtime-gotenberg:
+    image: gotenberg/gotenberg:8.14.0
+    container_name: solidtime-gotenberg
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  solidtime_data:
+  solidtime_db:
