@@ -205,6 +205,14 @@ function validateYantraLabels(appName, composeObj) {
         if (Array.isArray(environment)) {
             // List format detected - this is the old format
             errors.push(`Service "${svcName}" uses list format for environment variables. Use key-value format instead (e.g., "VAR: \${VAR:-default}" not "- VAR=\${VAR:-default}")`);
+        } else if (environment && typeof environment === 'object') {
+            for (const [key, value] of Object.entries(environment)) {
+                if (value === null) continue;
+                const valueType = typeof value;
+                if (valueType !== 'string' && valueType !== 'number') {
+                    errors.push(`Service "${svcName}" environment "${key}" has invalid type (${valueType}). Use a string, number, or null.`);
+                }
+            }
         }
     }
 
@@ -289,6 +297,97 @@ function validateYantraLabels(appName, composeObj) {
     }
     
     return { errors, warnings };
+}
+
+function detectUnquotedEnvValues(composeContent) {
+    const warnings = [];
+    const lines = composeContent.split(/\r?\n/);
+
+    let inServices = false;
+    let servicesIndent = null;
+    let currentService = null;
+    let currentServiceIndent = null;
+    let inEnvironment = false;
+    let environmentIndent = null;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmed = line.trim();
+
+        if (trimmed === '' || trimmed.startsWith('#')) continue;
+
+        const indent = line.match(/^\s*/)[0].length;
+
+        if (!inServices) {
+            if (trimmed === 'services:') {
+                inServices = true;
+                servicesIndent = indent;
+            }
+            continue;
+        }
+
+        if (indent <= servicesIndent && trimmed !== 'services:') {
+            inServices = false;
+            currentService = null;
+            inEnvironment = false;
+            continue;
+        }
+
+        if (indent === servicesIndent + 2 && trimmed.endsWith(':') && !trimmed.startsWith('-')) {
+            currentService = trimmed.slice(0, -1).trim();
+            currentServiceIndent = indent;
+            inEnvironment = false;
+            continue;
+        }
+
+        if (!currentService) continue;
+
+        if (indent <= currentServiceIndent) {
+            currentService = null;
+            inEnvironment = false;
+            continue;
+        }
+
+        if (trimmed === 'environment:' && indent > currentServiceIndent) {
+            inEnvironment = true;
+            environmentIndent = indent;
+            continue;
+        }
+
+        if (!inEnvironment) continue;
+
+        if (indent <= environmentIndent) {
+            inEnvironment = false;
+            continue;
+        }
+
+        if (trimmed.startsWith('- ')) {
+            continue;
+        }
+
+        const colonIdx = line.indexOf(':');
+        if (colonIdx === -1) continue;
+
+        const key = line.slice(0, colonIdx).trim();
+        let valueRaw = line.slice(colonIdx + 1).trim();
+
+        if (!valueRaw) continue;
+        if (valueRaw.startsWith('|') || valueRaw.startsWith('>')) continue;
+        if (valueRaw.startsWith('"') || valueRaw.startsWith('\'')) continue;
+        if (valueRaw.startsWith('${')) continue;
+
+        // Strip inline comments for unquoted values.
+        valueRaw = valueRaw.split(/\s+#/)[0].trim();
+        if (!valueRaw) continue;
+
+        if (valueRaw.includes(' ')) {
+            warnings.push(
+                `Service "${currentService}" environment "${key}" has an unquoted value with spaces. Quote it to avoid YAML parsing issues (line ${i + 1}).`
+            );
+        }
+    }
+
+    return warnings;
 }
 
 function extractServiceNetworkNames(service) {
@@ -443,8 +542,9 @@ async function validateAllApps() {
 
         const labelResult = validateYantraLabels(appName, composeObj);
         const networkResult = validateYantraNetwork(composeObj);
+        const envValueWarnings = detectUnquotedEnvValues(composeContent);
         const errors = [...labelResult.errors, ...networkResult.errors];
-        const warnings = [...labelResult.warnings, ...networkResult.warnings];
+        const warnings = [...labelResult.warnings, ...networkResult.warnings, ...envValueWarnings];
         
         if (errors.length > 0 || warnings.length > 0) {
             validationResults.push({
