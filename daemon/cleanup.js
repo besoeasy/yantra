@@ -29,6 +29,42 @@ function log(level, message, ...args) {
 }
 
 /**
+ * Check if a volume is being used by other containers
+ * @param {string} volumeName - Name of the volume to check
+ * @param {string} excludeContainerId - Container ID to exclude from check (the one being removed)
+ * @returns {Promise<boolean>} True if volume is used by other containers
+ */
+async function isVolumeUsedByOtherContainers(volumeName, excludeContainerId) {
+  try {
+    const containers = await docker.listContainers({ all: true });
+
+    for (const container of containers) {
+      // Skip the container we're removing
+      if (container.Id === excludeContainerId) {
+        continue;
+      }
+
+      // Check if this container uses the volume
+      if (container.Mounts) {
+        const usesVolume = container.Mounts.some(
+          mount => mount.Type === "volume" && mount.Name === volumeName
+        );
+
+        if (usesVolume) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  } catch (error) {
+    log("warn", `Failed to check volume usage for ${volumeName}: ${error.message}`);
+    // Err on the side of caution - if we can't check, assume it's in use
+    return true;
+  }
+}
+
+/**
  * Check and remove expired temporary apps
  * @returns {Promise<Object>} Results of cleanup operation
  */
@@ -149,13 +185,25 @@ export async function cleanupExpiredApps() {
           // Remove container
           await containerObj.remove();
 
-          // Remove associated volumes
+          // Remove associated volumes (only if not used by other containers)
           const removedVolumes = [];
+          const skippedVolumes = [];
           for (const volumeName of volumeNames) {
             try {
+              // Check if volume is being used by other containers
+              const isUsedByOthers = await isVolumeUsedByOtherContainers(volumeName, container.Id);
+
+              if (isUsedByOthers) {
+                log("info", `Skipping volume ${volumeName} (shared with other containers)`);
+                skippedVolumes.push(volumeName);
+                continue;
+              }
+
+              // Safe to remove - volume is only used by this container
               const volume = docker.getVolume(volumeName);
               await volume.remove();
               removedVolumes.push(volumeName);
+              log("info", `Removed volume ${volumeName}`);
             } catch (err) {
               log("warn", `Failed to remove volume ${volumeName}: ${err.message}`);
             }
@@ -166,6 +214,7 @@ export async function cleanupExpiredApps() {
             name: containerName,
             type: "container",
             volumes: removedVolumes,
+            volumesSkipped: skippedVolumes,
             expiredAt: new Date(expirationTime * 1000).toISOString(),
           });
 
