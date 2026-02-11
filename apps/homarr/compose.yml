@@ -12,6 +12,7 @@ services:
       - "7575"
     labels:
       yantra.name: "Homarr"
+      yantra.logo: "QmXrjcV7SukGrmAgqF3tHVCu2LTYYGkhADumKY74AHzLf4"
       yantra.description: "Modern customizable dashboard with 30+ integrations and 10K+ icons"
       yantra.category: "dashboard,tools"
       yantra.port: "7575 (HTTP - Web UI)"

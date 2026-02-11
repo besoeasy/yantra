@@ -4,6 +4,7 @@ services:
     container_name: stirling-pdf
     labels:
       yantra.name: "Stirling-PDF"
+      yantra.logo: "QmZ6nmAP1oSgpfd4N7oAYNEJrRqgQTPGndZPyN2vwmyjBE"
       yantra.category: "tools,utility"
       yantra.port: "8080 (HTTP - Web UI)"
       yantra.description: "Powerful locally hosted web-based PDF manipulation tool"

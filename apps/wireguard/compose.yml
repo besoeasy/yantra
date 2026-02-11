@@ -17,6 +17,7 @@ services:
       - net.ipv4.conf.all.src_valid_mark=1
     labels:
       yantra.name: "WireGuard"
+      yantra.logo: "QmYvWBezgveN9KZARJeAczC6p8mUMsYAwLyV8NKRNHKNCi"
       yantra.category: "network,security"
       yantra.port: "51821 (HTTP - Admin Panel)"
       yantra.description: "Fast, modern VPN with state-of-the-art cryptography"

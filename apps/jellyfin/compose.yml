@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     labels:
       yantra.name: "Jellyfin"
+      yantra.logo: "QmcsxWwZb9CZYsG5EvAEVwqjEw2FeX3KroZD5rvo87XWMZ"
       yantra.category: "media,entertainment"
       yantra.port: "8096 (HTTP - Web UI)"
       yantra.description: "Free and open-source media server for streaming video, music, and photos"

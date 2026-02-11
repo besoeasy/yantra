@@ -4,6 +4,7 @@ services:
     container_name: linkwarden
     labels:
       yantra.name: "Linkwarden"
+      yantra.logo: "QmXS2iBXkfwvLA2iiVGCxj8sY3j8KKCf2NGz6hCgiuSeQU"
       yantra.category: "productivity,utility"
       yantra.port: "3000 (HTTP - Web UI)"
       yantra.description: "Bookmark preservation tool for individuals and teams with full-text search and archiving"

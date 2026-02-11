@@ -20,6 +20,7 @@ services:
     restart: unless-stopped
     labels:
       yantra.name: "Minecraft Server"
+      yantra.logo: "QmPB7iXHMAu3Wor5jiEsoifm5tZyMEUojhbj6TJJefsY7s"
       yantra.category: "gaming"
       yantra.port: "25565 (TCP - Game Server)"
       yantra.description: "Open-source sandbox game server with endless possibilities"

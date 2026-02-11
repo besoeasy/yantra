@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     labels:
       yantra.name: "Whoami"
+      yantra.logo: "QmZvfwKJRMrMvzUyRyrLJjShVCsGozSAPDrCq6Vg1Fpde5"
       yantra.category: "tools,utility"
       yantra.port: "80 (HTTP - Web UI)"
       yantra.description: "Tiny HTTP service that prints system information - perfect for testing"

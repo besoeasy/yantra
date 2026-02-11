@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     labels:
       yantra.name: "Prowlarr"
+      yantra.logo: "Qma8EiYwcHKzMtqS8vbvtGCtRApdWnhMszeZCECuuoMzz7"
       yantra.category: "media,tools"
       yantra.port: "9696 (HTTP - Web UI)"
       yantra.description: "Indexer manager for automating and integrating Usenet and torrent indexers"

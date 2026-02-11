@@ -4,6 +4,7 @@ services:
     container_name: invio
     labels:
       yantra.name: "Invio"
+      yantra.logo: "QmTxfLAvG4LnESZyVJ6dWMzXqJpaDYyTmKEhLxEux6PAH3"
       yantra.category: "productivity,utility"
       yantra.port: "3000 (HTTP - Web UI)"
       yantra.description: "Self-hosted invoicing without the bloat"

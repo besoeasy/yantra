@@ -4,6 +4,7 @@ services:
     container_name: networking-toolbox
     labels:
       yantra.name: "Networking Toolbox"
+      yantra.logo: "QmaU7tznY63wTMNNPtCQQbPBT4PNbPYFT9iq8utHwhfF47"
       yantra.category: "network,tools"
       yantra.port: "3000 (HTTP - Web UI)"
       yantra.description: "100+ offline-first networking tools and utilities"

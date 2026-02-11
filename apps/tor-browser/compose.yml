@@ -6,6 +6,7 @@ services:
       - "5800"
     labels:
       yantra.name: "Tor Browser"
+      yantra.logo: "QmaVTPSKHnzenoUpqydsnNHQ45WJDtRxxjnqzVqK4MiB38"
       yantra.description: "Privacy-focused web browser with Tor network integration"
       yantra.category: "privacy,security"
       yantra.port: "5800 (HTTP - Web UI)"

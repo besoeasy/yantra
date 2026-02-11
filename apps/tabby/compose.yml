@@ -4,6 +4,7 @@ services:
     container_name: tabby
     labels:
       yantra.name: "Tabby"
+      yantra.logo: "QmcQ3CYdea4rtPmwJTSggcFYvpKcSpSqSQMbS9RdWjzTWS"
       yantra.category: "productivity,browsing"
       yantra.port: "80 (HTTP - Web UI)"
       yantra.description: "Beautiful and customizable browser start page with tab management"

@@ -13,6 +13,7 @@ services:
       HTTPS: 1
     labels:
       yantra.name: "Stremio"
+      yantra.logo: "QmUJ8LsjmfsZdPybvXWkAJsEJYadr8D6L1iqXvgtC48hfX"
       yantra.category: "media,streaming"
       yantra.port: "11470 (HTTP - Server), 12470 (HTTPS - Server)"
       yantra.description: "Media center application for streaming movies, TV shows, and video content"

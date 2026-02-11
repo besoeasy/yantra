@@ -4,6 +4,7 @@ services:
     container_name: pastefy
     labels:
       yantra.name: "Pastefy"
+      yantra.logo: "QmdxTLj7i7cdJW7VPeeYnxsjC2ZXr6SZYgMkHW3pwNwB7C"
       yantra.category: "tools,productivity"
       yantra.port: "80 (HTTP - Web UI)"
       yantra.description: "Feature-rich self-hosted pastebin for sharing code"

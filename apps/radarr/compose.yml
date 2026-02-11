@@ -11,6 +11,7 @@ services:
     restart: unless-stopped
     labels:
       yantra.name: "Radarr"
+      yantra.logo: "QmfNn5gZnB1QYxXdumJ3Xw4jz9o18H2Zmub5F2NXU4h8wv"
       yantra.category: "media,tools"
       yantra.port: "7878 (HTTP - Web UI)"
       yantra.description: "Smart PVR for movie collection management and automated downloads"

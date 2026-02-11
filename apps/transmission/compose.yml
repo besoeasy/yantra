@@ -15,6 +15,7 @@ services:
     restart: unless-stopped
     labels:
       yantra.name: "Transmission"
+      yantra.logo: "QmYNJtjCxWhoKS78Nvjfm7fc9dqA49QiGHUQBryYSmwsdQ"
       yantra.category: "download,network"
       yantra.port: "9091 (HTTP - Web Interface)"
       yantra.description: "Fast, easy BitTorrent client with web interface"

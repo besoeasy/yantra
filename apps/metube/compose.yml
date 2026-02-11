@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     labels:
       yantra.name: "MeTube"
+      yantra.logo: "QmVHF6jueKh11T7LVbBC6NCCs2tuMo7Af7tKfWJEdXSkwQ"
       yantra.category: "media,tools,utility"
       yantra.port: "8081 (HTTP - Web UI)"
       yantra.description: "Web GUI for yt-dlp/youtube-dl with playlist support."

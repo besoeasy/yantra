@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     labels:
       yantra.name: "SwingMusic"
+      yantra.logo: "QmVWKyW9G8C4zxCDMMutg7eSNuugdAzUUNwzhbvjkv6j1o"
       yantra.category: "media,entertainment"
       yantra.port: "1970 (HTTP - Web UI)"
       yantra.description: "Beautiful music player with a modern web interface"
