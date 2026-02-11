@@ -32,6 +32,14 @@ docker run -d \
 
 **✅ That’s it!** Open your browser and navigate to http://localhost to start deploying apps.
 
+### Linux Server Setup (Ubuntu/Debian)
+
+If you want a guided setup that installs Docker, configures permissions, opens ports 80/443, and runs Yantra:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/besoeasy/Yantra/main/i.sh | sudo bash
+```
+
 ### System Requirements
 
 - **Docker** installed and running
