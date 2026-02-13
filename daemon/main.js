@@ -646,7 +646,7 @@ if (process.env.NODE_ENV === "production") {
   uiDistPath = path.join(__dirname, "..", "dist");
   uiBasePath = normalizeUiBasePath(process.env.UI_BASE_PATH || process.env.VITE_BASE_PATH || "/");
 
-  app.use(uiBasePath, express.static(uiDistPath, { index: false }));
+  app.use(uiBasePath, express.static(uiDistPath));
 
   log("info", `📦 Serving Vue.js app from: ${uiDistPath}`);
   log("info", `🧭 UI virtual root: ${uiBasePath}`);
@@ -2612,36 +2612,6 @@ app.delete("/api/volumes/:volumeName/backup/:timestamp", asyncHandler(async (req
 // ============================================
 // END BACKUP & RESTORE API ENDPOINTS
 // ============================================
-
-// SPA fallback route for client-side routing (must be last route before error handler)
-if (process.env.NODE_ENV === "production" && uiDistPath) {
-  const uiFallback = (req, res, next) => {
-    if (!req.accepts("html")) {
-      return next();
-    }
-
-    if (req.path.startsWith("/api")) {
-      return next();
-    }
-
-    if (path.extname(req.path)) {
-      return next();
-    }
-
-    return res.sendFile(path.join(uiDistPath, "index.html"));
-  };
-
-  if (uiBasePath === "/") {
-    app.get("*", uiFallback);
-  } else {
-    app.get(`${uiBasePath}`,
-      uiFallback,
-    );
-    app.get(`${uiBasePath}/*`,
-      uiFallback,
-    );
-  }
-}
 
 // Error handling middleware (must be last)
 app.use(errorHandler);
