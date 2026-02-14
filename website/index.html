@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yantra - Self-Hosted Homelab App Store | Alternative to Umbrel & UmbrelOS</title>
+    <meta name="description" content="Turn any server, PC, laptop, or Mac into a self-hosted homelab. Run 100+ apps including AI agents (Ollama, Open WebUI, Perplexica). Better alternative to Umbrel OS and CasaOS - no OS takeover required. Deploy apps with a single Docker command.">
+    <meta name="keywords" content="yantra, umbrel, umbrelOS, umbrel alternative, self-hosted, homelab, docker, app store, AI agents, ollama, open webui, perplexica, casaos alternative, self-hosted apps, docker compose, homelab apps">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Yantra - Self-Hosted Homelab App Store | Umbrel Alternative">
+    <meta property="og:description" content="First platform to ship complete AI agent suite. Run 100+ apps on your existing machine without OS takeover. Better than Umbrel OS.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/besoeasy/yantra/main/website/yantra.png">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Yantra - Self-Hosted Homelab App Store">
+    <meta name="twitter:description" content="Alternative to Umbrel OS. Run 100+ apps with complete AI agent suite on any machine.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(2deg); }
+            66% { transform: translateY(-10px) rotate(-2deg); }
+        }
+        
+        @keyframes float-delayed {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(-2deg); }
+            66% { transform: translateY(-25px) rotate(2deg); }
+        }
+        
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(3deg); }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .float-animation { animation: float 6s ease-in-out infinite; }
+        .float-delayed { animation: float-delayed 7s ease-in-out infinite; }
+        .float-slow { animation: float-slow 8s ease-in-out infinite; }
+        .pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+        
+        .gradient-text {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+        }
+        
+        .app-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .app-card:hover {
+            transform: translateY(-8px) rotate(2deg);
+            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.4);
+        }
+        
+        .star-field {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .hero-gradient {
+            background: radial-gradient(ellipse at top, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at bottom, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+        }
+    </style>
+</head>
+<body class="bg-black text-white antialiased overflow-x-hidden">
+    
+    <!-- Star field background -->
+    <div class="star-field" id="starField"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-lg border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl">⚙️</span>
+                    <span class="text-2xl font-bold gradient-text">Yantra</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="hover:text-blue-400 transition">Features</a>
+                    <a href="#ai-agents" class="hover:text-purple-400 transition">AI Agents</a>
+                    <a href="#apps" class="hover:text-pink-400 transition">Apps</a>
+                    <a href="#quickstart" class="hover:text-blue-400 transition">Quick Start</a>
+                    <a href="#comparison" class="hover:text-purple-400 transition">vs Umbrel</a>
+                </div>
+                <a href="https://github.com/besoeasy/yantra" target="_blank" class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition">
+                    <span>GitHub</span>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center hero-gradient pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="animate-fade-in">
+                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                    Turn Any Machine Into a
+                    <span class="block gradient-text mt-2">Self-Hosted Homelab</span>
+                </h1>
+                <p class="text-xl sm:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                    Run 100+ powerful apps on-demand. First platform to ship a complete AI agent suite. 
+                    <span class="text-blue-400 font-semibold">Better than Umbrel OS</span> - no OS takeover required.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                    <a href="#quickstart" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition transform hover:scale-105 pulse-glow">
+                        Get Started in 30 Seconds
+                    </a>
+                    <a href="#apps" class="px-8 py-4 bg-gray-800 rounded-lg text-lg font-semibold hover:bg-gray-700 transition transform hover:scale-105 border border-gray-700">
+                        Browse 100+ Apps
+                    </a>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                    <div class="bg-gray-900/50 backdrop-blur-lg rounded-lg p-6 border border-gray-800 card-hover">
+                        <div class="text-4xl font-bold gradient-text">100+</div>
+                        <div class="text-gray-400 mt-2">Apps Available</div>
+                    </div>
+                    <div class="bg-gray-900/50 backdrop-blur-lg rounded-lg p-6 border border-gray-800 card-hover">
+                        <div class="text-4xl font-bold gradient-text">8</div>
+                        <div class="text-gray-400 mt-2">AI Agents</div>
+                    </div>
+                    <div class="bg-gray-900/50 backdrop-blur-lg rounded-lg p-6 border border-gray-800 card-hover">
+                        <div class="text-4xl font-bold gradient-text">1</div>
+                        <div class="text-gray-400 mt-2">Docker Command</div>
+                    </div>
+                    <div class="bg-gray-900/50 backdrop-blur-lg rounded-lg p-6 border border-gray-800 card-hover">
+                        <div class="text-4xl font-bold gradient-text">0</div>
+                        <div class="text-gray-400 mt-2">OS Takeover</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl sm:text-5xl font-bold text-center mb-16">
+                Why <span class="gradient-text">Yantra</span> Outperforms Umbrel
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-8 rounded-2xl border border-blue-500/20 card-hover">
+                    <div class="text-5xl mb-4">⚡</div>
+                    <h3 class="text-2xl font-bold mb-3">One-Click Deploys</h3>
+                    <p class="text-gray-300">Instant access to popular self-hosted apps with clean defaults and smart presets. No configuration headaches.</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-900/20 to-pink-900/20 p-8 rounded-2xl border border-purple-500/20 card-hover">
+                    <div class="text-5xl mb-4">🤖</div>
+                    <h3 class="text-2xl font-bold mb-3">Complete AI Suite</h3>
+                    <p class="text-gray-300">First platform to ship Ollama, Open WebUI, Perplexica, OpenCode and more AI agents - fully isolated.</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-pink-900/20 to-blue-900/20 p-8 rounded-2xl border border-pink-500/20 card-hover">
+                    <div class="text-5xl mb-4">⏱️</div>
+                    <h3 class="text-2xl font-bold mb-3">Temporary Installs</h3>
+                    <p class="text-gray-300">Set expiration times and auto-delete apps when you're done. Perfect for testing and short-term projects.</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-8 rounded-2xl border border-blue-500/20 card-hover">
+                    <div class="text-5xl mb-4">🔄</div>
+                    <h3 class="text-2xl font-bold mb-3">Multiple Instances</h3>
+                    <p class="text-gray-300">Run the same app multiple times with different configurations. Unlimited flexibility.</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-900/20 to-pink-900/20 p-8 rounded-2xl border border-purple-500/20 card-hover">
+                    <div class="text-5xl mb-4">📂</div>
+                    <h3 class="text-2xl font-bold mb-3">Direct Volume Access</h3>
+                    <p class="text-gray-300">Browse and manage app data files directly from the UI with built-in WebDAV support.</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-pink-900/20 to-blue-900/20 p-8 rounded-2xl border border-pink-500/20 card-hover">
+                    <div class="text-5xl mb-4">💾</div>
+                    <h3 class="text-2xl font-bold mb-3">Backup & Restore</h3>
+                    <p class="text-gray-300">Backup and restore Docker volumes with a single click. Easy data migration and snapshots.</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-blue-900/20 to-purple-900/20 p-8 rounded-2xl border border-blue-500/20 card-hover">
+                    <div class="text-5xl mb-4">🧹</div>
+                    <h3 class="text-2xl font-bold mb-3">Auto-Cleanup</h3>
+                    <p class="text-gray-300">Automatically removes old unused Docker images (10+ days) to free disk space.</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-900/20 to-pink-900/20 p-8 rounded-2xl border border-purple-500/20 card-hover">
+                    <div class="text-5xl mb-4">🧩</div>
+                    <h3 class="text-2xl font-bold mb-3">Filesystem Safe</h3>
+                    <p class="text-gray-300">Never modifies your host filesystem. All data in isolated Docker volumes. Clean uninstalls guaranteed.</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-pink-900/20 to-blue-900/20 p-8 rounded-2xl border border-pink-500/20 card-hover">
+                    <div class="text-5xl mb-4">⚙️</div>
+                    <h3 class="text-2xl font-bold mb-3">Auto Configuration</h3>
+                    <p class="text-gray-300">Automatic port mapping and smart defaults. Launch apps without spending 10 minutes on setup.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- AI Agents Section -->
+    <section id="ai-agents" class="py-24 relative bg-gradient-to-br from-purple-900/10 to-blue-900/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl sm:text-5xl font-bold mb-6">
+                    🤖 Complete <span class="gradient-text">AI Agent Ecosystem</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    <span class="text-purple-400 font-bold">Yantra is the first platform</span> to ship a complete suite of AI agents, 
+                    each running in its own isolated environment with zero conflicts. No dependency hell. No version mismatches.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <!-- LLM Infrastructure -->
+                <div class="bg-gradient-to-br from-blue-900/30 to-purple-900/30 p-8 rounded-2xl border border-blue-500/30 backdrop-blur-lg">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center">
+                        <span class="text-4xl mr-3">🧠</span>
+                        LLM Infrastructure
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-black/40 p-4 rounded-lg border border-blue-500/20 hover:border-blue-500/50 transition">
+                            <div class="font-bold text-lg mb-1">Ollama</div>
+                            <div class="text-gray-400 text-sm">Local LLM inference server (Llama, Mistral, CodeLlama)</div>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-lg border border-purple-500/20 hover:border-purple-500/50 transition">
+                            <div class="font-bold text-lg mb-1">Open WebUI</div>
+                            <div class="text-gray-400 text-sm">Beautiful chat interface for your local LLMs</div>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-lg border border-pink-500/20 hover:border-pink-500/50 transition">
+                            <div class="font-bold text-lg mb-1">Perplexica</div>
+                            <div class="text-gray-400 text-sm">AI-powered search with conversational responses</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Development -->
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 p-8 rounded-2xl border border-purple-500/30 backdrop-blur-lg">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center">
+                        <span class="text-4xl mr-3">💻</span>
+                        AI Development Tools
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-black/40 p-4 rounded-lg border border-purple-500/20 hover:border-purple-500/50 transition">
+                            <div class="font-bold text-lg mb-1">OpenCode</div>
+                            <div class="text-gray-400 text-sm">AI coding agent for terminal, IDE, and desktop</div>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-lg border border-pink-500/20 hover:border-pink-500/50 transition">
+                            <div class="font-bold text-lg mb-1">OpenClaw</div>
+                            <div class="text-gray-400 text-sm">AI development environment with container management</div>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-lg border border-blue-500/20 hover:border-blue-500/50 transition">
+                            <div class="font-bold text-lg mb-1">n8n</div>
+                            <div class="text-gray-400 text-sm">Workflow automation with 400+ AI integrations</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Why This Matters -->
+            <div class="bg-gradient-to-r from-blue-900/20 via-purple-900/20 to-pink-900/20 p-8 rounded-2xl border border-purple-500/30">
+                <h3 class="text-2xl font-bold mb-6 text-center">✨ Why This Matters</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">✅</div>
+                        <div class="font-semibold">No Python Environment Conflicts</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">✅</div>
+                        <div class="font-semibold">No CUDA Version Mismatches</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">✅</div>
+                        <div class="font-semibold">No Shared Dependencies</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">✅</div>
+                        <div class="font-semibold">Run Multiple AI Models</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">✅</div>
+                        <div class="font-semibold">Zero Residue on System</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl mb-2">✅</div>
+                        <div class="font-semibold">Install, Test, Delete</div>
+                    </div>
+                </div>
+                <p class="text-center text-xl mt-8 text-purple-300 font-semibold">
+                    Deploy Ollama + Open WebUI + Perplexica + OpenCode in minutes. Run them together or separately. 
+                    <span class="text-white">This is the AI homelab everyone wishes they had.</span>
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Featured Apps Section -->
+    <section id="apps" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl sm:text-5xl font-bold mb-6">
+                    Browse <span class="gradient-text">100+ Apps</span>
+                </h2>
+                <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                    From AI agents to media servers, privacy tools to development environments. All pre-configured and ready to deploy.
+                </p>
+            </div>
+            
+            <!-- Floating App Cards -->
+            <div id="appGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-12">
+                <!-- Apps will be dynamically loaded here -->
+            </div>
+            
+            <div class="text-center">
+                <a href="https://github.com/besoeasy/yantra/tree/main/apps" target="_blank" class="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition transform hover:scale-105">
+                    View All Apps on GitHub →
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Quick Start Section -->
+    <section id="quickstart" class="py-24 relative bg-gradient-to-br from-blue-900/10 to-purple-900/10">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl sm:text-5xl font-bold mb-6">
+                    🚀 Get Started in <span class="gradient-text">30 Seconds</span>
+                </h2>
+                <p class="text-xl text-gray-300">
+                    Launch Yantra with a single Docker command
+                </p>
+            </div>
+            
+            <div class="bg-gray-900 rounded-2xl p-8 border border-gray-800 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-sm text-gray-400">Terminal</span>
+                    <button onclick="copyCommand()" class="text-sm text-blue-400 hover:text-blue-300 transition">
+                        Copy Command
+                    </button>
+                </div>
+                <pre id="installCommand" class="text-gray-300 overflow-x-auto"><code>docker run -d \
+  --name yantra \
+  -p 80:5252 \
+  -p 443:5252 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  --restart unless-stopped \
+  ghcr.io/besoeasy/yantra</code></pre>
+            </div>
+            
+            <div class="text-center mb-12">
+                <p class="text-lg text-gray-300 mb-4">
+                    ✅ That's it! Open your browser and navigate to <code class="bg-gray-800 px-2 py-1 rounded">http://localhost</code>
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-blue-900/30 to-purple-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/30">
+                        <span class="text-2xl">1</span>
+                    </div>
+                    <h3 class="font-bold mb-2">Install Docker</h3>
+                    <p class="text-gray-400 text-sm">Ensure Docker is installed and running on your system</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-purple-500/30">
+                        <span class="text-2xl">2</span>
+                    </div>
+                    <h3 class="font-bold mb-2">Run Command</h3>
+                    <p class="text-gray-400 text-sm">Copy and paste the Docker command in your terminal</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-pink-900/30 to-blue-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-pink-500/30">
+                        <span class="text-2xl">3</span>
+                    </div>
+                    <h3 class="font-bold mb-2">Start Deploying</h3>
+                    <p class="text-gray-400 text-sm">Open localhost and start deploying apps instantly</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Comparison Section -->
+    <section id="comparison" class="py-24 relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl sm:text-5xl font-bold mb-6">
+                    Yantra vs <span class="gradient-text">Umbrel OS</span>
+                </h2>
+                <p class="text-xl text-gray-300">
+                    Why developers and homelab enthusiasts are switching from Umbrel to Yantra
+                </p>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full bg-gray-900/50 backdrop-blur-lg rounded-2xl border border-gray-800 overflow-hidden">
+                    <thead class="bg-gradient-to-r from-blue-900/50 to-purple-900/50">
+                        <tr>
+                            <th class="px-6 py-4 text-left">Feature</th>
+                            <th class="px-6 py-4 text-center">🔧 Yantra</th>
+                            <th class="px-6 py-4 text-center">🚫 Umbrel / CasaOS</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        <tr class="hover:bg-gray-800/50 transition">
+                            <td class="px-6 py-4">Philosophy</td>
+                            <td class="px-6 py-4 text-center text-green-400">📦 App Store (Runs on your OS)</td>
+                            <td class="px-6 py-4 text-center text-red-400">Operating System (Takes over your OS)</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition">
+                            <td class="px-6 py-4">Hardware</td>
+                            <td class="px-6 py-4 text-center text-green-400">💻 Your existing Laptop/PC</td>
+                            <td class="px-6 py-4 text-center text-red-400">Dedicated Pi/Server</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition">
+                            <td class="px-6 py-4">Installation</td>
+                            <td class="px-6 py-4 text-center text-green-400">🚀 Single Docker command</td>
+                            <td class="px-6 py-4 text-center text-red-400">Full OS installation required</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition">
+                            <td class="px-6 py-4">Flexibility</td>
+                            <td class="px-6 py-4 text-center text-green-400">Run alongside daily work</td>
+                            <td class="px-6 py-4 text-center text-red-400">Exclusive computer use</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition">
+                            <td class="px-6 py-4">Control</td>
+                            <td class="px-6 py-4 text-center text-green-400">Full system access + open Docker Compose</td>
+                            <td class="px-6 py-4 text-center text-red-400">Locked ecosystem</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition">
+                            <td class="px-6 py-4">Resource Usage</td>
+                            <td class="px-6 py-4 text-center text-green-400">⚡ On-demand (start what you use)</td>
+                            <td class="px-6 py-4 text-center text-red-400">Always-on services</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition">
+                            <td class="px-6 py-4">AI Agents</td>
+                            <td class="px-6 py-4 text-center text-green-400">✅ Complete suite (8 agents)</td>
+                            <td class="px-6 py-4 text-center text-red-400">Limited or none</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition">
+                            <td class="px-6 py-4">Isolation</td>
+                            <td class="px-6 py-4 text-center text-green-400">Clean Docker containers</td>
+                            <td class="px-6 py-4 text-center text-red-400">System-wide dependencies</td>
+                        </tr>
+                        <tr class="hover:bg-gray-800/50 transition">
+                            <td class="px-6 py-4">Portability</td>
+                            <td class="px-6 py-4 text-center text-green-400">Easy backup/migration</td>
+                            <td class="px-6 py-4 text-center text-red-400">Tied to specific hardware</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-24 relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="bg-gradient-to-r from-blue-900/30 via-purple-900/30 to-pink-900/30 rounded-3xl p-12 border border-purple-500/30 backdrop-blur-lg">
+                <h2 class="text-4xl sm:text-5xl font-bold mb-6">
+                    Ready to Build Your <span class="gradient-text">AI-Powered Homelab?</span>
+                </h2>
+                <p class="text-xl text-gray-300 mb-8">
+                    Join developers and homelab enthusiasts who've switched from Umbrel OS to Yantra
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#quickstart" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition transform hover:scale-105">
+                        Get Started Now
+                    </a>
+                    <a href="https://github.com/besoeasy/yantra" target="_blank" class="px-8 py-4 bg-gray-800 rounded-lg text-lg font-semibold hover:bg-gray-700 transition transform hover:scale-105 border border-gray-700">
+                        View on GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-3xl">⚙️</span>
+                        <span class="text-2xl font-bold gradient-text">Yantra</span>
+                    </div>
+                    <p class="text-gray-400">Self-hosted homelab app store. Better than Umbrel OS.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-4">Product</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#features" class="hover:text-white transition">Features</a></li>
+                        <li><a href="#ai-agents" class="hover:text-white transition">AI Agents</a></li>
+                        <li><a href="#apps" class="hover:text-white transition">All Apps</a></li>
+                        <li><a href="#comparison" class="hover:text-white transition">vs Umbrel</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-4">Resources</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="https://github.com/besoeasy/yantra" target="_blank" class="hover:text-white transition">GitHub</a></li>
+                        <li><a href="https://github.com/besoeasy/yantra/issues" target="_blank" class="hover:text-white transition">Issues</a></li>
+                        <li><a href="https://github.com/besoeasy/yantra/tree/main/apps" target="_blank" class="hover:text-white transition">Documentation</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-4">Community</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="https://t.me/+h4RvCk63PxUyODQ1" target="_blank" class="hover:text-white transition">Telegram</a></li>
+                        <li><a href="https://github.com/besoeasy/yantra/discussions" target="_blank" class="hover:text-white transition">Discussions</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>Built with ❤️ by <a href="https://github.com/besoeasy" target="_blank" class="text-blue-400 hover:text-blue-300 transition">besoeasy</a></p>
+                <p class="mt-2 text-sm">Open source under ISC License</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Create star field
+        function createStarField() {
+            const starField = document.getElementById('starField');
+            const starCount = 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starField.appendChild(star);
+            }
+        }
+        
+        // Load and display apps
+        async function loadApps() {
+            try {
+                const response = await fetch('apps.json');
+                const data = await response.json();
+                const appGrid = document.getElementById('appGrid');
+                
+                // Get AI apps first, then featured apps
+                const aiApps = data.apps.filter(app => 
+                    app.category.includes('ai')
+                ).slice(0, 8);
+                
+                const otherApps = data.apps
+                    .filter(app => !app.category.includes('ai'))
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 32);
+                
+                const featuredApps = [...aiApps, ...otherApps].slice(0, 40);
+                
+                featuredApps.forEach((app, index) => {
+                    const animationClass = index % 3 === 0 ? 'float-animation' : 
+                                         index % 3 === 1 ? 'float-delayed' : 'float-slow';
+                    
+                    const isAI = app.category.includes('ai');
+                    const borderColor = isAI ? 'border-purple-500/30' : 'border-blue-500/20';
+                    const bgGradient = isAI ? 'from-purple-900/20 to-pink-900/20' : 'from-blue-900/20 to-gray-900/20';
+                    
+                    const appCard = document.createElement('div');
+                    appCard.className = `app-card bg-gradient-to-br ${bgGradient} p-6 rounded-xl border ${borderColor} ${animationClass}`;
+                    appCard.style.animationDelay = `${index * 0.1}s`;
+                    
+                    appCard.innerHTML = `
+                        <div class="flex flex-col items-center text-center">
+                            <img src="https://ipfs.io/ipfs/${app.logo}" 
+                                 alt="${app.name}" 
+                                 class="w-16 h-16 rounded-lg mb-3 object-cover"
+                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23374151%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2240%22 text-anchor=%22middle%22%3E📦%3C/text%3E%3C/svg%3E'">
+                            <h3 class="font-bold text-sm mb-1">${app.name}</h3>
+                            ${isAI ? '<span class="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">AI Agent</span>' : ''}
+                        </div>
+                    `;
+                    
+                    appGrid.appendChild(appCard);
+                });
+            } catch (error) {
+                console.error('Error loading apps:', error);
+            }
+        }
+        
+        // Copy command to clipboard
+        function copyCommand() {
+            const command = document.getElementById('installCommand').textContent;
+            navigator.clipboard.writeText(command).then(() => {
+                alert('Command copied to clipboard!');
+            });
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Initialize
+        createStarField();
+        loadApps();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1590 @@
+{
+  "meta": {
+    "generatedAt": "2026-02-14T22:51:04.883Z",
+    "totalApps": 102,
+    "categories": [
+      "ai",
+      "backend",
+      "blockchain",
+      "blog",
+      "browsing",
+      "cms",
+      "cryptocurrency",
+      "dashboard",
+      "database",
+      "development",
+      "dns",
+      "docker",
+      "documentation",
+      "download",
+      "downloader",
+      "entertainment",
+      "feed",
+      "file-management",
+      "file-manager",
+      "file-sharing",
+      "finance",
+      "forms",
+      "gaming",
+      "management",
+      "media",
+      "monitoring",
+      "music",
+      "network",
+      "networking",
+      "notification",
+      "organization",
+      "privacy",
+      "productivity",
+      "s3",
+      "search",
+      "security",
+      "social",
+      "storage",
+      "streaming",
+      "time-tracking",
+      "tools",
+      "torrent",
+      "utility",
+      "wiki"
+    ]
+  },
+  "apps": [
+    {
+      "id": "actual-budget",
+      "name": "Actual Budget",
+      "logo": "QmYhzJQFC7KG7RenmubaBZi1f8F2XkagEamPvJxQqmyqGR",
+      "category": [
+        "finance",
+        "productivity"
+      ],
+      "port": "5006 (HTTP - Web UI)",
+      "description": "Self-hosted personal finance app with powerful budgeting and tracking features",
+      "website": "https://github.com/actualbudget/actual",
+      "dependencies": [],
+      "image": "actualbudget/actual-server:latest",
+      "serviceName": "actual-budget"
+    },
+    {
+      "id": "adguard-home",
+      "name": "AdGuard Home",
+      "logo": "QmSBZ3r1XdbMZ9CiUUvtQvfL9HYjLGMF4nqftRJ2XHAS3j",
+      "category": [
+        "network",
+        "security",
+        "dns"
+      ],
+      "port": "3000 (HTTP - Initial Setup), 80 (HTTP - Web UI)",
+      "description": "DNS-level ad blocking and privacy protection with parental controls",
+      "website": "https://github.com/AdguardTeam/AdGuardHome",
+      "dependencies": [],
+      "image": "adguard/adguardhome:latest",
+      "serviceName": "adguard"
+    },
+    {
+      "id": "airsonic",
+      "name": "Airsonic",
+      "logo": "Qmb3YsRHNpn9L5CFLVLM3C4h7wNtMXcGsmXYn2uofZaiHK",
+      "category": [
+        "media",
+        "music"
+      ],
+      "port": "4040 (HTTP - Web UI)",
+      "description": "Self-hosted music streaming server with web interface and mobile apps",
+      "website": "https://github.com/airsonic/airsonic",
+      "dependencies": [],
+      "image": "lscr.io/linuxserver/airsonic:latest",
+      "serviceName": "airsonic"
+    },
+    {
+      "id": "appsmith",
+      "name": "Appsmith",
+      "logo": "QmcEzSU5HXbZ9jiG6ZAY4PrqHRq2ddhQnfT2gcpXg34kuy",
+      "category": [
+        "productivity",
+        "development"
+      ],
+      "port": "80 (HTTP - Web UI), 443 (HTTPS - Web UI)",
+      "description": "Low-code internal tools platform for rapid application development",
+      "website": "https://github.com/appsmithorg/appsmith",
+      "dependencies": [],
+      "image": "appsmith/appsmith-ce:latest",
+      "serviceName": "appsmith"
+    },
+    {
+      "id": "bitcoin-knots",
+      "name": "Bitcoin Knots",
+      "logo": "QmagcjChBhrPKmd1S2XyQw9dCddbWn7izbtNR4gscbA1kQ",
+      "category": [
+        "cryptocurrency"
+      ],
+      "port": "8332 (HTTP - Web UI)",
+      "description": "Bitcoin full node with enhanced features and privacy focus.",
+      "website": "https://bitcoinknots.org",
+      "dependencies": [],
+      "image": "bitcoinknots/bitcoin:latest",
+      "serviceName": "bitcoin-knots"
+    },
+    {
+      "id": "bitcoin-knots-vm",
+      "name": "Bitcoin Knots VM",
+      "logo": "QmagcjChBhrPKmd1S2XyQw9dCddbWn7izbtNR4gscbA1kQ",
+      "category": [
+        "cryptocurrency"
+      ],
+      "port": "3000 (HTTP - Web UI), 3001 (HTTPS - Web UI)",
+      "description": "Bitcoin full node with enhanced features and privacy focus.",
+      "website": "https://bitcoinknots.org",
+      "dependencies": [],
+      "image": "lscr.io/linuxserver/bitcoin-knots:latest",
+      "serviceName": "bitcoin-knots-vm"
+    },
+    {
+      "id": "bitmagnet",
+      "name": "Bitmagnet",
+      "logo": "QmX2bA23zVjnxGeQgwUfv3XXuascGnnBX33ap7CWWknrXP",
+      "category": [
+        "media",
+        "tools",
+        "utility"
+      ],
+      "port": "3333 (HTTP - Web UI)",
+      "description": "Self-hosted BitTorrent indexer, DHT crawler, and torrent client.",
+      "website": "https://bitmagnet.io",
+      "dependencies": [],
+      "image": "ghcr.io/bitmagnet-io/bitmagnet:v0.10",
+      "serviceName": "bitmagnet"
+    },
+    {
+      "id": "bitwatch",
+      "name": "Bitwatch",
+      "logo": "QmX4wcMVLo1mvb38iyH9xQfmXyB9DAdLesDqvsFjhU7iP8",
+      "category": [
+        "tools",
+        "blockchain"
+      ],
+      "port": "3117 (HTTP - Web UI)",
+      "description": "Monitor Bitcoin addresses in mempool and on-chain with notifications",
+      "website": "https://github.com/zapomatic/bitwatch",
+      "dependencies": [],
+      "image": "ghcr.io/zapomatic/bitwatch:latest",
+      "serviceName": "bitwatch"
+    },
+    {
+      "id": "cloud-torrent",
+      "name": "Cloud Torrent",
+      "logo": "QmdPAfpuG5zkJs4GMX2DJ4xhKYq8vkT98TMjHgecAwkQVL",
+      "category": [
+        "download",
+        "utility"
+      ],
+      "port": "3000 (HTTP - Web UI)",
+      "description": "Cloud-based BitTorrent client with streaming support",
+      "website": "https://github.com/jpillora/cloud-torrent",
+      "dependencies": [],
+      "image": "jpillora/cloud-torrent:latest",
+      "serviceName": "cloud-torrent"
+    },
+    {
+      "id": "cloudflared",
+      "name": "Cloudflared",
+      "logo": "Qmcyr4xpG4SZdBp9VorVjRrvHqHoQzCu9YHCQZGNC5ck8T",
+      "category": [
+        "network",
+        "security"
+      ],
+      "port": null,
+      "description": "Cloudflare Tunnel for secure remote access without exposing ports",
+      "website": "https://github.com/cloudflare/cloudflared",
+      "dependencies": [],
+      "image": "cloudflare/cloudflared:latest",
+      "serviceName": "cloudflared"
+    },
+    {
+      "id": "convertx",
+      "name": "ConvertX",
+      "logo": "QmafozB6D4dw51adzoPyrCwTTCATQv1nbVwZPME6yzDWF7",
+      "category": [
+        "tools",
+        "utility"
+      ],
+      "port": "3000 (HTTP - Web UI)",
+      "description": "Self-hosted file conversion tool supporting multiple formats",
+      "website": "https://github.com/C4illin/ConvertX",
+      "dependencies": [],
+      "image": "ghcr.io/c4illin/convertx:latest",
+      "serviceName": "convertx"
+    },
+    {
+      "id": "cryptofolio",
+      "name": "Cryptofolio",
+      "logo": "QmRSzoSr1npNczcYt5sFBauWCmYFdqyCytwoj3vtXtrs89",
+      "category": [
+        "finance",
+        "cryptocurrency"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Self-hosted cryptocurrency portfolio tracker with real-time price updates",
+      "website": "https://github.com/xtrendence/cryptofolio",
+      "dependencies": [],
+      "image": "xtrendence/cryptofolio:latest",
+      "serviceName": "cryptofolio"
+    },
+    {
+      "id": "dashmachine",
+      "name": "Dashmachine",
+      "logo": "QmTvbLNZMCyEQmcFBbY7EkKq9hnJTPy8ut4hAYRH3Xxaiw",
+      "category": [
+        "dashboard",
+        "organization"
+      ],
+      "port": "5000 (HTTP - Web UI)",
+      "description": "Customizable personal dashboard for organizing links and services",
+      "website": "https://github.com/rmountjoy92/dashmachine",
+      "dependencies": [],
+      "image": "rmountjoy/dashmachine:latest",
+      "serviceName": "dashmachine"
+    },
+    {
+      "id": "davos",
+      "name": "Davos",
+      "logo": "QmVN8Wpn8RgjPwR7ggoVxPjKqE4GzYN69uZGMiyQmu792X",
+      "category": [
+        "download",
+        "file-management"
+      ],
+      "port": "8080 (HTTP - Web UI)",
+      "description": "Lightweight download manager for managing files with web interface",
+      "website": "https://github.com/linuxserver/docker-davos",
+      "dependencies": [],
+      "image": "linuxserver/davos:latest",
+      "serviceName": "davos"
+    },
+    {
+      "id": "deluge",
+      "name": "Deluge",
+      "logo": "QmRrKHf3JqMSib9iUfHGrNB6ViXpJmEEoNyJtkr1PB3E33",
+      "category": [
+        "download",
+        "utility"
+      ],
+      "port": "8112 (HTTP - Web UI)",
+      "description": "Lightweight BitTorrent client with web interface",
+      "website": "https://deluge-torrent.org/",
+      "dependencies": [],
+      "image": "linuxserver/deluge:latest",
+      "serviceName": "deluge"
+    },
+    {
+      "id": "dockge",
+      "name": "Dockge",
+      "logo": "QmXUGnzPpcRuGks5CJB6we1cFcBW2qPau9FZUs98wPGFJL",
+      "category": [
+        "docker",
+        "management"
+      ],
+      "port": "5001 (HTTP - Web UI)",
+      "description": "Self-hosted Docker Compose stack manager with GUI for easy deployment",
+      "website": "https://github.com/louislam/dockge",
+      "dependencies": [],
+      "image": "louislam/dockge:1",
+      "serviceName": "dockge"
+    },
+    {
+      "id": "domain-locker",
+      "name": "Domain Locker",
+      "logo": "QmXCFhWvYYmz21YHP38zFFxsitmvMeZStbjfacg2dKrZnw",
+      "category": [
+        "security",
+        "tools"
+      ],
+      "port": "3000 (HTTP - Web UI)",
+      "description": "Complete visibility of your domain portfolio with monitoring and alerts",
+      "website": "https://domain-locker.com",
+      "dependencies": [],
+      "image": "lissy93/domain-locker:latest",
+      "serviceName": "domain-locker"
+    },
+    {
+      "id": "droppy",
+      "name": "Droppy",
+      "logo": "Qme6oZNcBv7JN97qa66RiKE7UwpxxcVGbdRz395uaSPMPM",
+      "category": [
+        "file-manager",
+        "utility"
+      ],
+      "port": "8989 (HTTP - Web UI)",
+      "description": "Lightweight self-hosted file manager and sharing solution",
+      "website": "https://github.com/silverwind/droppy",
+      "dependencies": [],
+      "image": "silverwind/droppy:latest",
+      "serviceName": "droppy"
+    },
+    {
+      "id": "drupal",
+      "name": "Drupal",
+      "logo": "QmXryrL9jF3YL37TEs7eZRsv5mvDyUYSkWdPrEDKE8GM8k",
+      "category": [
+        "cms",
+        "productivity"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Powerful open-source content management system for building websites",
+      "website": "https://github.com/drupal/drupal",
+      "dependencies": [],
+      "image": "drupal:latest",
+      "serviceName": "drupal"
+    },
+    {
+      "id": "duplicati",
+      "name": "Duplicati",
+      "logo": "QmX52qWfGH9q5mPvjT3mfmf6ag6BUW8fGwGX1WrbPxfqn8",
+      "category": [
+        "tools",
+        "security",
+        "utility"
+      ],
+      "port": "8200 (HTTP - Web UI)",
+      "description": "Free backup software for encrypted, incremental backups",
+      "website": "https://www.duplicati.com",
+      "dependencies": [],
+      "image": "linuxserver/duplicati:latest",
+      "serviceName": "duplicati"
+    },
+    {
+      "id": "element",
+      "name": "Element",
+      "logo": "QmWMcjdA7izomrqwuW6D8JT8y75K7jCANqnDMYxZRzmzHU",
+      "category": [
+        "productivity",
+        "security"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Secure and decentralized Matrix chat client for communication",
+      "website": "https://element.io",
+      "dependencies": [],
+      "image": "vectorim/element-web:latest",
+      "serviceName": "element"
+    },
+    {
+      "id": "emby",
+      "name": "Emby",
+      "logo": "QmQW3NWmVuq3Q76pibyTu2XAkzLfWVKCeSKNcywmNwXGUV",
+      "category": [
+        "media",
+        "entertainment"
+      ],
+      "port": "8096 (HTTP - Web UI)",
+      "description": "Media server for streaming video, music, live TV, and photos",
+      "website": "https://emby.media/",
+      "dependencies": [],
+      "image": "linuxserver/emby:latest",
+      "serviceName": "emby"
+    },
+    {
+      "id": "fireshare",
+      "name": "Fireshare",
+      "logo": "QmZ31p6GWvGNm2mJTmVyCUr68PAJoax6mCVfgw4DEHbTQk",
+      "category": [
+        "media",
+        "file-sharing"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Self-hosted video sharing platform with seamless streaming and organization",
+      "website": "https://github.com/ShaneIsrael/fireshare",
+      "dependencies": [],
+      "image": "shaneisrael/fireshare:latest",
+      "serviceName": "fireshare"
+    },
+    {
+      "id": "fossflow",
+      "name": "FossFLOW",
+      "logo": "QmRAuJY5TKuw91AVqu6ci9yAvRaimuGDzBoVYqftE7oo8q",
+      "category": [
+        "productivity",
+        "networking"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Create beautiful isometric infrastructure diagrams with auto-save and offline support",
+      "website": "https://github.com/stan-smith/FossFLOW",
+      "dependencies": [],
+      "image": "stnsmith/fossflow:master-6cb6496",
+      "serviceName": "fossflow"
+    },
+    {
+      "id": "freshrss",
+      "name": "FreshRSS",
+      "logo": "QmeS63xjuJXpVGUXP5B78naYoBcrcL7H5ZprF13kLZJUMq",
+      "category": [
+        "feed",
+        "productivity"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Self-hosted RSS feed aggregator for reading news and updates from multiple sources",
+      "website": "https://github.com/FreshRSS/FreshRSS",
+      "dependencies": [],
+      "image": "linuxserver/freshrss:latest",
+      "serviceName": "freshrss"
+    },
+    {
+      "id": "ghostfolio",
+      "name": "Ghostfolio",
+      "logo": "QmZ288p9irBeP9M369V2FY876tRk9nodM7u4hzeGBAYAUD",
+      "category": [
+        "productivity",
+        "utility"
+      ],
+      "port": "3333 (HTTP - Web UI)",
+      "description": "Open source wealth management for portfolio tracking",
+      "website": "https://ghostfol.io",
+      "dependencies": [],
+      "image": "ghostfolio/ghostfolio:latest",
+      "serviceName": "ghostfolio"
+    },
+    {
+      "id": "glances",
+      "name": "Glances",
+      "logo": "QmVa2UDC7pALhMyoiXgQsThyF9QszT2f7WcK168k7AGXhf",
+      "category": [
+        "monitoring",
+        "tools"
+      ],
+      "port": "61208 (HTTP - Web UI)",
+      "description": "Real-time system monitoring for containers and host metrics",
+      "website": "https://nicolargo.github.io/glances/",
+      "dependencies": [],
+      "image": "nicolargo/glances:latest",
+      "serviceName": "glances"
+    },
+    {
+      "id": "gotify",
+      "name": "Gotify",
+      "logo": "QmfUMSBFU2WKRyvG9kQa4fzRU8Apr7rC3N8HkYSL7gY5XX",
+      "category": [
+        "notification",
+        "tools"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Self-hosted push notification service for sending and receiving notifications",
+      "website": "https://github.com/gotify/server",
+      "dependencies": [],
+      "image": "ghcr.io/gotify/server",
+      "serviceName": "gotify"
+    },
+    {
+      "id": "heimdall",
+      "name": "Heimdall",
+      "logo": "QmURGit77px6MrQiuco9TGGgg3z9rkhcWs3MZ5pfSpzCE4",
+      "category": [
+        "dashboard",
+        "organization"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Application dashboard and launcher with simple icon-based interface",
+      "website": "https://github.com/linuxserver/Heimdall",
+      "dependencies": [],
+      "image": "linuxserver/heimdall:latest",
+      "serviceName": "heimdall"
+    },
+    {
+      "id": "homarr",
+      "name": "Homarr",
+      "logo": "QmXrjcV7SukGrmAgqF3tHVCu2LTYYGkhADumKY74AHzLf4",
+      "category": [
+        "dashboard",
+        "tools"
+      ],
+      "port": "7575 (HTTP - Web UI)",
+      "description": "Modern customizable dashboard with 30+ integrations and 10K+ icons",
+      "website": "https://github.com/homarr-labs/homarr",
+      "dependencies": [],
+      "image": "ghcr.io/homarr-labs/homarr:latest",
+      "serviceName": "homarr"
+    },
+    {
+      "id": "invio",
+      "name": "Invio",
+      "logo": "QmTxfLAvG4LnESZyVJ6dWMzXqJpaDYyTmKEhLxEux6PAH3",
+      "category": [
+        "productivity",
+        "utility"
+      ],
+      "port": "3000 (HTTP - Web UI)",
+      "description": "Self-hosted invoicing without the bloat",
+      "website": "https://github.com/kittendevv/Invio/wiki",
+      "dependencies": [],
+      "image": "ghcr.io/kittendevv/invio:latest",
+      "serviceName": "invio"
+    },
+    {
+      "id": "jackett",
+      "name": "Jackett",
+      "logo": "QmQs2oSE9ccQrueSFPw6ZPXCVHk2rFuT54HUyZAApSoqDJ",
+      "category": [
+        "media",
+        "tools",
+        "utility"
+      ],
+      "port": "9117 (HTTP - Web UI)",
+      "description": "API proxy for torrent trackers with Sonarr/Radarr support.",
+      "website": "https://github.com/Jackett/Jackett",
+      "dependencies": [],
+      "image": "linuxserver/jackett:latest",
+      "serviceName": "jackett"
+    },
+    {
+      "id": "jellyfin",
+      "name": "Jellyfin",
+      "logo": "QmcsxWwZb9CZYsG5EvAEVwqjEw2FeX3KroZD5rvo87XWMZ",
+      "category": [
+        "media",
+        "entertainment"
+      ],
+      "port": "8096 (HTTP - Web UI)",
+      "description": "Free and open-source media server for streaming video, music, and photos",
+      "website": "https://jellyfin.org/",
+      "dependencies": [],
+      "image": "linuxserver/jellyfin:latest",
+      "serviceName": "jellyfin"
+    },
+    {
+      "id": "jotty",
+      "name": "Jotty",
+      "logo": "QmaCFEHEEBeqHMxCD3JKPx5AQJpoU4VFAXru85xRm5qeXV",
+      "category": [
+        "productivity",
+        "utility"
+      ],
+      "port": "3000 (HTTP - Web UI)",
+      "description": "Lightweight checklists and notes app with Markdown support, Kanban boards, and file-based storage",
+      "website": "https://github.com/fccview/jotty",
+      "dependencies": [],
+      "image": "ghcr.io/fccview/jotty:1.19.1",
+      "serviceName": "jotty"
+    },
+    {
+      "id": "just-download",
+      "name": "Just. Download.",
+      "logo": "Qmc9ChgqKxSUXJ37gC8ndutwEmzCic4QQrgTaxPCffuV6V",
+      "category": [
+        "media"
+      ],
+      "port": "5000 (HTTP - Web UI)",
+      "description": "Simple torrent downloader that bridges Torznab indexers with Transmission",
+      "website": "https://codeberg.org/highghlow/just-download",
+      "dependencies": [],
+      "image": "codeberg.org/highghlow/just-download:v1.0.9",
+      "serviceName": "just-download"
+    },
+    {
+      "id": "kokoro",
+      "name": "Kokoro",
+      "logo": "Qmc3MXRpboBnU5sBsyDAyMGvaPge5vTbEwfFN3P13R5q5Z",
+      "category": [
+        "ai"
+      ],
+      "port": "8880 (HTTP - Web UI)",
+      "description": "Lightweight Text-to-Speech model with 82M parameters delivering high-quality speech synthesis",
+      "website": "https://github.com/remsky/Kokoro-FastAPI",
+      "dependencies": [],
+      "image": "ghcr.io/remsky/kokoro-fastapi-cpu:v0.2.4-master",
+      "serviceName": "kokoro"
+    },
+    {
+      "id": "libreddit",
+      "name": "LibReddit",
+      "logo": "QmTieAKkWAmA12gchbEJiBGZZK64hsuKQYRtSbibJ9qWxF",
+      "category": [
+        "social",
+        "privacy"
+      ],
+      "port": "7420 (HTTP - Web UI)",
+      "description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking",
+      "website": "https://github.com/spikecodes/libreddit",
+      "dependencies": [],
+      "image": "ceramicwhite/libreddit:0.22.9",
+      "serviceName": "libreddit"
+    },
+    {
+      "id": "librespeed",
+      "name": "LibreSpeed",
+      "logo": "QmSPU6HmY4jRjanybWFDGQapEbSoY6ii4nc7MSUjicS5Xd",
+      "category": [
+        "network",
+        "tools"
+      ],
+      "port": "8080 (HTTP - Web UI)",
+      "description": "Self-hosted speed test tool for bandwidth measurement",
+      "website": "https://github.com/librespeed/speedtest",
+      "dependencies": [],
+      "image": "ghcr.io/librespeed/speedtest:latest",
+      "serviceName": "speedtest"
+    },
+    {
+      "id": "linkwarden",
+      "name": "Linkwarden",
+      "logo": "QmXS2iBXkfwvLA2iiVGCxj8sY3j8KKCf2NGz6hCgiuSeQU",
+      "category": [
+        "productivity",
+        "utility"
+      ],
+      "port": "3000 (HTTP - Web UI)",
+      "description": "Bookmark preservation tool for individuals and teams with full-text search and archiving",
+      "website": "https://github.com/linkwarden/linkwarden",
+      "dependencies": [],
+      "image": "ghcr.io/linkwarden/linkwarden:v2.13.5",
+      "serviceName": "linkwarden"
+    },
+    {
+      "id": "mariadb",
+      "name": "MariaDB",
+      "logo": "Qmegk86ebzbktv7YWCMnVrueBpfpZHm9wktuUSdQBHvHQx",
+      "category": [
+        "database",
+        "storage"
+      ],
+      "port": "3306 (TCP - Database)",
+      "description": "Open-source relational database compatible with MySQL",
+      "website": "https://github.com/MariaDB/server",
+      "dependencies": [],
+      "image": "mariadb:latest",
+      "serviceName": "mariadb"
+    },
+    {
+      "id": "maybe",
+      "name": "Maybe",
+      "logo": "QmcZLRLn3cHum9YMRhHv3355rVDgVVgQkioRm29x8YRX9q",
+      "category": [
+        "finance",
+        "productivity"
+      ],
+      "port": "3063 (HTTP - Web UI)",
+      "description": "Open-source personal finance OS for managing accounts, investments, and transactions",
+      "website": "https://github.com/maybe-finance/maybe",
+      "dependencies": [],
+      "image": "ghcr.io/maybe-finance/maybe:0.6.0",
+      "serviceName": "maybe"
+    },
+    {
+      "id": "metube",
+      "name": "MeTube",
+      "logo": "QmVHF6jueKh11T7LVbBC6NCCs2tuMo7Af7tKfWJEdXSkwQ",
+      "category": [
+        "media",
+        "tools",
+        "utility"
+      ],
+      "port": "8081 (HTTP - Web UI)",
+      "description": "Web GUI for yt-dlp/youtube-dl with playlist support.",
+      "website": "https://github.com/alexta69/metube",
+      "dependencies": [],
+      "image": "ghcr.io/alexta69/metube:latest",
+      "serviceName": "metube"
+    },
+    {
+      "id": "minecraft",
+      "name": "Minecraft Server",
+      "logo": "QmPB7iXHMAu3Wor5jiEsoifm5tZyMEUojhbj6TJJefsY7s",
+      "category": [
+        "gaming"
+      ],
+      "port": "25565 (TCP - Game Server)",
+      "description": "Open-source sandbox game server with endless possibilities",
+      "website": "https://docker-minecraft-server.readthedocs.io/",
+      "dependencies": [],
+      "image": "itzg/minecraft-server:latest",
+      "serviceName": "mc"
+    },
+    {
+      "id": "minio",
+      "name": "MinIO",
+      "logo": "QmWgS8CxKS7UYSgNNp6nqsTLYwMF5tk8cQfroTgyvxsbQ7",
+      "category": [
+        "utility",
+        "tools"
+      ],
+      "port": "9001 (HTTP - Console), 9000 (HTTP - API)",
+      "description": "High Performance Object Storage compatible with Amazon S3 API",
+      "website": "https://min.io",
+      "dependencies": [],
+      "image": "minio/minio:latest",
+      "serviceName": "minio"
+    },
+    {
+      "id": "moltis",
+      "name": "Moltis",
+      "logo": "Qmd7xtrfkc5GfXhxpXsSECPHDYzyyHbu7YYXMzQWZ5sagd",
+      "category": [
+        "ai",
+        "tools"
+      ],
+      "port": "13131 (HTTPS - Web UI)",
+      "description": "Self-hosted Moltis server with web UI and Docker access",
+      "website": "https://github.com/moltis-org/moltis",
+      "dependencies": [],
+      "image": "ghcr.io/moltis-org/moltis:latest",
+      "serviceName": "moltis"
+    },
+    {
+      "id": "monerod",
+      "name": "Monero Node",
+      "logo": "QmarnKCoBY8ZQRnK319Sv9QDdKrUKfnpYteZ71XiswoP8y",
+      "category": [
+        "cryptocurrency",
+        "blockchain",
+        "network"
+      ],
+      "port": "18089 (TCP - Restricted RPC), 18080 (TCP - P2P)",
+      "description": "Pruned Monero full node with restricted RPC for wallets and apps",
+      "website": "https://github.com/sethforprivacy/simple-monerod",
+      "dependencies": [],
+      "image": "ghcr.io/sethforprivacy/simple-monerod:latest",
+      "serviceName": "monerod"
+    },
+    {
+      "id": "mongodb",
+      "name": "MongoDB",
+      "logo": "QmZYsae4jNFSyXC696vjkyiqSAR6DBGo4zKSgMGdE7ZSzy",
+      "category": [
+        "database",
+        "storage"
+      ],
+      "port": "27017 (TCP - Database)",
+      "description": "NoSQL document database for flexible data storage and management",
+      "website": "https://github.com/mongodb/mongo",
+      "dependencies": [],
+      "image": "mongo:latest",
+      "serviceName": "mongodb"
+    },
+    {
+      "id": "myspeed",
+      "name": "MySpeed",
+      "logo": "QmWg4R7p8NKHoF9WWdhPqF2XgdyrB9bHMhGxqWidEiVBEN",
+      "category": [
+        "network",
+        "tools"
+      ],
+      "port": "5216 (HTTP - Web UI)",
+      "description": "Speed test analysis software that tracks your internet speed for 30 days",
+      "website": "https://myspeed.dev",
+      "dependencies": [],
+      "image": "germannewsmaker/myspeed:latest",
+      "serviceName": "myspeed"
+    },
+    {
+      "id": "n8n",
+      "name": "n8n",
+      "logo": "QmT4ncfKSqhVEpoQi7FZpzyRyHemgXDjqXX896esZtMxGM",
+      "category": [
+        "productivity",
+        "tools"
+      ],
+      "port": "5678 (HTTP - Web UI)",
+      "description": "Workflow automation platform with AI and 400+ integrations",
+      "website": "https://docs.n8n.io",
+      "dependencies": [],
+      "image": "docker.n8n.io/n8nio/n8n:latest",
+      "serviceName": "n8n"
+    },
+    {
+      "id": "nano",
+      "name": "Nano",
+      "logo": "Qmf4kNnrTW6jAtNGrhM62yC1XmvXf2x5ZtxcUfZUinegca",
+      "category": [
+        "cryptocurrency",
+        "blockchain"
+      ],
+      "port": "8075 (HTTP - RPC API)",
+      "description": "Open source, green cryptocurrency and peer-to-peer payment system",
+      "website": "https://github.com/linuxserver/docker-nano",
+      "dependencies": [],
+      "image": "linuxserver/nano:latest",
+      "serviceName": "nano"
+    },
+    {
+      "id": "networking-toolbox",
+      "name": "Networking Toolbox",
+      "logo": "QmaU7tznY63wTMNNPtCQQbPBT4PNbPYFT9iq8utHwhfF47",
+      "category": [
+        "network",
+        "tools"
+      ],
+      "port": "3000 (HTTP - Web UI)",
+      "description": "100+ offline-first networking tools and utilities",
+      "website": "https://networking-toolbox.as93.net",
+      "dependencies": [],
+      "image": "lissy93/networking-toolbox:latest",
+      "serviceName": "networking-toolbox"
+    },
+    {
+      "id": "nextcloud",
+      "name": "Nextcloud",
+      "logo": "QmU23rKmzJwT93oCrnprdGJQBv4VaPiaZ6re88qbfmVE2u",
+      "category": [
+        "productivity",
+        "utility"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing",
+      "website": "https://github.com/nextcloud/server",
+      "dependencies": [],
+      "image": "nextcloud:stable",
+      "serviceName": "nextcloud"
+    },
+    {
+      "id": "nostrudel",
+      "name": "noStrudel",
+      "logo": "QmQd78JBNgAnVAAk6Ux6Jo3tHUXLyzjYeaRZ1EXwMFzHNe",
+      "category": [
+        "social"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "A nostr web client sandbox for exploring and learning the inner workings of the nostr network",
+      "website": "https://github.com/hzrd149/nostrudel",
+      "dependencies": [],
+      "image": "ghcr.io/hzrd149/nostrudel:0.46.1",
+      "serviceName": "nostrudel"
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "logo": "QmdJujFNrnbZ8Z9SVzrZGoUEvcxg5TQqizNg51nUcwcp5Z",
+      "category": [
+        "ai",
+        "backend"
+      ],
+      "port": "11434 (HTTP - API)",
+      "description": "Local LLM inference server - run models like Llama, Mistral, and more",
+      "website": "https://ollama.ai",
+      "dependencies": [],
+      "image": "ollama/ollama:latest",
+      "serviceName": "ollama"
+    },
+    {
+      "id": "open-webui",
+      "name": "Open WebUI",
+      "logo": "QmVDEiXJcSXvSWsx5DhRvMoufg3j2H7jK1Yv8ijAZfBEtv",
+      "category": [
+        "ai"
+      ],
+      "port": "8080 (HTTP - Web UI)",
+      "description": "Web UI for chatting with local LLMs via Ollama",
+      "website": "https://github.com/open-webui/open-webui",
+      "dependencies": [
+        "ollama"
+      ],
+      "image": "ghcr.io/open-webui/open-webui:main",
+      "serviceName": "open-webui"
+    },
+    {
+      "id": "openclaw",
+      "name": "OpenClaw",
+      "logo": "QmRdr8gQqpGLXkZc53NcQV3i71931yNQqYrLhpaWEpTMwp",
+      "category": [
+        "ai",
+        "tools",
+        "utility"
+      ],
+      "port": "18789 (HTTP - Web UI)",
+      "description": "Self-hosted development environment and container management tool",
+      "website": "https://github.com/getumbrel/openclaw-umbrel",
+      "dependencies": [],
+      "image": "ghcr.io/getumbrel/openclaw-umbrel:2026.2.12",
+      "serviceName": "openclaw"
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "logo": "Qma92doZsMdGrS46v8GqXCgvzomrXKZPm3fFgjmwd8k9RA",
+      "category": [
+        "development",
+        "productivity",
+        "ai"
+      ],
+      "port": "4096 (HTTP - Web UI)",
+      "description": "Open source AI coding agent for terminal, IDE, and desktop",
+      "website": "https://github.com/anomalyco/opencode",
+      "dependencies": [],
+      "image": "ghcr.io/anomalyco/opencode:latest",
+      "serviceName": "opencode"
+    },
+    {
+      "id": "opnform",
+      "name": "OpnForm",
+      "logo": "QmSmhDZydYp9xYPVCs19mvom1nMB7Cy7wrZxdtEXgbQtRT",
+      "category": [
+        "productivity",
+        "forms"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Open source form builder with advanced customization and workflow options",
+      "website": "https://github.com/JhumanJ/opnform",
+      "dependencies": [],
+      "image": "jhumanj/opnform:latest",
+      "serviceName": "opnform"
+    },
+    {
+      "id": "originless",
+      "name": "Originless",
+      "logo": "QmWMCDAFxDjqfYRjjaqRx4UCt7ZF9TK6r5SpZEWWko9c63",
+      "category": [
+        "utility",
+        "tools"
+      ],
+      "port": "3232 (HTTP - Web UI)",
+      "description": "All-in-one anonymous storage backend for apps, screenshot tools, and file hosting",
+      "website": "https://github.com/besoeasy/originless",
+      "dependencies": [],
+      "image": "ghcr.io/besoeasy/originless:main",
+      "serviceName": "originless"
+    },
+    {
+      "id": "pastefy",
+      "name": "Pastefy",
+      "logo": "QmdxTLj7i7cdJW7VPeeYnxsjC2ZXr6SZYgMkHW3pwNwB7C",
+      "category": [
+        "tools",
+        "productivity"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Feature-rich self-hosted pastebin for sharing code",
+      "website": "https://docs.pastefy.app",
+      "dependencies": [],
+      "image": "interaapps/pastefy:latest",
+      "serviceName": "pastefy"
+    },
+    {
+      "id": "perplexica",
+      "name": "Perplexica",
+      "logo": "QmXkTfV5b7aUepUyRLpo9C26P34LWrRyNcQTewFSZjezYc",
+      "category": [
+        "ai"
+      ],
+      "port": "3000 (HTTP - Web UI)",
+      "description": "AI-powered search engine that delivers conversational responses with contextual understanding",
+      "website": "https://github.com/ItzCrazyKns/Perplexica",
+      "dependencies": [],
+      "image": "itzcrazykns1337/perplexica:v1.11.2",
+      "serviceName": "perplexica"
+    },
+    {
+      "id": "pi-alert",
+      "name": "Pi.Alert",
+      "logo": "QmSB7NetcjxcyHU5T7hJht4N7RLLvcanARni6Cy8yTjra3",
+      "category": [
+        "network",
+        "monitoring",
+        "security"
+      ],
+      "port": "20211 (UDP - Monitoring)",
+      "description": "Network monitoring tool for detecting new devices and security alerts",
+      "website": "https://github.com/jokobsk/pi.alert",
+      "dependencies": [],
+      "image": "jokobsk/pi.alert:latest",
+      "serviceName": "pi-alert"
+    },
+    {
+      "id": "pihole",
+      "name": "Pi-hole",
+      "logo": "QmYbagd1HGhQkxjcgj8KvEGc3ASyubA7MuVSZokJkSmpBr",
+      "category": [
+        "network",
+        "security"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Network-wide ad blocking via DNS sinkhole",
+      "website": "https://docs.pi-hole.net",
+      "dependencies": [],
+      "image": "pihole/pihole:latest",
+      "serviceName": "pihole"
+    },
+    {
+      "id": "portainer",
+      "name": "Portainer",
+      "logo": "QmXyDE7nzzoUS8dez7bWBgeP2X2xkJ6XesJ7QSWUsvdV5F",
+      "category": [
+        "tools",
+        "utility"
+      ],
+      "port": "9443 (HTTPS - Web UI)",
+      "description": "Container management UI for Docker environments",
+      "website": "https://docs.portainer.io",
+      "dependencies": [],
+      "image": "portainer/portainer-ce:latest",
+      "serviceName": "portainer"
+    },
+    {
+      "id": "postgresql",
+      "name": "PostgreSQL",
+      "logo": "QmSmV8pEZ4EcmdQPZ9wsBovGFSXBxxgKTpk1H9woR79a6S",
+      "category": [
+        "database",
+        "storage"
+      ],
+      "port": "5432 (TCP - Database)",
+      "description": "Powerful open-source relational database with advanced features",
+      "website": "https://github.com/postgres/postgres",
+      "dependencies": [],
+      "image": "postgres:latest",
+      "serviceName": "postgresql"
+    },
+    {
+      "id": "privatebin",
+      "name": "PrivateBin",
+      "logo": "QmWNmuv1fVzwz63qzbD1RHwX6MbNk5xAUwC5RR2ZsPeiGj",
+      "category": [
+        "utility",
+        "privacy"
+      ],
+      "port": "8080 (HTTP - Web UI)",
+      "description": "Minimalist, open source online pastebin with zero-knowledge server design",
+      "website": "https://github.com/PrivateBin/PrivateBin",
+      "dependencies": [],
+      "image": "privatebin/nginx-fpm-alpine:latest",
+      "serviceName": "privatebin"
+    },
+    {
+      "id": "prowlarr",
+      "name": "Prowlarr",
+      "logo": "Qma8EiYwcHKzMtqS8vbvtGCtRApdWnhMszeZCECuuoMzz7",
+      "category": [
+        "media",
+        "tools"
+      ],
+      "port": "9696 (HTTP - Web UI)",
+      "description": "Indexer manager for automating and integrating Usenet and torrent indexers",
+      "website": "https://github.com/linuxserver/docker-prowlarr",
+      "dependencies": [],
+      "image": "lscr.io/linuxserver/prowlarr:latest",
+      "serviceName": "prowlarr"
+    },
+    {
+      "id": "qbittorrent",
+      "name": "qBittorrent",
+      "logo": "QmU3rohmjuaXYNe37FDEcG2P6BL8t4fzu4WvNA69voFteA",
+      "category": [
+        "download",
+        "network"
+      ],
+      "port": "8080 (HTTP - Web UI), 6881 (TCP - Torrent), 6881 (UDP - Torrent)",
+      "description": "Feature-rich BitTorrent client with integrated search engine and web interface",
+      "website": "https://github.com/linuxserver/docker-qbittorrent",
+      "dependencies": [],
+      "image": "lscr.io/linuxserver/qbittorrent:latest",
+      "serviceName": "qbittorrent"
+    },
+    {
+      "id": "radarr",
+      "name": "Radarr",
+      "logo": "QmfNn5gZnB1QYxXdumJ3Xw4jz9o18H2Zmub5F2NXU4h8wv",
+      "category": [
+        "media",
+        "tools"
+      ],
+      "port": "7878 (HTTP - Web UI)",
+      "description": "Smart PVR for movie collection management and automated downloads",
+      "website": "https://github.com/linuxserver/docker-radarr",
+      "dependencies": [],
+      "image": "lscr.io/linuxserver/radarr:latest",
+      "serviceName": "radarr"
+    },
+    {
+      "id": "remote-torrent-downloader",
+      "name": "Remote Torrent Downloader",
+      "logo": "QmeQL3b6vWfQX2TEbuovsof5mv23Jkxgnp8ejTyqjQMay3",
+      "category": [
+        "media",
+        "download",
+        "utility"
+      ],
+      "port": "6798 (HTTP - Web UI), 6799 (HTTP - DOWNLOADS), 4445 (SMB - Samba Drive)",
+      "description": "Media streaming and sharing platform with Telegram integration",
+      "website": "https://github.com/besoeasy/Remote-Torrent-Downloader",
+      "dependencies": [],
+      "image": "ghcr.io/besoeasy/remote-torrent-downloader:latest",
+      "serviceName": "remote-torrent-downloader"
+    },
+    {
+      "id": "rotki",
+      "name": "Rotki",
+      "logo": "QmXg6Zmw6rFktbgFCFkuEA15BfK3fJGLUTuZqm53GwWa1z",
+      "category": [
+        "productivity",
+        "security",
+        "utility"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Privacy-focused portfolio tracker and analytics for crypto",
+      "website": "https://rotki.com/",
+      "dependencies": [],
+      "image": "rotki/rotki:latest",
+      "serviceName": "rotki"
+    },
+    {
+      "id": "rutorrent",
+      "name": "ruTorrent",
+      "logo": "QmPt2kfbSDSajzcshVCrR3ZYyNZTzWYqEg6cTiYQPYhmMr",
+      "category": [
+        "torrent",
+        "download"
+      ],
+      "port": "80 (HTTP - Web UI), 51413 (TCP - Torrent)",
+      "description": "Lightweight torrent client with web interface for managing downloads",
+      "website": "https://github.com/linuxserver/docker-rutorrent",
+      "dependencies": [],
+      "image": "linuxserver/rutorrent:latest",
+      "serviceName": "rutorrent"
+    },
+    {
+      "id": "samba",
+      "name": "Samba",
+      "logo": "QmYNjTj44mLCz5SZrWR9GkWU94bZw7hvqZZuFAwJJcsWU7",
+      "category": [
+        "network",
+        "storage",
+        "utility"
+      ],
+      "port": "445 (SMB - File Sharing)",
+      "description": "SMB/CIFS file sharing server for network storage access",
+      "website": "https://github.com/dockur/samba",
+      "dependencies": [],
+      "image": "dockurr/samba:latest",
+      "serviceName": "samba"
+    },
+    {
+      "id": "scality-s3",
+      "name": "Scality S3",
+      "logo": "QmSoQJKaWvrk9pff9x5EfxcG9QkRnGfCrkcSuGw2u8g7XJ",
+      "category": [
+        "storage",
+        "s3"
+      ],
+      "port": "8000 (HTTP - S3 API)",
+      "description": "S3-compatible object storage server for self-hosted cloud storage",
+      "website": "https://www.zenko.io/cloudserver/",
+      "dependencies": [],
+      "image": "zenko/cloudserver:latest",
+      "serviceName": "scality-s3"
+    },
+    {
+      "id": "searxng",
+      "name": "SearXNG",
+      "logo": "QmRbiaDWHNx6f9MvCpQ3PedjZd7A9szb2NbM9DMCvDvLtH",
+      "category": [
+        "tools",
+        "security"
+      ],
+      "port": "8080 (HTTP - Web UI)",
+      "description": "Privacy-focused metasearch engine aggregating results",
+      "website": "https://docs.searxng.org",
+      "dependencies": [],
+      "image": "searxng/searxng:latest",
+      "serviceName": "searxng"
+    },
+    {
+      "id": "smokeping",
+      "name": "Smokeping",
+      "logo": "QmerDnfp1VxvYJi47iuc18CiQSVHCJBzata77pGJjS6GPE",
+      "category": [
+        "network",
+        "monitoring"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Latency and packet loss monitoring tool with graphing capabilities",
+      "website": "https://github.com/linuxserver/docker-smokeping",
+      "dependencies": [],
+      "image": "linuxserver/smokeping:latest",
+      "serviceName": "smokeping"
+    },
+    {
+      "id": "snort",
+      "name": "Snort",
+      "logo": "QmQG28hMnofAKwXt6F6FD3ZBhwmeCAotfqy92e6Pbkhs44",
+      "category": [
+        "social"
+      ],
+      "port": "8080 (HTTP - Web UI)",
+      "description": "Fast and lightweight Nostr web client built with React for easy network interaction",
+      "website": "https://git.v0l.io/Kieran/snort",
+      "dependencies": [],
+      "image": "voidic/snort:v0.3.0",
+      "serviceName": "snort"
+    },
+    {
+      "id": "solidtime",
+      "name": "Solidtime",
+      "logo": "QmQD7h1kicXUF4aQBtzwg6aYqZiDKUofxRtusbRCNUMgw6",
+      "category": [
+        "productivity",
+        "time-tracking"
+      ],
+      "port": "8000 (HTTP - Web UI)",
+      "description": "A simple, secure, and private time tracking app with detailed reports and CSV export",
+      "website": "https://www.solidtime.io/",
+      "dependencies": [],
+      "image": "solidtime/solidtime:0.10.0",
+      "serviceName": "solidtime"
+    },
+    {
+      "id": "sonarr",
+      "name": "Sonarr",
+      "logo": "QmSH43o5suJ8UUngEiPGFWedxTdDk9SFDe2GVLNqSkFhJb",
+      "category": [
+        "media",
+        "tools"
+      ],
+      "port": "8989 (HTTP - Web UI)",
+      "description": "Smart PVR for TV show monitoring and automated downloading with Usenet and BitTorrent",
+      "website": "https://github.com/linuxserver/docker-sonarr",
+      "dependencies": [],
+      "image": "lscr.io/linuxserver/sonarr:latest",
+      "serviceName": "sonarr"
+    },
+    {
+      "id": "specter-desktop",
+      "name": "Specter Desktop",
+      "logo": "QmdHMdrWHAFAcEpJZgJsv2kFnTZRR5x1A5x12KNHW2LqGY",
+      "category": [
+        "security",
+        "tools"
+      ],
+      "port": "25441 (HTTP - Web UI)",
+      "description": "Bitcoin wallet interface with focus on privacy and security",
+      "website": "https://specter.solutions/desktop",
+      "dependencies": [],
+      "image": "ghcr.io/cryptoadvance/specter-desktop:v2.1.1",
+      "serviceName": "specter-desktop"
+    },
+    {
+      "id": "stirling-pdf",
+      "name": "Stirling-PDF",
+      "logo": "QmZ6nmAP1oSgpfd4N7oAYNEJrRqgQTPGndZPyN2vwmyjBE",
+      "category": [
+        "tools",
+        "utility"
+      ],
+      "port": "8080 (HTTP - Web UI)",
+      "description": "Powerful locally hosted web-based PDF manipulation tool",
+      "website": "https://github.com/Stirling-Tools/Stirling-PDF",
+      "dependencies": [],
+      "image": "frooodle/s-pdf:latest",
+      "serviceName": "stirling-pdf"
+    },
+    {
+      "id": "stremio",
+      "name": "Stremio",
+      "logo": "QmUJ8LsjmfsZdPybvXWkAJsEJYadr8D6L1iqXvgtC48hfX",
+      "category": [
+        "media",
+        "streaming"
+      ],
+      "port": "11470 (HTTP - Server), 12470 (HTTPS - Server)",
+      "description": "Media center application for streaming movies, TV shows, and video content",
+      "website": "https://github.com/Stremio/stremio-web",
+      "dependencies": [],
+      "image": "stremio/server:latest",
+      "serviceName": "stremio"
+    },
+    {
+      "id": "strfry",
+      "name": "Strfry",
+      "logo": "QmNR4kyKJs3sZwdRJZ47z5feUWn6S8aJw31wzZrXK2fVcD",
+      "category": [
+        "network",
+        "social"
+      ],
+      "port": "7777 (HTTP - Web UI)",
+      "description": "High-performance nostr relay with LMDB storage",
+      "website": "https://github.com/hoytech/strfry",
+      "dependencies": [],
+      "image": "ghcr.io/hoytech/strfry:latest",
+      "serviceName": "strfry"
+    },
+    {
+      "id": "swingmusic",
+      "name": "SwingMusic",
+      "logo": "QmVWKyW9G8C4zxCDMMutg7eSNuugdAzUUNwzhbvjkv6j1o",
+      "category": [
+        "media",
+        "entertainment"
+      ],
+      "port": "1970 (HTTP - Web UI)",
+      "description": "Beautiful music player with a modern web interface",
+      "website": "https://swingmusic.vercel.app/",
+      "dependencies": [],
+      "image": "ghcr.io/swingmx/swingmusic:latest",
+      "serviceName": "swingmusic"
+    },
+    {
+      "id": "syncthing",
+      "name": "Syncthing",
+      "logo": "Qmd864pdeSwReg9hfWERXdNiDCEqN7w3urE2416cWNGFSm",
+      "category": [
+        "tools",
+        "utility"
+      ],
+      "port": "8384 (HTTP - Web UI)",
+      "description": "Continuous file synchronization program. It synchronizes files between two or more computers.",
+      "website": "https://syncthing.net/",
+      "dependencies": [],
+      "image": "syncthing/syncthing:latest",
+      "serviceName": "syncthing"
+    },
+    {
+      "id": "tabby",
+      "name": "Tabby",
+      "logo": "QmcQ3CYdea4rtPmwJTSggcFYvpKcSpSqSQMbS9RdWjzTWS",
+      "category": [
+        "productivity",
+        "browsing"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Beautiful and customizable browser start page with tab management",
+      "website": "https://github.com/parksauce/tabby",
+      "dependencies": [],
+      "image": "parksauce/tabby:latest",
+      "serviceName": "tabby"
+    },
+    {
+      "id": "tor-browser",
+      "name": "Tor Browser",
+      "logo": "QmaVTPSKHnzenoUpqydsnNHQ45WJDtRxxjnqzVqK4MiB38",
+      "category": [
+        "privacy",
+        "security"
+      ],
+      "port": "5800 (HTTP - Web UI)",
+      "description": "Privacy-focused web browser with Tor network integration",
+      "website": "https://github.com/domistyle/docker-tor-browser",
+      "dependencies": [],
+      "image": "domistyle/tor-browser",
+      "serviceName": "tor-browser"
+    },
+    {
+      "id": "traggo",
+      "name": "Traggo",
+      "logo": "QmTiS72Uz3JSJUmXTcx9GmPUnfABX5jFVEn2rMBCYzhhMj",
+      "category": [
+        "productivity",
+        "time-tracking"
+      ],
+      "port": "3030 (HTTP - Web UI)",
+      "description": "Simple and lightweight time tracking application for personal productivity",
+      "website": "https://github.com/traggo/server",
+      "dependencies": [],
+      "image": "traggo/server:latest",
+      "serviceName": "traggo"
+    },
+    {
+      "id": "transmission",
+      "name": "Transmission",
+      "logo": "QmYNJtjCxWhoKS78Nvjfm7fc9dqA49QiGHUQBryYSmwsdQ",
+      "category": [
+        "download",
+        "network"
+      ],
+      "port": "9091 (HTTP - Web Interface)",
+      "description": "Fast, easy BitTorrent client with web interface",
+      "website": "https://transmissionbt.com/",
+      "dependencies": [],
+      "image": "linuxserver/transmission:latest",
+      "serviceName": "transmission"
+    },
+    {
+      "id": "trip",
+      "name": "Trip",
+      "logo": "QmcxepcQDfmK7gcGSdWPNuyFR1oqR4qeG5jvetn2qYHg8z",
+      "category": [
+        "productivity",
+        "tools"
+      ],
+      "port": "8000 (HTTP - Web UI)",
+      "description": "Self-hostable map tracker and trip planner to visualize POIs and organize your next adventure",
+      "website": "https://github.com/itskovacs/trip",
+      "dependencies": [],
+      "image": "ghcr.io/itskovacs/trip:latest",
+      "serviceName": "trip"
+    },
+    {
+      "id": "uptime-kuma",
+      "name": "Uptime Kuma",
+      "logo": "Qmb7LeUwFtcWpkpbiyzEPYPecX8iXNZMtvjag9WyrCDmLV",
+      "category": [
+        "tools",
+        "network"
+      ],
+      "port": "3001 (HTTP - Web UI)",
+      "description": "Self-hosted uptime monitoring tool",
+      "website": "https://github.com/louislam/uptime-kuma/wiki",
+      "dependencies": [],
+      "image": "louislam/uptime-kuma:latest",
+      "serviceName": "uptime-kuma"
+    },
+    {
+      "id": "urlwatch",
+      "name": "UrlWatch",
+      "logo": "QmWkNcdYSyueiheQwyHXyjkXrxcGdKLcYGBbcECLiJ6c3W",
+      "category": [
+        "utility",
+        "monitoring"
+      ],
+      "port": "8081 (HTTP - Web UI)",
+      "description": "Monitor websites for changes and receive notifications on updates",
+      "website": "https://github.com/thp/urlwatch",
+      "dependencies": [],
+      "image": "mediadepot/urlwatch:master",
+      "serviceName": "urlwatch"
+    },
+    {
+      "id": "vaultwarden",
+      "name": "Vaultwarden",
+      "logo": "QmUPKRipoMCZT3VCYVCoxe3z5WpDhfpb7v4HH1dDKedQaQ",
+      "category": [
+        "productivity",
+        "security"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Lightweight Bitwarden server for password management",
+      "website": "https://github.com/dani-garcia/vaultwarden/wiki",
+      "dependencies": [],
+      "image": "vaultwarden/server:latest",
+      "serviceName": "vaultwarden"
+    },
+    {
+      "id": "watchtower",
+      "name": "Watchtower",
+      "logo": "QmXGn6c1UzVGBQmuxcikBush4KYdM2KASxggR8Z7rH7kw4",
+      "category": [
+        "tools",
+        "utility"
+      ],
+      "port": null,
+      "description": "Automatically update running Docker containers",
+      "website": "https://containrrr.dev/watchtower",
+      "dependencies": [],
+      "image": "containrrr/watchtower:latest",
+      "serviceName": "watchtower"
+    },
+    {
+      "id": "web-check",
+      "name": "Web Check",
+      "logo": "QmXwF1DUNZLpkLFzK7HhVdtNNPncNZMS4ktb7KHb6K8Khz",
+      "category": [
+        "tools",
+        "network",
+        "utility"
+      ],
+      "port": "3000 (HTTP - Web UI)",
+      "description": "All-in-one tool for analyzing and monitoring websites",
+      "website": "https://github.com/lissy93/web-check",
+      "dependencies": [],
+      "image": "lissy93/web-check:latest",
+      "serviceName": "web-check"
+    },
+    {
+      "id": "whoami",
+      "name": "Whoami",
+      "logo": "QmZvfwKJRMrMvzUyRyrLJjShVCsGozSAPDrCq6Vg1Fpde5",
+      "category": [
+        "tools",
+        "utility"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Tiny HTTP service that prints system information - perfect for testing",
+      "website": "https://github.com/traefik/whoami",
+      "dependencies": [],
+      "image": "traefik/whoami",
+      "serviceName": "whoami"
+    },
+    {
+      "id": "whoogle",
+      "name": "Whoogle",
+      "logo": "QmNPLDz2jjjG67UeNVAC1wgdBs9eMrUQQYkRRWXWmtSZxV",
+      "category": [
+        "search",
+        "privacy"
+      ],
+      "port": "5000 (HTTP - Web UI)",
+      "description": "Privacy-focused metasearch engine - fast, clean Google-like search results",
+      "website": "https://github.com/benbusby/whoogle",
+      "dependencies": [],
+      "image": "benbusby/whoogle-search:latest",
+      "serviceName": "whoogle"
+    },
+    {
+      "id": "wiki-js",
+      "name": "Wiki.js",
+      "logo": "QmdFpskYSKmBYLyBWGSnqronCxH2V3kxSLiDBHmCCWGVRs",
+      "category": [
+        "documentation",
+        "wiki"
+      ],
+      "port": "3000 (HTTP - Web UI)",
+      "description": "Modern, lightweight wiki platform for creating and organizing knowledge bases",
+      "website": "https://github.com/requarks/wiki",
+      "dependencies": [],
+      "image": "linuxserver/wikijs:latest",
+      "serviceName": "wiki-js"
+    },
+    {
+      "id": "wireguard",
+      "name": "WireGuard",
+      "logo": "QmYvWBezgveN9KZARJeAczC6p8mUMsYAwLyV8NKRNHKNCi",
+      "category": [
+        "network",
+        "security"
+      ],
+      "port": "51821 (HTTP - Admin Panel)",
+      "description": "Fast, modern VPN with state-of-the-art cryptography",
+      "website": "https://www.wireguard.com",
+      "dependencies": [],
+      "image": "ghcr.io/wg-easy/wg-easy:14",
+      "serviceName": "wireguard"
+    },
+    {
+      "id": "wordpress",
+      "name": "WordPress",
+      "logo": "QmfTeVfmHVGfwU4Q99TUT9xvGWc3s4RjPR3kzahnjqppKP",
+      "category": [
+        "cms",
+        "blog"
+      ],
+      "port": "80 (HTTP - Web UI)",
+      "description": "Popular open-source content management system for websites and blogs",
+      "website": "https://github.com/WordPress/WordPress",
+      "dependencies": [],
+      "image": "wordpress:latest",
+      "serviceName": "wordpress"
+    },
+    {
+      "id": "youtubedl-material",
+      "name": "YoutubeDL Material",
+      "logo": "QmVgdMmZ1Ms2EskZfwc8VTfS1nXB2D3EW4PsJLKCDg4zFM",
+      "category": [
+        "media",
+        "downloader"
+      ],
+      "port": "17442 (HTTP - Web UI)",
+      "description": "Web UI for youtube-dl with subscription support and organization features",
+      "website": "https://github.com/Tzahi12345/YoutubeDL-Material",
+      "dependencies": [],
+      "image": "tzahi12345/youtubedl-material:latest",
+      "serviceName": "youtubedl-material"
+    },
+    {
+      "id": "zeronote",
+      "name": "ZeroNote",
+      "logo": "Qmbdks6yn4TrP2hfFZJ1dZPW84kYhrWoXDj4tLBtpWfRiF",
+      "category": [
+        "productivity",
+        "security"
+      ],
+      "port": "8000 (HTTP - Web UI)",
+      "description": "Offline-first encrypted notes application.",
+      "website": "https://github.com/besoeasy/zeronote",
+      "dependencies": [],
+      "image": "ghcr.io/besoeasy/zeronote:main",
+      "serviceName": "zeronote"
+    }
+  ]
+}
