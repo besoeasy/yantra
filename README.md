@@ -2,13 +2,13 @@
 
 # ⚙️ Yantra
 
-**The self-hosted app store for your PC and laptop**
+**Turn any server, PC, laptop, or Mac into your own self-hosted homelab**
 
 [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://github.com/besoeasy/yantra/pkgs/container/yantra)
 [![Vue](https://img.shields.io/badge/Vue-3-42b883?style=for-the-badge&logo=vue.js&logoColor=white)](https://vuejs.org)
 [![License](https://img.shields.io/badge/License-ISC-blue.svg?style=for-the-badge)](LICENSE)
 
-Run 100+ powerful applications on-demand, without buying extra hardware or replacing your OS. Yantra is to self-hosted apps what Homebrew is to software packages: simple, elegant, and built for your daily driver. If you like Umbrel but do not want an OS takeover, Yantra gives you the same app-store flow on the machine you already use.
+Run 100+ powerful applications on-demand, without buying extra hardware or replacing your OS. Yantra turns the machine you already have into a self-hosted homelab, while keeping every app isolated: it never touches your host filesystem and stores data only in Docker volumes. If you like Umbrel but do not want an OS takeover, Yantra gives you the same app-store flow on the machine you already use.
 
 [🚀 Quick Start](#-quick-start) • [✨ Features](#-features) • [🛠️ Apps](#%EF%B8%8F-app-catalog) • [🎥 Demo Video](https://media.primal.net/uploads2/4/88/71/4887131c91f8868696e1b899085481bd22b016f6a7f936fb3f76e746d63fc119.mp4) • [💬 Issues](https://github.com/besoeasy/yantra/issues)
 
@@ -54,7 +54,7 @@ curl -fsSL https://raw.githubusercontent.com/besoeasy/Yantra/main/i.sh | sudo ba
 |                    |                                                 |
 | ------------------ | ----------------------------------------------- |
 | **Philosophy**     | 📦 App Store (not an OS replacement)            |
-| **Hardware**       | 💻 Use your existing PC/Laptop                  |
+| **Hardware**       | 💻 Use your existing server/PC/Laptop/Mac       |
 | **Installation**   | 🚀 Single Docker command                        |
 | **Commitment**     | 🎯 Zero—install, use, delete                    |
 | **Ecosystem**      | 🔓 100% Docker Compose (no lock-in)             |
