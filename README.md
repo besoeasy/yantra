@@ -10,9 +10,9 @@
 
 [![Join Telegram](https://img.shields.io/badge/Join%20Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/+h4RvCk63PxUyODQ1)
 
-Run 100+ powerful applications on-demand, without buying extra hardware or replacing your OS. Yantra turns the machine you already have into a self-hosted homelab, while keeping every app isolated: it never touches your host filesystem and stores data only in Docker volumes. If you like Umbrel but do not want an OS takeover, Yantra gives you the same app-store flow on the machine you already use.
+Run 100+ powerful applications on-demand, without buying extra hardware or replacing your OS. Yantra turns the machine you already have into a self-hosted homelab, while keeping every app isolated: it never touches your host filesystem and stores data only in Docker volumes. **First platform to ship a complete AI agent suite** with Ollama, Open WebUI, Perplexica, OpenCode, and more—each in its own isolated environment. If you like Umbrel but do not want an OS takeover, Yantra gives you the same app-store flow on the machine you already use.
 
-[🚀 Quick Start](#-quick-start) • [✨ Features](#-features) • [🛠️ Apps](#%EF%B8%8F-app-catalog) • [🎥 Demo Video](https://media.primal.net/uploads2/4/88/71/4887131c91f8868696e1b899085481bd22b016f6a7f936fb3f76e746d63fc119.mp4) • [💬 Issues](https://github.com/besoeasy/yantra/issues)
+[🚀 Quick Start](#-quick-start) • [✨ Features](#-features) • [🤖 AI Agents](#-complete-ai-agent-ecosystem) • [🛠️ Apps](#%EF%B8%8F-app-catalog) • [🎥 Demo Video](https://media.primal.net/uploads2/4/88/71/4887131c91f8868696e1b899085481bd22b016f6a7f936fb3f76e746d63fc119.mp4) • [💬 Issues](https://github.com/besoeasy/yantra/issues)
 
 </div>
 
@@ -149,6 +149,60 @@ Always ships the newest app releases regardless of your Yantra version—updates
 
 ---
 
+## 🤖 Complete AI Agent Ecosystem
+
+**Yantra is the first platform to ship a complete suite of AI agents**, each running in its own isolated environment with zero conflicts. No dependency hell. No version mismatches. Just pure, isolated AI power.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🧠 LLM Infrastructure
+
+- **[Ollama](apps/ollama)** — Local LLM inference server (Llama, Mistral, CodeLlama)
+- **[Open WebUI](apps/open-webui)** — Beautiful chat interface for your local LLMs
+- **[Perplexica](apps/perplexica)** — AI-powered search with conversational responses
+
+</td>
+<td width="50%" valign="top">
+
+### 💻 AI Development Tools
+
+- **[OpenCode](apps/opencode)** — AI coding agent for terminal, IDE, and desktop
+- **[OpenClaw](apps/openclaw)** — AI development environment with container management
+- **[n8n](apps/n8n)** — Workflow automation with 400+ AI integrations
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### 🎙️ Specialized AI
+
+- **[Kokoro](apps/kokoro)** — Lightweight text-to-speech (82M parameters)
+- **[Moltis](apps/moltis)** — Self-hosted AI assistant with Docker access
+
+</td>
+<td width="50%" valign="top">
+
+### ✨ Why This Matters
+
+Each AI agent runs in **its own isolated Docker container**:
+
+- ✅ No Python environment conflicts
+- ✅ No CUDA version mismatches
+- ✅ No shared dependencies breaking updates
+- ✅ Run multiple AI models simultaneously
+- ✅ Install, test, delete—zero residue on your system
+
+</td>
+</tr>
+</table>
+
+**The result?** Deploy Ollama + Open WebUI + Perplexica + OpenCode in minutes. Run them together or separately. Each agent stays in its lane. **This is the AI homelab everyone wishes they had.**
+
+---
+
 ## Live Screenshots (GIF)
 
 ### Main App
@@ -196,6 +250,17 @@ Most homelab platforms treat your hardware like an **OS replacement**. Yantra is
 ## 🛠️ App Catalog
 
 Yantra ships with 100+ pre-configured apps. Here are popular picks by use case:
+
+### 🤖 AI & Machine Learning
+
+- **[Ollama](apps/ollama)** — Local LLM inference server (Llama, Mistral, CodeLlama, etc.)
+- **[Open WebUI](apps/open-webui)** — Chat interface for local LLMs via Ollama
+- **[Perplexica](apps/perplexica)** — AI-powered search engine with conversational responses
+- **[OpenCode](apps/opencode)** — AI coding agent for terminal and IDE
+- **[OpenClaw](apps/openclaw)** — AI development environment with container management
+- **[Kokoro](apps/kokoro)** — Lightweight text-to-speech model (82M parameters)
+- **[Moltis](apps/moltis)** — Self-hosted AI assistant server
+- **[n8n](apps/n8n)** — Workflow automation with 400+ AI integrations
 
 ### 📥 Media & Downloads
 
