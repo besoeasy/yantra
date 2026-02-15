@@ -9,19 +9,25 @@
       content="Turn any device into a self-hosted homelab. Run 100+ apps like Ollama, Open WebUI, and more on your own infrastructure."
     />
     <meta name="theme-color" content="#ffffff" />
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://yantra.besoeasy.com/" />
     <meta property="og:title" content="Yantra — The Open Source Homelab Control Plane" />
-    <meta property="og:description" content="Turn any device into a self-hosted homelab. Run 100+ apps like Ollama, Open WebUI, and more on your own infrastructure." />
+    <meta
+      property="og:description"
+      content="Turn any device into a self-hosted homelab. Run 100+ apps like Ollama, Open WebUI, and more on your own infrastructure."
+    />
     <meta property="og:image" content="https://yantra.besoeasy.com/yantra.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://yantra.besoeasy.com/" />
     <meta property="twitter:title" content="Yantra — The Open Source Homelab Control Plane" />
-    <meta property="twitter:description" content="Turn any device into a self-hosted homelab. Run 100+ apps like Ollama, Open WebUI, and more on your own infrastructure." />
+    <meta
+      property="twitter:description"
+      content="Turn any device into a self-hosted homelab. Run 100+ apps like Ollama, Open WebUI, and more on your own infrastructure."
+    />
     <meta property="twitter:image" content="https://yantra.besoeasy.com/yantra.png" />
 
     <!-- Local Tailwind CSS bundle -->
@@ -59,9 +65,17 @@
           </nav>
         </div>
         <div class="flex items-center gap-4">
-          <a href="https://github.com/besoeasy/yantra" target="_blank" class="hidden sm:flex items-center gap-2 bg-black text-white px-4 py-2 text-sm font-bold hover:bg-gray-800 transition-colors">
+          <a
+            href="https://github.com/besoeasy/yantra"
+            target="_blank"
+            class="hidden sm:flex items-center gap-2 bg-black text-white px-4 py-2 text-sm font-bold hover:bg-gray-800 transition-colors"
+          >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+              <path
+                fill-rule="evenodd"
+                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                clip-rule="evenodd"
+              />
             </svg>
             Star on GitHub <span class="text-gray-400 font-normal" id="stars-nav"></span>
           </a>
@@ -86,7 +100,10 @@
       <!-- Hero -->
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start mb-24">
         <div>
-          <h1 id="hero-title" class="text-5xl sm:text-6xl font-extrabold tracking-tight mb-6 font-sans text-black leading-[1.1] transition-opacity duration-500 ease-in-out">
+          <h1
+            id="hero-title"
+            class="text-5xl sm:text-6xl font-extrabold tracking-tight mb-6 font-sans text-black leading-[1.1] transition-opacity duration-500 ease-in-out"
+          >
             Self-host<br />
             open source apps.
           </h1>
@@ -97,13 +114,26 @@
           <!-- Install Widget -->
           <div class="border border-gray-200 rounded-lg overflow-hidden bg-gray-50/50 max-w-lg">
             <div class="flex border-b border-gray-200 bg-white">
-              <button id="tab-no-docker" onclick="switchInstallTab('no-docker')" class="px-4 py-2 text-sm font-bold border-b-2 border-black bg-gray-50 text-black">No Docker?</button>
-              <button id="tab-has-docker" onclick="switchInstallTab('has-docker')" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors">Have Docker?</button>
+              <button
+                id="tab-no-docker"
+                onclick="switchInstallTab('no-docker')"
+                class="px-4 py-2 text-sm font-bold border-b-2 border-black bg-gray-50 text-black"
+              >
+                No Docker?
+              </button>
+              <button
+                id="tab-has-docker"
+                onclick="switchInstallTab('has-docker')"
+                class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors"
+              >
+                Have Docker?
+              </button>
             </div>
             <div id="content-no-docker" class="p-4 bg-gray-50 flex items-start justify-between group">
-              <code class="text-xs sm:text-sm text-gray-800 font-medium overflow-x-auto whitespace-pre hide-scrollbar pr-4">curl -fsSL https://get.docker.com | sudo sh
-sudo usermod -aG docker $USER && newgrp docker
-docker run -d --name yantra -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped ghcr.io/besoeasy/yantra</code>
+              <code class="text-xs sm:text-sm text-gray-800 font-medium overflow-x-auto whitespace-pre hide-scrollbar pr-4"
+                >curl -fsSL https://get.docker.com | sudo sh sudo usermod -aG docker $USER && newgrp docker docker run -d --name yantra -p 80:5252 -p 443:5252
+                -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped ghcr.io/besoeasy/yantra</code
+              >
               <button
                 onclick="
                   navigator.clipboard.writeText(
@@ -237,11 +267,13 @@ docker run -d --name yantra -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/
             <h2 class="text-3xl font-bold font-sans mb-4 tracking-tight">See it in action</h2>
           </div>
           <div class="rounded-xl overflow-hidden shadow-2xl border border-gray-200 bg-gray-100 relative group">
-             <div class="absolute inset-0 bg-gray-200 animate-pulse" id="screenshot-loader"></div>
-             <img id="screenshot-img" src="" alt="Yantra Interface" class="w-full h-auto opacity-0 transition-opacity duration-700 relative z-10">
-             <div class="absolute bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur border-t border-gray-200 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20">
-                  <p id="screenshot-caption" class="text-sm font-medium text-black font-mono text-center"></p>
-             </div>
+            <div class="absolute inset-0 bg-gray-200 animate-pulse" id="screenshot-loader"></div>
+            <img id="screenshot-img" src="" alt="Yantra Interface" class="w-full h-auto opacity-0 transition-opacity duration-700 relative z-10" />
+            <div
+              class="absolute bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur border-t border-gray-200 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20"
+            >
+              <p id="screenshot-caption" class="text-sm font-medium text-black font-mono text-center"></p>
+            </div>
           </div>
         </div>
       </div>
@@ -252,9 +284,8 @@ docker run -d --name yantra -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/
       <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-6 text-sm text-gray-500">
         <div><span class="font-bold text-black">YANTRA</span> &copy; 2026</div>
         <div class="flex gap-6">
-          <a href="#" class="hover:text-black">Twitter</a>
           <a href="https://github.com/besoeasy/yantra" class="hover:text-black">GitHub</a>
-          <a href="mailto:hello@besoeasy.com" class="hover:text-black">Contact</a>
+          <a href="mailto:yantra@besoeasy.com" class="hover:text-black">Contact</a>
         </div>
       </div>
     </footer>
@@ -538,57 +569,58 @@ docker run -d --name yantra -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/
           {
             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>`,
             title: "Zero OS Lock-in",
-            desc: "Runs alongside macOS, Windows, or Linux. No custom ISOs, no formatting required."
+            desc: "Runs alongside macOS, Windows, or Linux. No custom ISOs, no formatting required.",
           },
           {
             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>`,
             title: "1-Click Deploys",
-            desc: "Launch complex stacks like Ollama + Open WebUI in seconds with pre-configured templates."
+            desc: "Launch complex stacks like Ollama + Open WebUI in seconds with pre-configured templates.",
           },
           {
             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
             title: "Disposable Apps",
-            desc: "Set expiration timers for apps. Great for testing tools without cluttering your system."
+            desc: "Set expiration timers for apps. Great for testing tools without cluttering your system.",
           },
           {
-             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`,
-             title: "Isolated AI Stack",
-             desc: "First-class support for AI agents. No Python conflicts, no CUDA version mismatches."
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`,
+            title: "Isolated AI Stack",
+            desc: "First-class support for AI agents. No Python conflicts, no CUDA version mismatches.",
           },
           {
             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>`,
             title: "Filesystem Safe",
-            desc: "All data lives in isolated Docker volumes. Your host OS files are never touched."
+            desc: "All data lives in isolated Docker volumes. Your host OS files are never touched.",
           },
           {
             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>`,
             title: "Volume Browser",
-            desc: "Manage app data directly from the browser with built-in WebDAV support."
+            desc: "Manage app data directly from the browser with built-in WebDAV support.",
           },
-           {
+          {
             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>`,
             title: "S3 Backups",
-            desc: "One-click backup and restore of entire volumes to any S3-compatible storage."
+            desc: "One-click backup and restore of entire volumes to any S3-compatible storage.",
           },
           {
             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
             title: "GPU Passthrough",
-            desc: "Automatic GPU detection and passthrough for accelerated local LLM inference."
+            desc: "Automatic GPU detection and passthrough for accelerated local LLM inference.",
           },
           {
             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>`,
             title: "Auto Cleanup",
-            desc: "Intelligent garbage collection removes unused images and networks to save space."
-          }
+            desc: "Intelligent garbage collection removes unused images and networks to save space.",
+          },
         ];
 
-        const container = document.getElementById('features-grid-container');
+        const container = document.getElementById("features-grid-container");
         if (!container) return;
-        
+
         features.forEach((feature, index) => {
-            const card = document.createElement('div');
-            card.className = "group relative p-8 bg-white border border-gray-100 rounded-2xl hover:border-black transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 opacity-0 translate-y-8";
-            card.innerHTML = `
+          const card = document.createElement("div");
+          card.className =
+            "group relative p-8 bg-white border border-gray-100 rounded-2xl hover:border-black transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 opacity-0 translate-y-8";
+          card.innerHTML = `
                 <div class="w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors duration-500 group-hover:scale-110 transform">
                     ${feature.icon}
                 </div>
@@ -599,33 +631,36 @@ docker run -d --name yantra -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/
                     <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </div>
             `;
-            container.appendChild(card);
+          container.appendChild(card);
 
-            // Staggered Animation
-            setTimeout(() => {
-                requestAnimationFrame(() => {
-                    card.classList.remove('opacity-0', 'translate-y-8');
-                });
-            }, index * 100);
+          // Staggered Animation
+          setTimeout(() => {
+            requestAnimationFrame(() => {
+              card.classList.remove("opacity-0", "translate-y-8");
+            });
+          }, index * 100);
         });
       }
 
       function initScrollAnimations() {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    if (entry.target.id === 'detailed-features') {
-                         const header = document.getElementById('features-header');
-                         if(header) header.classList.remove('opacity-0', 'translate-y-4');
-                         
-                         loadDetailedFeatures();
-                         observer.unobserve(entry.target);
-                    }
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                if (entry.target.id === "detailed-features") {
+                  const header = document.getElementById("features-header");
+                  if (header) header.classList.remove("opacity-0", "translate-y-4");
+
+                  loadDetailedFeatures();
+                  observer.unobserve(entry.target);
                 }
+              }
             });
-        }, { threshold: 0.1 });
-        
-        const section = document.getElementById('detailed-features');
+          },
+          { threshold: 0.1 },
+        );
+
+        const section = document.getElementById("detailed-features");
         if (section) observer.observe(section);
       }
 
@@ -633,67 +668,78 @@ docker run -d --name yantra -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/
         const messages = [
           {
             title: "Don't buy that<br />overpriced NUC.",
-            desc: "Turn your old laptop into a powerhouse homelab. Yantra runs on the hardware you already own."
+            desc: "Turn your old laptop into a powerhouse homelab. Yantra runs on the hardware you already own.",
           },
           {
             title: "Don't surrender<br />your OS.",
-            desc: "Yantra runs alongside macOS, Windows, and Linux. No formatting, no ISOs, no taking over your computer."
+            desc: "Yantra runs alongside macOS, Windows, and Linux. No formatting, no ISOs, no taking over your computer.",
           },
           {
             title: "Self-host<br />open source apps.",
-            desc: "Turn any device into a private cloud. Run 100+ apps like Ollama, Open WebUI, and Perplexica on your own infrastructure."
+            desc: "Turn any device into a private cloud. Run 100+ apps like Ollama, Open WebUI, and Perplexica on your own infrastructure.",
           },
-           {
+          {
             title: "Your data, your rules,<br />your hardware.",
-            desc: "Stop renting cloud servers. Host your own AI, media, and files locally with zero monthly fees."
-          }
+            desc: "Stop renting cloud servers. Host your own AI, media, and files locally with zero monthly fees.",
+          },
         ];
 
         let currentIndex = 0;
-        const titleEl = document.getElementById('hero-title');
-        const descEl = document.getElementById('hero-desc');
+        const titleEl = document.getElementById("hero-title");
+        const descEl = document.getElementById("hero-desc");
 
         setInterval(() => {
-            // Fade out
-            titleEl.classList.add('opacity-0');
-            descEl.classList.add('opacity-0');
-            
-            setTimeout(() => {
-                currentIndex = (currentIndex + 1) % messages.length;
-                titleEl.innerHTML = messages[currentIndex].title;
-                descEl.textContent = messages[currentIndex].desc;
-                
-                // Fade in
-                titleEl.classList.remove('opacity-0');
-                descEl.classList.remove('opacity-0');
-            }, 500); // Wait for fade out
-            
+          // Fade out
+          titleEl.classList.add("opacity-0");
+          descEl.classList.add("opacity-0");
+
+          setTimeout(() => {
+            currentIndex = (currentIndex + 1) % messages.length;
+            titleEl.innerHTML = messages[currentIndex].title;
+            descEl.textContent = messages[currentIndex].desc;
+
+            // Fade in
+            titleEl.classList.remove("opacity-0");
+            descEl.classList.remove("opacity-0");
+          }, 500); // Wait for fade out
         }, 5000); // Rotate every 5 seconds
       }
 
       function loadRandomScreenshot() {
         const screenshots = [
-            { url: "https://github.com/user-attachments/assets/2e107ef8-2411-4d62-9886-9fb917b9993d", caption: "Main Dashboard - Clean, modern interface for managing your apps" },
-            { url: "https://github.com/user-attachments/assets/3a9604fa-d634-4329-aa73-ed4658145b00", caption: "Temporary Installation - Set auto-expiry for apps to keep your system clean" },
-            { url: "https://github.com/user-attachments/assets/862fb852-e52d-4f94-8372-234c1d6c6b51", caption: "Volume Browser - Browse and manage persistent data files directly" },
-            { url: "https://github.com/user-attachments/assets/e5dc0ad8-0181-4676-b7b1-1cc961a6b1ed", caption: "Dark Mode - Fully supported dark theme for late night hacking" }
+          {
+            url: "https://github.com/user-attachments/assets/2e107ef8-2411-4d62-9886-9fb917b9993d",
+            caption: "Main Dashboard - Clean, modern interface for managing your apps",
+          },
+          {
+            url: "https://github.com/user-attachments/assets/3a9604fa-d634-4329-aa73-ed4658145b00",
+            caption: "Temporary Installation - Set auto-expiry for apps to keep your system clean",
+          },
+          {
+            url: "https://github.com/user-attachments/assets/862fb852-e52d-4f94-8372-234c1d6c6b51",
+            caption: "Volume Browser - Browse and manage persistent data files directly",
+          },
+          {
+            url: "https://github.com/user-attachments/assets/e5dc0ad8-0181-4676-b7b1-1cc961a6b1ed",
+            caption: "Dark Mode - Fully supported dark theme for late night hacking",
+          },
         ];
 
         const random = screenshots[Math.floor(Math.random() * screenshots.length)];
-        const img = document.getElementById('screenshot-img');
-        const caption = document.getElementById('screenshot-caption');
-        const loader = document.getElementById('screenshot-loader');
-        
+        const img = document.getElementById("screenshot-img");
+        const caption = document.getElementById("screenshot-caption");
+        const loader = document.getElementById("screenshot-loader");
+
         if (img && caption) {
-            // Preload image
-            const tempImg = new Image();
-            tempImg.onload = () => {
-                 img.src = random.url;
-                 caption.textContent = random.caption;
-                 img.classList.remove('opacity-0');
-                 if(loader) loader.classList.add('hidden');
-            };
-            tempImg.src = random.url;
+          // Preload image
+          const tempImg = new Image();
+          tempImg.onload = () => {
+            img.src = random.url;
+            caption.textContent = random.caption;
+            img.classList.remove("opacity-0");
+            if (loader) loader.classList.add("hidden");
+          };
+          tempImg.src = random.url;
         }
       }
 
