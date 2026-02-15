@@ -1,0 +1,24 @@
+services:
+  zeroclaw:
+    image: ghcr.io/theonlyhennygod/zeroclaw:latest
+    container_name: zeroclaw
+    restart: unless-stopped
+    environment:
+      API_KEY: ${API_KEY:-}
+      ZEROCLAW_API_KEY: ${ZEROCLAW_API_KEY:-}
+      PROVIDER: ${PROVIDER:-openrouter}
+      ZEROCLAW_PROVIDER: ${ZEROCLAW_PROVIDER:-openrouter}
+    ports:
+      - "3000"
+    volumes:
+      - zeroclaw_data:/data
+    labels:
+      yantra.name: "ZeroClaw"
+      yantra.logo: "Qmex7mP7CtY1uo7a2erXmuNrvQdY6aw5FTQtxpJjAbiu8v"
+      yantra.category: "ai,tools,utility"
+      yantra.port: "3000 (HTTP - Gateway API)"
+      yantra.description: "Autonomous Rust AI assistant runtime with pluggable providers and secure local gateway"
+      yantra.website: "https://github.com/theonlyhennygod/zeroclaw"
+
+volumes:
+  zeroclaw_data:
