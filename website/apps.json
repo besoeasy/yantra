@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generatedAt": "2026-02-15T10:58:13.616Z",
-    "totalApps": 103,
+    "generatedAt": "2026-02-15T11:04:16.886Z",
+    "totalApps": 104,
     "categories": [
       "ai",
       "backend",
@@ -1180,6 +1180,21 @@
       "dependencies": [],
       "image": "searxng/searxng:latest",
       "serviceName": "searxng"
+    },
+    {
+      "id": "shugur-relay",
+      "name": "Shugur Relay",
+      "logo": "QmNR4kyKJs3sZwdRJZ47z5feUWn6S8aJw31wzZrXK2fVcD",
+      "category": [
+        "network",
+        "social"
+      ],
+      "port": "8080 (HTTP - Relay)",
+      "description": "High-performance nostr relay with distributed database",
+      "website": "https://github.com/Shugur-Network/relay",
+      "dependencies": [],
+      "image": "ghcr.io/shugur-network/relay:latest",
+      "serviceName": "shugur-relay"
     },
     {
       "id": "smokeping",
