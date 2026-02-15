@@ -175,54 +175,8 @@
                 Yantra is an open source control plane that helps you manage self-hosted applications on your server, laptop, or cloud instance.
             </p>
 
-            <div class="space-y-6 font-mono text-sm sm:text-base">
-                <div class="flex gap-4 items-start">
-                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
-                    <div>
-                        <span class="font-bold text-black mr-2">Docker Native</span>
-                        <span class="text-gray-600">Runs alongside your OS. No custom ISO or system takeover required.</span>
-                    </div>
-                </div>
-
-                <div class="flex gap-4 items-start">
-                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
-                    <div>
-                        <span class="font-bold text-black mr-2">AI Ready</span>
-                        <span class="text-gray-600">First-class support for Ollama, Open WebUI, and local LLMs with GPU passthrough.</span>
-                    </div>
-                </div>
-
-                <div class="flex gap-4 items-start">
-                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
-                    <div>
-                        <span class="font-bold text-black mr-2">Volatile Mode</span>
-                        <span class="text-gray-600">Set expiration timers on apps to auto-delete them when you're done testing.</span>
-                    </div>
-                </div>
-
-                <div class="flex gap-4 items-start">
-                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
-                    <div>
-                        <span class="font-bold text-black mr-2">No Vendor Lock-in</span>
-                        <span class="text-gray-600">Generates standard Docker Compose files you can take anywhere.</span>
-                    </div>
-                </div>
-
-                <div class="flex gap-4 items-start">
-                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
-                    <div>
-                        <span class="font-bold text-black mr-2">Volume Manager</span>
-                        <span class="text-gray-600">Browse, backup, and restore persistent data directly from the web UI.</span>
-                    </div>
-                </div>
-                
-                <div class="flex gap-4 items-start">
-                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
-                    <div>
-                        <span class="font-bold text-black mr-2">100+ Apps</span>
-                        <span class="text-gray-600">Curated catalog of high-quality self-hosted tools.</span>
-                    </div>
-                </div>
+            <div class="space-y-6 font-mono text-sm sm:text-base" id="features-list">
+                <!-- Features loaded via JS -->
             </div>
 
             <div class="mt-12">
@@ -352,9 +306,92 @@
             }
         }
 
+        function animateFeatures() {
+            const allFeatures = [
+                {
+                    title: 'Docker Native',
+                    description: 'Runs alongside your OS. No custom ISO or system takeover required.'
+                },
+                {
+                    title: 'AI Ready',
+                    description: 'First-class support for Ollama, Open WebUI, and local LLMs with GPU passthrough.'
+                },
+                {
+                    title: 'Volatile Mode',
+                    description: 'Set expiration timers on apps to auto-delete them when you\'re done testing.'
+                },
+                {
+                    title: 'No Vendor Lock-in',
+                    description: 'Generates standard Docker Compose files you can take anywhere.'
+                },
+                {
+                    title: 'Volume Manager',
+                    description: 'Browse, backup, and restore persistent data directly from the web UI.'
+                },
+                {
+                    title: '100+ Apps',
+                    description: 'Curated catalog of high-quality self-hosted tools.'
+                }
+            ];
+
+            const featuresList = document.getElementById('features-list');
+            
+            // Helper to create feature element
+            const createFeature = (feature) => {
+                const div = document.createElement('div');
+                div.className = 'flex gap-4 items-start opacity-0 -translate-y-4 transition-all duration-1000 feature-item';
+                div.innerHTML = `
+                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
+                    <div>
+                        <span class="font-bold text-black mr-2">${feature.title}</span>
+                        <span class="text-gray-600">${feature.description}</span>
+                    </div>
+                `;
+                
+                // Trigger animation
+                requestAnimationFrame(() => {
+                    div.classList.remove('opacity-0', '-translate-y-4');
+                });
+                
+                return div;
+            };
+
+            // Initial load: 4 random features
+            const DISPLAY_COUNT = 4;
+            let currentFeatures = allFeatures.sort(() => 0.5 - Math.random()).slice(0, DISPLAY_COUNT);
+            currentFeatures.forEach((feature, index) => {
+                setTimeout(() => {
+                    featuresList.appendChild(createFeature(feature));
+                }, index * 100); // Stagger initial load
+            });
+
+            // Periodic update
+            setInterval(() => {
+                if (document.hidden) return; // Pause if tab is hidden
+                
+                // Pick a random feature
+                const randomFeature = allFeatures[Math.floor(Math.random() * allFeatures.length)];
+                const newFeature = createFeature(randomFeature);
+                
+                // Add to front
+                featuresList.prepend(newFeature);
+                
+                // Remove from back with slow fade
+                if (featuresList.children.length > DISPLAY_COUNT) {
+                    const last = featuresList.lastElementChild;
+                    last.style.transition = 'all 2s ease-out';
+                    last.classList.add('opacity-0', 'scale-90');
+                    
+                    // Wait for transition to finish before removing
+                    setTimeout(() => last.remove(), 2000);
+                }
+            }, 4000); // Update every 4 seconds
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             loadApps();
             loadStars();
+            animateFeatures();
         });
     </script>
 </body>
