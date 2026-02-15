@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yantra — Self-Hosted Homelab Control Plane</title>
-    <meta name="description" content="Turn any device into a self-hosted homelab. Run 100+ apps like Ollama, Open WebUI, and more on your own infrastructure with a single Docker command.">
+    <title>Yantra — The Open Source Homelab Control Plane</title>
+    <meta name="description" content="Turn any device into a self-hosted homelab. Run 100+ apps like Ollama, Open WebUI, and more on your own infrastructure.">
     <meta name="theme-color" content="#ffffff">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,345 +23,283 @@
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
-                        primary: '#0F172A',
-                        secondary: '#6B7280',
-                        accent: '#2563EB',
-                        'accent-hover': '#1D4ED8',
-                        surface: '#F7F7F8',
+                        black: '#0a0a0a',
+                        dark: '#111111',
+                        gray: {
+                            50: '#F9FAFB',
+                            100: '#F3F4F6',
+                            200: '#E5E7EB',
+                            400: '#9CA3AF',
+                            500: '#6B7280',
+                            600: '#4B5563',
+                            800: '#1F2937',
+                            900: '#111827',
+                        }
+                    },
+                    boxShadow: {
+                        'xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                     }
                 }
             }
         }
     </script>
-    
     <style>
-        /* Custom scrollbar for terminal */
-        .scrollbar-hide::-webkit-scrollbar {
+        .typing-effect {
+            border-right: 2px solid #4ade80;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+        .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
-        .scrollbar-hide {
+        .hide-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        .glass-nav {
-            background-color: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
     </style>
 </head>
-<body class="bg-white text-primary antialiased selection:bg-blue-100 selection:text-blue-900">
+<body class="bg-white text-black font-mono antialiased selection:bg-black selection:text-white">
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass-nav border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center gap-2">
-                    <span class="text-xl font-bold tracking-tight">Yantra</span>
-                    <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-xs font-medium border border-blue-100">Beta</span>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <a href="#" class="text-xl font-bold tracking-tight bg-black text-white px-2 py-1">YANTRA</a>
+                <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
+                    
+                    <a href="https://github.com/besoeasy/yantra" target="_blank" class="hover:text-black transition-colors flex items-center gap-1">
+                        GitHub <span class="text-xs text-gray-400 font-normal" id="stars-nav">[Loading]</span>
+                    </a>
+                    <a href="#docs" class="hover:text-black transition-colors">Docs</a>
+                    <a href="#apps" class="hover:text-black transition-colors">Apps</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="#install" class="hidden sm:flex items-center gap-2 bg-black text-white px-4 py-2 text-sm font-bold hover:bg-gray-800 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Install free
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-24">
+        
+        <!-- Badge -->
+        <div class="mb-8 animate-fade-in">
+            <a href="https://github.com/besoeasy/yantra/releases" target="_blank" class="inline-flex items-center gap-3 text-sm text-gray-600 hover:text-black transition-colors group">
+                <span class="bg-black text-white text-xs px-1.5 py-0.5 font-bold uppercase">New</span>
+                <span class="border-b border-transparent group-hover:border-gray-300">v1.0 Beta is now available for Linux, macOS and Windows.</span>
+                <span class="text-gray-400 group-hover:translate-x-0.5 transition-transform">&rarr;</span>
+            </a>
+        </div>
+
+        <!-- Hero -->
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start mb-24">
+            <div>
+                <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight mb-6 font-sans text-black leading-[1.1]">
+                    The open source<br>
+                    homelab control plane.
+                </h1>
+                <p class="text-lg text-gray-600 leading-relaxed max-w-xl mb-10 font-sans">
+                    Turn any device into a private cloud. Run 100+ apps like Ollama, Open WebUI, and Perplexica on your own infrastructure. No OS replacement needed.
+                </p>
+
+                <!-- Install Widget -->
+                <div class="border border-gray-200 rounded-lg overflow-hidden bg-gray-50/50 max-w-lg">
+                    <div class="flex border-b border-gray-200 bg-white">
+                        <button class="px-4 py-2 text-sm font-bold border-b-2 border-black bg-gray-50 text-black">Docker</button>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors">Curl</button>
+                    </div>
+                    <div class="p-4 bg-gray-50 flex items-center justify-between group">
+                        <code class="text-sm text-gray-800 font-medium overflow-x-auto whitespace-nowrap hide-scrollbar pr-4">
+                            docker run -d -p 80:5252 -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/besoeasy/yantra
+                        </code>
+                        <button onclick="navigator.clipboard.writeText('docker run -d --name yantra -p 80:5252 -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped ghcr.io/besoeasy/yantra')" class="text-gray-400 hover:text-black transition-colors p-1" title="Copy command">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Image/Preview -->
+            <div class="relative mt-4 lg:mt-0">
+                <div class="rounded-lg bg-[#0d0d0d] border border-gray-800 shadow-xl overflow-hidden">
+                    <div class="flex items-center gap-1.5 px-4 py-3 bg-[#1a1a1a] border-b border-gray-800">
+                        <div class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></div>
+                    </div>
+                    <div class="p-6 text-sm font-mono leading-relaxed h-[340px] overflow-y-auto">
+                        <div class="text-gray-400 mb-2"># Deploying Open WebUI...</div>
+                        <div class="flex gap-2 text-gray-300">
+                            <span class="text-green-500">➜</span>
+                            <span>node daemon/main.js deploy open-webui</span>
+                        </div>
+                        <div class="mt-2 text-gray-500">
+                            [+] Pulling images...<br>
+                            [+] Creating volumes...<br>
+                            [+] Starting container open-webui...<br>
+                        </div>
+                        <div class="mt-2 text-green-400">
+                            ✔ App deployed successfully
+                        </div>
+                        <div class="mt-4 text-gray-400 mb-2"># Checking status...</div>
+                        <div class="flex gap-2 text-gray-300">
+                            <span class="text-green-500">➜</span>
+                            <span>docker ps --format "{{.Names}}\t{{.Status}}"</span>
+                        </div>
+                        <div class="mt-2 text-gray-300">
+                            yantra          Up 2 hours<br>
+                            ollama          Up 15 minutes<br>
+                            open-webui      Up 12 seconds
+                        </div>
+                        <div class="mt-4 flex gap-2">
+                            <span class="text-green-500">➜</span>
+                            <span class="typing-effect border-r-2 border-green-500 pr-1">_</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Decoration -->
+                <div class="absolute -z-10 -right-20 -bottom-20 w-64 h-64 bg-gray-100 rounded-full blur-3xl opacity-50"></div>
+            </div>
+        </div>
+
+        <!-- What is Yantra Section (Features in list style) -->
+        <div class="max-w-4xl pt-12" id="features">
+            <h2 class="text-2xl font-bold font-sans mb-6">What is Yantra?</h2>
+            <p class="text-gray-600 mb-10 max-w-2xl font-sans">
+                Yantra is an open source control plane that helps you manage self-hosted applications on your server, laptop, or cloud instance.
+            </p>
+
+            <div class="space-y-6 font-mono text-sm sm:text-base">
+                <div class="flex gap-4 items-start">
+                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
+                    <div>
+                        <span class="font-bold text-black mr-2">Docker Native</span>
+                        <span class="text-gray-600">Runs alongside your OS. No custom ISO or system takeover required.</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
+                    <div>
+                        <span class="font-bold text-black mr-2">AI Ready</span>
+                        <span class="text-gray-600">First-class support for Ollama, Open WebUI, and local LLMs with GPU passthrough.</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
+                    <div>
+                        <span class="font-bold text-black mr-2">Volatile Mode</span>
+                        <span class="text-gray-600">Set expiration timers on apps to auto-delete them when you're done testing.</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
+                    <div>
+                        <span class="font-bold text-black mr-2">No Vendor Lock-in</span>
+                        <span class="text-gray-600">Generates standard Docker Compose files you can take anywhere.</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 items-start">
+                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
+                    <div>
+                        <span class="font-bold text-black mr-2">Volume Manager</span>
+                        <span class="text-gray-600">Browse, backup, and restore persistent data directly from the web UI.</span>
+                    </div>
                 </div>
                 
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#features" class="text-sm font-medium text-secondary hover:text-accent transition-colors">Features</a>
-                    <a href="#apps" class="text-sm font-medium text-secondary hover:text-accent transition-colors">App Store</a>
-                    <a href="#docs" class="text-sm font-medium text-secondary hover:text-accent transition-colors">Docs</a>
-                    <a href="https://github.com/besoeasy/yantra" target="_blank" class="text-sm font-medium text-secondary hover:text-accent transition-colors">GitHub</a>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <a href="https://github.com/besoeasy/yantra" target="_blank" class="hidden sm:flex items-center gap-1.5 text-secondary hover:text-primary transition-colors">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                        <span class="text-sm font-medium" id="stars-count">Star</span>
-                    </a>
-                    <a href="#install" class="bg-primary hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:shadow-lg shadow-gray-200/50">
-                        Get Started
-                    </a>
+                <div class="flex gap-4 items-start">
+                    <span class="text-gray-400 shrink-0 select-none">[*]</span>
+                    <div>
+                        <span class="font-bold text-black mr-2">100+ Apps</span>
+                        <span class="text-gray-600">Curated catalog of high-quality self-hosted tools.</span>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="pt-32 pb-20 sm:pt-40 sm:pb-24 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-            <!-- Background Decoration -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-50/50 rounded-full blur-3xl -z-10"></div>
-
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-gray-200 text-sm text-secondary mb-8 animate-fade-in-up">
-                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                v1.0 Public Beta is now live
-            </div>
-
-            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-primary mb-6 leading-[1.1]">
-                Your self-hosted<br>
-                <span class="text-accent">homelab control plane.</span>
-            </h1>
-
-            <p class="text-lg sm:text-xl text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
-                Run 100+ open-source apps on your own hardware. 
-                Full privacy, zero lock-in, and a developer-first experience.
-                Includes a complete AI agent suite.
-            </p>
-
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
-                <a href="#install" class="w-full sm:w-auto px-8 py-3.5 bg-accent hover:bg-accent-hover text-white rounded-xl font-semibold transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 hover:-translate-y-0.5">
-                    Start with Docker
-                </a>
-                <a href="https://github.com/besoeasy/yantra" target="_blank" class="w-full sm:w-auto px-8 py-3.5 bg-white border border-gray-200 text-primary hover:border-gray-300 rounded-xl font-semibold transition-all hover:bg-gray-50">
-                    View on GitHub
+            <div class="mt-12">
+                <a href="https://github.com/besoeasy/yantra#readme" target="_blank" class="inline-flex items-center gap-2 bg-black text-white px-5 py-2.5 text-sm font-bold hover:bg-gray-800 transition-colors">
+                    Read docs
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </a>
             </div>
-
-            <!-- Terminal Preview -->
-            <div class="max-w-3xl mx-auto rounded-xl overflow-hidden shadow-2xl bg-[#1E1E1E] border border-gray-800 text-left font-mono text-sm sm:text-base transform transition-transform hover:scale-[1.01] duration-500" id="install">
-                <div class="flex items-center gap-2 px-4 py-3 bg-[#2D2D2D] border-b border-gray-800">
-                    <div class="flex gap-1.5">
-                        <div class="w-3 h-3 rounded-full bg-[#FF5F56]"></div>
-                        <div class="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
-                        <div class="w-3 h-3 rounded-full bg-[#27C93F]"></div>
-                    </div>
-                    <div class="flex-1 text-center text-gray-400 text-xs">bash — 80x24</div>
-                </div>
-                <div class="p-6 text-gray-300 selection:bg-gray-700">
-                    <div class="flex gap-2">
-                        <span class="text-green-400">$</span>
-                        <p class="typing-effect">docker run -d --name yantra -p 80:5252 -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/besoeasy/yantra</p>
-                    </div>
-                </div>
-            </div>
-            <p class="mt-4 text-sm text-secondary">
-                Requires Docker. Works on Linux, macOS, and Windows.
-            </p>
         </div>
-    </section>
 
-    <!-- Apps Showcase -->
-    <section id="apps" class="py-24 bg-surface border-y border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-end justify-between mb-12">
-                <div>
-                    <h2 class="text-3xl font-bold text-primary mb-4">Apps worth hosting</h2>
-                    <p class="text-secondary max-w-lg">
-                        Browse our catalog of <span id="total-apps-badge" class="font-semibold text-primary">100+</span> applications. From AI agents to media servers, install them in one click.
-                    </p>
-                </div>
-                <a href="https://github.com/besoeasy/yantra/tree/main/apps" target="_blank" class="hidden sm:inline-flex items-center gap-1 text-accent font-medium hover:underline">
-                    View full catalog <span aria-hidden="true">&rarr;</span>
-                </a>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="app-grid">
-                <!-- App cards will be injected here via JS -->
-                <div class="animate-pulse bg-white p-6 rounded-2xl border border-gray-100 h-48"></div>
-                <div class="animate-pulse bg-white p-6 rounded-2xl border border-gray-100 h-48"></div>
-                <div class="animate-pulse bg-white p-6 rounded-2xl border border-gray-100 h-48"></div>
-                <div class="animate-pulse bg-white p-6 rounded-2xl border border-gray-100 h-48"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features -->
-    <section id="features" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl sm:text-4xl font-bold text-primary mb-4">Built for control</h2>
-                <p class="text-secondary max-w-2xl mx-auto">
-                    A modern control plane that respects your hardware and your privacy.
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
-                <div class="p-8 rounded-2xl bg-surface border border-gray-100 hover:border-gray-200 transition-colors">
-                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6 text-accent">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Docker Native</h3>
-                    <p class="text-secondary leading-relaxed">
-                        No custom OS required. Yantra runs alongside your existing system using standard Docker containers.
-                    </p>
-                </div>
-
-                <!-- Feature 2 -->
-                <div class="p-8 rounded-2xl bg-surface border border-gray-100 hover:border-gray-200 transition-colors">
-                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-6 text-purple-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">AI Agent Suite</h3>
-                    <p class="text-secondary leading-relaxed">
-                        Deploy Ollama, Open WebUI, and Perplexica in isolated environments without dependency hell.
-                    </p>
-                </div>
-
-                <!-- Feature 3 -->
-                <div class="p-8 rounded-2xl bg-surface border border-gray-100 hover:border-gray-200 transition-colors">
-                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-6 text-green-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Privacy First</h3>
-                    <p class="text-secondary leading-relaxed">
-                        Your data never leaves your network. All apps store data in local Docker volumes you control.
-                    </p>
-                </div>
-
-                <!-- Feature 4 -->
-                <div class="p-8 rounded-2xl bg-surface border border-gray-100 hover:border-gray-200 transition-colors">
-                    <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-6 text-orange-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Volume Management</h3>
-                    <p class="text-secondary leading-relaxed">
-                        Browse, edit, backup, and restore persistent data directly from the dashboard.
-                    </p>
-                </div>
-
-                <!-- Feature 5 -->
-                <div class="p-8 rounded-2xl bg-surface border border-gray-100 hover:border-gray-200 transition-colors">
-                    <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center mb-6 text-pink-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Instant Deploy</h3>
-                    <p class="text-secondary leading-relaxed">
-                        One-click installation for complex stacks. Smart presets ensure everything just works.
-                    </p>
-                </div>
-
-                <!-- Feature 6 -->
-                <div class="p-8 rounded-2xl bg-surface border border-gray-100 hover:border-gray-200 transition-colors">
-                    <div class="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center mb-6 text-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Developer Friendly</h3>
-                    <p class="text-secondary leading-relaxed">
-                        Built with standard tools: Docker Compose, Node.js, and Vue. No black boxes.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section class="py-24 bg-surface border-t border-gray-100">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-primary mb-12 text-center">Frequently asked questions</h2>
-            
-            <div class="space-y-4">
-                <details class="group bg-white rounded-2xl border border-gray-200 p-6 [&_summary::-webkit-details-marker]:hidden">
-                    <summary class="flex items-center justify-between cursor-pointer">
-                        <h3 class="font-semibold text-primary">How is this different from UmbrelOS?</h3>
-                        <span class="ml-4 text-secondary group-open:rotate-180 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </span>
-                    </summary>
-                    <p class="mt-4 text-secondary leading-relaxed">
-                        UmbrelOS is a complete operating system that replaces your current OS. Yantra is an application that runs <em>on top</em> of your existing OS (Ubuntu, Debian, macOS, etc.) using Docker. This means you can keep using your computer as normal while running Yantra in the background.
-                    </p>
-                </details>
-
-                <details class="group bg-white rounded-2xl border border-gray-200 p-6 [&_summary::-webkit-details-marker]:hidden">
-                    <summary class="flex items-center justify-between cursor-pointer">
-                        <h3 class="font-semibold text-primary">What hardware do I need?</h3>
-                        <span class="ml-4 text-secondary group-open:rotate-180 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </span>
-                    </summary>
-                    <p class="mt-4 text-secondary leading-relaxed">
-                        Any machine that can run Docker can run Yantra. This includes old laptops, Raspberry Pis, mini PCs, massive servers, or even your MacBook. Requirements depend on the apps you want to run (e.g., AI agents need more RAM).
-                    </p>
-                </details>
-
-                <details class="group bg-white rounded-2xl border border-gray-200 p-6 [&_summary::-webkit-details-marker]:hidden">
-                    <summary class="flex items-center justify-between cursor-pointer">
-                        <h3 class="font-semibold text-primary">Is it really open source?</h3>
-                        <span class="ml-4 text-secondary group-open:rotate-180 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </span>
-                    </summary>
-                    <p class="mt-4 text-secondary leading-relaxed">
-                        Yes, 100%. You can inspect every line of code on GitHub. We do not track you, and your data stays on your machine.
-                    </p>
-                </details>
-
-                <details class="group bg-white rounded-2xl border border-gray-200 p-6 [&_summary::-webkit-details-marker]:hidden">
-                    <summary class="flex items-center justify-between cursor-pointer">
-                        <h3 class="font-semibold text-primary">Can I expose apps to the internet?</h3>
-                        <span class="ml-4 text-secondary group-open:rotate-180 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </span>
-                    </summary>
-                    <p class="mt-4 text-secondary leading-relaxed">
-                        By default, Yantra is designed for local network access. However, since it's just Docker, you can easily set up Cloudflare Tunnels (via the Cloudflared app in our store) or a reverse proxy like Nginx Proxy Manager to safely expose services.
-                    </p>
-                </details>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-100 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-2">
-                <span class="font-bold text-primary">Yantra</span>
-                <span class="text-secondary text-sm">© 2026</span>
+        <!-- Apps Section -->
+        <div class="pt-32" id="apps">
+             <div class="flex items-end justify-between mb-8 border-b border-gray-200 pb-4">
+                <h2 class="text-2xl font-bold font-sans">App Catalog</h2>
+                <a href="https://github.com/besoeasy/yantra/tree/main/apps" target="_blank" class="text-sm font-medium hover:underline">View all 100+ apps -></a>
             </div>
             
-            <div class="flex items-center gap-8">
-                <a href="https://github.com/besoeasy/yantra" class="text-sm text-secondary hover:text-primary">GitHub</a>
-                <a href="https://github.com/besoeasy/yantra/issues" class="text-sm text-secondary hover:text-primary">Report Issue</a>
-                <a href="#install" class="text-sm text-secondary hover:text-primary">Install</a>
-                <a href="mailto:hello@yantra.io" class="text-sm text-secondary hover:text-primary">Contact</a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="app-grid">
+                <!-- Apps loaded via JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Simple Footer -->
+    <footer class="border-t border-gray-200 py-12 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-6 text-sm text-gray-500">
+            <div>
+                <span class="font-bold text-black">YANTRA</span> &copy; 2026
+            </div>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-black">Twitter</a>
+                <a href="https://github.com/besoeasy/yantra" class="hover:text-black">GitHub</a>
+                <a href="mailto:hello@besoeasy.com" class="hover:text-black">Contact</a>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script>
         async function loadApps() {
             try {
                 const response = await fetch('./apps.json');
                 const data = await response.json();
-                
-                // Update Badge
-                const totalApps = data.meta?.totalApps || data.apps.length;
-                document.getElementById('total-apps-badge').textContent = `${totalApps}+`;
-
                 const apps = data.apps;
                 if (!apps || apps.length === 0) return;
 
-                // Select 8 random apps, prioritizing ones with logos if possible, or just random
-                const shuffled = apps.sort(() => 0.5 - Math.random());
-                const selected = shuffled.slice(0, 8);
-
+                // Random 8 apps
+                const shuffled = apps.sort(() => 0.5 - Math.random()).slice(0, 8);
                 const grid = document.getElementById('app-grid');
-                grid.innerHTML = ''; // Clear skeleton
+                grid.innerHTML = ''; 
 
-                selected.forEach(app => {
-                    // Check if IPFS hash or URL
-                    // Fallback mechanism for logo
+                shuffled.forEach(app => {
+                    const card = document.createElement('div');
+                    // Style: Minimal card, mono font for app name
+                    card.className = 'border border-gray-200 bg-white p-5 hover:border-black transition-colors group flex flex-col h-full';
+                    
                     const logoUrl = app.logo 
                         ? (app.logo.startsWith('http') ? app.logo : `https://ipfs.io/ipfs/${app.logo}`) 
-                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}&background=random`;
+                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}&background=random&color=fff&bold=true`;
 
-                    const card = document.createElement('div');
-                    card.className = 'group bg-white p-6 rounded-2xl border border-gray-100 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-500/5 transition-all duration-300 flex flex-col h-full';
-                    
                     card.innerHTML = `
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden border border-gray-100">
-                                <img src="${logoUrl}" alt="${app.name}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(app.name)}&background=random'">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 rounded bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-100 shrink-0">
+                                <img src="${logoUrl}" alt="${app.name}" class="w-full h-full object-cover">
                             </div>
-                            ${app.category && app.category[0] ? `<span class="px-2.5 py-1 rounded-full bg-slate-50 text-slate-500 text-[10px] font-semibold uppercase tracking-wider">${app.category[0]}</span>` : ''}
+                            <h3 class="font-bold text-sm truncate font-mono group-hover:underline">${app.name}</h3>
                         </div>
-                        <h3 class="font-bold text-primary mb-2 group-hover:text-accent transition-colors">${app.name}</h3>
-                        <p class="text-sm text-secondary line-clamp-2 mb-4 flex-grow">${app.description || 'No description available.'}</p>
-                        
+                        <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-sans mb-3 flex-grow">${app.description || 'No description available.'}</p>
+                        <div class="flex items-center gap-2 mt-auto">
+                           ${app.category ? `<span class="text-[10px] uppercase tracking-wider text-gray-400 border border-gray-100 px-1.5 py-0.5 rounded">${app.category[0]}</span>` : ''}
+                        </div>
                     `;
                     grid.appendChild(card);
                 });
-
             } catch (error) {
                 console.error('Failed to load apps:', error);
-                document.getElementById('app-grid').innerHTML = '<p class="text-center text-red-500 col-span-full">Failed to load apps directory.</p>';
             }
         }
 
@@ -372,14 +310,13 @@
                     const data = await response.json();
                     const stars = data.stargazers_count;
                     const formatted = stars > 1000 ? (stars / 1000).toFixed(1) + 'k' : stars;
-                    document.getElementById('stars-count').textContent = formatted + ' Stars';
+                    document.getElementById('stars-nav').textContent = `[${formatted}]`;
                 }
             } catch (e) {
-                console.log('GitHub API limit or error');
+                document.getElementById('stars-nav').textContent = `[--]`;
             }
         }
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadApps();
             loadStars();
