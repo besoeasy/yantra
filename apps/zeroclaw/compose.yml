@@ -5,9 +5,7 @@ services:
     restart: unless-stopped
     environment:
       API_KEY: ${API_KEY:-}
-      ZEROCLAW_API_KEY: ${ZEROCLAW_API_KEY:-}
       PROVIDER: ${PROVIDER:-openrouter}
-      ZEROCLAW_PROVIDER: ${ZEROCLAW_PROVIDER:-openrouter}
     ports:
       - "3000"
     volumes:
