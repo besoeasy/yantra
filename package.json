@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "docker-build": "docker build -t yantra:optimized . && docker images yantra:optimized",
     "docker-run": "docker run -d -p 5252:5252 -v /var/run/docker.sock:/var/run/docker.sock yantra:optimized",
-    "apps:json": "node appstojson.js"
+    "website": "npx @tailwindcss/cli -i ./website/tailwind.input.css -o ./website/tailwind.css --minify && node appstojson.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.3",
@@ -26,6 +26,7 @@
     "yaml": "^2.8.2"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18",
     "@vitejs/plugin-vue": "^5.2.3",
     "vite": "^6.2.4",
     "vite-plugin-vue-devtools": "^7.7.2"

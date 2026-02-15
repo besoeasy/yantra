@@ -27,37 +27,8 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Inter", "sans-serif"],
-              mono: ["JetBrains Mono", "monospace"],
-            },
-            colors: {
-              black: "#0a0a0a",
-              dark: "#111111",
-              gray: {
-                50: "#F9FAFB",
-                100: "#F3F4F6",
-                200: "#E5E7EB",
-                400: "#9CA3AF",
-                500: "#6B7280",
-                600: "#4B5563",
-                800: "#1F2937",
-                900: "#111827",
-              },
-            },
-            boxShadow: {
-              xs: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-            },
-          },
-        },
-      };
-    </script>
+    <!-- Local Tailwind CSS bundle -->
+    <link rel="stylesheet" href="./tailwind.css" />
     <style>
       .typing-effect {
         border-right: 2px solid #4ade80;

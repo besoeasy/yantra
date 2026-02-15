@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@source "./index.html";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
