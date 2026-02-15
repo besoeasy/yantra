@@ -50,10 +50,43 @@
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.5);
       }
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.1; transform: scale(0.8); }
+        50% { opacity: 0.4; transform: scale(1.1); }
+      }
+      .star-icon {
+        position: absolute;
+        animation: twinkle 4s infinite ease-in-out;
+        opacity: 0.1;
+        filter: grayscale(100%);
+        transition: all 0.3s;
+        pointer-events: auto; /* Enable hover */
+      }
+      .star-icon:hover {
+        opacity: 1 !important;
+        filter: grayscale(0%);
+        transform: scale(1.5) !important; /* Temporarily pause animation or override transform */
+        z-index: 20;
+        animation-play-state: paused;
+      }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0; /* Start hidden */
+      }
+      .delay-100 { animation-delay: 100ms; }
+      .delay-200 { animation-delay: 200ms; }
+      .delay-300 { animation-delay: 300ms; }
     </style>
   </head>
   <body class="bg-white text-black font-mono antialiased selection:bg-black selection:text-white relative">
     <div class="absolute inset-0 -z-10 bg-grid-pattern [mask-image:linear-gradient(to_bottom,white,transparent)] h-[600px] pointer-events-none"></div>
+    
+    <!-- Hero Background Animation Container -->
+    <div id="hero-stars" class="absolute top-0 left-0 w-full h-[800px] overflow-hidden -z-10 [mask-image:linear-gradient(to_bottom,black_20%,transparent)] pointer-events-none"></div>
 
     <!-- Header -->
     <header class="sticky top-0 z-50 glass-effect border-b border-gray-100/50">
@@ -86,7 +119,7 @@
 
     <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-24">
       <!-- Badge -->
-      <div class="mb-8 animate-fade-in">
+      <div class="mb-8 animate-fade-in-up">
         <a
           href="https://github.com/besoeasy/yantra/releases"
           target="_blank"
@@ -103,17 +136,17 @@
         <div class="max-w-4xl mx-auto">
           <h1
             id="hero-title"
-            class="text-6xl sm:text-7xl font-bold tracking-tight mb-8 font-sans text-black leading-none transition-opacity duration-500 ease-in-out"
+            class="text-6xl sm:text-7xl font-bold tracking-tight mb-8 font-sans text-black leading-none transition-opacity duration-500 ease-in-out animate-fade-in-up delay-100"
           >
             Self-host
             open source apps.
           </h1>
-          <p id="hero-desc" class="text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-12 font-sans transition-opacity duration-500 ease-in-out">
+          <p id="hero-desc" class="text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-12 font-sans transition-opacity duration-500 ease-in-out animate-fade-in-up delay-200">
             Turn any device into a private cloud with one command. Run 100+ apps like Ollama, Open WebUI, and Perplexica on your own infrastructure. No OS replacement needed.
           </p>
 
           <!-- Install Widget -->
-          <div class="border border-gray-200 rounded-xl overflow-hidden shadow-2xl bg-white max-w-2xl mx-auto text-left ring-1 ring-gray-900/5">
+          <div class="border border-gray-200 rounded-xl overflow-hidden shadow-2xl bg-white max-w-2xl mx-auto text-left ring-1 ring-gray-900/5 animate-fade-in-up delay-300">
             <div class="flex border-b border-gray-100 bg-gray-50/50 p-1">
               <button
                 id="tab-no-docker"
@@ -713,6 +746,50 @@ docker run -d --name yantra -p 80:5252 -p 443:5252 \
         }
       }
 
+      async function initHeroAnimation() {
+        const container = document.getElementById("hero-stars");
+        if (!container) return;
+
+        try {
+          const response = await fetch("./apps.json");
+          const data = await response.json();
+          const apps = data.apps;
+          if (!apps || !apps.length) return;
+
+          const starCount = 35;
+
+          for (let i = 0; i < starCount; i++) {
+            const app = apps[Math.floor(Math.random() * apps.length)];
+            const logoUrl = app.logo
+              ? app.logo.startsWith("http")
+                ? app.logo
+                : `https://ipfs.io/ipfs/${app.logo}`
+              : null;
+
+            if (!logoUrl) continue;
+
+            const el = document.createElement("div");
+            el.className = "star-icon absolute flex items-center justify-center p-1 rounded-full bg-white/10 backdrop-blur-sm shadow-sm border border-white/20";
+            
+            // Random positioning constrained to viewport width
+            el.style.left = Math.floor(Math.random() * 96) + 2 + "%"; 
+            el.style.top = Math.floor(Math.random() * 90) + 5 + "%";
+            
+            const size = Math.floor(Math.random() * 24) + 24; // 24px - 48px
+            el.style.width = size + "px";
+            el.style.height = size + "px";
+            
+            el.style.animationDelay = (Math.random() * 5) + "s";
+            el.style.animationDuration = (Math.random() * 3 + 3) + "s";
+            el.innerHTML = `<img src="${logoUrl}" class="w-full h-full object-contain" alt="${app.name}" title="${app.name}">`;
+            
+            container.appendChild(el);
+          }
+        } catch (e) {
+          console.error("Hero animation failed:", e);
+        }
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         loadApps();
         loadStars();
@@ -720,6 +797,21 @@ docker run -d --name yantra -p 80:5252 -p 443:5252 \
         initScrollAnimations();
         initHeroRotator();
         loadRandomScreenshot();
+        initHeroAnimation();
+        
+        // Cleanup entrance animations on rotator elements to allow transitions to work later
+        setTimeout(() => {
+          const title = document.getElementById("hero-title");
+          const desc = document.getElementById("hero-desc");
+          if (title) {
+            title.classList.remove("animate-fade-in-up", "delay-100", "opacity-0");
+            title.style.opacity = ""; // Ensure it stays visible
+          } 
+          if (desc) {
+            desc.classList.remove("animate-fade-in-up", "delay-200", "opacity-0");
+            desc.style.opacity = "";
+          }
+        }, 1500);
       });
     </script>
   </body>
