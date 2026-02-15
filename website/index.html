@@ -119,10 +119,10 @@
           <!-- Install Widget -->
           <div class="border border-gray-200 rounded-lg overflow-hidden bg-gray-50/50 max-w-lg">
             <div class="flex border-b border-gray-200 bg-white">
-              <button class="px-4 py-2 text-sm font-bold border-b-2 border-black bg-gray-50 text-black">Docker</button>
-              <button class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors">Curl</button>
+              <button id="tab-docker" onclick="switchInstallTab('docker')" class="px-4 py-2 text-sm font-bold border-b-2 border-black bg-gray-50 text-black">Docker</button>
+              <button id="tab-curl" onclick="switchInstallTab('curl')" class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors">Curl</button>
             </div>
-            <div class="p-4 bg-gray-50 flex items-center justify-between group">
+            <div id="content-docker" class="p-4 bg-gray-50 flex items-center justify-between group">
               <code class="text-sm text-gray-800 font-medium overflow-x-auto whitespace-nowrap hide-scrollbar pr-4">
                 docker run -d -p 80:5252 -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/besoeasy/yantra
               </code>
@@ -130,6 +130,29 @@
                 onclick="
                   navigator.clipboard.writeText(
                     'docker run -d --name yantra -p 80:5252 -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped ghcr.io/besoeasy/yantra',
+                  )
+                "
+                class="text-gray-400 hover:text-black transition-colors p-1"
+                title="Copy command"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div id="content-curl" class="p-4 bg-gray-50 flex items-center justify-between group hidden">
+              <code class="text-sm text-gray-800 font-medium overflow-x-auto whitespace-nowrap hide-scrollbar pr-4">
+                curl -fsSL https://raw.githubusercontent.com/besoeasy/Yantra/main/i.sh | sudo bash
+              </code>
+              <button
+                onclick="
+                  navigator.clipboard.writeText(
+                    'curl -fsSL https://raw.githubusercontent.com/besoeasy/Yantra/main/i.sh | sudo bash',
                   )
                 "
                 class="text-gray-400 hover:text-black transition-colors p-1"
@@ -227,6 +250,26 @@
     </footer>
 
     <script>
+      function switchInstallTab(tab) {
+        // Update button styles
+        const dockerTab = document.getElementById('tab-docker');
+        const curlTab = document.getElementById('tab-curl');
+        const dockerContent = document.getElementById('content-docker');
+        const curlContent = document.getElementById('content-curl');
+
+        if (tab === 'docker') {
+          dockerTab.className = 'px-4 py-2 text-sm font-bold border-b-2 border-black bg-gray-50 text-black';
+          curlTab.className = 'px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors';
+          dockerContent.classList.remove('hidden');
+          curlContent.classList.add('hidden');
+        } else {
+          curlTab.className = 'px-4 py-2 text-sm font-bold border-b-2 border-black bg-gray-50 text-black';
+          dockerTab.className = 'px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors';
+          curlContent.classList.remove('hidden');
+          dockerContent.classList.add('hidden');
+        }
+      }
+
       async function loadApps() {
         try {
           const response = await fetch("./apps.json");
