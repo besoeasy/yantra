@@ -235,6 +235,22 @@ docker run -d --name yantra -p 80:5252 -v /var/run/docker.sock:/var/run/docker.s
           <!-- Apps loaded via JS -->
         </div>
       </div>
+
+      <!-- Detailed Features Grid -->
+      <div class="pt-32 pb-20" id="detailed-features">
+        <div class="text-center mb-16 opacity-0 translate-y-4 transition-all duration-700" id="features-header">
+          <h2 class="text-3xl md:text-5xl font-extrabold font-sans mb-6 tracking-tight text-black">
+            Everything you need. <br /><span class="text-gray-400">Nothing you don't.</span>
+          </h2>
+          <p class="text-lg text-gray-500 max-w-2xl mx-auto font-sans leading-relaxed">
+            Yantra is built for developers who want a powerful homelab without the maintenance headache. It runs alongside your OS, not over it.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="features-grid-container">
+          <!-- Cards injected via JS -->
+        </div>
+      </div>
     </main>
 
     <!-- Simple Footer -->
@@ -523,10 +539,107 @@ docker run -d --name yantra -p 80:5252 -v /var/run/docker.sock:/var/run/docker.s
         }, 4000); // Update every 4 seconds
       }
 
+      function loadDetailedFeatures() {
+        const features = [
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>`,
+            title: "Zero OS Lock-in",
+            desc: "Runs alongside macOS, Windows, or Linux. No custom ISOs, no formatting required."
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>`,
+            title: "1-Click Deploys",
+            desc: "Launch complex stacks like Ollama + Open WebUI in seconds with pre-configured templates."
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+            title: "Disposable Apps",
+            desc: "Set expiration timers for apps. Great for testing tools without cluttering your system."
+          },
+          {
+             icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`,
+             title: "Isolated AI Stack",
+             desc: "First-class support for AI agents. No Python conflicts, no CUDA version mismatches."
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>`,
+            title: "Filesystem Safe",
+            desc: "All data lives in isolated Docker volumes. Your host OS files are never touched."
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>`,
+            title: "Volume Browser",
+            desc: "Manage app data directly from the browser with built-in WebDAV support."
+          },
+           {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>`,
+            title: "S3 Backups",
+            desc: "One-click backup and restore of entire volumes to any S3-compatible storage."
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+            title: "GPU Passthrough",
+            desc: "Automatic GPU detection and passthrough for accelerated local LLM inference."
+          },
+          {
+            icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>`,
+            title: "Auto Cleanup",
+            desc: "Intelligent garbage collection removes unused images and networks to save space."
+          }
+        ];
+
+        const container = document.getElementById('features-grid-container');
+        if (!container) return;
+        
+        features.forEach((feature, index) => {
+            const card = document.createElement('div');
+            card.className = "group relative p-8 bg-white border border-gray-100 rounded-2xl hover:border-black transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 opacity-0 translate-y-8";
+            card.innerHTML = `
+                <div class="w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors duration-500 group-hover:scale-110 transform">
+                    ${feature.icon}
+                </div>
+                <h3 class="text-xl font-bold font-sans mb-3 group-hover:text-black transition-colors">${feature.title}</h3>
+                <p class="text-sm text-gray-500 leading-relaxed font-sans group-hover:text-gray-700 transition-colors">${feature.desc}</p>
+                <!-- Decorative element -->
+                <div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </div>
+            `;
+            container.appendChild(card);
+
+            // Staggered Animation
+            setTimeout(() => {
+                requestAnimationFrame(() => {
+                    card.classList.remove('opacity-0', 'translate-y-8');
+                });
+            }, index * 100);
+        });
+      }
+
+      function initScrollAnimations() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.id === 'detailed-features') {
+                         const header = document.getElementById('features-header');
+                         if(header) header.classList.remove('opacity-0', 'translate-y-4');
+                         
+                         loadDetailedFeatures();
+                         observer.unobserve(entry.target);
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        const section = document.getElementById('detailed-features');
+        if (section) observer.observe(section);
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         loadApps();
         loadStars();
         animateFeatures();
+        initScrollAnimations();
       });
     </script>
   </body>
