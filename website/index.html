@@ -275,7 +275,7 @@
           };
 
           // Initial load: 12 random apps (increased from 8)
-          const DISPLAY_COUNT = 12;
+          const DISPLAY_COUNT = 11;
           let currentApps = apps.sort(() => 0.5 - Math.random()).slice(0, DISPLAY_COUNT);
           currentApps.forEach((app) => {
             grid.appendChild(createCard(app));
