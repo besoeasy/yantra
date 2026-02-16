@@ -8,3 +8,6 @@ apps/*/.compose.temp.yml
 apps/*/.compose.tmp.yml
 
 backup-config.json
+
+website/tailwind.css
+website/apps.json
