@@ -367,14 +367,13 @@ Have ideas for new apps or improvements? Contributions are welcome!
 
 ---
 
-## 📝 License
-
-Yantra is open-source and available under the [LICENSE](LICENSE) file.
-
----
-
 <div align="center">
 
 **Built with ❤️ by [besoeasy](https://github.com/besoeasy)**
 
 </div>
+
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=besoeasy/yantra&type=date&legend=top-left)](https://www.star-history.com/#besoeasy/yantra&type=date&legend=top-left)
