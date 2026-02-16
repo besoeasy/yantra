@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generatedAt": "2026-02-15T11:52:46.781Z",
-    "totalApps": 104,
+    "generatedAt": "2026-02-16T22:18:35.189Z",
+    "totalApps": 105,
     "categories": [
       "ai",
       "backend",
@@ -304,6 +304,21 @@
       "dependencies": [],
       "image": "lissy93/domain-locker:latest",
       "serviceName": "domain-locker"
+    },
+    {
+      "id": "dropgate-server",
+      "name": "Dropgate Server",
+      "logo": "bafkreiabgxumoblpm3gfzhj5ucbxh36dyq2d3qg3pm2twbsuerp2c4ot6q",
+      "category": [
+        "tools",
+        "privacy"
+      ],
+      "port": "52443 (HTTP - Web UI)",
+      "description": "Privacy-first file sharing solution with end-to-end encryption, supporting hosted uploads and P2P transfers.",
+      "website": "https://github.com/WillTDA/Dropgate",
+      "dependencies": [],
+      "image": "willtda/dropgate-server:latest",
+      "serviceName": "dropgate-server"
     },
     {
       "id": "droppy",

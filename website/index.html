@@ -149,73 +149,63 @@
 
           <!-- Install Widget -->
           <div class="border border-gray-200 rounded-xl overflow-hidden shadow-2xl bg-white max-w-2xl mx-auto text-left ring-1 ring-gray-900/5 animate-fade-in-up delay-300">
-            <div class="flex border-b border-gray-100 bg-gray-50/50 p-1">
-              <button
-                id="tab-no-docker"
-                onclick="switchInstallTab('no-docker')"
-                class="px-4 py-2 text-sm font-semibold rounded-lg bg-white shadow-sm text-black border border-gray-200"
-              >
-                No Docker?
-              </button>
-              <button
-                id="tab-has-docker"
-                onclick="switchInstallTab('has-docker')"
-                class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors"
-              >
-                Have Docker?
-              </button>
-            </div>
-            <div id="content-no-docker" class="p-5 bg-[#18181b] flex items-start justify-between group">
-              <code class="text-xs sm:text-sm text-gray-300 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
-                >curl -fsSL https://get.docker.com | sudo sh 
-sudo usermod -aG docker $USER && newgrp docker 
-docker run -d --name yantra -p 80:5252 -p 443:5252 \
-  -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped \
-  ghcr.io/besoeasy/yantra</code
-              >
-              <button
-                onclick="
-                  navigator.clipboard.writeText(
-                    'curl -fsSL https://get.docker.com | sudo sh\nsudo usermod -aG docker $USER && newgrp docker\ndocker run -d --name yantra -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped ghcr.io/besoeasy/yantra',
-                  )
-                "
-                class="text-gray-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10"
-                title="Copy command"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  ></path>
-                </svg>
-              </button>
-            </div>
-            <div id="content-has-docker" class="p-5 bg-[#18181b] flex items-start justify-between group hidden">
-              <code class="text-sm text-gray-300 font-mono overflow-x-auto whitespace-nowrap hide-scrollbar pr-4 leading-relaxed">
-                docker run -d --name yantra -p 80:5252 -p 443:5252 \
+            <div class="p-5 bg-[#18181b] group space-y-4">
+              <p class="text-xs sm:text-sm text-gray-400 font-sans">
+                Run this in 2 steps. If Docker is already installed, skip Step 1.
+              </p>
+
+              <details class="rounded-lg border border-gray-700/80 bg-[#111113]">
+                <summary class="cursor-pointer px-4 py-3 text-xs sm:text-sm text-gray-200 font-semibold select-none">
+                  Step 1: Install Docker (run first)
+                </summary>
+                <div class="px-4 pb-4">
+                  <div class="flex items-start justify-between gap-3 pt-1">
+                    <code class="text-xs sm:text-sm text-gray-300 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
+                      >curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER && newgrp docker</code
+                    >
+                    <button
+                      onclick="navigator.clipboard.writeText('curl -fsSL https://get.docker.com | sudo sh\nsudo usermod -aG docker $USER && newgrp docker')"
+                      class="text-gray-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10 shrink-0"
+                      title="Copy Docker setup"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </details>
+
+              <div class="rounded-lg border border-gray-700/80 bg-[#111113] p-4">
+                <div class="text-xs sm:text-sm text-gray-200 font-semibold mb-2">Step 2: Install Yantra</div>
+                <div class="flex items-start justify-between gap-3">
+                  <code class="text-xs sm:text-sm text-gray-300 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
+                    >docker run -d --name yantra -p 80:5252 -p 443:5252 \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  --restart unless-stopped ghcr.io/besoeasy/yantra
-              </code>
-              <button
-                onclick="
-                  navigator.clipboard.writeText(
-                    'docker run -d --name yantra -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped ghcr.io/besoeasy/yantra',
-                  )
-                "
-                class="text-gray-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10"
-                title="Copy command"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  ></path>
-                </svg>
-              </button>
+  --restart unless-stopped ghcr.io/besoeasy/yantra</code
+                  >
+                  <button
+                    onclick="navigator.clipboard.writeText('docker run -d --name yantra -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped ghcr.io/besoeasy/yantra')"
+                    class="text-gray-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10 shrink-0"
+                    title="Copy Yantra install"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -293,29 +283,6 @@ docker run -d --name yantra -p 80:5252 -p 443:5252 \
     </footer>
 
     <script>
-      function switchInstallTab(tab) {
-        // Update button styles
-        const noDockerTab = document.getElementById("tab-no-docker");
-        const hasDockerTab = document.getElementById("tab-has-docker");
-        const noDockerContent = document.getElementById("content-no-docker");
-        const hasDockerContent = document.getElementById("content-has-docker");
-
-        const activeClass = "px-4 py-2 text-sm font-semibold rounded-lg bg-white shadow-sm text-black border border-gray-200";
-        const inactiveClass = "px-4 py-2 text-sm font-medium text-gray-500 hover:text-black transition-colors";
-
-        if (tab === "no-docker") {
-          noDockerTab.className = activeClass;
-          hasDockerTab.className = inactiveClass;
-          noDockerContent.classList.remove("hidden");
-          hasDockerContent.classList.add("hidden");
-        } else {
-          hasDockerTab.className = activeClass;
-          noDockerTab.className = inactiveClass;
-          hasDockerContent.classList.remove("hidden");
-          noDockerContent.classList.add("hidden");
-        }
-      }
-
       function getRandomUniqueItems(items, count) {
         if (!Array.isArray(items) || items.length === 0 || count <= 0) return [];
 
@@ -728,7 +695,7 @@ docker run -d --name yantra -p 80:5252 -p 443:5252 \
       }
 
       function loadRandomScreenshot() {
-        const screenshots = [
+        const gifs = [
           {
             url: "https://github.com/user-attachments/assets/2e107ef8-2411-4d62-9886-9fb917b9993d",
             caption: "Main Dashboard - Clean, modern interface for managing your apps",
@@ -747,22 +714,45 @@ docker run -d --name yantra -p 80:5252 -p 443:5252 \
           },
         ];
 
-        const random = screenshots[Math.floor(Math.random() * screenshots.length)];
         const img = document.getElementById("screenshot-img");
         const caption = document.getElementById("screenshot-caption");
         const loader = document.getElementById("screenshot-loader");
+        if (!img || !caption || gifs.length === 0) return;
 
-        if (img && caption) {
-          // Preload image
+        const ROTATION_MS = 60000;
+        let currentIndex = -1;
+
+        const showNextGif = () => {
+          let nextIndex = Math.floor(Math.random() * gifs.length);
+          if (gifs.length > 1) {
+            while (nextIndex === currentIndex) {
+              nextIndex = Math.floor(Math.random() * gifs.length);
+            }
+          }
+
+          currentIndex = nextIndex;
+          const nextGif = gifs[currentIndex];
+
+          if (loader) loader.classList.remove("hidden");
+          img.classList.add("opacity-0");
+
           const tempImg = new Image();
           tempImg.onload = () => {
-            img.src = random.url;
-            caption.textContent = random.caption;
-            img.classList.remove("opacity-0");
+            img.src = nextGif.url;
+            caption.textContent = nextGif.caption;
             if (loader) loader.classList.add("hidden");
+            requestAnimationFrame(() => {
+              img.classList.remove("opacity-0");
+            });
           };
-          tempImg.src = random.url;
-        }
+          tempImg.src = nextGif.url;
+        };
+
+        showNextGif();
+        setInterval(() => {
+          if (document.hidden) return;
+          showNextGif();
+        }, ROTATION_MS);
       }
 
       async function initHeroAnimation() {
