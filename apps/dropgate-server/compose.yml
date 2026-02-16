@@ -1,0 +1,25 @@
+services:
+  dropgate-server:
+    image: willtda/dropgate-server:latest
+    container_name: dropgate-server
+    labels:
+      yantra.name: "Dropgate Server"
+      yantra.logo: "bafkreiabgxumoblpm3gfzhj5ucbxh36dyq2d3qg3pm2twbsuerp2c4ot6q"
+      yantra.category: "tools,privacy"
+      yantra.port: "52443 (HTTP - Web UI)"
+      yantra.description: "Privacy-first file sharing solution with end-to-end encryption, supporting hosted uploads and P2P transfers."
+      yantra.website: "https://github.com/WillTDA/Dropgate"
+    ports:
+      - "52443"
+    environment:
+      ENABLE_UPLOAD: ${ENABLE_UPLOAD:-false}
+      ENABLE_P2P: ${ENABLE_P2P:-true}
+      UPLOAD_PRESERVE_UPLOADS: "true"
+      UPLOAD_MAX_FILE_SIZE_MB: ${UPLOAD_MAX_FILE_SIZE_MB:-100}
+      UPLOAD_MAX_STORAGE_GB: ${UPLOAD_MAX_STORAGE_GB:-10}
+    volumes:
+      - dropgate_uploads:/usr/src/app/uploads
+    restart: unless-stopped
+
+volumes:
+  dropgate_uploads:
