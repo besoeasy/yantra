@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
     environment:
       HOME: /home/node
-      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-openclaw-change-this-token}
+      OPENCLAW_GATEWAY_PASSWORD: ${OPENCLAW_GATEWAY_PASSWORD:-openclawonyantr9}
     ports:
       - "18789"
       - "18790"
