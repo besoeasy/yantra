@@ -158,7 +158,22 @@
             <a href="#apps" class="hover:text-black transition-colors">Apps</a>
           </nav>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+          <!-- Mobile: compact GitHub button -->
+          <a
+            href="https://github.com/besoeasy/yantr"
+            target="_blank"
+            class="sm:hidden flex items-center gap-1.5 bg-black text-white px-3 py-2 text-sm font-bold hover:bg-gray-800 transition-colors"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill-rule="evenodd"
+                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            GitHub
+          </a>
           <a
             href="https://t.me/+h4RvCk63PxUyODQ1"
             target="_blank"
@@ -191,7 +206,7 @@
 
     <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-24 relative bg-white">
       <!-- Hero -->
-      <div class="mb-32 flex flex-col items-center text-center relative z-10">
+      <div class="mb-16 sm:mb-32 flex flex-col items-center text-center relative z-10">
         <div class="max-w-4xl mx-auto">
           <div
             class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/80 backdrop-blur px-3 py-1.5 mb-6 text-xs font-semibold tracking-wide text-gray-600 uppercase animate-fade-in-up"
@@ -201,7 +216,7 @@
           </div>
           <h1
             id="hero-title"
-            class="text-5xl sm:text-7xl font-bold tracking-tight mb-6 font-sans text-black leading-[0.95] transition-opacity duration-500 ease-in-out animate-fade-in-up delay-100"
+            class="text-3xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6 font-sans text-black leading-tight sm:leading-[0.95] transition-opacity duration-500 ease-in-out animate-fade-in-up delay-100"
           >
             Self-host open source apps.
           </h1>
@@ -241,7 +256,7 @@
                   <div class="text-xs sm:text-sm text-zinc-200 font-semibold">Install Docker</div>
                 </div>
                 <div class="flex items-start justify-between gap-3">
-                  <code class="text-xs sm:text-sm text-zinc-300 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
+                  <code class="block min-w-0 text-xs sm:text-sm text-zinc-300 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
                     >curl -fsSL https://get.docker.com | sudo sh sudo usermod -aG docker $USER && newgrp docker</code
                   >
                   <button
@@ -267,7 +282,7 @@
                   <div class="text-xs sm:text-sm text-zinc-100 font-semibold">Run Yantr</div>
                 </div>
                 <div class="flex items-start justify-between gap-3">
-                  <code class="text-xs sm:text-sm text-zinc-200 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
+                  <code class="block min-w-0 text-xs sm:text-sm text-zinc-200 font-mono overflow-x-auto whitespace-pre hide-scrollbar pr-4 leading-relaxed"
                     >docker run -d --name yantr -p 80:5252 -p 443:5252 \ -v /var/run/docker.sock:/var/run/docker.sock \ --restart unless-stopped
                     ghcr.io/besoeasy/yantr</code
                   >
@@ -297,7 +312,7 @@
       </div>
 
       <!-- What is Yantr Section (Features in list style) -->
-      <div class="max-w-4xl pt-12" id="features">
+      <div class="max-w-4xl pt-8 sm:pt-12" id="features">
         <h2 class="text-2xl font-bold font-sans mb-6">What is Yantr?</h2>
         <p class="text-gray-600 mb-10 max-w-2xl font-sans">
           Yantr is an open source control plane that helps you manage self-hosted applications on your server, laptop, or cloud instance.
@@ -309,8 +324,8 @@
       </div>
 
       <!-- App Catalog + Featured App (combined) -->
-      <div class="pt-24" id="apps">
-        <div class="flex items-end justify-between mb-8 border-b border-gray-200 pb-4">
+      <div class="pt-12 sm:pt-24" id="apps">
+        <div class="flex flex-wrap items-end justify-between gap-3 mb-8 border-b border-gray-200 pb-4">
           <h2 class="text-2xl font-bold font-sans">App Catalog</h2>
           <a href="https://github.com/besoeasy/yantr/tree/main/apps" target="_blank" class="text-sm font-medium hover:underline">View all 100+ apps -></a>
         </div>
@@ -359,7 +374,7 @@
       </div>
 
       <!-- Detailed Features Grid -->
-      <div class="pt-32 pb-20" id="detailed-features">
+      <div class="pt-16 sm:pt-32 pb-12 sm:pb-20" id="detailed-features">
         <div class="text-center mb-16 opacity-0 translate-y-4 transition-all duration-700" id="features-header">
           <h2 class="text-3xl md:text-5xl font-extrabold font-sans mb-6 tracking-tight text-black">
             Everything you need. <br /><span class="text-gray-400">Nothing you don't.</span>
@@ -375,7 +390,7 @@
       </div>
 
       <!-- Screenshot Section -->
-      <div class="py-20 border-t border-gray-100" id="screenshots">
+      <div class="py-12 sm:py-20 border-t border-gray-100" id="screenshots">
         <div class="max-w-5xl mx-auto px-4 sm:px-6">
           <div class="text-center mb-12">
             <h2 class="text-3xl font-bold font-sans mb-4 tracking-tight">See it in action</h2>
