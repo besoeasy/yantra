@@ -97,7 +97,7 @@ onMounted(() => {
         <!-- Logo (Centered) -->
         <div class="flex-1 flex items-center justify-center">
           <a
-            href="https://github.com/besoeasy/Yantr"
+            href="https://yantr.org"
             target="_blank"
             rel="noopener noreferrer"
             class="group flex flex-col items-center justify-center text-center select-none rounded-xl px-2 py-2 transition-transform duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900/20 dark:focus-visible:ring-slate-100/20"
