@@ -262,57 +262,55 @@ sudo usermod -aG docker $USER && newgrp docker</code
         </div>
       </div>
 
-      <!-- Today's Featured App -->
-      <div class="pt-24" id="featured-app">
-        <div class="flex items-end justify-between mb-8 border-b border-gray-200 pb-4">
-          <h2 class="text-2xl font-bold font-sans">Today's Featured App</h2>
-          <p class="text-sm text-gray-500 font-mono" id="featured-app-date">Loading today's date...</p>
-        </div>
-
-        <div
-          id="featured-app-card"
-          class="opacity-0 translate-y-4 transition-all duration-700 border border-gray-200 bg-white rounded-xl p-6 sm:p-8"
-        >
-          <div class="space-y-5">
-            <div class="flex items-center gap-4">
-              <div class="w-14 h-14 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
-                <img id="featured-app-logo" alt="Featured app logo" class="w-full h-full object-cover" />
-              </div>
-              <div>
-                <h3 id="featured-app-name" class="text-xl font-bold font-sans">Loading...</h3>
-                <p id="featured-app-id" class="text-xs text-gray-500 font-mono uppercase tracking-wider mt-0.5"></p>
-              </div>
-            </div>
-
-            <p id="featured-app-description" class="text-gray-600 text-sm leading-relaxed font-sans"></p>
-
-            <div class="flex flex-wrap items-center gap-2" id="featured-app-categories"></div>
-
-            <div class="flex flex-wrap gap-3">
-              <a
-                id="featured-app-website"
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-black border border-gray-200 px-3 py-1.5 rounded-lg hover:border-gray-400 transition-colors"
-              >
-                Visit Website
-                <span aria-hidden="true">↗</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Apps Section -->
-      <div class="pt-32" id="apps">
+      <!-- App Catalog + Featured App (combined) -->
+      <div class="pt-24" id="apps">
         <div class="flex items-end justify-between mb-8 border-b border-gray-200 pb-4">
           <h2 class="text-2xl font-bold font-sans">App Catalog</h2>
           <a href="https://github.com/besoeasy/yantr/tree/main/apps" target="_blank" class="text-sm font-medium hover:underline">View all 100+ apps -></a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="app-grid">
-          <!-- Apps loaded via JS -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+          <!-- Featured App — left column -->
+          <div
+            id="featured-app-card"
+            class="opacity-0 translate-y-4 transition-all duration-700 border border-gray-200 bg-white p-6 flex flex-col gap-5 lg:row-span-2"
+          >
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.18em] text-gray-400 font-semibold mb-3">Today's pick</p>
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+                  <img id="featured-app-logo" alt="Featured app logo" class="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <h3 id="featured-app-name" class="text-lg font-bold font-sans leading-tight">Loading...</h3>
+                  <p id="featured-app-id" class="text-[10px] text-gray-400 font-mono uppercase tracking-wider mt-0.5"></p>
+                </div>
+              </div>
+              <p id="featured-app-description" class="text-gray-500 text-sm leading-relaxed font-sans"></p>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5" id="featured-app-categories"></div>
+
+            <div class="mt-auto flex items-center justify-between">
+              <a
+                id="featured-app-website"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs font-semibold font-mono uppercase tracking-wider text-gray-500 hover:text-black border border-gray-200 hover:border-gray-400 px-3 py-1.5 transition-colors"
+              >
+                Visit Website <span aria-hidden="true">↗</span>
+              </a>
+              <p class="text-[10px] text-gray-300 font-mono" id="featured-app-date"></p>
+            </div>
+          </div>
+
+          <!-- App grid — right columns -->
+          <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4" id="app-grid">
+            <!-- Apps loaded via JS -->
+          </div>
+
         </div>
       </div>
 
@@ -425,7 +423,7 @@ sudo usermod -aG docker $USER && newgrp docker</code
           const categoriesEl = document.getElementById("featured-app-categories");
           const websiteEl = document.getElementById("featured-app-website");
 
-          dateEl.textContent = `Date: ${dateKey}`;
+          dateEl.textContent = dateKey;
           logoEl.src = getLogoUrl(featuredApp);
           nameEl.textContent = featuredApp.name || "Unknown app";
           idEl.textContent = featuredApp.id ? `ID: ${featuredApp.id}` : "";
@@ -438,13 +436,13 @@ sudo usermod -aG docker $USER && newgrp docker</code
           const categories = Array.isArray(featuredApp.category) ? featuredApp.category : [];
           if (categories.length === 0) {
             const emptyCategory = document.createElement("span");
-            emptyCategory.className = "text-xs text-gray-500 font-mono";
-            emptyCategory.textContent = "No category labels";
+            emptyCategory.className = "text-[10px] text-gray-300 font-mono";
+            emptyCategory.textContent = "No categories";
             categoriesEl.appendChild(emptyCategory);
           } else {
             categories.forEach((category, idx) => {
               const tag = document.createElement("span");
-              tag.className = "text-xs font-mono uppercase tracking-wider border border-gray-200 bg-gray-50 rounded-full px-3 py-1 opacity-0 translate-y-2 transition-all duration-500";
+              tag.className = "text-[10px] font-mono uppercase tracking-wider border border-gray-100 text-gray-400 px-1.5 py-0.5 opacity-0 translate-y-2 transition-all duration-500";
               tag.textContent = category;
               categoriesEl.appendChild(tag);
               setTimeout(() => {
@@ -505,7 +503,7 @@ sudo usermod -aG docker $USER && newgrp docker</code
           };
 
           // Initial load: unique random apps
-          const DISPLAY_COUNT = 11;
+          const DISPLAY_COUNT = 5;
           let currentApps = getRandomUniqueItems(apps, DISPLAY_COUNT);
           currentApps.forEach((app) => {
             grid.appendChild(createCard(app));
