@@ -1,23 +1,32 @@
 services:
   openclaw:
-    image: ghcr.io/getumbrel/openclaw-umbrel:2026.2.12
+    image: ghcr.io/openclaw/openclaw:latest
     container_name: openclaw
     labels:
       yantr.name: "OpenClaw"
       yantr.logo: "QmRdr8gQqpGLXkZc53NcQV3i71931yNQqYrLhpaWEpTMwp"
       yantr.category: "ai,tools,utility"
-      yantr.port: "18789 (HTTP - Web UI)"
-      yantr.description: "Self-hosted development environment and container management tool"
-      yantr.website: "https://github.com/getumbrel/openclaw-umbrel"
+      yantr.port: "18789 (HTTP - Web UI), 18790 (Bridge - Device Nodes)"
+      yantr.description: "Personal AI assistant — Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack, Discord, and more)"
+      yantr.website: "https://openclaw.ai"
     init: true
-    restart: on-failure
-    stop_grace_period: 1m
+    restart: unless-stopped
+    environment:
+      HOME: /home/node
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-}
     ports:
       - "18789"
+      - "18790"
     volumes:
-      - openclaw_data:/data
-      - openclaw_linuxbrew:/home/linuxbrew
+      - openclahome:/home/node/
+    command:
+      - node
+      - dist/index.js
+      - gateway
+      - --bind
+      - lan
+      - --port
+      - "18789"
 
 volumes:
-  openclaw_data:
-  openclaw_linuxbrew:
+  openclahome:
