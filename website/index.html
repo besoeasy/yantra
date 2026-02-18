@@ -264,46 +264,42 @@ sudo usermod -aG docker $USER && newgrp docker</code
 
       <!-- Today's Featured App -->
       <div class="pt-24" id="featured-app">
-        <div class="mb-8 border-b border-gray-200 pb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-          <div>
-            <p class="text-xs uppercase tracking-[0.2em] text-gray-500 mb-2 font-bold">Daily Spotlight</p>
-            <h2 class="text-3xl sm:text-4xl font-bold font-sans tracking-tight">Today's Featured App</h2>
-          </div>
+        <div class="flex items-end justify-between mb-8 border-b border-gray-200 pb-4">
+          <h2 class="text-2xl font-bold font-sans">Today's Featured App</h2>
           <p class="text-sm text-gray-500 font-mono" id="featured-app-date">Loading today's date...</p>
         </div>
 
         <div
           id="featured-app-card"
-          class="opacity-0 translate-y-4 transition-all duration-700 border border-gray-200 bg-white rounded-2xl p-6 sm:p-8 shadow-xl ring-1 ring-gray-900/5 overflow-hidden relative"
+          class="opacity-0 translate-y-4 transition-all duration-700 border border-gray-200 bg-white rounded-xl p-6 sm:p-8"
         >
-          <div class="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-gray-100 blur-3xl animate-pulse"></div>
-          <div class="relative z-10 space-y-5">
-              <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-2xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden animate-float-y">
-                  <img id="featured-app-logo" alt="Featured app logo" class="w-full h-full object-cover" />
-                </div>
-                <div>
-                  <h3 id="featured-app-name" class="text-2xl sm:text-3xl font-bold font-sans tracking-tight">Loading...</h3>
-                  <p id="featured-app-id" class="text-xs text-gray-500 font-mono uppercase tracking-wider mt-1"></p>
-                </div>
+          <div class="space-y-5">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+                <img id="featured-app-logo" alt="Featured app logo" class="w-full h-full object-cover" />
               </div>
-
-              <p id="featured-app-description" class="text-gray-600 text-base leading-relaxed font-sans"></p>
-
-              <div class="flex flex-wrap items-center gap-2" id="featured-app-categories"></div>
-
-              <div class="flex flex-wrap gap-3">
-                <a
-                  id="featured-app-website"
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-2 bg-black text-white px-4 py-2 text-sm font-bold rounded-lg hover:bg-gray-800 transition-all duration-300 animate-pulse-glow"
-                >
-                  Visit Website
-                  <span aria-hidden="true">↗</span>
-                </a>
+              <div>
+                <h3 id="featured-app-name" class="text-xl font-bold font-sans">Loading...</h3>
+                <p id="featured-app-id" class="text-xs text-gray-500 font-mono uppercase tracking-wider mt-0.5"></p>
               </div>
+            </div>
+
+            <p id="featured-app-description" class="text-gray-600 text-sm leading-relaxed font-sans"></p>
+
+            <div class="flex flex-wrap items-center gap-2" id="featured-app-categories"></div>
+
+            <div class="flex flex-wrap gap-3">
+              <a
+                id="featured-app-website"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-black border border-gray-200 px-3 py-1.5 rounded-lg hover:border-gray-400 transition-colors"
+              >
+                Visit Website
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
