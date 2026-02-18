@@ -10,8 +10,16 @@ services:
       yantr.port: "4096 (HTTP - Web UI)"
       yantr.description: "Open source AI coding agent for terminal, IDE, and desktop"
       yantr.website: "https://github.com/anomalyco/opencode"
+    environment:
+      HOME: /home/opencode
     ports:
       - "4096"
     stdin_open: true
     tty: true
+    volumes:
+      - opencodehome:/home/opencode
     restart: unless-stopped
+
+volumes:
+  opencodehome:
+
