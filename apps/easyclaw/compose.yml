@@ -1,0 +1,16 @@
+services:
+  easyclaw:
+    image: ghcr.io/besoeasy/easyclaw:latest
+    container_name: easyclaw
+    restart: unless-stopped
+    environment:
+      TELEGRAMBOT: ${TELEGRAMBOT:-your_telegram_bot}
+    ports:
+      - "4096"
+    labels:
+      yantr.name: "EasyClaw"
+      yantr.logo: "QmSarepiVBNBpMEjgUrAL4V1yGWV5ZM8Xr7L7YYvvgZYcA"
+      yantr.category: "ai,tools,utility"
+      yantr.port: "4096 (TCP - Service)"
+      yantr.description: "OpenClaw brings OpenCode to Telegram with zero-config startup and near-free basic usage."
+      yantr.website: "https://github.com/besoeasy/easyclaw"
