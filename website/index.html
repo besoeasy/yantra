@@ -146,6 +146,38 @@
       #copy-install.copied .check-icon {
         display: block;
       }
+      @keyframes marquee-left {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      @keyframes marquee-right {
+        0% {
+          transform: translateX(-50%);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+      .app-marquee-track {
+        width: max-content;
+        will-change: transform;
+      }
+      .app-marquee-left {
+        animation: marquee-left 30s linear infinite;
+      }
+      .app-marquee-right {
+        animation: marquee-right 30s linear infinite;
+      }
+      .app-description-clamp {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
     </style>
   </head>
   <body class="bg-white text-black font-mono antialiased selection:bg-black selection:text-white relative">
@@ -272,11 +304,15 @@
           <a href="./catalog/" class="text-sm font-medium hover:underline">View all apps -></a>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <!-- Featured App — left column -->
+        <div class="space-y-4">
+          <div class="overflow-hidden py-2">
+            <div class="flex items-center gap-3 px-3 app-marquee-track app-marquee-left" id="app-marquee-top"></div>
+          </div>
+
+          <!-- Featured App -->
           <div
             id="featured-app-card"
-            class="group relative opacity-0 translate-y-4 transition-all duration-700 border border-gray-100 bg-white p-8 rounded-2xl flex flex-col hover:border-black hover:shadow-2xl hover:-translate-y-2 lg:row-span-2"
+            class="group relative opacity-0 translate-y-4 transition-all duration-700 border border-gray-100 bg-white p-8 rounded-2xl flex flex-col hover:border-black hover:shadow-2xl hover:-translate-y-2 max-w-3xl mx-auto"
           >
             <p class="text-[10px] uppercase tracking-[0.18em] text-gray-400 font-semibold mb-6">Today's pick</p>
 
@@ -305,9 +341,8 @@
             </div>
           </div>
 
-          <!-- App grid — right columns -->
-          <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4" id="app-grid">
-            <!-- Apps loaded via JS -->
+          <div class="overflow-hidden py-2">
+            <div class="flex items-center gap-3 px-3 app-marquee-track app-marquee-right" id="app-marquee-bottom"></div>
           </div>
         </div>
       </div>
@@ -450,71 +485,34 @@
           const apps = data.apps;
           if (!apps || apps.length === 0) return;
 
-          const grid = document.getElementById("app-grid");
-          grid.innerHTML = "";
+          const topRow = document.getElementById("app-marquee-top");
+          const bottomRow = document.getElementById("app-marquee-bottom");
+          if (!topRow || !bottomRow) return;
 
-          // Helper to create card
-          const createCard = (app) => {
-            const card = document.createElement("a");
-            card.href = `./apps/${app.id}/`;
-            card.className =
-              "group relative p-8 bg-white border border-gray-100 rounded-2xl hover:border-black transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col h-full opacity-0 -translate-y-4 cursor-pointer";
+          const rowSize = Math.min(14, apps.length);
+          const topApps = getRandomUniqueItems(apps, rowSize);
+          const bottomApps = getRandomUniqueItems(apps, rowSize);
 
+          const createPillMarkup = (app) => {
             const logoUrl = getLogoUrl(app);
-
-            card.innerHTML = `
-                        <div class="w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center mb-6 overflow-hidden shrink-0 border border-gray-100 group-hover:border-gray-200 transition-colors duration-500">
-                            <img src="${logoUrl}" alt="${app.name}" class="w-full h-full object-cover">
-                        </div>
-                        <h3 class="text-xl font-bold font-sans mb-3 group-hover:text-black transition-colors">${app.name}</h3>
-                        <p class="text-sm text-gray-500 leading-relaxed font-sans group-hover:text-gray-700 transition-colors flex-grow">${app.description || "No description available."}</p>
-                        <div class="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                        </div>
-                    `;
-
-            // Simple entrance animation
-            requestAnimationFrame(() => {
-              card.classList.remove("opacity-0", "-translate-y-4");
-            });
-
-            return card;
+            return `
+              <a href="./apps/${app.id}/" class="group relative inline-flex items-start gap-3 border border-gray-100 bg-white rounded-2xl px-5 py-4 hover:border-black transition-all duration-500 hover:shadow-xl hover:-translate-y-1 min-w-[320px] max-w-[380px]">
+                <img src="${logoUrl}" alt="${app.name}" class="w-12 h-12 rounded-xl object-cover shrink-0 border border-gray-100" />
+                <span class="min-w-0 leading-tight">
+                  <span class="block text-base font-bold font-sans text-gray-900 truncate">${app.name}</span>
+                  <span class="block text-sm leading-5 font-sans text-gray-500 mt-1 app-description-clamp">${app.description || "No description available."}</span>
+                </span>
+              </a>
+            `;
           };
 
-          // Initial load: unique random apps
-          const DISPLAY_COUNT = 3;
-          let currentApps = getRandomUniqueItems(apps, DISPLAY_COUNT);
-          currentApps.forEach((app) => {
-            grid.appendChild(createCard(app));
-          });
+          const renderMarqueeRow = (element, list) => {
+            const singleSet = list.map((app) => createPillMarkup(app)).join("");
+            element.innerHTML = singleSet + singleSet;
+          };
 
-          // Periodic update
-          setInterval(() => {
-            if (document.hidden) return; // Pause if tab is hidden
-
-            // Pick a random app not currently shown
-            const currentIds = new Set(currentApps.map((app) => app.id));
-            const availableApps = apps.filter((app) => !currentIds.has(app.id));
-            if (availableApps.length === 0) return;
-
-            const randomApp = availableApps[Math.floor(Math.random() * availableApps.length)];
-            const newCard = createCard(randomApp);
-
-            // Add to front
-            grid.prepend(newCard);
-            currentApps = [randomApp, ...currentApps].slice(0, DISPLAY_COUNT);
-
-            // Remove from back with slow fade
-            if (grid.children.length > DISPLAY_COUNT) {
-              const last = grid.lastElementChild;
-              // Slower fade out
-              last.style.transition = "all 2s ease-out";
-              last.classList.add("opacity-0", "scale-90", "blur-sm");
-
-              // Wait for transition to finish before removing
-              setTimeout(() => last.remove(), 2000);
-            }
-          }, 4000); // Slightly faster updates
+          renderMarqueeRow(topRow, topApps);
+          renderMarqueeRow(bottomRow, bottomApps);
         } catch (error) {
           console.error("Failed to load apps:", error);
         }
