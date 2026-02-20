@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Install Docker | Yantr</title>
+    <meta name="description" content="Learn what Docker is and how to install it on Windows 11, macOS, Linux, and Raspberry Pi to run Yantr." />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="https://yantr.org/install-docker/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yantr.org/install-docker/" />
+    <meta property="og:title" content="Install Docker | Yantr" />
+    <meta property="og:description" content="Learn what Docker is and how to install it on Windows 11, macOS, Linux, and Raspberry Pi to run Yantr." />
+
+    <link rel="stylesheet" href="../tailwind.css" />
+    <style>
+      .tab-btn.active {
+        background-color: #000;
+        color: #fff;
+      }
+      .dark .tab-btn.active {
+        background-color: #fff;
+        color: #000;
+      }
+      .platform-panel { display: none; }
+      .platform-panel.active { display: block; }
+
+      .copy-btn svg.check { display: none; }
+      .copy-btn.copied svg.copy { display: none; }
+      .copy-btn.copied svg.check { display: block; }
+    </style>
+  </head>
+
+  <body class="bg-white text-black dark:bg-zinc-950 dark:text-zinc-100 font-mono antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+    <main class="w-full px-4 sm:px-6 lg:px-8 py-10">
+      <div class="w-full max-w-3xl mx-auto">
+
+        <!-- Back -->
+        <a href="../index.html" class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors mb-8">
+          <span>←</span>
+          <span>Back to home</span>
+        </a>
+
+        <!-- Title -->
+        <h1 class="text-3xl sm:text-4xl font-bold font-sans mb-2">Install Docker</h1>
+        <p class="text-sm text-gray-500 dark:text-zinc-400 mb-12">Everything you need to get Docker running before installing Yantr.</p>
+
+        <!-- What is Docker -->
+        <section class="mb-10">
+          <h2 class="text-xs uppercase tracking-[0.2em] text-gray-400 dark:text-zinc-500 mb-4">What is Docker?</h2>
+          <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-6 bg-gray-50 dark:bg-zinc-900 space-y-3 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">
+            <p>
+              Docker is a tool that packages software into <strong class="text-black dark:text-white">containers</strong> — isolated boxes that include everything an app needs to run: code, runtime, libraries, and config.
+            </p>
+            <p>
+              A container behaves the same on every machine. It doesn't care what OS you're running or what other software is installed. It just works.
+            </p>
+          </div>
+        </section>
+
+        <!-- Why Docker + Yantr -->
+        <section class="mb-10">
+          <h2 class="text-xs uppercase tracking-[0.2em] text-gray-400 dark:text-zinc-500 mb-4">Why Yantr needs Docker</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900">
+              <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Isolation</p>
+              <p class="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed">Each app runs in its own container. They can't interfere with each other or with your system.</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900">
+              <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">No conflicts</p>
+              <p class="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed">Apps that need different versions of the same library coexist without issues. No more dependency hell.</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900">
+              <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Clean removal</p>
+              <p class="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed">Stop a container and it's gone. No leftover files, services, or registry entries on your system.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Install Guide -->
+        <section>
+          <h2 class="text-xs uppercase tracking-[0.2em] text-gray-400 dark:text-zinc-500 mb-4">Install guide</h2>
+
+          <!-- Platform tabs -->
+          <div class="flex flex-wrap gap-2 mb-6">
+            <button data-tab="windows" class="tab-btn active text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors">Windows 11</button>
+            <button data-tab="macos" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors">macOS</button>
+            <button data-tab="linux-desktop" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors">Linux Desktop</button>
+            <button data-tab="linux-server" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors">Linux Server</button>
+            <button data-tab="rpi" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors">Raspberry Pi</button>
+          </div>
+
+          <!-- Windows 11 -->
+          <div id="panel-windows" class="platform-panel active space-y-4">
+            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Requirement</p>
+                <p class="text-sm text-gray-700 dark:text-zinc-300">Windows 11 with WSL 2 enabled (recommended) or Hyper-V. 64-bit, 4 GB RAM minimum.</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 1 — Enable WSL 2</p>
+                <div class="rounded-lg bg-zinc-950 dark:bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">wsl --install</code>
+                  <button class="copy-btn shrink-0" data-copy="wsl --install">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-zinc-500 mt-1.5">Run in PowerShell as Administrator. Restart when prompted.</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 2 — Install Docker Desktop</p>
+                <p class="text-sm text-gray-700 dark:text-zinc-300">Download and run the installer from the official Docker website:</p>
+                <a href="https://docs.docker.com/desktop/install/windows-install/" target="_blank" rel="noopener noreferrer" class="inline-block mt-2 text-sm font-semibold underline hover:no-underline">docker.com/desktop → Windows</a>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 3 — Verify</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">docker run hello-world</code>
+                  <button class="copy-btn shrink-0" data-copy="docker run hello-world">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- macOS -->
+          <div id="panel-macos" class="platform-panel space-y-4">
+            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Requirement</p>
+                <p class="text-sm text-gray-700 dark:text-zinc-300">macOS 12 Monterey or newer. Works on both Intel and Apple Silicon (M1/M2/M3).</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 1 — Install Docker Desktop</p>
+                <p class="text-sm text-gray-700 dark:text-zinc-300">Download the correct installer for your chip from the official Docker website:</p>
+                <a href="https://docs.docker.com/desktop/install/mac-install/" target="_blank" rel="noopener noreferrer" class="inline-block mt-2 text-sm font-semibold underline hover:no-underline">docker.com/desktop → Mac</a>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1 mt-2">Or install with Homebrew</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">brew install --cask docker</code>
+                  <button class="copy-btn shrink-0" data-copy="brew install --cask docker">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 2 — Verify</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">docker run hello-world</code>
+                  <button class="copy-btn shrink-0" data-copy="docker run hello-world">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Linux Desktop -->
+          <div id="panel-linux-desktop" class="platform-panel space-y-4">
+            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Requirement</p>
+                <p class="text-sm text-gray-700 dark:text-zinc-300">Ubuntu, Debian, Fedora or similar. 64-bit. The script below works on most distros.</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 1 — Install Docker Engine</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">curl -fsSL https://get.docker.com | sudo sh</code>
+                  <button class="copy-btn shrink-0" data-copy="curl -fsSL https://get.docker.com | sudo sh">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 2 — Run Docker without sudo</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">sudo usermod -aG docker $USER && newgrp docker</code>
+                  <button class="copy-btn shrink-0" data-copy="sudo usermod -aG docker $USER && newgrp docker">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-zinc-500 mt-1.5">Log out and back in if the group change doesn't take effect immediately.</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 3 — Verify</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">docker run hello-world</code>
+                  <button class="copy-btn shrink-0" data-copy="docker run hello-world">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Linux Server -->
+          <div id="panel-linux-server" class="platform-panel space-y-4">
+            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Requirement</p>
+                <p class="text-sm text-gray-700 dark:text-zinc-300">Any 64-bit Linux server — Ubuntu Server, Debian, CentOS, RHEL, or similar. SSH access required.</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 1 — Install Docker Engine</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">curl -fsSL https://get.docker.com | sudo sh</code>
+                  <button class="copy-btn shrink-0" data-copy="curl -fsSL https://get.docker.com | sudo sh">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 2 — Run Docker without sudo</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">sudo usermod -aG docker $USER && newgrp docker</code>
+                  <button class="copy-btn shrink-0" data-copy="sudo usermod -aG docker $USER && newgrp docker">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 3 — Enable Docker on boot</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">sudo systemctl enable --now docker</code>
+                  <button class="copy-btn shrink-0" data-copy="sudo systemctl enable --now docker">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-zinc-500 mt-1.5">This ensures Docker and your containers restart automatically after a reboot.</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 4 — Verify</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">docker run hello-world</code>
+                  <button class="copy-btn shrink-0" data-copy="docker run hello-world">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Raspberry Pi -->
+          <div id="panel-rpi" class="platform-panel space-y-4">
+            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Requirement</p>
+                <p class="text-sm text-gray-700 dark:text-zinc-300">Raspberry Pi 3 or newer running Raspberry Pi OS (64-bit recommended) or Ubuntu for Pi. 2 GB RAM minimum.</p>
+              </div>
+              <div class="rounded-lg border border-amber-200 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/30 p-4">
+                <p class="text-xs text-amber-700 dark:text-amber-400">Raspberry Pi uses ARM architecture. Most popular Docker images support ARM64 — check the image page on Docker Hub if an app fails to start.</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 1 — Install Docker Engine</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">curl -fsSL https://get.docker.com | sudo sh</code>
+                  <button class="copy-btn shrink-0" data-copy="curl -fsSL https://get.docker.com | sudo sh">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 2 — Run Docker without sudo</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">sudo usermod -aG docker $USER && newgrp docker</code>
+                  <button class="copy-btn shrink-0" data-copy="sudo usermod -aG docker $USER && newgrp docker">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 3 — Enable Docker on boot</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">sudo systemctl enable --now docker</code>
+                  <button class="copy-btn shrink-0" data-copy="sudo systemctl enable --now docker">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Step 4 — Verify</p>
+                <div class="rounded-lg bg-zinc-950 border border-zinc-800 p-4 flex items-start justify-between gap-3">
+                  <code class="text-xs text-zinc-300 whitespace-pre-wrap break-all leading-relaxed flex-1">docker run hello-world</code>
+                  <button class="copy-btn shrink-0" data-copy="docker run hello-world">
+                    <svg class="copy w-4 h-4 text-zinc-500 hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    <svg class="check w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Next step -->
+        <div class="mt-12 rounded-xl border border-gray-200 dark:border-zinc-800 p-6 bg-gray-50 dark:bg-zinc-900 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Next step</p>
+            <p class="text-sm font-semibold">Docker is installed. Now run Yantr.</p>
+          </div>
+          <a href="../index.html#install" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold bg-black text-white dark:bg-white dark:text-black hover:opacity-90 transition-opacity shrink-0">
+            Install Yantr →
+          </a>
+        </div>
+
+      </div>
+    </main>
+
+    <script>
+      // Tab switching
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const panels = document.querySelectorAll('.platform-panel');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.dataset.tab;
+          tabBtns.forEach(b => b.classList.remove('active'));
+          panels.forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(`panel-${tab}`).classList.add('active');
+        });
+      });
+
+      // Copy buttons
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          navigator.clipboard.writeText(btn.dataset.copy).then(() => {
+            btn.classList.add('copied');
+            setTimeout(() => btn.classList.remove('copied'), 2000);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
