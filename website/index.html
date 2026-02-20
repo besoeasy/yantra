@@ -435,95 +435,87 @@
       </div>
 
       <!-- Architecture Diagram Section -->
-      <section id="architecture" class="relative left-1/2 right-1/2 w-screen -translate-x-1/2 py-12 sm:py-16 border-y border-gray-100 bg-white mt-10 sm:mt-14">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6">
-          <div class="text-center mb-10">
+      <section id="architecture" class="relative left-1/2 right-1/2 w-screen -translate-x-1/2 py-20 sm:py-24 border-y border-gray-100 bg-white mt-10 sm:mt-14 overflow-hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 relative">
+          <!-- Background Decor -->
+          <div class="absolute inset-0 pointer-events-none opacity-[0.03]">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-black"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-black"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-black"></div>
+          </div>
+
+          <div class="text-center mb-16 relative z-10">
             <p class="text-[11px] uppercase tracking-[0.2em] text-gray-500 mb-2">Architecture</p>
-            <h2 class="text-3xl sm:text-4xl font-bold font-sans tracking-tight mb-3">How Yantr works under the hood</h2>
-            <p class="text-gray-600 font-sans max-w-3xl mx-auto">
-              Yantr turns raw Docker operations into a safe, repeatable flow: define app intent, generate Compose behavior, execute atomically, and keep data portable.
+            <h2 class="text-3xl sm:text-4xl font-bold font-sans tracking-tight mb-4">How Yantr Works</h2>
+            <p class="text-gray-600 font-sans max-w-2xl mx-auto">
+              A centralized control plane that orchestrates your Docker environment. Yantr sits in the middle, translating your intent into safe, atomic infrastructure actions.
             </p>
           </div>
 
-          <div class="rounded-2xl border border-gray-200 bg-white p-5 sm:p-7 shadow-sm">
-            <div class="hidden lg:grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-4">
-              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                <p class="text-2xl mb-2">🧠</p>
-                <h3 class="font-bold font-sans mb-1">Intent Layer</h3>
-                <p class="text-sm text-gray-600 font-sans">App templates, defaults, dependencies, and user configuration.</p>
-              </div>
-
-              <div class="arch-line w-20">
-                <span class="arch-line-dot" style="animation-delay: 0s"></span>
-              </div>
-
-              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4" style="animation-delay: 0.2s">
-                <p class="text-2xl mb-2">⚙️</p>
-                <h3 class="font-bold font-sans mb-1">Compose Engine</h3>
-                <p class="text-sm text-gray-600 font-sans">Generates deterministic Docker Compose actions from metadata.</p>
-              </div>
-
-              <div class="arch-line w-20">
-                <span class="arch-line-dot" style="animation-delay: 0.35s"></span>
-              </div>
-
-              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4" style="animation-delay: 0.4s">
-                <p class="text-2xl mb-2">🐳</p>
-                <h3 class="font-bold font-sans mb-1">Runtime + Data</h3>
-                <p class="text-sm text-gray-600 font-sans">Containers, volumes, backups, and cleanup in atomic operations.</p>
+          <div class="relative max-w-4xl mx-auto h-[600px] sm:h-[500px]">
+            <!-- Center Node (Yantr Core) -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-32 h-32 sm:w-40 sm:h-40 bg-black rounded-full flex items-center justify-center shadow-2xl ring-8 ring-gray-50">
+              <div class="text-center text-white">
+                <span class="text-3xl sm:text-4xl block mb-1">🕷️</span>
+                <span class="font-bold font-sans text-sm sm:text-base tracking-widest">YANTR</span>
+                <span class="block text-[10px] opacity-75 mt-1">DAEMON</span>
               </div>
             </div>
 
-            <div class="lg:hidden space-y-4">
-              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                <p class="text-2xl mb-2">🧠</p>
-                <h3 class="font-bold font-sans mb-1">Intent Layer</h3>
-                <p class="text-sm text-gray-600 font-sans">Templates, defaults, dependencies, and user config.</p>
+            <!-- Orbiting Nodes -->
+            
+            <!-- Node 1: Docker Socket (Top) -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 sm:w-56 text-center group z-10">
+              <div class="bg-white border-2 border-gray-100 p-4 rounded-2xl shadow-sm group-hover:border-blue-500 group-hover:shadow-lg transition-all duration-300 relative z-10">
+                <div class="text-2xl mb-2">🐳</div>
+                <h3 class="font-bold font-sans text-sm">Docker Engine</h3>
+                <p class="text-xs text-gray-500 mt-1">Direct socket communication for container lifecycle management.</p>
               </div>
+              <!-- Connector Line -->
+              <div class="absolute top-full left-1/2 h-[calc(50vh-100px)] sm:h-[110px] w-px bg-gradient-to-b from-gray-200 to-transparent -z-10"></div>
+            </div>
 
-              <div class="arch-line-vertical h-8 mx-auto">
-                <span class="arch-line-dot-vertical"></span>
+            <!-- Node 2: File System (Right) -->
+            <div class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-4 sm:translate-x-0 w-48 sm:w-56 text-center group z-10">
+              <div class="bg-white border-2 border-gray-100 p-4 rounded-2xl shadow-sm group-hover:border-amber-500 group-hover:shadow-lg transition-all duration-300 relative z-10">
+                <div class="text-2xl mb-2">📂</div>
+                <h3 class="font-bold font-sans text-sm">Volume Manager</h3>
+                <p class="text-xs text-gray-500 mt-1">Atomic filesystem operations, backups, and restores.</p>
               </div>
+              <div class="absolute top-1/2 right-full h-px w-[60px] sm:w-[100px] bg-gradient-to-l from-gray-200 to-transparent -z-10"></div>
+            </div>
 
-              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4" style="animation-delay: 0.2s">
-                <p class="text-2xl mb-2">⚙️</p>
-                <h3 class="font-bold font-sans mb-1">Compose Engine</h3>
-                <p class="text-sm text-gray-600 font-sans">Deterministic Docker Compose action generation.</p>
-              </div>
-
-              <div class="arch-line-vertical h-8 mx-auto">
-                <span class="arch-line-dot-vertical" style="animation-delay: 0.3s"></span>
-              </div>
-
-              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4" style="animation-delay: 0.4s">
-                <p class="text-2xl mb-2">🐳</p>
-                <h3 class="font-bold font-sans mb-1">Runtime + Data</h3>
-                <p class="text-sm text-gray-600 font-sans">Containers, volumes, backups, and cleanup.</p>
+            <!-- Node 3: User Intent (Bottom) -->
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 sm:w-56 text-center group z-10">
+              <div class="absolute bottom-full left-1/2 h-[calc(50vh-100px)] sm:h-[110px] w-px bg-gradient-to-t from-gray-200 to-transparent -z-10"></div>
+              <div class="bg-white border-2 border-gray-100 p-4 rounded-2xl shadow-sm group-hover:border-emerald-500 group-hover:shadow-lg transition-all duration-300 relative z-10">
+                <div class="text-2xl mb-2">🧠</div>
+                <h3 class="font-bold font-sans text-sm">Intent Parser</h3>
+                <p class="text-xs text-gray-500 mt-1">Translates user requests into deterministic compose files.</p>
               </div>
             </div>
 
-            <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              <div class="rounded-xl border border-gray-200 p-4 bg-white">
-                <p class="text-xl mb-1">🧩</p>
-                <p class="font-semibold text-sm">Multiple Instances</p>
-                <p class="text-xs text-gray-500 mt-1">Run same app with isolated configs.</p>
+            <!-- Node 4: Networking (Left) -->
+            <div class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-4 sm:translate-x-0 w-48 sm:w-56 text-center group z-10">
+              <div class="bg-white border-2 border-gray-100 p-4 rounded-2xl shadow-sm group-hover:border-purple-500 group-hover:shadow-lg transition-all duration-300 relative z-10">
+                <div class="text-2xl mb-2">🌐</div>
+                <h3 class="font-bold font-sans text-sm">Network Layer</h3>
+                <p class="text-xs text-gray-500 mt-1">Manages ports, DNS, and internal service discovery.</p>
               </div>
-              <div class="rounded-xl border border-gray-200 p-4 bg-white">
-                <p class="text-xl mb-1">🕒</p>
-                <p class="font-semibold text-sm">Temporary Installs</p>
-                <p class="text-xs text-gray-500 mt-1">Auto-expire apps without residue.</p>
-              </div>
-              <div class="rounded-xl border border-gray-200 p-4 bg-white">
-                <p class="text-xl mb-1">💾</p>
-                <p class="font-semibold text-sm">Backup & Restore</p>
-                <p class="text-xs text-gray-500 mt-1">Volume migration via S3/MinIO.</p>
-              </div>
-              <div class="rounded-xl border border-gray-200 p-4 bg-white">
-                <p class="text-xl mb-1">🔒</p>
-                <p class="font-semibold text-sm">Atomic Actions</p>
-                <p class="text-xs text-gray-500 mt-1">All-or-nothing operations by design.</p>
-              </div>
+              <div class="absolute top-1/2 left-full h-px w-[60px] sm:w-[100px] bg-gradient-to-r from-gray-200 to-transparent -z-10"></div>
             </div>
+
+            <!-- Connecting Lines (Spiderweb effect) -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none -z-10 opacity-20" viewBox="0 0 100 100" preserveAspectRatio="none">
+               <!-- Center connections -->
+               <line x1="50" y1="50" x2="50" y2="15" stroke="currentColor" stroke-width="0.2" stroke-dasharray="1 1" />
+               <line x1="50" y1="50" x2="50" y2="85" stroke="currentColor" stroke-width="0.2" stroke-dasharray="1 1" />
+               <line x1="50" y1="50" x2="85" y2="50" stroke="currentColor" stroke-width="0.2" stroke-dasharray="1 1" />
+               <line x1="50" y1="50" x2="15" y2="50" stroke="currentColor" stroke-width="0.2" stroke-dasharray="1 1" />
+               
+               <!-- Web connections -->
+               <path d="M50 15 L85 50 L50 85 L15 50 Z" stroke="currentColor" stroke-width="0.1" fill="none" />
+            </svg>
           </div>
         </div>
       </section>
