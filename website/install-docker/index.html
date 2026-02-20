@@ -15,6 +15,11 @@
 
     <link rel="stylesheet" href="../tailwind.css" />
     <style>
+      .bg-grid-pattern {
+        background-color: #ffffff;
+        background-image: linear-gradient(#f1f5f9 1px, transparent 1px), linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
       .tab-btn.active {
         background-color: #000;
         color: #fff;
@@ -29,27 +34,45 @@
       .copy-btn svg.check { display: none; }
       .copy-btn.copied svg.copy { display: none; }
       .copy-btn.copied svg.check { display: block; }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.65s ease-out forwards;
+      }
     </style>
   </head>
 
-  <body class="bg-white text-black dark:bg-zinc-950 dark:text-zinc-100 font-mono antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
-    <main class="w-full px-4 sm:px-6 lg:px-8 py-10">
-      <div class="w-full max-w-3xl mx-auto">
+  <body class="bg-white text-black dark:bg-zinc-950 dark:text-zinc-100 font-mono antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black relative">
+    <div class="absolute inset-0 -z-10 bg-grid-pattern mask-[linear-gradient(to_bottom,white,transparent)] h-195 pointer-events-none dark:hidden"></div>
+    <main class="w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="max-w-4xl">
 
         <!-- Back -->
-        <a href="../index.html" class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors mb-8">
+        <a href="../index.html" class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors mb-8 animate-fade-in-up">
           <span>←</span>
           <span>Back to home</span>
         </a>
 
         <!-- Title -->
-        <h1 class="text-3xl sm:text-4xl font-bold font-sans mb-2">Install Docker</h1>
-        <p class="text-sm text-gray-500 dark:text-zinc-400 mb-12">Everything you need to get Docker running before installing Yantr.</p>
+        <div class="mb-12 border-b border-gray-200 dark:border-zinc-800 pb-4 animate-fade-in-up">
+          <p class="text-[10px] uppercase tracking-[0.18em] text-gray-400 dark:text-zinc-500 font-semibold mb-2">Setup</p>
+          <h1 class="text-3xl sm:text-4xl font-bold font-sans mb-2">Install Docker</h1>
+          <p class="text-sm text-gray-500 dark:text-zinc-400">Everything you need to get Docker running before installing Yantr.</p>
+        </div>
 
         <!-- What is Docker -->
         <section class="mb-10">
           <h2 class="text-xs uppercase tracking-[0.2em] text-gray-400 dark:text-zinc-500 mb-4">What is Docker?</h2>
-          <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-6 bg-gray-50 dark:bg-zinc-900 space-y-3 text-sm leading-relaxed text-gray-700 dark:text-zinc-300">
+          <div class="rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 bg-white dark:bg-zinc-900 space-y-3 text-sm leading-relaxed text-gray-700 dark:text-zinc-300 shadow-sm">
             <p>
               Docker is a tool that packages software into <strong class="text-black dark:text-white">containers</strong> — isolated boxes that include everything an app needs to run: code, runtime, libraries, and config.
             </p>
@@ -63,15 +86,15 @@
         <section class="mb-10">
           <h2 class="text-xs uppercase tracking-[0.2em] text-gray-400 dark:text-zinc-500 mb-4">Why Yantr needs Docker</h2>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900">
+            <div class="rounded-2xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 hover:shadow-lg transition-shadow">
               <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Isolation</p>
               <p class="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed">Each app runs in its own container. They can't interfere with each other or with your system.</p>
             </div>
-            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900">
+            <div class="rounded-2xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 hover:shadow-lg transition-shadow">
               <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">No conflicts</p>
               <p class="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed">Apps that need different versions of the same library coexist without issues. No more dependency hell.</p>
             </div>
-            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900">
+            <div class="rounded-2xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 hover:shadow-lg transition-shadow">
               <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">Clean removal</p>
               <p class="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed">Stop a container and it's gone. No leftover files, services, or registry entries on your system.</p>
             </div>
@@ -83,17 +106,17 @@
           <h2 class="text-xs uppercase tracking-[0.2em] text-gray-400 dark:text-zinc-500 mb-4">Install guide</h2>
 
           <!-- Platform tabs -->
-          <div class="flex flex-wrap gap-2 mb-6">
-            <button data-tab="windows" class="tab-btn active text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors">Windows 11</button>
-            <button data-tab="macos" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors">macOS</button>
-            <button data-tab="linux-desktop" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors">Linux Desktop</button>
-            <button data-tab="linux-server" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors">Linux Server</button>
-            <button data-tab="rpi" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors">Raspberry Pi</button>
+          <div class="flex flex-wrap gap-2 mb-6 rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/80 backdrop-blur p-3">
+            <button data-tab="windows" class="tab-btn active text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors rounded-md">Windows 11</button>
+            <button data-tab="macos" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors rounded-md">macOS</button>
+            <button data-tab="linux-desktop" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors rounded-md">Linux Desktop</button>
+            <button data-tab="linux-server" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors rounded-md">Linux Server</button>
+            <button data-tab="rpi" class="tab-btn text-[11px] uppercase tracking-wider px-3 py-1.5 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors rounded-md">Raspberry Pi</button>
           </div>
 
           <!-- Windows 11 -->
           <div id="panel-windows" class="platform-panel active space-y-4">
-            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4">
+            <div class="rounded-2xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4 shadow-sm">
               <div>
                 <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Requirement</p>
                 <p class="text-sm text-gray-700 dark:text-zinc-300">Windows 11 with WSL 2 enabled (recommended) or Hyper-V. 64-bit, 4 GB RAM minimum.</p>
@@ -129,7 +152,7 @@
 
           <!-- macOS -->
           <div id="panel-macos" class="platform-panel space-y-4">
-            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4">
+            <div class="rounded-2xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4 shadow-sm">
               <div>
                 <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Requirement</p>
                 <p class="text-sm text-gray-700 dark:text-zinc-300">macOS 12 Monterey or newer. Works on both Intel and Apple Silicon (M1/M2/M3).</p>
@@ -164,7 +187,7 @@
 
           <!-- Linux Desktop -->
           <div id="panel-linux-desktop" class="platform-panel space-y-4">
-            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4">
+            <div class="rounded-2xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4 shadow-sm">
               <div>
                 <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Requirement</p>
                 <p class="text-sm text-gray-700 dark:text-zinc-300">Ubuntu, Debian, Fedora or similar. 64-bit. The script below works on most distros.</p>
@@ -205,7 +228,7 @@
 
           <!-- Linux Server -->
           <div id="panel-linux-server" class="platform-panel space-y-4">
-            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4">
+            <div class="rounded-2xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4 shadow-sm">
               <div>
                 <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Requirement</p>
                 <p class="text-sm text-gray-700 dark:text-zinc-300">Any 64-bit Linux server — Ubuntu Server, Debian, CentOS, RHEL, or similar. SSH access required.</p>
@@ -256,7 +279,7 @@
 
           <!-- Raspberry Pi -->
           <div id="panel-rpi" class="platform-panel space-y-4">
-            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4">
+            <div class="rounded-2xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 space-y-4 shadow-sm">
               <div>
                 <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Requirement</p>
                 <p class="text-sm text-gray-700 dark:text-zinc-300">Raspberry Pi 3 or newer running Raspberry Pi OS (64-bit recommended) or Ubuntu for Pi. 2 GB RAM minimum.</p>
@@ -309,7 +332,7 @@
         </section>
 
         <!-- Next step -->
-        <div class="mt-12 rounded-xl border border-gray-200 dark:border-zinc-800 p-6 bg-gray-50 dark:bg-zinc-900 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="mt-12 rounded-2xl border border-gray-200 dark:border-zinc-800 p-6 bg-white dark:bg-zinc-900 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
           <div>
             <p class="text-xs uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-1">Next step</p>
             <p class="text-sm font-semibold">Docker is installed. Now run Yantr.</p>
@@ -319,6 +342,7 @@
           </a>
         </div>
 
+        </div>
       </div>
     </main>
 
