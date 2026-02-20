@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ pageTitle }}</title>
+    <meta name="description" content="{{ pageDescription }}" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="{{ pageUrl }}" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ pageUrl }}" />
+    <meta property="og:title" content="{{ pageTitle }}" />
+    <meta property="og:description" content="{{ pageDescription }}" />
+    <meta property="og:image" content="{{ imageUrl }}" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="{{ pageUrl }}" />
+    <meta property="twitter:title" content="{{ pageTitle }}" />
+    <meta property="twitter:description" content="{{ pageDescription }}" />
+    <meta property="twitter:image" content="{{ imageUrl }}" />
+
+    <link rel="stylesheet" href="../../tailwind.css" />
+  </head>
+
+  <body class="bg-white text-black dark:bg-zinc-950 dark:text-zinc-100 font-mono antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+    <main class="w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+      <div class="w-full max-w-4xl mx-auto">
+        <a
+          href="../../index.html#apps"
+          class="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
+        >
+          <span>←</span>
+          <span>Back to catalog</span>
+        </a>
+
+        <section class="mt-6 rounded-2xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8">
+          <div class="flex flex-col sm:flex-row sm:items-start gap-6">
+            <div class="w-20 h-20 rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
+              <img src="{{ app.logoUrl }}" alt="{{ app.name }} logo" class="w-full h-full object-cover" loading="lazy" />
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <p class="text-xs uppercase tracking-[0.2em] text-gray-400 dark:text-zinc-500">Yantr App</p>
+              <h1 class="text-2xl sm:text-4xl font-bold font-sans mt-2 break-words">{{ app.name }}</h1>
+              <p class="mt-2 text-sm text-gray-500 dark:text-zinc-400">ID: {{ app.id }}</p>
+              <p class="mt-4 text-sm sm:text-base text-gray-700 dark:text-zinc-300 leading-relaxed">{{ app.description }}</p>
+
+              <div class="mt-5 flex flex-wrap gap-2">
+                {% if app.category.length %}
+                  {% for item in app.category %}
+                    <span class="text-[10px] uppercase tracking-wider px-2 py-1 border border-gray-200 dark:border-zinc-700 text-gray-600 dark:text-zinc-300">{{ item }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="text-[10px] uppercase tracking-wider px-2 py-1 border border-gray-200 dark:border-zinc-700 text-gray-400 dark:text-zinc-500">Uncategorized</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-4 bg-gray-50 dark:bg-zinc-950/40">
+              <p class="text-xs uppercase tracking-[0.18em] text-gray-400 dark:text-zinc-500 mb-2">Port</p>
+              <p class="font-semibold break-all">{{ app.port or 'Not specified' }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-200 dark:border-zinc-800 p-4 bg-gray-50 dark:bg-zinc-950/40">
+              <p class="text-xs uppercase tracking-[0.18em] text-gray-400 dark:text-zinc-500 mb-2">Service Name</p>
+              <p class="font-semibold break-all">{{ app.serviceName or 'Not specified' }}</p>
+            </div>
+          </div>
+
+          {% if app.dependencies.length %}
+            <div class="mt-6 rounded-xl border border-gray-200 dark:border-zinc-800 p-4">
+              <p class="text-xs uppercase tracking-[0.18em] text-gray-400 dark:text-zinc-500 mb-3">Dependencies</p>
+              <div class="flex flex-wrap gap-2">
+                {% for dep in app.dependencies %}
+                  <span class="text-xs px-2 py-1 border border-gray-200 dark:border-zinc-700 text-gray-600 dark:text-zinc-300">{{ dep }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            {% if app.website %}
+              <a
+                href="{{ app.website }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold bg-black text-white dark:bg-white dark:text-black hover:opacity-90 transition-opacity"
+              >
+                Open App Website
+              </a>
+            {% endif %}
+            <a
+              href="{{ app.sourceComposeUrl }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold border border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
+            >
+              View compose.yml
+            </a>
+            <a
+              href="{{ app.sourceAppFolderUrl }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold border border-gray-300 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
+            >
+              View app folder
+            </a>
+          </div>
+        </section>
+
+        <p class="mt-6 text-xs text-gray-400 dark:text-zinc-500">Generated at {{ nowIso }}</p>
+      </div>
+    </main>
+  </body>
+</html>

@@ -331,11 +331,9 @@ sudo usermod -aG docker $USER && newgrp docker</code
               <a
                 id="featured-app-website"
                 href="#"
-                target="_blank"
-                rel="noopener noreferrer"
                 class="inline-flex items-center gap-1.5 text-xs font-semibold font-mono uppercase tracking-wider text-gray-500 hover:text-black border border-gray-200 hover:border-gray-400 px-3 py-1.5 transition-colors"
               >
-                Visit Website <span aria-hidden="true">↗</span>
+                Open Details <span aria-hidden="true">→</span>
               </a>
               <p class="text-[10px] text-gray-300 font-mono" id="featured-app-date"></p>
             </div>
@@ -464,9 +462,8 @@ sudo usermod -aG docker $USER && newgrp docker</code
           nameEl.textContent = featuredApp.name || "Unknown app";
           idEl.textContent = featuredApp.id ? `ID: ${featuredApp.id}` : "";
           descEl.textContent = featuredApp.description || "No description available.";
-          websiteEl.href = featuredApp.website || "#";
-          websiteEl.classList.toggle("pointer-events-none", !featuredApp.website);
-          websiteEl.classList.toggle("opacity-60", !featuredApp.website);
+          websiteEl.href = `./apps/${featuredApp.id}/`;
+          websiteEl.classList.remove("pointer-events-none", "opacity-60");
 
           categoriesEl.innerHTML = "";
           const categories = Array.isArray(featuredApp.category) ? featuredApp.category : [];
@@ -509,9 +506,7 @@ sudo usermod -aG docker $USER && newgrp docker</code
           // Helper to create card
           const createCard = (app) => {
             const card = document.createElement("a");
-            card.href = app.website || "#";
-            card.target = "_blank";
-            card.rel = "noopener noreferrer";
+            card.href = `./apps/${app.id}/`;
             // Added flex-shrink-0 to ensure consistent sizing, and adjusted transition duration for smoother fade
             card.className =
               "border border-gray-200 bg-white p-5 hover:border-black transition-all duration-1000 group flex flex-col h-full opacity-0 -translate-y-4 cursor-pointer";
