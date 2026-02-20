@@ -556,6 +556,47 @@
           </div>
         </div>
       </div>
+
+      <!-- FAQ Section -->
+      <div class="pt-12 sm:pt-20 border-t border-gray-100" id="faq">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold font-sans mb-4 tracking-tight">Frequently Asked Questions</h2>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            <div class="bg-white border boundary-gray-200 rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-shadow duration-300">
+              <h3 class="text-lg font-bold font-sans mb-3">Does Yantr replace my Operating System?</h3>
+              <p class="text-gray-600 leading-relaxed text-sm">No. Yantr is just a Docker container that runs alongside your existing Linux, macOS, or Windows installation. It doesn't modify your host system files.</p>
+            </div>
+            
+            <div class="bg-white border boundary-gray-200 rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-shadow duration-300">
+              <h3 class="text-lg font-bold font-sans mb-3">Is it safer than manual Docker Compose?</h3>
+              <p class="text-gray-600 leading-relaxed text-sm">Yes. Yantr uses strict atomic operations. It ensures that either all changes are applied successfully, or none are, preventing broken states.</p>
+            </div>
+
+            <div class="bg-white border boundary-gray-200 rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-shadow duration-300">
+              <h3 class="text-lg font-bold font-sans mb-3">Can I access my apps remotely?</h3>
+              <p class="text-gray-600 leading-relaxed text-sm">Yantr focuses on your local network first. For remote access, we recommend using Tailscale or Cloudflare Tunnels, which work seamlessly with Yantr apps.</p>
+            </div>
+
+            <div class="bg-white border boundary-gray-200 rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-shadow duration-300">
+              <h3 class="text-lg font-bold font-sans mb-3">Where is my data stored?</h3>
+              <p class="text-gray-600 leading-relaxed text-sm">All application data is stored in standard Docker volumes. You can inspect, backup, and migrate these volumes easily using Yantr's built-in tools.</p>
+            </div>
+
+            <div class="bg-white border boundary-gray-200 rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-shadow duration-300">
+              <h3 class="text-lg font-bold font-sans mb-3">Does it support AI apps?</h3>
+              <p class="text-gray-600 leading-relaxed text-sm">Absolutely. Yantr treats AI as a first-class citizen with native GPU passthrough support for Ollama, Open WebUI, and other local LLM tools.</p>
+            </div>
+
+            <div class="bg-white border boundary-gray-200 rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-shadow duration-300">
+              <h3 class="text-lg font-bold font-sans mb-3">Is Yantr free?</h3>
+              <p class="text-gray-600 leading-relaxed text-sm">Yes, Yantr is 100% open source under the MIT license. You can deploy it freely on as many servers as you like.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script>
