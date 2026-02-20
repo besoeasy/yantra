@@ -140,6 +140,8 @@
       .animate-float-y {
         animation: floatY 3.2s ease-in-out infinite;
       }
+      #copy-install.copied .copy-icon { display: none; }
+      #copy-install.copied .check-icon { display: block; }
     </style>
   </head>
   <body class="bg-white text-black font-mono antialiased selection:bg-black selection:text-white relative">
@@ -152,12 +154,13 @@
       <!-- Hero -->
       <div class="mb-16 sm:mb-32 flex flex-col items-center text-center relative z-10">
         <div class="max-w-4xl mx-auto">
-          <div
-            class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/80 backdrop-blur px-3 py-1.5 mb-6 text-xs font-semibold tracking-wide text-gray-600 uppercase animate-fade-in-up"
+          <a
+            href="./install-docker/"
+            class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/80 backdrop-blur px-3 py-1.5 mb-6 text-xs font-semibold tracking-wide text-gray-600 uppercase animate-fade-in-up hover:border-gray-400 transition-colors"
           >
             <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
             Docker-native self-hosting
-          </div>
+          </a>
           <h1
             id="hero-title"
             class="text-3xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6 font-sans text-black leading-tight sm:leading-[0.95] transition-opacity duration-500 ease-in-out animate-fade-in-up delay-100"
@@ -168,8 +171,7 @@
             id="hero-desc"
             class="text-lg sm:text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-10 font-sans transition-opacity duration-500 ease-in-out animate-fade-in-up delay-200"
           >
-            Turn any device into a private cloud with one command. Run 100+ apps like Ollama, Open WebUI, and Perplexica on your own infrastructure. No OS
-            replacement needed.
+            Turn any device into a private cloud with one command. Run 100+ apps — Ollama, Nextcloud, Jellyfin, and more — fully isolated on your own hardware.
           </p>
 
           <div class="flex flex-wrap items-center justify-center gap-3 mb-10 animate-fade-in-up delay-300">
@@ -202,89 +204,27 @@
           </div>
 
           <!-- Install Widget -->
-          <div
-            class="border border-gray-200 rounded-2xl overflow-hidden shadow-2xl bg-white max-w-2xl mx-auto text-left ring-1 ring-gray-900/5 animate-fade-in-up"
-          >
-            <div class="p-5 sm:p-6 bg-zinc-950 space-y-4">
-              <div class="rounded-xl border border-zinc-800 bg-zinc-900/80 p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p class="text-xs sm:text-sm text-zinc-200 font-semibold font-sans">Quick install flow</p>
-                  <p id="docker-toggle-status" class="text-xs sm:text-sm text-zinc-400 font-sans">Need Docker first? Keep this off and run Step 1.</p>
-                </div>
-                <label for="docker-installed" class="inline-flex items-center gap-3 text-xs sm:text-sm text-zinc-100 font-sans select-none">
-                  <span>Docker installed?</span>
-                  <span class="relative inline-flex h-6 w-11 items-center">
-                    <input id="docker-installed" type="checkbox" class="peer sr-only" />
-                    <span class="h-6 w-11 rounded-full bg-zinc-700 transition-colors duration-300 peer-checked:bg-emerald-500"></span>
-                    <span
-                      class="pointer-events-none absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-300 peer-checked:translate-x-5"
-                    ></span>
-                  </span>
-                </label>
-              </div>
-
-              <div id="docker-step" class="rounded-xl border border-zinc-800 bg-zinc-900/70 p-4 transition-all duration-300">
-                <div class="flex items-center justify-between gap-3 mb-2">
-                  <div class="text-[11px] uppercase tracking-[0.18em] text-zinc-500 font-semibold">Step 1</div>
-                  <div class="flex items-center gap-3">
-                    <div class="text-xs sm:text-sm text-zinc-200 font-semibold">Install Docker</div>
-                    <a href="./install-docker/" class="text-[10px] text-zinc-500 hover:text-zinc-300 underline transition-colors">guide →</a>
-                  </div>
-                </div>
-                <div class="flex flex-col sm:flex-row items-start justify-between gap-3 min-w-0">
-                  <code class="block w-full max-w-full min-w-0 text-xs sm:text-sm text-zinc-300 font-mono whitespace-pre-wrap break-all leading-relaxed pr-0 sm:pr-4"
-                    >curl -fsSL https://get.docker.com | sudo sh
-sudo usermod -aG docker $USER && newgrp docker</code
-                  >
-                  <button
-                    onclick="navigator.clipboard.writeText('curl -fsSL https://get.docker.com | sudo sh\nsudo usermod -aG docker $USER && newgrp docker')"
-                    class="text-zinc-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10 shrink-0 self-start"
-                    title="Copy Docker setup"
-                  >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <div class="rounded-xl border border-zinc-700 bg-zinc-900 p-4">
-                <div class="flex items-center justify-between gap-3 mb-2">
-                  <div class="text-[11px] uppercase tracking-[0.18em] text-zinc-500 font-semibold">Step 2</div>
-                  <div class="text-xs sm:text-sm text-zinc-100 font-semibold">Run Yantr</div>
-                </div>
-                <div class="flex flex-col sm:flex-row items-start justify-between gap-3 min-w-0">
-                  <code class="block w-full max-w-full min-w-0 text-xs sm:text-sm text-zinc-200 font-mono whitespace-pre-wrap break-all leading-relaxed pr-0 sm:pr-4"
-                    >docker run -d --name yantr -p 80:5252 -p 443:5252 \
+          <div class="max-w-2xl mx-auto text-left animate-fade-in-up">
+            <div class="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+              <div class="flex items-start justify-between gap-4">
+                <code id="install-cmd" class="block text-xs sm:text-sm text-zinc-200 font-mono whitespace-pre-wrap break-all leading-relaxed flex-1">docker run -d --name yantr -p 80:5252 -p 443:5252 \
 -v /var/run/docker.sock:/var/run/docker.sock \
---restart unless-stopped ghcr.io/besoeasy/yantr</code
-                  >
-                  <button
-                    onclick="
-                      navigator.clipboard.writeText(
-                        'docker run -d --name yantr -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped ghcr.io/besoeasy/yantr',
-                      )
-                    "
-                    class="text-zinc-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10 shrink-0 self-start"
-                    title="Copy Yantr install"
-                  >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
+--restart unless-stopped ghcr.io/besoeasy/yantr</code>
+                <button
+                  id="copy-install"
+                  onclick="navigator.clipboard.writeText('docker run -d --name yantr -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped ghcr.io/besoeasy/yantr').then(() => { const b = document.getElementById('copy-install'); b.classList.add('copied'); setTimeout(() => b.classList.remove('copied'), 2000); })"
+                  class="text-zinc-500 hover:text-white transition-colors p-1.5 rounded hover:bg-white/10 shrink-0 self-start"
+                  title="Copy"
+                >
+                  <svg class="copy-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                  <svg class="check-icon w-5 h-5 hidden text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </button>
               </div>
             </div>
+            <p class="mt-3 text-xs text-gray-400 text-center">
+              Requires Docker &middot;
+              <a href="./install-docker/" class="underline hover:text-gray-600 transition-colors">Install guide →</a>
+            </p>
           </div>
         </div>
       </div>
@@ -1042,31 +982,6 @@ sudo usermod -aG docker $USER && newgrp docker</code
         }
       }
 
-      function initDockerStepToggle() {
-        const dockerInstalledCheckbox = document.getElementById("docker-installed");
-        const dockerStep = document.getElementById("docker-step");
-        const dockerToggleStatus = document.getElementById("docker-toggle-status");
-
-        if (!dockerInstalledCheckbox || !dockerStep) return;
-
-        const syncDockerStep = () => {
-          if (dockerInstalledCheckbox.checked) {
-            dockerStep.classList.add("hidden");
-            if (dockerToggleStatus) {
-              dockerToggleStatus.textContent = "Docker already installed";
-            }
-          } else {
-            dockerStep.classList.remove("hidden");
-            if (dockerToggleStatus) {
-              dockerToggleStatus.textContent = "Need Docker first? Keep this off and run Step 1.";
-            }
-          }
-        };
-
-        dockerInstalledCheckbox.addEventListener("change", syncDockerStep);
-        syncDockerStep();
-      }
-
       document.addEventListener("DOMContentLoaded", () => {
         loadFeaturedApp();
         loadApps();
@@ -1077,7 +992,6 @@ sudo usermod -aG docker $USER && newgrp docker</code
         initHeroRotator();
         loadRandomScreenshot();
         initHeroAnimation();
-        initDockerStepToggle();
 
         // Cleanup entrance animations on rotator elements to allow transitions to work later
         setTimeout(() => {
