@@ -213,6 +213,84 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
+      @keyframes archPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.08);
+        }
+        50% {
+          transform: scale(1.01);
+          box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+        }
+      }
+      @keyframes archFlow {
+        0% {
+          transform: translateX(-6px);
+          opacity: 0;
+        }
+        15% {
+          opacity: 1;
+        }
+        85% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(calc(100% + 6px));
+          opacity: 0;
+        }
+      }
+      @keyframes archFlowVertical {
+        0% {
+          transform: translateY(-6px);
+          opacity: 0;
+        }
+        15% {
+          opacity: 1;
+        }
+        85% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(calc(100% + 6px));
+          opacity: 0;
+        }
+      }
+      .arch-node {
+        animation: archPulse 3.8s ease-in-out infinite;
+      }
+      .arch-line {
+        position: relative;
+        height: 2px;
+        background: linear-gradient(90deg, #d1d5db, #9ca3af, #d1d5db);
+        overflow: hidden;
+      }
+      .arch-line-dot {
+        position: absolute;
+        top: 50%;
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        background: #111827;
+        transform: translateY(-50%);
+        animation: archFlow 3.4s linear infinite;
+      }
+      .arch-line-vertical {
+        position: relative;
+        width: 2px;
+        background: linear-gradient(180deg, #d1d5db, #9ca3af, #d1d5db);
+        overflow: hidden;
+      }
+      .arch-line-dot-vertical {
+        position: absolute;
+        left: 50%;
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        background: #111827;
+        transform: translateX(-50%);
+        animation: archFlowVertical 3.4s linear infinite;
+      }
     </style>
   </head>
   <body class="bg-white text-black font-mono antialiased selection:bg-black selection:text-white relative">
@@ -355,6 +433,100 @@
           <!-- Features loaded via JS -->
         </div>
       </div>
+
+      <!-- Architecture Diagram Section -->
+      <section id="architecture" class="relative left-1/2 right-1/2 w-screen -translate-x-1/2 py-12 sm:py-16 border-y border-gray-100 bg-white mt-10 sm:mt-14">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+          <div class="text-center mb-10">
+            <p class="text-[11px] uppercase tracking-[0.2em] text-gray-500 mb-2">Architecture</p>
+            <h2 class="text-3xl sm:text-4xl font-bold font-sans tracking-tight mb-3">How Yantr works under the hood</h2>
+            <p class="text-gray-600 font-sans max-w-3xl mx-auto">
+              Yantr turns raw Docker operations into a safe, repeatable flow: define app intent, generate Compose behavior, execute atomically, and keep data portable.
+            </p>
+          </div>
+
+          <div class="rounded-2xl border border-gray-200 bg-white p-5 sm:p-7 shadow-sm">
+            <div class="hidden lg:grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-4">
+              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                <p class="text-2xl mb-2">🧠</p>
+                <h3 class="font-bold font-sans mb-1">Intent Layer</h3>
+                <p class="text-sm text-gray-600 font-sans">App templates, defaults, dependencies, and user configuration.</p>
+              </div>
+
+              <div class="arch-line w-20">
+                <span class="arch-line-dot" style="animation-delay: 0s"></span>
+              </div>
+
+              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4" style="animation-delay: 0.2s">
+                <p class="text-2xl mb-2">⚙️</p>
+                <h3 class="font-bold font-sans mb-1">Compose Engine</h3>
+                <p class="text-sm text-gray-600 font-sans">Generates deterministic Docker Compose actions from metadata.</p>
+              </div>
+
+              <div class="arch-line w-20">
+                <span class="arch-line-dot" style="animation-delay: 0.35s"></span>
+              </div>
+
+              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4" style="animation-delay: 0.4s">
+                <p class="text-2xl mb-2">🐳</p>
+                <h3 class="font-bold font-sans mb-1">Runtime + Data</h3>
+                <p class="text-sm text-gray-600 font-sans">Containers, volumes, backups, and cleanup in atomic operations.</p>
+              </div>
+            </div>
+
+            <div class="lg:hidden space-y-4">
+              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                <p class="text-2xl mb-2">🧠</p>
+                <h3 class="font-bold font-sans mb-1">Intent Layer</h3>
+                <p class="text-sm text-gray-600 font-sans">Templates, defaults, dependencies, and user config.</p>
+              </div>
+
+              <div class="arch-line-vertical h-8 mx-auto">
+                <span class="arch-line-dot-vertical"></span>
+              </div>
+
+              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4" style="animation-delay: 0.2s">
+                <p class="text-2xl mb-2">⚙️</p>
+                <h3 class="font-bold font-sans mb-1">Compose Engine</h3>
+                <p class="text-sm text-gray-600 font-sans">Deterministic Docker Compose action generation.</p>
+              </div>
+
+              <div class="arch-line-vertical h-8 mx-auto">
+                <span class="arch-line-dot-vertical" style="animation-delay: 0.3s"></span>
+              </div>
+
+              <div class="arch-node rounded-2xl border border-gray-200 bg-gray-50 p-4" style="animation-delay: 0.4s">
+                <p class="text-2xl mb-2">🐳</p>
+                <h3 class="font-bold font-sans mb-1">Runtime + Data</h3>
+                <p class="text-sm text-gray-600 font-sans">Containers, volumes, backups, and cleanup.</p>
+              </div>
+            </div>
+
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div class="rounded-xl border border-gray-200 p-4 bg-white">
+                <p class="text-xl mb-1">🧩</p>
+                <p class="font-semibold text-sm">Multiple Instances</p>
+                <p class="text-xs text-gray-500 mt-1">Run same app with isolated configs.</p>
+              </div>
+              <div class="rounded-xl border border-gray-200 p-4 bg-white">
+                <p class="text-xl mb-1">🕒</p>
+                <p class="font-semibold text-sm">Temporary Installs</p>
+                <p class="text-xs text-gray-500 mt-1">Auto-expire apps without residue.</p>
+              </div>
+              <div class="rounded-xl border border-gray-200 p-4 bg-white">
+                <p class="text-xl mb-1">💾</p>
+                <p class="font-semibold text-sm">Backup & Restore</p>
+                <p class="text-xs text-gray-500 mt-1">Volume migration via S3/MinIO.</p>
+              </div>
+              <div class="rounded-xl border border-gray-200 p-4 bg-white">
+                <p class="text-xl mb-1">🔒</p>
+                <p class="font-semibold text-sm">Atomic Actions</p>
+                <p class="text-xs text-gray-500 mt-1">All-or-nothing operations by design.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Screenshot Section -->
       <div class="pt-8 pb-12 sm:pt-12 sm:pb-20 border-t border-gray-100" id="screenshots">
