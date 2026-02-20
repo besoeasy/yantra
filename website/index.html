@@ -40,11 +40,6 @@
         -ms-overflow-style: none;
         scrollbar-width: none;
       }
-      .bg-grid-pattern {
-        background-color: #ffffff;
-        background-image: linear-gradient(#f1f5f9 1px, transparent 1px), linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
-        background-size: 20px 20px;
-      }
       .glass-effect {
         background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(10px);
@@ -181,8 +176,6 @@
     </style>
   </head>
   <body class="bg-white text-black font-mono antialiased selection:bg-black selection:text-white relative">
-    <div class="absolute inset-0 -z-10 bg-grid-pattern [mask-image:linear-gradient(to_bottom,white,transparent)] h-[900px] pointer-events-none"></div>
-
     <!-- Full-page Background Animation Container -->
     <div id="hero-stars" class="absolute top-0 left-0 w-full overflow-hidden -z-10 pointer-events-none" style="height: 100%"></div>
 
@@ -239,6 +232,14 @@
             </a>
           </div>
 
+          <div class="mb-8 flex justify-center animate-fade-in-up delay-300">
+            <span class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 animate-float-y">
+              <span class="h-2 w-2 rounded-full bg-black animate-pulse"></span>
+              <span class="text-xs font-semibold tracking-wide text-gray-600 uppercase">Scroll to explore</span>
+              <span aria-hidden="true" class="text-gray-500">↓</span>
+            </span>
+          </div>
+
           <!-- Install Widget -->
           <div class="max-w-2xl mx-auto text-left animate-fade-in-up">
             <div class="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
@@ -278,7 +279,9 @@
               </div>
             </div>
             <p class="mt-3 text-xs text-gray-400 text-center">
-              Requires Docker &middot;
+              After install, open
+              <a href="http://localhost" class="underline font-bold hover:text-gray-600 transition-colors">http://localhost</a>
+              &middot; Requires Docker &middot;
               <a href="./install-docker/" class="underline font-bold animate-pulse hover:text-gray-600 transition-colors">Install guide →</a>
             </p>
           </div>
