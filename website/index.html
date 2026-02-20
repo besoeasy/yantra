@@ -135,6 +135,46 @@
       .animate-float-y {
         animation: floatY 3.2s ease-in-out infinite;
       }
+      @keyframes heroLetterFloat {
+        0%,
+        100% {
+          transform: translateY(0px) scale(1);
+        }
+        50% {
+          transform: translateY(-2px) scale(1.008);
+        }
+      }
+      @keyframes heroLetterTilt {
+        0%,
+        100% {
+          transform: rotate(0deg) translateY(0px);
+        }
+        50% {
+          transform: rotate(-0.7deg) translateY(-1px);
+        }
+      }
+      .hero-letter {
+        display: inline-block;
+        will-change: transform;
+      }
+      .hero-letter-1 {
+        animation: heroLetterFloat 6.2s ease-in-out infinite;
+      }
+      .hero-letter-2 {
+        animation: heroLetterTilt 6.8s ease-in-out infinite;
+      }
+      .hero-letter-3 {
+        animation: heroLetterFloat 6.4s ease-in-out infinite;
+        animation-delay: 0.22s;
+      }
+      .hero-letter-4 {
+        animation: heroLetterTilt 7.1s ease-in-out infinite;
+        animation-delay: 0.34s;
+      }
+      .hero-letter-5 {
+        animation: heroLetterFloat 6.9s ease-in-out infinite;
+        animation-delay: 0.46s;
+      }
       #copy-install.copied .copy-icon {
         display: none;
       }
@@ -181,7 +221,7 @@
 
     <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-24 relative bg-white">
       <!-- Hero -->
-      <div class="mb-16 sm:mb-32 flex flex-col items-center text-center relative z-10">
+      <div class="min-h-screen mb-10 sm:mb-12 flex flex-col items-center justify-center text-center relative z-10">
         <div class="max-w-4xl mx-auto">
           <a
             href="./install-docker/"
@@ -192,13 +232,16 @@
           </a>
           <h1
             id="hero-title"
-            class="text-3xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6 font-sans text-black leading-tight sm:leading-[0.95] transition-opacity duration-500 ease-in-out animate-fade-in-up delay-100"
+            class="text-3xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-6 font-sans text-black leading-tight sm:leading-[0.95] animate-fade-in-up delay-100"
           >
-            Self-host open source apps.
+            <span class="sr-only">YANTR</span>
+            <span aria-hidden="true">
+              <span class="hero-letter hero-letter-1">Y</span><span class="hero-letter hero-letter-2">A</span><span class="hero-letter hero-letter-3">N</span><span class="hero-letter hero-letter-4">T</span><span class="hero-letter hero-letter-5">R</span>
+            </span>
           </h1>
           <p
             id="hero-desc"
-            class="text-lg sm:text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-10 font-sans transition-opacity duration-500 ease-in-out animate-fade-in-up delay-200"
+            class="text-lg sm:text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto mb-10 font-sans animate-fade-in-up delay-200"
           >
             Turn any device into a private cloud with one command. Run 100+ apps — Ollama, Nextcloud, Jellyfin, and more — fully isolated on your own hardware.
           </p>
@@ -230,14 +273,6 @@
               </svg>
               Telegram
             </a>
-          </div>
-
-          <div class="mb-8 flex justify-center animate-fade-in-up delay-300">
-            <span class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 animate-float-y">
-              <span class="h-2 w-2 rounded-full bg-black animate-pulse"></span>
-              <span class="text-xs font-semibold tracking-wide text-gray-600 uppercase">Scroll to explore</span>
-              <span aria-hidden="true" class="text-gray-500">↓</span>
-            </span>
           </div>
 
           <!-- Install Widget -->
@@ -285,31 +320,27 @@
               <a href="./install-docker/" class="underline font-bold animate-pulse hover:text-gray-600 transition-colors">Install guide →</a>
             </p>
           </div>
-        </div>
-      </div>
 
-      <!-- Full-width App Showcase -->
-      <div id="hero-apps-showcase" class="relative left-1/2 right-1/2 w-screen -translate-x-1/2 py-8 sm:py-10 border-y border-gray-100 bg-white">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 mb-5 sm:mb-6">
-        </div>
+          <div id="hero-apps-showcase" class="relative left-1/2 right-1/2 w-screen -translate-x-1/2 mt-6 sm:mt-8 py-6 sm:py-8 border-y border-gray-100 bg-white">
+            <div class="space-y-3 sm:space-y-4">
+              <div class="overflow-hidden py-1.5 sm:py-2">
+                <div class="flex items-center gap-3 px-3 sm:px-4 app-marquee-track app-marquee-left" id="hero-app-marquee-1"></div>
+              </div>
+              <div class="overflow-hidden py-1.5 sm:py-2">
+                <div class="flex items-center gap-3 px-3 sm:px-4 app-marquee-track app-marquee-right" id="hero-app-marquee-2"></div>
+              </div>
+            </div>
 
-        <div class="space-y-3 sm:space-y-4">
-          <div class="overflow-hidden py-1.5 sm:py-2">
-            <div class="flex items-center gap-3 px-3 sm:px-4 app-marquee-track app-marquee-left" id="hero-app-marquee-1"></div>
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 mt-6 sm:mt-8 flex justify-center">
+              <a
+                href="./catalog/"
+                class="inline-flex items-center gap-2 rounded-xl border border-black bg-black text-white px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold hover:bg-white hover:text-black transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
+              >
+                See all available apps
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
           </div>
-          <div class="overflow-hidden py-1.5 sm:py-2">
-            <div class="flex items-center gap-3 px-3 sm:px-4 app-marquee-track app-marquee-right" id="hero-app-marquee-2"></div>
-          </div>
-        </div>
-
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 mt-6 sm:mt-8 flex justify-center">
-          <a
-            href="./catalog/"
-            class="inline-flex items-center gap-2 rounded-xl border border-black bg-black text-white px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-semibold hover:bg-white hover:text-black transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
-          >
-            Open catalog
-            <span aria-hidden="true">→</span>
-          </a>
         </div>
       </div>
 
@@ -759,47 +790,6 @@
         if (section) observer.observe(section);
       }
 
-      function initHeroRotator() {
-        const messages = [
-          {
-            title: "Don't buy that<br />overpriced NUC.",
-            desc: "Turn your old laptop into a powerhouse homelab. Yantr runs on the hardware you already own.",
-          },
-          {
-            title: "Don't surrender<br />your OS.",
-            desc: "Yantr runs alongside macOS, Windows, and Linux. No formatting, no ISOs, no taking over your computer.",
-          },
-          {
-            title: "Self-host<br />open source apps.",
-            desc: "Turn any device into a private cloud. Run 100+ apps like Ollama, Open WebUI, and Perplexica on your own infrastructure.",
-          },
-          {
-            title: "Your data, your rules,<br />your hardware.",
-            desc: "Stop renting cloud servers. Host your own AI, media, and files locally with zero monthly fees.",
-          },
-        ];
-
-        let currentIndex = 0;
-        const titleEl = document.getElementById("hero-title");
-        const descEl = document.getElementById("hero-desc");
-
-        setInterval(() => {
-          // Fade out
-          titleEl.classList.add("opacity-0");
-          descEl.classList.add("opacity-0");
-
-          setTimeout(() => {
-            currentIndex = (currentIndex + 1) % messages.length;
-            titleEl.innerHTML = messages[currentIndex].title;
-            descEl.textContent = messages[currentIndex].desc;
-
-            // Fade in
-            titleEl.classList.remove("opacity-0");
-            descEl.classList.remove("opacity-0");
-          }, 500); // Wait for fade out
-        }, 5000); // Rotate every 5 seconds
-      }
-
       function loadRandomScreenshot() {
         const gifs = [
           {
@@ -912,23 +902,8 @@
         loadContributors();
         animateFeatures();
         initScrollAnimations();
-        initHeroRotator();
         loadRandomScreenshot();
         initHeroAnimation();
-
-        // Cleanup entrance animations on rotator elements to allow transitions to work later
-        setTimeout(() => {
-          const title = document.getElementById("hero-title");
-          const desc = document.getElementById("hero-desc");
-          if (title) {
-            title.classList.remove("animate-fade-in-up", "delay-100", "opacity-0");
-            title.style.opacity = ""; // Ensure it stays visible
-          }
-          if (desc) {
-            desc.classList.remove("animate-fade-in-up", "delay-200", "opacity-0");
-            desc.style.opacity = "";
-          }
-        }, 1500);
       });
     </script>
   </body>
