@@ -110,6 +110,26 @@
           </div>
         </section>
 
+        {% if relatedApps.length %}
+          <section class="mt-8">
+            <p class="text-xs uppercase tracking-[0.18em] text-gray-400 dark:text-zinc-500 mb-4">More in this category</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {% for related in relatedApps %}
+                <a
+                  href="../{{ related.id }}/"
+                  class="flex items-center gap-3 rounded-xl border border-gray-200 dark:border-zinc-800 p-4 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <img src="{{ related.logoUrl }}" alt="{{ related.name }} logo" class="w-10 h-10 rounded-lg object-cover shrink-0" loading="lazy" />
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold truncate">{{ related.name }}</p>
+                    <p class="text-xs text-gray-500 dark:text-zinc-400 truncate">{{ related.description }}</p>
+                  </div>
+                </a>
+              {% endfor %}
+            </div>
+          </section>
+        {% endif %}
+
         <p class="mt-6 text-xs text-gray-400 dark:text-zinc-500">Generated at {{ nowIso }}</p>
       </div>
     </main>

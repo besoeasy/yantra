@@ -51,6 +51,17 @@ function toAppViewModel(app) {
   };
 }
 
+function getRelatedApps(app, allApps, count = 3) {
+  const others = allApps.filter(
+    (a) => a.id !== app.id && a.category.some((c) => app.category.includes(c))
+  );
+  for (let i = others.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [others[i], others[j]] = [others[j], others[i]];
+  }
+  return others.slice(0, count);
+}
+
 function buildPages() {
   ensureAppsJsonExists();
 
@@ -68,8 +79,11 @@ function buildPages() {
     const appDir = path.join(appsOutputDir, app.id);
     fs.mkdirSync(appDir, { recursive: true });
 
+    const relatedApps = getRelatedApps(app, apps);
+
     const html = env.render('app.njk', {
       app,
+      relatedApps,
       nowIso: new Date().toISOString(),
       pageTitle: `${app.name} | Yantr App Catalog`,
       pageDescription: app.description,
