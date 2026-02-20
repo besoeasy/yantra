@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App Catalog | Yantr</title>
+    <meta name="description" content="Browse 100+ self-hosted apps available in Yantr. Filter by category and find the right app for your homelab." />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="https://yantr.org/catalog/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yantr.org/catalog/" />
+    <meta property="og:title" content="App Catalog | Yantr" />
+    <meta property="og:description" content="Browse 100+ self-hosted apps available in Yantr." />
+
+    <link rel="stylesheet" href="../tailwind.css" />
+    <style>
+      .tag-btn.active {
+        background-color: #000;
+        color: #fff;
+      }
+      .dark .tag-btn.active {
+        background-color: #fff;
+        color: #000;
+      }
+    </style>
+  </head>
+
+  <body class="bg-white text-black dark:bg-zinc-950 dark:text-zinc-100 font-mono antialiased selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
+    <main class="w-full px-4 sm:px-6 lg:px-8 py-10">
+      <div class="w-full max-w-6xl mx-auto">
+
+        <!-- Header -->
+        <div class="mb-8">
+          <a href="../index.html" class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors mb-6">
+            <span>←</span>
+            <span>Back to home</span>
+          </a>
+          <h1 class="text-3xl sm:text-4xl font-bold font-sans">App Catalog</h1>
+          <p class="mt-2 text-sm text-gray-500 dark:text-zinc-400" id="app-count">Loading apps…</p>
+        </div>
+
+        <!-- Search -->
+        <div class="mb-6">
+          <input
+            id="search"
+            type="search"
+            placeholder="Search apps…"
+            autocomplete="off"
+            class="w-full sm:w-80 px-4 py-2 text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-black dark:text-zinc-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:border-black dark:focus:border-white transition-colors"
+          />
+        </div>
+
+        <!-- Category filters -->
+        <div id="tag-filters" class="flex flex-wrap gap-2 mb-8"></div>
+
+        <!-- App grid -->
+        <div id="app-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+        <!-- Empty state -->
+        <p id="empty-state" class="hidden text-sm text-gray-400 dark:text-zinc-500 mt-8">No apps match your filter.</p>
+
+      </div>
+    </main>
+
+    <script>
+      let allApps = [];
+      let activeTag = 'all';
+      let searchQuery = '';
+
+      function logoUrl(app) {
+        if (!app.logo) {
+          return `https://ui-avatars.com/api/?name=${encodeURIComponent(app.name || app.id)}&background=random&color=fff&bold=true`;
+        }
+        return app.logo.startsWith('http') ? app.logo : `https://ipfs.io/ipfs/${app.logo}`;
+      }
+
+      function renderTags(categories) {
+        const container = document.getElementById('tag-filters');
+        const all = ['all', ...categories];
+        container.innerHTML = all.map(tag => `
+          <button
+            data-tag="${tag}"
+            class="tag-btn text-[10px] uppercase tracking-wider px-3 py-1 border border-gray-300 dark:border-zinc-700 hover:border-black dark:hover:border-white transition-colors ${tag === 'all' ? 'active' : ''}"
+          >${tag === 'all' ? 'All' : tag}</button>
+        `).join('');
+
+        container.addEventListener('click', (e) => {
+          const btn = e.target.closest('.tag-btn');
+          if (!btn) return;
+          activeTag = btn.dataset.tag;
+          container.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderGrid();
+        });
+      }
+
+      function renderGrid() {
+        const grid = document.getElementById('app-grid');
+        const empty = document.getElementById('empty-state');
+        const q = searchQuery.toLowerCase();
+
+        const filtered = allApps.filter(app => {
+          const matchesTag = activeTag === 'all' || (app.category || []).includes(activeTag);
+          const matchesSearch = !q || app.name.toLowerCase().includes(q) || (app.description || '').toLowerCase().includes(q);
+          return matchesTag && matchesSearch;
+        });
+
+        document.getElementById('app-count').textContent = `${filtered.length} of ${allApps.length} apps`;
+
+        if (filtered.length === 0) {
+          grid.innerHTML = '';
+          empty.classList.remove('hidden');
+          return;
+        }
+
+        empty.classList.add('hidden');
+        grid.innerHTML = filtered.map(app => {
+          const cats = (app.category || []).map(c => `
+            <span class="text-[9px] uppercase tracking-wider px-2 py-0.5 border border-gray-200 dark:border-zinc-700 text-gray-500 dark:text-zinc-400">${c}</span>
+          `).join('');
+
+          return `
+            <a
+              href="../apps/${app.id}/"
+              class="flex flex-col gap-4 rounded-xl border border-gray-200 dark:border-zinc-800 p-5 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
+            >
+              <div class="flex items-center gap-4">
+                <img src="${logoUrl(app)}" alt="${app.name} logo" class="w-12 h-12 rounded-xl border border-gray-200 dark:border-zinc-700 object-cover shrink-0" loading="lazy" />
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm truncate">${app.name}</p>
+                  <p class="text-xs text-gray-500 dark:text-zinc-400 mt-0.5 truncate">${app.description || 'No description available.'}</p>
+                </div>
+              </div>
+              ${cats ? `<div class="flex flex-wrap gap-1.5">${cats}</div>` : ''}
+            </a>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('search').addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        renderGrid();
+      });
+
+      fetch('../apps.json')
+        .then(r => r.json())
+        .then(data => {
+          allApps = (data.apps || []).sort((a, b) => a.name.localeCompare(b.name));
+          renderTags(data.meta?.categories || []);
+          renderGrid();
+        })
+        .catch(() => {
+          document.getElementById('app-count').textContent = 'Failed to load apps.';
+        });
+    </script>
+  </body>
+</html>
