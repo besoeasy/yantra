@@ -1,6 +1,7 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { Box, Boxes, Layers, HardDrive, ClipboardList, Send, Github, Heart, Home, Moon, Sun, Compass } from "lucide-vue-next";
+import NotificationBanner from './components/NotificationBanner.vue';
 import { onMounted, ref } from "vue";
 
 const route = useRoute();
@@ -32,6 +33,7 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen flex flex-col md:flex-row bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <NotificationBanner />
     <!-- Desktop Sidebar -->
     <aside
       class="hidden md:flex bg-white dark:bg-slate-950 flex-col items-center border-r border-gray-200 dark:border-slate-800 w-20 py-6 px-2 fixed h-screen z-50"

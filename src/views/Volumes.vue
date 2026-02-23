@@ -1,10 +1,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { HardDrive, Eye, EyeOff, ExternalLink, Loader2, RefreshCw, Trash2, AlertCircle, Box, Check, Search } from 'lucide-vue-next'
-import { useToast } from 'vue-toastification'
+import { useNotification } from '../composables/useNotification'
 import VueApexCharts from 'vue3-apexcharts'
 
-const toast = useToast()
+const toast = useNotification()
 
 const volumesData = ref({})
 const loading = ref(false)

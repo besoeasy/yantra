@@ -1,10 +1,10 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { Trash2, RefreshCw, CheckCircle2, Package, Database, Sparkles, ArrowRight } from 'lucide-vue-next'
-import { useToast } from 'vue-toastification'
+import { useNotification } from '../composables/useNotification'
 import { formatBytes } from '../utils/metrics'
 
-const toast = useToast()
+const toast = useNotification()
 
 // Props
 const props = defineProps({

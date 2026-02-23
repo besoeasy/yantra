@@ -1,12 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useToast } from 'vue-toastification'
+import { useNotification } from '../composables/useNotification'
 import { useApiUrl } from '../composables/useApiUrl'
 import { ArrowLeft, Cloud, Save, RefreshCw } from 'lucide-vue-next'
 
 const router = useRouter()
-const toast = useToast()
+const toast = useNotification()
 const { apiUrl } = useApiUrl()
 
 const loading = ref(false)

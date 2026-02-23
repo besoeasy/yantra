@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
+import { useNotification } from '../composables/useNotification';
 import { useApiUrl } from "../composables/useApiUrl";
 import { usePortConflict } from "../composables/usePortConflict";
 import { Globe, FileCode, ArrowLeft, Package, Clock, Tag, ExternalLink, Activity, Info, AlertTriangle, Check, Terminal, Play, CreditCard, RotateCcw, Download } from "lucide-vue-next";
@@ -9,7 +9,7 @@ import { buildChatGptExplainUrl } from "../utils/chatgpt";
 
 const route = useRoute();
 const router = useRouter();
-const toast = useToast();
+const toast = useNotification();
 const { apiUrl } = useApiUrl();
 
 // State
