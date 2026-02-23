@@ -3,7 +3,16 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { useApiUrl } from "../composables/useApiUrl";
 import AppCard from "../components/AppCard.vue";
-import { Tag, Search, Grid, LayoutGrid, X } from "lucide-vue-next";
+import { Tag, Search, LayoutGrid, X, Command } from "lucide-vue-next";
+
+const searchInput = ref(null);
+
+function focusSearch(e) {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.value?.focus();
+  }
+}
 
 const router = useRouter();
 const { apiUrl } = useApiUrl();
@@ -161,6 +170,7 @@ function viewAppDetail(appId) {
 
 // Lifecycle
 onMounted(async () => {
+  window.addEventListener('keydown', focusSearch);
   loading.value = true;
   await Promise.all([fetchApps(), fetchContainers()]);
   loading.value = false;
@@ -178,6 +188,7 @@ onMounted(async () => {
 onUnmounted(() => {
   if (refreshInterval) clearInterval(refreshInterval);
   if (seedInterval) clearInterval(seedInterval);
+  window.removeEventListener('keydown', focusSearch);
 });
 </script>
 
@@ -187,31 +198,50 @@ onUnmounted(() => {
     <!-- Main Content -->
     <main class="flex-1 min-w-0 order-1 lg:order-1">
         <!-- Top Bar -->
-        <div class="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur border-b border-slate-200 dark:border-slate-800 px-6 py-5">
-            <div class="relative">
-               <input
-                 v-model="appSearch"
-                 type="text"
-                 placeholder="Search applications..."
-                 class="w-full bg-white dark:bg-[#0c0c0e] border-2 border-slate-200 dark:border-slate-700 rounded-xl pl-12 pr-12 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-sans placeholder:text-slate-400 shadow-sm hover:border-slate-300 dark:hover:border-slate-600"
-               />
-               <Search :size="18" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-               <button 
-                  v-if="appSearch"
-                  @click="appSearch = ''"
-                  class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                >
-                  <X :size="16" />
-               </button>
+        <div class="sticky top-0 z-30 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 px-4 sm:px-6 pt-4 pb-3">
+
+          <!-- Search input -->
+          <div class="relative group">
+            <Search :size="17" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none transition-colors group-focus-within:text-gray-700 dark:group-focus-within:text-slate-300" />
+            <input
+              ref="searchInput"
+              v-model="appSearch"
+              type="text"
+              placeholder="Search apps…"
+              class="w-full bg-gray-50 dark:bg-[#0c0c0e] border border-gray-200 dark:border-slate-800 rounded-2xl pl-11 pr-24 py-3 text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-gray-900 dark:focus:border-slate-400 focus:bg-white dark:focus:bg-[#111] focus:shadow-lg transition-all duration-200"
+            />
+            <!-- Kbd hint -->
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none" :class="appSearch ? 'hidden' : ''">
+              <kbd class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 border border-gray-200 dark:border-slate-700">
+                <Command :size="9" />
+                K
+              </kbd>
             </div>
-            
-            <div class="mt-3 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2" v-if="selectedCategory || appSearch">
-               <span>Showing {{ combinedApps.length }} results</span>
-               <span v-if="selectedCategory" class="inline-flex items-center gap-1 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded">
-                  Category: {{ selectedCategory }}
-                  <button @click="selectedCategory = null" class="hover:text-indigo-800 dark:hover:text-indigo-200"><X :size="10" /></button>
-               </span>
-            </div>
+            <!-- Clear button -->
+            <button
+              v-if="appSearch"
+              @click="appSearch = ''"
+              class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              <X :size="15" />
+            </button>
+          </div>
+
+          <!-- Active filters + result count -->
+          <div class="mt-2.5 flex items-center gap-2 flex-wrap min-h-6">
+            <span class="text-xs text-gray-400 dark:text-slate-500">
+              {{ combinedApps.length }} app{{ combinedApps.length === 1 ? '' : 's' }}
+            </span>
+            <span
+              v-if="selectedCategory"
+              class="inline-flex items-center gap-1 text-xs font-medium bg-gray-900 dark:bg-slate-100 text-white dark:text-slate-900 px-2.5 py-1 rounded-full"
+            >
+              {{ selectedCategory }}
+              <button @click="selectedCategory = null" class="ml-0.5 hover:opacity-70 transition-opacity">
+                <X :size="11" />
+              </button>
+            </span>
+          </div>
         </div>
 
         <!-- content area -->
@@ -244,53 +274,75 @@ onUnmounted(() => {
     </main>
 
     <!-- Sidebar / Filters -->
-    <aside class="w-full lg:w-64 xl:w-72 bg-white dark:bg-[#0c0c0e] border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-800 lg:h-screen lg:sticky lg:top-0 overflow-y-auto order-2 lg:order-2">
-       <div class="p-6">
-          <div class="flex items-center gap-2 mb-8">
-             <LayoutGrid class="text-indigo-500" :size="24" />
-             <h1 class="text-xl font-bold text-slate-900 dark:text-white">App Catalog</h1>
+    <aside class="w-full lg:w-60 xl:w-64 shrink-0 bg-white dark:bg-[#0c0c0e] border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-slate-800 lg:h-screen lg:sticky lg:top-0 overflow-y-auto order-2 lg:order-2 scrollbar-none">
+      <div class="p-5">
+
+        <!-- Header -->
+        <div class="mb-6">
+          <h2 class="text-base font-bold text-gray-900 dark:text-white">Categories</h2>
+          <p class="text-xs text-gray-400 dark:text-slate-500 mt-0.5">{{ allAppsCount }} apps available</p>
+        </div>
+
+        <!-- All button -->
+        <button
+          @click="selectedCategory = null"
+          :class="[
+            'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 mb-1',
+            selectedCategory === null
+              ? 'bg-gray-900 dark:bg-slate-100 text-white dark:text-gray-900'
+              : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/60 hover:text-gray-900 dark:hover:text-slate-200'
+          ]"
+        >
+          <div class="flex items-center gap-2.5">
+            <LayoutGrid :size="15" />
+            All apps
           </div>
+          <span :class="[
+            'text-xs font-semibold tabular-nums px-1.5 py-0.5 rounded-md',
+            selectedCategory === null
+              ? 'bg-white/20 text-white dark:bg-gray-900/20 dark:text-gray-900'
+              : 'bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400'
+          ]">{{ allAppsCount }}</span>
+        </button>
 
-          <div class="space-y-1">
-             <button
-                @click="selectedCategory = null"
-                :class="[
-                  'w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-colors',
-                  selectedCategory === null 
-                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' 
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1a1a1c] hover:text-slate-900 dark:hover:text-slate-200'
-                ]"
-             >
-                <div class="flex items-center gap-2.5">
-                   <Grid :size="16" />
-                   All Applications
-                </div>
-                <span class="text-xs font-mono font-bold">{{ allAppsCount }}</span>
-             </button>
+        <!-- Divider -->
+        <div class="my-3 border-t border-gray-100 dark:border-slate-800"></div>
 
-             <div class="pt-4 pb-2">
-                <div class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Categories</div>
-             </div>
-
-             <button
-                v-for="cat in categories"
-                :key="cat.name"
-                @click="selectedCategory = cat.name"
-                :class="[
-                  'w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-colors',
-                  selectedCategory === cat.name
-                    ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' 
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1a1a1c] hover:text-slate-900 dark:hover:text-slate-200'
-                ]"
-             >
-                <div class="flex items-center gap-2.5">
-                   <Tag :size="16" />
-                   {{ cat.name }}
-                </div>
-                <span class="text-xs font-mono text-slate-400">{{ cat.count }}</span>
-             </button>
-          </div>
-       </div>
+        <!-- Category list -->
+        <div class="space-y-0.5">
+          <button
+            v-for="cat in categories"
+            :key="cat.name"
+            @click="selectedCategory = cat.name"
+            :class="[
+              'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group',
+              selectedCategory === cat.name
+                ? 'bg-gray-900 dark:bg-slate-100 text-white dark:text-gray-900'
+                : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/60 hover:text-gray-900 dark:hover:text-slate-200'
+            ]"
+          >
+            <div class="flex items-center gap-2.5 min-w-0">
+              <Tag :size="14" class="shrink-0" />
+              <span class="truncate">{{ cat.name }}</span>
+            </div>
+            <span :class="[
+              'text-xs font-semibold tabular-nums px-1.5 py-0.5 rounded-md shrink-0 ml-2',
+              selectedCategory === cat.name
+                ? 'bg-white/20 text-white dark:bg-gray-900/20 dark:text-gray-900'
+                : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500'
+            ]">{{ cat.count }}</span>
+          </button>
+        </div>
+      </div>
     </aside>
   </div>
 </template>
+
+<style scoped>
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+</style>
