@@ -1,0 +1,18 @@
+services:
+  memos:
+    image: neosmemo/memos:stable
+    container_name: memos
+    volumes:
+      - memos_data:/var/opt/memos
+    ports:
+      - 5230
+    labels:
+      yantr.name: "Memos"
+      yantr.logo: "QmVYAHxdTDQqw3DDm6YRk6EvgmuWtMDae8Z8LQaCVqYZ2B"
+      yantr.category: "productivity,tools,network"
+      yantr.port: "5230 (HTTP - Web UI)"
+      yantr.description: "Open-source Markdown notes app, with a UI styled like a social feed."
+      yantr.website: "https://github.com/usememos/memos"
+
+volumes:
+  memos_data:
