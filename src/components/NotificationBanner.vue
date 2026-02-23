@@ -20,16 +20,11 @@ const bgMap = {
 </script>
 
 <template>
-  <Transition
-    enter-active-class="transition-transform duration-300 ease-out"
-    enter-from-class="-translate-y-full"
-    leave-active-class="transition-transform duration-300 ease-in"
-    leave-to-class="-translate-y-full"
-  >
+  <Transition name="banner">
     <div
       v-if="notificationState"
       :class="[
-        'fixed top-0 left-0 right-0 md:left-20 z-9999',
+        'sticky top-0 w-full md:pl-20 z-50',
         'flex items-center justify-between px-4 py-3 text-white shadow-lg',
         bgMap[notificationState.type]
       ]"
@@ -48,3 +43,21 @@ const bgMap = {
     </div>
   </Transition>
 </template>
+
+<style scoped>
+.banner-enter-active,
+.banner-leave-active {
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+.banner-enter-from,
+.banner-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+.banner-enter-to,
+.banner-leave-from {
+  max-height: 80px;
+  opacity: 1;
+}
+</style>
