@@ -1,0 +1,15 @@
+services:
+  ttyd-ubuntu:
+    image: tsl0922/ttyd:latest
+    container_name: ttyd-ubuntu
+    labels:
+      yantr.name: "ttyd-ubuntu"
+      yantr.logo: "QmWR3wxj9BFZquxyvmqUa3H94BVFUzgWzeHoaRB3515SZJ"
+      yantr.category: "tools,utility"
+      yantr.port: "7681 (HTTP - Web Terminal)"
+      yantr.description: "Share your terminal over the web — runs a bash shell in Ubuntu Linux accessible from any browser"
+      yantr.website: "https://github.com/tsl0922/ttyd"
+    ports:
+      - "7681"
+    command: bash
+    restart: unless-stopped
