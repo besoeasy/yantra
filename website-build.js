@@ -209,8 +209,8 @@ function buildPages() {
       app,
       relatedApps,
       nowIso: new Date().toISOString(),
-      pageTitle: `${app.name} | Yantr App Catalog`,
-      pageDescription: app.description,
+      pageTitle: `Self-Host ${app.name} with Docker | Yantr`,
+      pageDescription: `Learn how to self-host ${app.name} on your homelab using Docker. ${app.description}${app.description.endsWith('.') ? '' : '.'} Easy one-click setup with Yantr.`,
       pageUrl: `https://yantr.org/apps/${app.id}/`,
       imageUrl: app.logoUrl,
     });
