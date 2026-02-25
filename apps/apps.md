@@ -30,18 +30,26 @@ where app-name is the application name, rules for names are
 4. **Dependencies & Networking**
 
    - Each app must be deployable on its own.
-   - For apps that talk to each other, attach all services to the shared external network:
+   - Standalone apps (no inter-app communication) need no `networks` block at all.
+   - For apps that expose a service to dependents, define and own a dedicated network:
      ```yaml
+     # Base app (e.g. ollama/compose.yml)
      networks:
-       yantr_network:
-         name: yantr_network
+       ollama_network:
+         name: ollama_network
+     ```
+   - For apps that depend on another app, join that network as external:
+     ```yaml
+     # Dependent app (e.g. open-webui/compose.yml)
+     networks:
+       ollama_network:
+         name: ollama_network
          external: true
      ```
-   - Resolve dependencies via service names on `yantr_network` (for example, `http://ollama:11434`).
+   - Resolve dependency endpoints via container name (for example, `http://ollama:11434`).
    - Use environment variables with sensible defaults to configure dependency endpoints.
    - Do not use `depends_on` across different apps. Only use it within the same compose.yml if needed.
-   - Keep `yantr.dependencies` labels for UI metadata only.
-  - If a service uses `yantr_network`, the root `networks.yantr_network` must set `external: true` and `name: yantr_network`.
+   - Use `yantr.dependencies` labels to declare which apps must be deployed first (UI metadata + deploy guard).
 
 ## Yantr labels
 

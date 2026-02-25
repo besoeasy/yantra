@@ -402,47 +402,6 @@ function extractServiceNetworkNames(service) {
     return [];
 }
 
-function validateYantrNetwork(composeObj) {
-    const errors = [];
-    const warnings = [];
-    const services = composeObj && typeof composeObj === 'object' ? (composeObj.services || {}) : {};
-
-    const usingServices = [];
-    for (const [svcName, service] of Object.entries(services)) {
-        const networkNames = extractServiceNetworkNames(service);
-        if (networkNames.includes('yantr_network')) {
-            usingServices.push(svcName);
-        }
-    }
-
-    const networkConfig = composeObj && typeof composeObj === 'object'
-        ? (composeObj.networks ? composeObj.networks.yantr_network : null)
-        : null;
-
-    if (usingServices.length > 0) {
-        if (!networkConfig || typeof networkConfig !== 'object') {
-            errors.push(`Services [${usingServices.join(', ')}] use yantr_network but networks.yantr_network is missing`);
-            return { errors, warnings };
-        }
-
-        if (networkConfig.name !== 'yantr_network') {
-            errors.push('networks.yantr_network.name must be "yantr_network"');
-        }
-
-        if (networkConfig.external !== true) {
-            errors.push('networks.yantr_network must set external: true');
-        }
-
-        if (Object.prototype.hasOwnProperty.call(networkConfig, 'driver')) {
-            errors.push('networks.yantr_network must not set driver when using external: true');
-        }
-    } else if (networkConfig) {
-        warnings.push('networks.yantr_network is defined but no service uses it');
-    }
-
-    return { errors, warnings };
-}
-
 async function detectPortConflict() {
     const appsDir = path.join(__dirname, '..', 'apps');
     const portToFiles = new Map();
@@ -541,10 +500,9 @@ async function validateAllApps() {
         }
 
         const labelResult = validateYantrLabels(appName, composeObj);
-        const networkResult = validateYantrNetwork(composeObj);
         const envValueWarnings = detectUnquotedEnvValues(composeContent);
-        const errors = [...labelResult.errors, ...networkResult.errors];
-        const warnings = [...labelResult.warnings, ...networkResult.warnings, ...envValueWarnings];
+        const errors = [...labelResult.errors];
+        const warnings = [...labelResult.warnings, ...envValueWarnings];
         
         if (errors.length > 0 || warnings.length > 0) {
             validationResults.push({

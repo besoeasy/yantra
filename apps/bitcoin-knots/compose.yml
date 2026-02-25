@@ -24,13 +24,6 @@ services:
       yantr.port: "8332 (HTTP - Web UI)"
       yantr.description: "Bitcoin full node with enhanced features and privacy focus."
       yantr.website: "https://bitcoinknots.org"
-    networks:
-      - yantr_network
 
 volumes:
   bitcoin_knots_data:
-
-networks:
-  yantr_network:
-    name: yantr_network
-    external: true

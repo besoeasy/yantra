@@ -32,12 +32,11 @@ services:
       - OLLAMA_GPU_MEMORY_FALLBACK=true
     runtime: nvidia
     networks:
-      - yantr_network
+      - ollama_network
 
 volumes:
   ollama_data:
 
 networks:
-  yantr_network:
-    name: yantr_network
-    external: true
+  ollama_network:
+    name: ollama_network

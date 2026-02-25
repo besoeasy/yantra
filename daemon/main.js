@@ -40,7 +40,6 @@ const app = express();
 const socketPath = process.env.DOCKER_SOCKET || "/var/run/docker.sock";
 
 const docker = new Docker({ socketPath });
-const SHARED_NETWORK_NAME = "yantr_network";
 
 // System architecture cache
 let systemArchitecture = null;
@@ -245,37 +244,6 @@ function normalizeUiBasePath(value) {
 
   const withLeadingSlash = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
   return withLeadingSlash.replace(/\/+$/, "");
-}
-
-async function ensureYantrNetwork({ log: logFn } = {}) {
-  const logger = logFn || (() => {});
-
-  try {
-    const networks = await docker.listNetworks({
-      filters: { name: [SHARED_NETWORK_NAME] },
-    });
-
-    if (networks.some((network) => network.Name === SHARED_NETWORK_NAME)) {
-      return { created: false };
-    }
-  } catch (err) {
-    logger("warn", `⚠️  [NETWORK] Failed to list networks: ${err?.message || err}`);
-  }
-
-  try {
-    await docker.createNetwork({
-      Name: SHARED_NETWORK_NAME,
-      Driver: "bridge",
-    });
-    logger("info", `🧩 [NETWORK] Created ${SHARED_NETWORK_NAME}`);
-    return { created: true };
-  } catch (err) {
-    if (err?.statusCode === 409 || `${err?.message || err}`.includes("already exists")) {
-      return { created: false };
-    }
-
-    throw new DockerError(`Failed to ensure ${SHARED_NETWORK_NAME}`, err?.message || err);
-  }
 }
 
 async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) {
@@ -1152,16 +1120,6 @@ app.post("/api/deploy", async (req, res) => {
       }
     }
 
-    try {
-      await ensureYantrNetwork({ log });
-    } catch (err) {
-      log("error", `❌ [POST /api/deploy] ${err.message}`);
-      return res.status(500).json({
-        success: false,
-        error: "Network initialization failed",
-        message: err.message,
-      });
-    }
 
     // Check dependencies
     const dependenciesMatch = composeContent.match(/yantr\.dependencies:\s*["'](.+?)["']/);
@@ -2630,10 +2588,6 @@ app.listen(PORT, "0.0.0.0", () => {
 
   resolveComposeCommand({ socketPath, log }).catch((err) => {
     log("warn", `⚠️  [COMPOSE] ${err.message}`);
-  });
-
-  ensureYantrNetwork({ log }).catch((err) => {
-    log("warn", `⚠️  [NETWORK] ${err.message}`);
   });
 
   // Start cleanup scheduler (runs every 15 minutes to handle temporary installations)

@@ -18,12 +18,12 @@ services:
       - open_webui_data:/app/backend/data
     restart: unless-stopped
     networks:
-      - yantr_network
+      - ollama_network
 
 volumes:
   open_webui_data:
 
 networks:
-  yantr_network:
-    name: yantr_network
+  ollama_network:
+    name: ollama_network
     external: true
