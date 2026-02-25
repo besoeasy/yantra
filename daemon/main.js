@@ -18,6 +18,7 @@ import {
 } from "./utils.js";
 
 import { startCleanupScheduler } from "./cleanup.js";
+import YAML from "yaml";
 import {
   getS3Config,
   saveS3Config,
@@ -244,6 +245,12 @@ function normalizeUiBasePath(value) {
 
   const withLeadingSlash = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
   return withLeadingSlash.replace(/\/+$/, "");
+}
+
+function parseDependenciesFromContent(composeContent) {
+  const match = composeContent.match(/yantr\.dependencies:\s*["'](.+?)["']/);
+  if (!match) return [];
+  return match[1].split(",").map((dep) => dep.trim()).filter(Boolean);
 }
 
 async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) {
@@ -991,16 +998,14 @@ app.get("/api/apps/:id/dependency-env", asyncHandler(async (req, res) => {
   }
 
   // Extract dependencies from compose file
-  const dependenciesMatch = composeContent.match(/yantr\.dependencies:\s*["'](.+?)["']/);
-  if (!dependenciesMatch) {
+  const dependencies = parseDependenciesFromContent(composeContent);
+  if (dependencies.length === 0) {
     return res.json({
       success: true,
       dependencies: [],
       environmentVariables: {}
     });
   }
-
-  const dependencies = dependenciesMatch[1].split(',').map(dep => dep.trim());
   log("info", `[GET /api/apps/:id/dependency-env] Found dependencies for ${appId}: ${dependencies.join(', ')}`);
 
   // Get environment variables from each dependency container
@@ -1121,11 +1126,41 @@ app.post("/api/deploy", async (req, res) => {
     }
 
 
+    // Check that all external networks exist before deploying
+    let parsedCompose;
+    try {
+      parsedCompose = YAML.parse(composeContent);
+    } catch (_) {
+      parsedCompose = null;
+    }
+    if (parsedCompose?.networks) {
+      const missingNetworks = [];
+      for (const [netName, netConfig] of Object.entries(parsedCompose.networks)) {
+        if (netConfig?.external === true) {
+          const name = netConfig.name || netName;
+          const nets = await docker.listNetworks({ filters: { name: [name] } });
+          if (!nets.some(n => n.Name === name)) {
+            missingNetworks.push(name);
+          }
+        }
+      }
+      if (missingNetworks.length > 0) {
+        const needed = missingNetworks.map(n => n.replace(/_network$/, '')).join(', ');
+        log("error", `❌ [POST /api/deploy] Missing networks: ${missingNetworks.join(', ')}`);
+        return res.status(400).json({
+          success: false,
+          error: "Missing networks",
+          message: `Required network(s) ${missingNetworks.join(', ')} do not exist. Deploy ${needed} first.`,
+          missingNetworks,
+        });
+      }
+    }
+
     // Check dependencies
-    const dependenciesMatch = composeContent.match(/yantr\.dependencies:\s*["'](.+?)["']/);
+    const deployDeps = parseDependenciesFromContent(composeContent);
     let dependencyWarnings = null;
-    if (dependenciesMatch) {
-      const dependencies = dependenciesMatch[1].split(',').map(dep => dep.trim());
+    if (deployDeps.length > 0) {
+      const dependencies = deployDeps;
       log("info", `🔗 [POST /api/deploy] Checking dependencies: ${dependencies.join(', ')}`);
 
       const containers = await docker.listContainers({ all: false }); // Only running containers

@@ -402,6 +402,52 @@ function extractServiceNetworkNames(service) {
     return [];
 }
 
+function validateNetworkDependencyConsistency(appName, composeObj) {
+    const errors = [];
+    const warnings = [];
+
+    if (!composeObj || typeof composeObj !== 'object') return { errors, warnings };
+
+    // Collect external network names declared in compose
+    const externalNetworks = [];
+    if (composeObj.networks && typeof composeObj.networks === 'object') {
+        for (const [netName, netConfig] of Object.entries(composeObj.networks)) {
+            if (netConfig?.external === true) {
+                externalNetworks.push(netName);
+            }
+        }
+    }
+
+    // Collect declared dependencies from all service labels
+    const declaredDeps = new Set();
+    const services = composeObj.services || {};
+    for (const service of Object.values(services)) {
+        const depLabel = service?.labels?.['yantr.dependencies'];
+        if (depLabel) {
+            depLabel.split(',').map(d => d.trim()).filter(Boolean).forEach(d => declaredDeps.add(d));
+        }
+    }
+
+    // Each external network (foo_network) should have dep declared (foo)
+    for (const netName of externalNetworks) {
+        if (!netName.endsWith('_network')) continue;
+        const expectedDep = netName.replace(/_network$/, '');
+        if (!declaredDeps.has(expectedDep)) {
+            warnings.push(`Network "${netName}" is external but yantr.dependencies does not declare "${expectedDep}"`);
+        }
+    }
+
+    // Each declared dep (foo) should have a matching external network (foo_network)
+    for (const dep of declaredDeps) {
+        const expectedNet = `${dep}_network`;
+        if (!externalNetworks.includes(expectedNet)) {
+            warnings.push(`yantr.dependencies declares "${dep}" but "${dep}_network" is not declared as an external network`);
+        }
+    }
+
+    return { errors, warnings };
+}
+
 async function detectPortConflict() {
     const appsDir = path.join(__dirname, '..', 'apps');
     const portToFiles = new Map();
@@ -500,9 +546,10 @@ async function validateAllApps() {
         }
 
         const labelResult = validateYantrLabels(appName, composeObj);
+        const networkDepResult = validateNetworkDependencyConsistency(appName, composeObj);
         const envValueWarnings = detectUnquotedEnvValues(composeContent);
-        const errors = [...labelResult.errors];
-        const warnings = [...labelResult.warnings, ...envValueWarnings];
+        const errors = [...labelResult.errors, ...networkDepResult.errors];
+        const warnings = [...labelResult.warnings, ...networkDepResult.warnings, ...envValueWarnings];
         
         if (errors.length > 0 || warnings.length > 0) {
             validationResults.push({
