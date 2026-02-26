@@ -11,11 +11,27 @@ const iconMap = {
   info:    Info,
 }
 
-const bgMap = {
-  success: 'bg-emerald-600 dark:bg-emerald-700',
-  error:   'bg-red-600 dark:bg-red-700',
-  warning: 'bg-amber-500 dark:bg-amber-600',
-  info:    'bg-blue-600 dark:bg-blue-700',
+const colorMap = {
+  success: {
+    bar:  'bg-emerald-500',
+    icon: 'text-emerald-500',
+    border: 'border-emerald-200 dark:border-emerald-800',
+  },
+  error: {
+    bar:  'bg-red-500',
+    icon: 'text-red-500',
+    border: 'border-red-200 dark:border-red-800',
+  },
+  warning: {
+    bar:  'bg-amber-400',
+    icon: 'text-amber-500',
+    border: 'border-amber-200 dark:border-amber-800',
+  },
+  info: {
+    bar:  'bg-blue-500',
+    icon: 'text-blue-500',
+    border: 'border-blue-200 dark:border-blue-800',
+  },
 }
 </script>
 
@@ -23,23 +39,39 @@ const bgMap = {
   <Transition name="banner">
     <div
       v-if="notificationState"
-      :class="[
-        'sticky top-0 w-full md:pl-20 z-50',
-        'flex items-center justify-between px-4 py-3 text-white shadow-lg',
-        bgMap[notificationState.type]
-      ]"
+      class="fixed top-4 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-6 md:top-4 z-[60] w-[calc(100%-2rem)] max-w-sm pointer-events-auto"
     >
-      <div class="flex items-center gap-3 min-w-0">
-        <component :is="iconMap[notificationState.type]" :size="18" class="shrink-0" />
-        <span class="text-sm font-medium truncate">{{ notificationState.message }}</span>
-      </div>
-      <button
-        @click="dismiss"
-        class="ml-4 shrink-0 rounded-full p-1 hover:bg-white/20 transition-colors"
-        aria-label="Dismiss"
+      <div
+        :class="[
+          'relative flex items-start gap-3 rounded-xl px-4 py-3.5 shadow-xl border',
+          'bg-white dark:bg-slate-900',
+          colorMap[notificationState.type].border,
+        ]"
       >
-        <X :size="16" />
-      </button>
+        <!-- Coloured left bar -->
+        <div :class="['absolute left-0 top-3 bottom-3 w-1 rounded-full', colorMap[notificationState.type].bar]"></div>
+
+        <!-- Icon -->
+        <component
+          :is="iconMap[notificationState.type]"
+          :size="18"
+          :class="['shrink-0 mt-0.5', colorMap[notificationState.type].icon]"
+        />
+
+        <!-- Message -->
+        <span class="flex-1 text-sm font-medium text-slate-800 dark:text-slate-100 leading-snug">
+          {{ notificationState.message }}
+        </span>
+
+        <!-- Dismiss -->
+        <button
+          @click="dismiss"
+          class="shrink-0 rounded-full p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          aria-label="Dismiss"
+        >
+          <X :size="14" />
+        </button>
+      </div>
     </div>
   </Transition>
 </template>
@@ -47,17 +79,16 @@ const bgMap = {
 <style scoped>
 .banner-enter-active,
 .banner-leave-active {
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .banner-enter-from,
 .banner-leave-to {
-  max-height: 0;
   opacity: 0;
+  transform: translateY(-12px) scale(0.97);
 }
 .banner-enter-to,
 .banner-leave-from {
-  max-height: 80px;
   opacity: 1;
+  transform: translateY(0) scale(1);
 }
 </style>
