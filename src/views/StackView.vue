@@ -6,7 +6,7 @@ import { useCurrentTime } from "../composables/useCurrentTime";
 import { useNotification } from "../composables/useNotification";
 import { formatDuration, formatBytes } from "../utils/metrics";
 import {
-  ArrowLeft, Globe, ExternalLink, Bot, Activity, Layers,
+  ArrowLeft, Globe, ExternalLink, Bot, Activity,
   Terminal, Server, Network, Trash2, RefreshCw, HardDrive, FolderOpen, AlertCircle,
 } from "lucide-vue-next";
 
@@ -695,88 +695,98 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- ── Services ───────────────────────────────────────────────────────── -->
+      <!-- ── Containers ─────────────────────────────────────────────────────── -->
       <div class="space-y-3">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
-            <Layers :size="13" />
-            Services
+            <Server :size="13" />
+            Containers
           </h2>
           <span class="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
             {{ stack.services.length }}
           </span>
         </div>
 
-        <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden shadow-sm divide-y divide-slate-100 dark:divide-slate-800/50">
+        <div class="grid gap-3">
           <div
             v-for="svc in stack.services"
             :key="svc.id"
-            class="group flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors"
+            class="bg-white dark:bg-[#1c1c1e] border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-5 hover:shadow-md transition-all"
+            :class="svc.state === 'running' ? 'hover:border-emerald-500/40' : 'hover:border-slate-400/40'"
           >
-            <!-- State indicator -->
-            <div class="relative flex h-3 w-3 shrink-0">
-              <span
-                v-if="svc.state === 'running'"
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex rounded-full h-3 w-3"
-                :class="svc.state === 'running' ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'"
-              ></span>
-            </div>
-
-            <!-- Service info -->
-            <div class="flex-1 min-w-0 space-y-0.5">
-              <div class="flex items-center gap-2.5 flex-wrap">
-                <span class="font-semibold text-slate-800 dark:text-slate-100 text-sm">{{ svc.service }}</span>
+            <!-- Top row: icon + name/image + uptime -->
+            <div class="flex items-start gap-3.5 mb-4">
+              <!-- State icon -->
+              <div
+                class="w-12 h-12 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm relative"
+                :class="svc.state === 'running'
+                  ? 'bg-linear-to-br from-emerald-500 to-emerald-600'
+                  : 'bg-linear-to-br from-slate-400 to-slate-500'"
+              >
+                <Server :size="22" />
+                <!-- Ping indicator for running -->
                 <span
-                  class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded border"
-                  :class="svc.state === 'running'
-                    ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
-                    : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'"
-                >{{ svc.state }}</span>
-                <span
-                  v-if="svc.hasYantrLabel"
-                  class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded border bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-indigo-100 dark:border-indigo-800/50"
-                >primary</span>
-              </div>
-
-              <div class="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-500 flex-wrap">
-                <span class="font-mono truncate max-w-65 sm:max-w-none">{{ svc.image }}</span>
-                <span v-if="svc.info" class="hidden sm:block">·</span>
-                <span v-if="svc.info" class="hidden sm:block truncate max-w-xs">{{ svc.info }}</span>
-              </div>
-
-              <!-- Per-service ports (deduplicated) -->
-              <div v-if="svc.rawPorts.filter(p => p.PublicPort).length > 0" class="flex items-center gap-1.5 flex-wrap pt-0.5">
-                <span
-                  v-for="p in [...new Map(svc.rawPorts.filter(rp => rp.PublicPort).map(rp => [`${rp.PublicPort}:${rp.PrivatePort}:${rp.Type}`, rp])).values()]"
-                  :key="`${p.PublicPort}-${p.Type}`"
-                  class="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50"
+                  v-if="svc.state === 'running'"
+                  class="absolute -top-1 -right-1 flex h-3 w-3"
                 >
-                  <Network :size="9" />
-                  :{{ p.PublicPort }} → {{ p.PrivatePort }}
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-white dark:border-[#1c1c1e]"></span>
                 </span>
               </div>
-            </div>
 
-            <!-- Uptime -->
-            <div class="text-right shrink-0 hidden sm:block">
-              <div v-if="formatUptime(svc)" class="flex flex-col items-end gap-0.5">
-                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Uptime</span>
-                <span class="font-mono font-bold text-sm tabular-nums text-slate-700 dark:text-slate-200">{{ formatUptime(svc) }}</span>
+              <!-- Name + image + badges -->
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap mb-0.5">
+                  <span class="font-semibold text-slate-900 dark:text-white text-sm">{{ svc.service }}</span>
+                  <span
+                    class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded border"
+                    :class="svc.state === 'running'
+                      ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+                      : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'"
+                  >{{ svc.state }}</span>
+                  <span
+                    v-if="svc.hasYantrLabel"
+                    class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded border bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-indigo-100 dark:border-indigo-800/50"
+                  >primary</span>
+                </div>
+                <div class="font-mono text-xs text-slate-500 dark:text-slate-400 truncate" :title="svc.image">{{ svc.image }}</div>
+                <div v-if="svc.info" class="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">{{ svc.info }}</div>
               </div>
-              <div v-else-if="svc.state !== 'running'" class="text-xs text-slate-400 italic">Stopped</div>
+
+              <!-- Uptime -->
+              <div v-if="formatUptime(svc)" class="text-right shrink-0 hidden sm:block">
+                <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Uptime</div>
+                <div class="font-mono font-bold text-sm tabular-nums text-slate-700 dark:text-slate-200">{{ formatUptime(svc) }}</div>
+              </div>
+              <div v-else-if="svc.state !== 'running'" class="text-xs text-slate-400 italic hidden sm:block self-center">Stopped</div>
             </div>
 
-            <!-- Details button -->
-            <button
-              @click="router.push(`/containers/${svc.id}`)"
-              class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wide bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-200 transition-colors opacity-0 group-hover:opacity-100"
-            >
-              <Terminal :size="12" />
-              Logs
-            </button>
+            <!-- Bottom row: ports + logs button -->
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+              <!-- Ports -->
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <template v-if="svc.rawPorts.filter(p => p.PublicPort).length > 0">
+                  <span
+                    v-for="p in [...new Map(svc.rawPorts.filter(rp => rp.PublicPort).map(rp => [`${rp.PublicPort}:${rp.PrivatePort}:${rp.Type}`, rp])).values()]"
+                    :key="`${p.PublicPort}-${p.Type}`"
+                    class="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50"
+                  >
+                    <Network :size="9" />
+                    :{{ p.PublicPort }} → {{ p.PrivatePort }}
+                  </span>
+                </template>
+                <span v-else class="text-[11px] text-slate-400 dark:text-slate-500 italic">No published ports</span>
+              </div>
+
+              <!-- Logs button -->
+              <button
+                @click="router.push(`/containers/${svc.id}`)"
+                class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wide bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-200 transition-all shrink-0"
+              >
+                <Terminal :size="12" />
+                Logs
+              </button>
+            </div>
           </div>
         </div>
       </div>
