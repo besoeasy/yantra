@@ -80,7 +80,7 @@ const volumeContainers = computed(() => {
 const yantrContainers = computed(() => {
   return containers.value.filter((c) => {
     const isVolume = c.labels && c.labels["yantr.volume-browser"];
-    const isYantrApp = c.app || (c.labels && c.labels["yantr.app.id"]);
+    const isYantrApp = c.appLabels?.app;
     return !isVolume && isYantrApp;
   });
 });
@@ -88,7 +88,7 @@ const yantrContainers = computed(() => {
 const otherContainers = computed(() => {
   return containers.value.filter((c) => {
     const isVolume = c.labels && c.labels["yantr.volume-browser"];
-    const isYantrApp = c.app || (c.labels && c.labels["yantr.app.id"]);
+    const isYantrApp = c.appLabels?.app;
     return !isVolume && !isYantrApp;
   });
 });
