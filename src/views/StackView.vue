@@ -8,6 +8,7 @@ import { formatDuration, formatBytes } from "../utils/metrics";
 import {
   ArrowLeft, Globe, ExternalLink, Bot, Activity,
   Terminal, Server, Network, Trash2, RefreshCw, HardDrive, FolderOpen, AlertCircle,
+  Eye, EyeOff, Settings2,
 } from "lucide-vue-next";
 
 const route = useRoute();
@@ -22,6 +23,37 @@ const stack = ref(null);
 const loading = ref(true);
 const removing = ref(false);
 const showOnlyDescribedPorts = ref(true);
+
+// Env vars reveal state
+const revealedVars = ref(new Set());
+
+function isSensitive(key) {
+  const k = key.toLowerCase();
+  return k.includes("password") || k.includes("secret") || k.includes("token")
+    || k.includes("_key") || k.endsWith("key") || k.includes("passwd")
+    || k.includes("_pass") || k.endsWith("pass") || k.includes("auth")
+    || k.includes("credential") || k.includes("private");
+}
+
+function toggleReveal(key) {
+  const s = new Set(revealedVars.value);
+  s.has(key) ? s.delete(key) : s.add(key);
+  revealedVars.value = s;
+}
+
+// Aggregate unique env vars across all services (primary service wins on conflict)
+const stackEnvVars = computed(() => {
+  if (!stack.value) return [];
+  const map = new Map();
+  // Process primary service first so its values take precedence
+  const sorted = [...stack.value.services].sort((a, b) => (b.hasYantrLabel ? 1 : 0) - (a.hasYantrLabel ? 1 : 0));
+  for (const svc of sorted) {
+    for (const v of (svc.env || [])) {
+      if (!map.has(v.key)) map.set(v.key, { ...v, service: svc.service });
+    }
+  }
+  return [...map.values()].sort((a, b) => a.key.localeCompare(b.key));
+});
 
 // Browse / Backup state
 const browsingVolume = ref({});
@@ -787,6 +819,52 @@ onUnmounted(() => {
                 Logs
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Configuration (Env Vars) ───────────────────────────────────────── -->
+      <div v-if="stackEnvVars.length > 0" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+            <Settings2 :size="13" />
+            Configuration
+          </h2>
+          <span class="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{{ stackEnvVars.length }}</span>
+        </div>
+
+        <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden shadow-sm divide-y divide-slate-100 dark:divide-slate-800/50">
+          <div
+            v-for="v in stackEnvVars"
+            :key="v.key"
+            class="flex items-center gap-3 px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors"
+          >
+            <!-- Key -->
+            <div class="w-56 shrink-0 min-w-0">
+              <span class="font-mono text-xs font-semibold text-slate-700 dark:text-slate-300 truncate block" :title="v.key">{{ v.key }}</span>
+              <span v-if="stackEnvVars.some(x => x.key === v.key && x.service !== v.service) || stack.services.length > 1"
+                class="text-[10px] text-slate-400 dark:text-slate-500">{{ v.service }}</span>
+            </div>
+
+            <!-- Value -->
+            <div class="flex-1 min-w-0">
+              <span
+                v-if="!isSensitive(v.key) || revealedVars.has(v.key)"
+                class="font-mono text-xs text-slate-900 dark:text-slate-100 break-all select-all"
+              >{{ v.value || '—' }}</span>
+              <span v-else class="font-mono text-xs text-slate-400 dark:text-slate-500 tracking-widest select-none">••••••••</span>
+            </div>
+
+            <!-- Reveal toggle for sensitive vars -->
+            <button
+              v-if="isSensitive(v.key)"
+              @click="toggleReveal(v.key)"
+              class="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+              :title="revealedVars.has(v.key) ? 'Hide' : 'Show'"
+            >
+              <EyeOff v-if="revealedVars.has(v.key)" :size="14" />
+              <Eye v-else :size="14" />
+            </button>
           </div>
         </div>
       </div>

@@ -928,8 +928,14 @@ app.get("/api/stacks/:projectId", asyncHandler(async (req, res) => {
   }
   const publishedPorts = [...publishedPortsMap.values()].sort((a, b) => a.hostPort - b.hostPort);
 
-  // Enrich each container
-  const services = projectContainers.map((c) => {
+  // System-injected keys Docker always injects — skip in env display
+  const DOCKER_SYSTEM_KEYS = new Set([
+    "PATH", "HOME", "HOSTNAME", "TERM", "SHLVL", "USER", "LOGNAME", "SHELL",
+    "no_proxy", "NO_PROXY", "HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy",
+  ]);
+
+  // Enrich each container (async to fetch env vars)
+  const services = await Promise.all(projectContainers.map(async (c) => {
     const appLabels = parseAppLabels(c.Labels);
     // Deduplicate mounts: prefer named volumes, strip anonymous ones, group by destination
     const mountsMap = new Map();
@@ -945,6 +951,21 @@ app.get("/api/stacks/:projectId", asyncHandler(async (req, res) => {
         });
       }
     }
+
+    // Fetch env vars and parse into { key, value } pairs, filtering system noise
+    let env = [];
+    try {
+      const rawEnv = await getContainerEnv(c.Id);
+      env = rawEnv
+        .map((e) => {
+          const idx = e.indexOf("=");
+          return idx >= 0 ? { key: e.slice(0, idx), value: e.slice(idx + 1) } : { key: e, value: "" };
+        })
+        .filter((v) => !DOCKER_SYSTEM_KEYS.has(v.key));
+    } catch (_) {
+      // silently degrade
+    }
+
     return {
       id: c.Id,
       name: c.Names[0]?.replace("/", "") || "unknown",
@@ -954,11 +975,12 @@ app.get("/api/stacks/:projectId", asyncHandler(async (req, res) => {
       created: c.Created,
       rawPorts: c.Ports || [],
       mounts: [...mountsMap.values()],
+      env,
       service: c.Labels["yantr.service"] || appLabels.service || c.Names[0]?.replace("/", "") || "unknown",
       info: c.Labels["yantr.info"] || appLabels.info || "",
       hasYantrLabel: !!(appLabels.app),
     };
-  });
+  }));
 
   // Sort: yantr-labelled services first, then by name
   services.sort((a, b) => {
