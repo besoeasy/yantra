@@ -331,9 +331,6 @@ onUnmounted(() => {
             <YantraContainersGrid
               v-if="showYantrApps && yantrContainers.length > 0"
               :containers="yantrContainers"
-              :format-uptime="formatUptime"
-              :is-temporary="isTemporary"
-              :get-expiration-info="getExpirationInfo"
             />
 
             <div v-if="showMetrics">
@@ -343,8 +340,6 @@ onUnmounted(() => {
             <VolumeContainersGrid
               v-if="showVolumeBrowsers && volumeContainers.length > 0"
               :containers="volumeContainers"
-              :is-temporary="isTemporary"
-              :get-expiration-info="getExpirationInfo"
               @select="viewContainerDetail"
             />
 

@@ -1,16 +1,50 @@
 <script setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { useCurrentTime } from "../../composables/useCurrentTime";
+import { formatDuration } from "../../utils/metrics";
 import { Box, Layers } from "lucide-vue-next";
 
 const props = defineProps({
   containers: { type: Array, default: () => [] },
-  formatUptime: { type: Function, required: true },
-  isTemporary: { type: Function, required: true },
-  getExpirationInfo: { type: Function, required: true },
 });
 
 const router = useRouter();
+const { currentTime } = useCurrentTime();
+
+function isTemporary(container) {
+  return container?.labels?.["yantr.expireAt"];
+}
+
+function formatTimeRemaining(expireAt) {
+  const remaining = parseInt(expireAt, 10) * 1000 - currentTime.value;
+  if (remaining <= 0) return 'Expired';
+  const totalSeconds = Math.floor(remaining / 1000);
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const seconds = totalSeconds % 60;
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  if (minutes > 0) return `${minutes}m ${seconds}s`;
+  return `${seconds}s`;
+}
+
+function getExpirationInfo(container) {
+  if (!isTemporary(container)) return null;
+  const expireAt = container.labels["yantr.expireAt"];
+  return {
+    expireAt,
+    timeRemaining: formatTimeRemaining(expireAt),
+    isExpiringSoon: parseInt(expireAt, 10) * 1000 - currentTime.value < 60 * 60 * 1000,
+  };
+}
+
+function formatUptime(container) {
+  if (!container?.created || container.state !== 'running') return null;
+  const uptime = currentTime.value - container.created * 1000;
+  if (uptime <= 0) return 'Just started';
+  return formatDuration(uptime);
+}
 
 // Group individual containers into app stacks by app.id
 const appGroups = computed(() => {
@@ -43,7 +77,7 @@ function groupState(group) {
 }
 
 function hasTemporary(group) {
-  return group.containers.some((c) => props.isTemporary(c));
+  return group.containers.some((c) => isTemporary(c));
 }
 
 function navigate(group) {

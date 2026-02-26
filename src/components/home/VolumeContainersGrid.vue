@@ -1,13 +1,40 @@
 <script setup>
+import { useCurrentTime } from "../../composables/useCurrentTime";
 import { ArrowRight, FolderOpen, Clock } from "lucide-vue-next";
 
-const { containers, isTemporary, getExpirationInfo } = defineProps({
+const { containers } = defineProps({
   containers: { type: Array, default: () => [] },
-  isTemporary: { type: Function, required: true },
-  getExpirationInfo: { type: Function, required: true },
 });
 
 const emit = defineEmits(["select"]);
+const { currentTime } = useCurrentTime();
+
+function isTemporary(container) {
+  return container?.labels?.["yantr.expireAt"];
+}
+
+function formatTimeRemaining(expireAt) {
+  const remaining = parseInt(expireAt, 10) * 1000 - currentTime.value;
+  if (remaining <= 0) return 'Expired';
+  const totalSeconds = Math.floor(remaining / 1000);
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const seconds = totalSeconds % 60;
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  if (minutes > 0) return `${minutes}m ${seconds}s`;
+  return `${seconds}s`;
+}
+
+function getExpirationInfo(container) {
+  if (!isTemporary(container)) return null;
+  const expireAt = container.labels["yantr.expireAt"];
+  return {
+    expireAt,
+    timeRemaining: formatTimeRemaining(expireAt),
+    isExpiringSoon: parseInt(expireAt, 10) * 1000 - currentTime.value < 60 * 60 * 1000,
+  };
+}
 </script>
 
 <template>
