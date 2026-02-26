@@ -10,11 +10,6 @@ services:
       yantr.app: "debian-ssh"
       yantr.service: "Debian SSH"
       yantr.info: "Debian Linux container with OpenSSH server — connect via SSH as root using a configurable password"
-    volumes:
-      - debian_ssh_data:/
     ports:
       - "22"
     restart: unless-stopped
-
-volumes:
-  debian_ssh_data:

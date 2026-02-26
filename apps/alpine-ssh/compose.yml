@@ -10,11 +10,7 @@ services:
       yantr.app: "alpine-ssh"
       yantr.service: "Alpine SSH"
       yantr.info: "Lightweight Alpine Linux container with OpenSSH server — connect via SSH as root using a configurable password"
-    volumes:
-      - alpine_ssh_data:/
     ports:
       - "22"
     restart: unless-stopped
 
-volumes:
-  alpine_ssh_data:

@@ -10,11 +10,6 @@ services:
       yantr.app: "ubuntu-ssh"
       yantr.service: "Ubuntu SSH"
       yantr.info: "Ubuntu Linux container with OpenSSH server — connect via SSH as root using a configurable password"
-    volumes:
-      - ubuntu_ssh_data:/
     ports:
       - "22"
     restart: unless-stopped
-
-volumes:
-  ubuntu_ssh_data:
