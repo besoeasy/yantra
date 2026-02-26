@@ -128,7 +128,8 @@ router.post("/api/deploy", async (req, res) => {
     if (deployDeps.length > 0) {
       const runningContainers = await docker.listContainers({ all: false });
       const runningProjects = new Set(runningContainers.map(c => c.Labels?.["com.docker.compose.project"]).filter(Boolean));
-      const missingDeps = deployDeps.filter(dep => !runningProjects.has(dep));
+      // Match base dep ID or any numbered instance (e.g. "postgresql" or "postgresql-2")
+      const missingDeps = deployDeps.filter(dep => !([...runningProjects].some(p => p === dep || new RegExp(`^${dep}-\\d+$`).test(p))));
       if (missingDeps.length > 0) {
         if (!allowMissingDependencies) {
           return res.status(400).json({ success: false, error: "Missing dependencies", message: `This app requires the following apps to be running: ${missingDeps.join(", ")}. Please deploy ${missingDeps.length === 1 ? "it" : "them"} first.`, missingDependencies: missingDeps });
