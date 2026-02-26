@@ -4,8 +4,7 @@ services:
     container_name: nextcloud
     labels:
       yantr.app: "nextcloud"
-      yantr.service: "Nextcloud"
-      yantr.info: "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing"
+      yantr.service: "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing"
     ports:
       - "80"
     environment:
@@ -36,8 +35,7 @@ services:
 
     labels:
       yantr.app: "nextcloud"
-      yantr.service: "Nextcloud Db"
-      yantr.info: "Nextcloud Db service for Nextcloud"
+      yantr.service: "Nextcloud Db service for Nextcloud"
 volumes:
   nextcloud_data:
   nextcloud_db:

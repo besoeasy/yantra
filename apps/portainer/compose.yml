@@ -4,8 +4,7 @@ services:
     container_name: portainer
     labels:
       yantr.app: "portainer"
-      yantr.service: "Portainer"
-      yantr.info: "Container management UI for Docker environments"
+      yantr.service: "Container management UI for Docker environments"
     ports:
       - "9443"
     volumes:

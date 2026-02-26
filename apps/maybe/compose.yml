@@ -4,8 +4,7 @@ services:
     container_name: maybe
     labels:
       yantr.app: "maybe"
-      yantr.service: "Maybe"
-      yantr.info: "Open-source personal finance OS for managing accounts, investments, and transactions"
+      yantr.service: "Open-source personal finance OS for managing accounts, investments, and transactions"
     ports:
       - "3063"
     volumes:
@@ -50,8 +49,7 @@ services:
 
     labels:
       yantr.app: "maybe"
-      yantr.service: "Maybe Worker"
-      yantr.info: "Background worker for Maybe"
+      yantr.service: "Background worker for Maybe"
   maybe-db:
     image: postgres:16
     container_name: maybe-db
@@ -71,8 +69,7 @@ services:
 
     labels:
       yantr.app: "maybe"
-      yantr.service: "Maybe Db"
-      yantr.info: "Maybe Db service for Maybe"
+      yantr.service: "Maybe Db service for Maybe"
   maybe-redis:
     image: redis:7.4.2
     container_name: maybe-redis
@@ -88,8 +85,7 @@ services:
 
     labels:
       yantr.app: "maybe"
-      yantr.service: "Maybe Redis"
-      yantr.info: "Redis cache for Maybe"
+      yantr.service: "Redis cache for Maybe"
 volumes:
   maybe_storage:
   maybe_db:

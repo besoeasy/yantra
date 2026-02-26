@@ -4,8 +4,7 @@ services:
     container_name: pi-alert
     labels:
       yantr.app: "pi-alert"
-      yantr.service: "Pi.Alert"
-      yantr.info: "Network monitoring tool for detecting new devices and security alerts"
+      yantr.service: "Network monitoring tool for detecting new devices and security alerts"
     ports:
       - "20211/udp"
     volumes:

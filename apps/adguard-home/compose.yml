@@ -4,8 +4,7 @@ services:
     container_name: adguard-home
     labels:
       yantr.app: "adguard-home"
-      yantr.service: "AdGuard Home"
-      yantr.info: "DNS-level ad blocking and privacy protection with parental controls"
+      yantr.service: "DNS-level ad blocking and privacy protection with parental controls"
     ports:
       - "53:53/tcp"
       - "53:53/udp"

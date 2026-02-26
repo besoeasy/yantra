@@ -4,8 +4,7 @@ services:
     container_name: solidtime
     labels:
       yantr.app: "solidtime"
-      yantr.service: "Solidtime"
-      yantr.info: "A simple, secure, and private time tracking app with detailed reports and CSV export"
+      yantr.service: "A simple, secure, and private time tracking app with detailed reports and CSV export"
     ports:
       - "8000"
     environment:
@@ -54,8 +53,7 @@ services:
 
     labels:
       yantr.app: "solidtime"
-      yantr.service: "Solidtime Scheduler"
-      yantr.info: "Solidtime Scheduler service for Solidtime"
+      yantr.service: "Solidtime Scheduler service for Solidtime"
   solidtime-queue:
     image: solidtime/solidtime:0.10.0
     container_name: solidtime-queue
@@ -77,8 +75,7 @@ services:
 
     labels:
       yantr.app: "solidtime"
-      yantr.service: "Solidtime Queue"
-      yantr.info: "Background worker for Solidtime"
+      yantr.service: "Background worker for Solidtime"
   solidtime-db:
     image: postgres:17.3
     container_name: solidtime-db
@@ -97,8 +94,7 @@ services:
 
     labels:
       yantr.app: "solidtime"
-      yantr.service: "Solidtime Db"
-      yantr.info: "Solidtime Db service for Solidtime"
+      yantr.service: "Solidtime Db service for Solidtime"
   solidtime-gotenberg:
     image: gotenberg/gotenberg:8.14.0
     container_name: solidtime-gotenberg
@@ -111,8 +107,7 @@ services:
 
     labels:
       yantr.app: "solidtime"
-      yantr.service: "Solidtime Gotenberg"
-      yantr.info: "Solidtime Gotenberg service for Solidtime"
+      yantr.service: "Solidtime Gotenberg service for Solidtime"
 volumes:
   solidtime_data:
   solidtime_db:

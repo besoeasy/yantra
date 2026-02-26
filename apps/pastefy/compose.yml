@@ -4,8 +4,7 @@ services:
     container_name: pastefy
     labels:
       yantr.app: "pastefy"
-      yantr.service: "Pastefy"
-      yantr.info: "Feature-rich self-hosted pastebin for sharing code"
+      yantr.service: "Feature-rich self-hosted pastebin for sharing code"
     ports:
       - "80"
     volumes:

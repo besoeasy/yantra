@@ -15,8 +15,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "bitcoin-knots-vm"
-      yantr.service: "Bitcoin Knots VM"
-      yantr.info: "Bitcoin full node with enhanced features and privacy focus."
+      yantr.service: "Bitcoin full node with enhanced features and privacy focus."
 
 volumes:
   bitcoin_knots_vm_config:

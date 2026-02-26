@@ -31,8 +31,7 @@ services:
       start_period: 30s
     labels:
       yantr.app: "shugur-relay"
-      yantr.service: "Shugur Relay"
-      yantr.info: "High-performance nostr relay with distributed database"
+      yantr.service: "High-performance nostr relay with distributed database"
 
   cockroachdb:
     image: cockroachdb/cockroach:latest
@@ -49,7 +48,6 @@ services:
 
     labels:
       yantr.app: "shugur-relay"
-      yantr.service: "Cockroachdb"
-      yantr.info: "Cockroachdb service for Shugur Relay"
+      yantr.service: "Cockroachdb service for Shugur Relay"
 volumes:
   cockroach-data:

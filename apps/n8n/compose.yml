@@ -4,8 +4,7 @@ services:
     container_name: n8n
     labels:
       yantr.app: "n8n"
-      yantr.service: "n8n"
-      yantr.info: "Workflow automation platform with AI and 400+ integrations"
+      yantr.service: "Workflow automation platform with AI and 400+ integrations"
     ports:
       - "5678"
     volumes:

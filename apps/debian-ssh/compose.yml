@@ -8,8 +8,7 @@ services:
       SSH_ROOT_PASSWORD: ${SSH_ROOT_PASSWORD:-rootpass}
     labels:
       yantr.app: "debian-ssh"
-      yantr.service: "Debian SSH"
-      yantr.info: "Debian Linux container with OpenSSH server — connect via SSH as root using a configurable password"
+      yantr.service: "Debian Linux container with OpenSSH server — connect via SSH as root using a configurable password"
     ports:
       - "22"
     restart: unless-stopped

@@ -10,8 +10,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "emby"
-      yantr.service: "Emby"
-      yantr.info: "Media server for streaming video, music, live TV, and photos"
+      yantr.service: "Media server for streaming video, music, live TV, and photos"
 
 volumes:
   emby-config:

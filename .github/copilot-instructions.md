@@ -57,13 +57,12 @@ ports:
 
 ### Docker Compose Service Labels (REQUIRED)
 
-**Every service** in `compose.yml` must have these three labels:
+**Every service** in `compose.yml` must have these two labels:
 
 ```yaml
 labels:
   yantr.app: "app-id"        # matches the app directory name under apps/
-  yantr.service: "Display Name"  # human-readable service name shown in the UI
-  yantr.info: "One-line description of what this service does"
+  yantr.service: "Short description of what this service does"  # 3-8 words shown in the UI
 ```
 
 This applies to **all** services in the file, including bundled databases, caches, and sidecars — not just the primary service.

@@ -4,8 +4,7 @@ services:
     container_name: invio
     labels:
       yantr.app: "invio"
-      yantr.service: "Invio"
-      yantr.info: "Self-hosted invoicing without the bloat"
+      yantr.service: "Self-hosted invoicing without the bloat"
     ports:
       - "3000"
     volumes:

@@ -12,8 +12,7 @@ services:
       - zeroclaw_data:/data
     labels:
       yantr.app: "zeroclaw"
-      yantr.service: "ZeroClaw"
-      yantr.info: "Autonomous Rust AI assistant runtime with pluggable providers and secure local gateway"
+      yantr.service: "Autonomous Rust AI assistant runtime with pluggable providers and secure local gateway"
 
 volumes:
   zeroclaw_data:

@@ -4,8 +4,7 @@ services:
     container_name: tabby
     labels:
       yantr.app: "tabby"
-      yantr.service: "Tabby"
-      yantr.info: "Beautiful and customizable browser start page with tab management"
+      yantr.service: "Beautiful and customizable browser start page with tab management"
     ports:
       - "80"
     depends_on:
@@ -26,7 +25,6 @@ services:
 
     labels:
       yantr.app: "tabby"
-      yantr.service: "Tabby Db"
-      yantr.info: "Tabby Db service for Tabby"
+      yantr.service: "Tabby Db service for Tabby"
 volumes:
   tabby_db:

@@ -10,8 +10,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "zeronote"
-      yantr.service: "ZeroNote"
-      yantr.info: "Offline-first encrypted notes application."
+      yantr.service: "Offline-first encrypted notes application."
 
 volumes:
   zeronote_data:

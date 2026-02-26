@@ -10,8 +10,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "swingmusic"
-      yantr.service: "SwingMusic"
-      yantr.info: "Beautiful music player with a modern web interface"
+      yantr.service: "Beautiful music player with a modern web interface"
 
 volumes:
   swingmusic-music:

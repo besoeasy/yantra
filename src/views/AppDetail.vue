@@ -47,21 +47,14 @@ const nextInstanceNumber = computed(() => {
   return instanceCount.value + 1;
 });
 
-const ports = computed(() => {
-  if (!app.value?.port) return [];
-  return app.value.port.split(",").map((p) => p.trim());
+// Ports from info.json — used in the Network Requirements info table
+const infoPorts = computed(() => {
+  return Array.isArray(app.value?.ports) ? app.value.ports : [];
 });
 
-const fixedPorts = computed(() => {
-  if (!app.value?.ports) return [];
-  // Filter out ports that are already described in yantr.port (isNamed)
-  return app.value.ports.filter((p) => !p.isNamed);
-});
-
+// Ports from compose.yml — used in the deploy form port customization
 const allPorts = computed(() => {
-  // For customization, show ALL ports (both named and unnamed)
-  if (!app.value?.ports) return [];
-  return app.value.ports;
+  return Array.isArray(app.value?.composePorts) ? app.value.composePorts : [];
 });
 
 const appTags = computed(() => {
@@ -533,30 +526,26 @@ onMounted(async () => {
             </div>
           </div>
 
-          <!-- Technical Specs -->
-          <div v-if="ports.length > 0 || fixedPorts.length > 0" class="space-y-3">
+          <!-- Network Requirements (from info.json ports) -->
+          <div v-if="infoPorts.length > 0" class="space-y-3">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Network Requirements</h3>
 
             <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden shadow-sm">
                 <table class="w-full text-left text-sm">
                     <thead>
                         <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200/50 dark:border-slate-800/50 text-xs font-semibold uppercase text-slate-500">
-                            <th class="px-4 py-3 font-medium">Type</th>
-                            <th class="px-4 py-3 font-medium">Definition</th>
+                            <th class="px-4 py-3 font-medium">Port</th>
+                            <th class="px-4 py-3 font-medium">Protocol</th>
+                            <th class="px-4 py-3 font-medium">Label</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
-                        <tr v-for="(port, idx) in ports" :key="'named-'+idx" class="hover:bg-slate-50 dark:hover:bg-slate-900/20">
-                            <td class="px-4 py-3 text-slate-500 font-mono text-xs uppercase">Service</td>
-                            <td class="px-4 py-3 font-mono text-slate-900 dark:text-white">{{ port }}</td>
-                        </tr>
-                        <tr v-for="(port, idx) in fixedPorts" :key="'fixed-'+idx" class="hover:bg-slate-50 dark:hover:bg-slate-900/20">
-                            <td class="px-4 py-3 text-slate-500 font-mono text-xs uppercase">{{ port.protocol }} Mapping</td>
-                            <td class="px-4 py-3 font-mono text-slate-900 dark:text-white flex items-center gap-2">
-                                <span>{{ port.containerPort }}</span>
-                                <span class="text-slate-400">→</span>
-                                <span>{{ port.hostPort }}</span>
+                        <tr v-for="(p, idx) in infoPorts" :key="idx" class="hover:bg-slate-50 dark:hover:bg-slate-900/20">
+                            <td class="px-4 py-3 font-mono font-bold text-slate-900 dark:text-white">{{ p.port }}</td>
+                            <td class="px-4 py-3">
+                                <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 border border-slate-200 dark:border-slate-700 text-slate-500 rounded">{{ p.protocol }}</span>
                             </td>
+                            <td class="px-4 py-3 text-slate-500 font-mono text-xs">{{ p.label }}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -11,8 +11,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "sonarr"
-      yantr.service: "Sonarr"
-      yantr.info: "Smart PVR for TV show monitoring and automated downloading with Usenet and BitTorrent"
+      yantr.service: "Smart PVR for TV show monitoring and automated downloading with Usenet and BitTorrent"
 
 volumes:
   sonarr_config:

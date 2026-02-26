@@ -785,7 +785,6 @@ onUnmounted(() => {
                   >primary</span>
                 </div>
                 <div class="font-mono text-xs text-slate-500 dark:text-slate-400 truncate" :title="svc.image">{{ svc.image }}</div>
-                <div v-if="svc.info" class="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">{{ svc.info }}</div>
               </div>
 
               <!-- Uptime -->

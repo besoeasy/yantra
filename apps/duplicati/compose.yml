@@ -4,8 +4,7 @@ services:
     container_name: duplicati
     labels:
       yantr.app: "duplicati"
-      yantr.service: "Duplicati"
-      yantr.info: "Free backup software for encrypted, incremental backups"
+      yantr.service: "Free backup software for encrypted, incremental backups"
     ports:
       - "8200"
     volumes:

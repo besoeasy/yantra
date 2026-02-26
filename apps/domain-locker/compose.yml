@@ -10,8 +10,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "domain-locker"
-      yantr.service: "Domain Locker"
-      yantr.info: "Complete visibility of your domain portfolio with monitoring and alerts"
+      yantr.service: "Complete visibility of your domain portfolio with monitoring and alerts"
 
 volumes:
   domain_locker_data:

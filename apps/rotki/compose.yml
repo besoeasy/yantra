@@ -4,8 +4,7 @@ services:
     container_name: rotki
     labels:
       yantr.app: "rotki"
-      yantr.service: "Rotki"
-      yantr.info: "Privacy-focused portfolio tracker and analytics for crypto"
+      yantr.service: "Privacy-focused portfolio tracker and analytics for crypto"
     ports:
       - "80"
     volumes:

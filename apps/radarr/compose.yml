@@ -11,8 +11,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "radarr"
-      yantr.service: "Radarr"
-      yantr.info: "Smart PVR for movie collection management and automated downloads"
+      yantr.service: "Smart PVR for movie collection management and automated downloads"
 
 volumes:
   radarr_config:

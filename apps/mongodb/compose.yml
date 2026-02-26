@@ -4,8 +4,7 @@ services:
     container_name: mongodb
     labels:
       yantr.app: "mongodb"
-      yantr.service: "MongoDB"
-      yantr.info: "NoSQL document database for flexible data storage and management"
+      yantr.service: "NoSQL document database for flexible data storage and management"
     ports:
       - "27017"
     volumes:

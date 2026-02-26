@@ -12,8 +12,7 @@ services:
       - "7575"
     labels:
       yantr.app: "homarr"
-      yantr.service: "Homarr"
-      yantr.info: "Modern customizable dashboard with 30+ integrations and 10K+ icons"
+      yantr.service: "Modern customizable dashboard with 30+ integrations and 10K+ icons"
 
 volumes:
   homarr_data:

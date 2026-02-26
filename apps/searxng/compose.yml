@@ -4,8 +4,7 @@ services:
     container_name: searxng
     labels:
       yantr.app: "searxng"
-      yantr.service: "SearXNG"
-      yantr.info: "Privacy-focused metasearch engine aggregating results"
+      yantr.service: "Privacy-focused metasearch engine aggregating results"
     ports:
       - "8080"
     volumes:

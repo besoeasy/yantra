@@ -10,8 +10,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "metube"
-      yantr.service: "MeTube"
-      yantr.info: "Web GUI for yt-dlp/youtube-dl with playlist support."
+      yantr.service: "Web GUI for yt-dlp/youtube-dl with playlist support."
 
 volumes:
   metube_downloads:

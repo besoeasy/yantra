@@ -4,8 +4,7 @@ services:
     container_name: just-download
     labels:
       yantr.app: "just-download"
-      yantr.service: "Just. Download."
-      yantr.info: "Simple torrent downloader that bridges Torznab indexers with Transmission"
+      yantr.service: "Simple torrent downloader that bridges Torznab indexers with Transmission"
     ports:
       - "5000"
     volumes:

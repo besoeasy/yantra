@@ -169,7 +169,7 @@ async function checkCompose(appName, composePath) {
 
     // Required yantr labels
     const labels = normaliseLabels(svc.labels);
-    for (const required of ['yantr.app', 'yantr.service', 'yantr.info']) {
+    for (const required of ['yantr.app', 'yantr.service']) {
       if (!labels[required]) {
         fail(appName, `compose.yml service "${svcName}" is missing required label: ${required}`);
       }

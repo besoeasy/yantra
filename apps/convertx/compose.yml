@@ -4,8 +4,7 @@ services:
     container_name: convertx
     labels:
       yantr.app: "convertx"
-      yantr.service: "ConvertX"
-      yantr.info: "Self-hosted file conversion tool supporting multiple formats"
+      yantr.service: "Self-hosted file conversion tool supporting multiple formats"
     ports:
       - "3000"
     restart: unless-stopped

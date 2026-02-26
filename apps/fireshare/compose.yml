@@ -4,8 +4,7 @@ services:
     container_name: fireshare
     labels:
       yantr.app: "fireshare"
-      yantr.service: "Fireshare"
-      yantr.info: "Self-hosted video sharing platform with seamless streaming and organization"
+      yantr.service: "Self-hosted video sharing platform with seamless streaming and organization"
     ports:
       - "80"
     environment:

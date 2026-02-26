@@ -4,8 +4,7 @@ services:
     container_name: remote-torrent-downloader
     labels:
       yantr.app: "remote-torrent-downloader"
-      yantr.service: "Remote Torrent Downloader"
-      yantr.info: "Media streaming and sharing platform with Telegram integration"
+      yantr.service: "Media streaming and sharing platform with Telegram integration"
     ports:
       - "6798"
       - "6799"

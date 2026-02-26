@@ -13,8 +13,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "jackett"
-      yantr.service: "Jackett"
-      yantr.info: "API proxy for torrent trackers with Sonarr/Radarr support."
+      yantr.service: "API proxy for torrent trackers with Sonarr/Radarr support."
 
 volumes:
   jackett_config:

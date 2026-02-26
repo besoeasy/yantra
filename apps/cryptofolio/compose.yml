@@ -4,8 +4,7 @@ services:
     container_name: cryptofolio
     labels:
       yantr.app: "cryptofolio"
-      yantr.service: "Cryptofolio"
-      yantr.info: "Self-hosted cryptocurrency portfolio tracker with real-time price updates"
+      yantr.service: "Self-hosted cryptocurrency portfolio tracker with real-time price updates"
     ports:
       - "80"
     restart: unless-stopped

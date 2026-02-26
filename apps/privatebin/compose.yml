@@ -4,8 +4,7 @@ services:
     container_name: privatebin
     labels:
       yantr.app: "privatebin"
-      yantr.service: "PrivateBin"
-      yantr.info: "Minimalist, open source online pastebin with zero-knowledge server design"
+      yantr.service: "Minimalist, open source online pastebin with zero-knowledge server design"
     ports:
       - "8080"
     volumes:

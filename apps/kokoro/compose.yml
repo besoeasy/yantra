@@ -4,8 +4,7 @@ services:
     container_name: kokoro
     labels:
       yantr.app: "kokoro"
-      yantr.service: "Kokoro"
-      yantr.info: "Lightweight Text-to-Speech model with 82M parameters delivering high-quality speech synthesis"
+      yantr.service: "Lightweight Text-to-Speech model with 82M parameters delivering high-quality speech synthesis"
     ports:
       - "8880"
     restart: unless-stopped

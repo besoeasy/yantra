@@ -5,8 +5,7 @@ services:
     entrypoint: /app/entrypoint.sh
     labels:
       yantr.app: "pihole"
-      yantr.service: "Pi-hole"
-      yantr.info: "Network-wide ad blocking via DNS sinkhole"
+      yantr.service: "Network-wide ad blocking via DNS sinkhole"
     ports:
       - "53:53/tcp"
       - "53:53/udp"

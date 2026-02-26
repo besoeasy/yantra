@@ -5,8 +5,7 @@ services:
     container_name: opencode
     labels:
       yantr.app: "opencode"
-      yantr.service: "OpenCode"
-      yantr.info: "Open source AI coding agent for terminal, IDE, and desktop"
+      yantr.service: "Open source AI coding agent for terminal, IDE, and desktop"
     environment:
       HOME: /home/opencode
     ports:

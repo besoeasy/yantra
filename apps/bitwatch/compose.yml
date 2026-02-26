@@ -9,8 +9,7 @@ services:
       - bitwatch-data:/app/server/data
     labels:
       yantr.app: "bitwatch"
-      yantr.service: "Bitwatch"
-      yantr.info: "Monitor Bitcoin addresses in mempool and on-chain with notifications"
+      yantr.service: "Monitor Bitcoin addresses in mempool and on-chain with notifications"
 
 volumes:
   bitwatch-data:

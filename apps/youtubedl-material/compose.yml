@@ -4,8 +4,7 @@ services:
     container_name: youtubedl-material
     labels:
       yantr.app: "youtubedl-material"
-      yantr.service: "YoutubeDL Material"
-      yantr.info: "Web UI for youtube-dl with subscription support and organization features"
+      yantr.service: "Web UI for youtube-dl with subscription support and organization features"
     ports:
       - "17442"
     volumes:

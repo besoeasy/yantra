@@ -9,6 +9,5 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "whoami"
-      yantr.service: "Whoami"
-      yantr.info: "Tiny HTTP service that prints system information - perfect for testing"
+      yantr.service: "Tiny HTTP service that prints system information - perfect for testing"
 

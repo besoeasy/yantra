@@ -4,8 +4,7 @@ services:
     container_name: dockge
     labels:
       yantr.app: "dockge"
-      yantr.service: "Dockge"
-      yantr.info: "Self-hosted Docker Compose stack manager with GUI for easy deployment"
+      yantr.service: "Self-hosted Docker Compose stack manager with GUI for easy deployment"
     ports:
       - "5001"
     environment:

@@ -4,8 +4,7 @@ services:
     container_name: trip
     labels:
       yantr.app: "trip"
-      yantr.service: "Trip"
-      yantr.info: "Self-hostable map tracker and trip planner to visualize POIs and organize your next adventure"
+      yantr.service: "Self-hostable map tracker and trip planner to visualize POIs and organize your next adventure"
     ports:
       - "8000"
     volumes:

@@ -5,8 +5,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "monerod"
-      yantr.service: "Monero Node"
-      yantr.info: "Pruned Monero full node with restricted RPC for wallets and apps"
+      yantr.service: "Pruned Monero full node with restricted RPC for wallets and apps"
     ports:
       - "18080:18080/tcp"
       - "18089:18089/tcp"

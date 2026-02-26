@@ -4,8 +4,7 @@ services:
     container_name: uptime-kuma
     labels:
       yantr.app: "uptime-kuma"
-      yantr.service: "Uptime Kuma"
-      yantr.info: "Self-hosted uptime monitoring tool"
+      yantr.service: "Self-hosted uptime monitoring tool"
     ports:
       - "3001"
     volumes:

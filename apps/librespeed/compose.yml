@@ -4,8 +4,7 @@ services:
     container_name: librespeed
     labels:
       yantr.app: "librespeed"
-      yantr.service: "LibreSpeed"
-      yantr.info: "Self-hosted speed test tool for bandwidth measurement"
+      yantr.service: "Self-hosted speed test tool for bandwidth measurement"
     ports:
       - "8080"
     restart: unless-stopped

@@ -4,8 +4,7 @@ services:
     container_name: linkwarden
     labels:
       yantr.app: "linkwarden"
-      yantr.service: "Linkwarden"
-      yantr.info: "Bookmark preservation tool for individuals and teams with full-text search and archiving"
+      yantr.service: "Bookmark preservation tool for individuals and teams with full-text search and archiving"
     ports:
       - "3000"
     environment:
@@ -34,8 +33,7 @@ services:
 
     labels:
       yantr.app: "linkwarden"
-      yantr.service: "Linkwarden Db"
-      yantr.info: "Linkwarden Db service for Linkwarden"
+      yantr.service: "Linkwarden Db service for Linkwarden"
 volumes:
   linkwarden_data:
   linkwarden_db:

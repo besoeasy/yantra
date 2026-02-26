@@ -608,10 +608,9 @@ function parseAppLabels(labels) {
     return appLabels;
   }
 
-  // Only read the three service-identity labels
+  // Only read the two service-identity labels
   if (labels["yantr.app"])     appLabels.app     = labels["yantr.app"];
   if (labels["yantr.service"]) appLabels.service = labels["yantr.service"];
-  if (labels["yantr.info"])    appLabels.info    = labels["yantr.info"];
 
   return appLabels;
 }
@@ -706,7 +705,6 @@ app.get("/api/containers", asyncHandler(async (req, res) => {
           projectId: composeProject || container.Names[0]?.replace("/", "") || "unknown",
           // Service-level identity (from container labels)
           service: appLabels.service || container.Names[0]?.replace("/", "") || "unknown",
-          info: appLabels.info || "",
           // App-level metadata (from info.json via catalog)
           name: catalogEntry?.name || appLabels.service || container.Names[0]?.replace("/", "") || "unknown",
           logo: catalogEntry?.logo || null,
@@ -784,7 +782,6 @@ app.get("/api/containers/:id", asyncHandler(async (req, res) => {
           id: appId,
           projectId: composeProject || info.Name.replace("/", "") || "unknown",
           service: appLabels.service || info.Name.replace("/", ""),
-          info: appLabels.info || "",
           name: catalogEntry?.name || appLabels.service || info.Name.replace("/", ""),
           logo: catalogEntry?.logo || null,
           tags: catalogEntry?.tags || [],
@@ -963,7 +960,6 @@ app.get("/api/stacks/:projectId", asyncHandler(async (req, res) => {
       mounts: [...mountsMap.values()],
       env,
       service: c.Labels["yantr.service"] || appLabels.service || c.Names[0]?.replace("/", "") || "unknown",
-      info: c.Labels["yantr.info"] || appLabels.info || "",
       hasYantrLabel: !!(appLabels.app),
     };
   }));

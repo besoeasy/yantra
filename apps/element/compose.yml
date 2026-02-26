@@ -4,8 +4,7 @@ services:
     container_name: element
     labels:
       yantr.app: "element"
-      yantr.service: "Element"
-      yantr.info: "Secure and decentralized Matrix chat client for communication"
+      yantr.service: "Secure and decentralized Matrix chat client for communication"
     ports:
       - "80"
     volumes:

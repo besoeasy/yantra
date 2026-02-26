@@ -4,8 +4,7 @@ services:
     container_name: ollama
     labels:
       yantr.app: "ollama"
-      yantr.service: "Ollama"
-      yantr.info: "Local LLM inference server - run models like Llama, Mistral, and more"
+      yantr.service: "Local LLM inference server - run models like Llama, Mistral, and more"
     ports:
       - "11434"
     volumes:

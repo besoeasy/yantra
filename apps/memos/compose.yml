@@ -8,8 +8,7 @@ services:
       - 5230
     labels:
       yantr.app: "memos"
-      yantr.service: "Memos"
-      yantr.info: "Open-source Markdown notes app, with a UI styled like a social feed."
+      yantr.service: "Open-source Markdown notes app, with a UI styled like a social feed."
 
 volumes:
   memos_data:

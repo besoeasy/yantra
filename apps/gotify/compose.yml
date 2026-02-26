@@ -4,8 +4,7 @@ services:
     container_name: gotify
     labels:
       yantr.app: "gotify"
-      yantr.service: "Gotify"
-      yantr.info: "Self-hosted push notification service for sending and receiving notifications"
+      yantr.service: "Self-hosted push notification service for sending and receiving notifications"
     ports:
       - "80"
     environment:
