@@ -9,10 +9,19 @@
     "storage",
     "self-hosted"
   ],
-  "port": "8200 (HTTP - Web UI)",
-  "short_description": "Free backup software for encrypted, incremental backups",
-  "description": "Free backup software for encrypted, incremental backups",
-  "usecases": [],
+  "short_description": "Free backup software for encrypted, incremental backups.",
+  "description": "Free backup software for encrypted, incremental backups. Duplicati is a self-hosted application focused on tools, security, utility, backup. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host Duplicati on your home server to free backup software for encrypted, incremental backups without depending on third-party cloud services.",
+    "Use Duplicati to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://www.duplicati.com",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8200,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

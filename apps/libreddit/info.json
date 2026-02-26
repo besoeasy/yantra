@@ -9,10 +9,19 @@
     "docker",
     "open-source"
   ],
-  "port": "7420 (HTTP - Web UI)",
-  "short_description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking",
-  "description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking",
-  "usecases": [],
+  "short_description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking.",
+  "description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking. LibReddit is a self-hosted application focused on social, privacy, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host LibReddit on your home server to private reddit front-end written in rust with no javascript, ads, or tracking without depending on third-party cloud services.",
+    "Use LibReddit to manage your social workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/spikecodes/libreddit",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 7420,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

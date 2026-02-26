@@ -9,10 +9,13 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "",
-  "short_description": "Cloudflare Tunnel for secure remote access without exposing ports",
-  "description": "Cloudflare Tunnel for secure remote access without exposing ports",
-  "usecases": [],
+  "short_description": "Cloudflare Tunnel for secure remote access without exposing ports.",
+  "description": "Cloudflare Tunnel for secure remote access without exposing ports. Cloudflared is a self-hosted application focused on network, security, vpn, privacy. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Cloudflared on your home server to cloudflare tunnel for secure remote access without exposing ports without depending on third-party cloud services.",
+    "Use Cloudflared to manage your network workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/cloudflare/cloudflared",
-  "dependencies": []
+  "dependencies": [],
+  "ports": []
 }

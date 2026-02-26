@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "8080 (HTTP - Web UI)",
-  "short_description": "Self-hosted speed test tool for bandwidth measurement",
-  "description": "Self-hosted speed test tool for bandwidth measurement",
-  "usecases": [],
+  "short_description": "Self-hosted speed test tool for bandwidth measurement.",
+  "description": "Self-hosted speed test tool for bandwidth measurement. LibreSpeed is a self-hosted application focused on network, tools, utility, speedtest. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host LibreSpeed on your home server to self-hosted speed test tool for bandwidth measurement without depending on third-party cloud services.",
+    "Use LibreSpeed to manage your network workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/librespeed/speedtest",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8080,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

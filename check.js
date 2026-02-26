@@ -278,8 +278,7 @@ for (const appName of apps) {
 // Port conflict check (after all apps so we can report both sides)
 for (const [port, owners] of portMap.entries()) {
   if (owners.length > 1) {
-    console.error(`\n❌  Port conflict on :${port} — used by: ${owners.join(', ')}`);
-    process.exit(1);
+    warn('port-conflict', `Port :${port} is used by multiple apps: ${owners.join(', ')}`, 'These apps cannot run simultaneously on the same host.');
   }
 }
 

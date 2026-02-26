@@ -9,10 +9,19 @@
     "security",
     "tor"
   ],
-  "port": "3232 (HTTP - Web UI)",
-  "short_description": "All-in-one anonymous storage backend for apps, screenshot tools, and file hosting",
-  "description": "All-in-one anonymous storage backend for apps, screenshot tools, and file hosting",
-  "usecases": [],
+  "short_description": "All-in-one anonymous storage backend for apps, screenshot tools, and file hosting.",
+  "description": "All-in-one anonymous storage backend for apps, screenshot tools, and file hosting. Originless is a self-hosted application focused on utility, tools, privacy, anonymous. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Originless on your home server to all-in-one anonymous storage backend for apps, screenshot tools, and file hosting without depending on third-party cloud services.",
+    "Use Originless to manage your utility workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/besoeasy/originless",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 3232,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

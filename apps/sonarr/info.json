@@ -9,10 +9,19 @@
     "p2p",
     "monitoring"
   ],
-  "port": "8989 (HTTP - Web UI)",
-  "short_description": "Smart PVR for TV show monitoring and automated downloading with Usenet and BitTorrent",
-  "description": "Smart PVR for TV show monitoring and automated downloading with Usenet and BitTorrent",
-  "usecases": [],
+  "short_description": "Smart PVR for TV show monitoring and automated downloading with Usenet and BitTorrent.",
+  "description": "Smart PVR for TV show monitoring and automated downloading with Usenet and BitTorrent. Sonarr is a self-hosted application focused on media, tools, torrent, download. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Sonarr on your home server to smart pvr for tv show monitoring and automated downloading with usenet and bittorrent without depending on third-party cloud services.",
+    "Use Sonarr to manage your media workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/linuxserver/docker-sonarr",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8989,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

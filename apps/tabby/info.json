@@ -9,10 +9,19 @@
     "homepage",
     "self-hosted"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Beautiful and customizable browser start page with tab management",
-  "description": "Beautiful and customizable browser start page with tab management",
-  "usecases": [],
+  "short_description": "Beautiful and customizable browser start page with tab management.",
+  "description": "Beautiful and customizable browser start page with tab management. Tabby is a self-hosted application focused on productivity, browsing, dashboard, utility. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Tabby on your home server to beautiful and customizable browser start page with tab management without depending on third-party cloud services.",
+    "Use Tabby to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/parksauce/tabby",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "8384 (HTTP - Web UI)",
   "short_description": "Continuous file synchronization program. It synchronizes files between two or more computers.",
-  "description": "Continuous file synchronization program. It synchronizes files between two or more computers.",
-  "usecases": [],
+  "description": "Continuous file synchronization program. It synchronizes files between two or more computers. Syncthing is a self-hosted application focused on tools, utility, storage, files. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Syncthing on your home server to continuous file synchronization program. it synchronizes files between two or more computers without depending on third-party cloud services.",
+    "Use Syncthing to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://syncthing.net/",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8384,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

@@ -9,10 +9,24 @@
     "homelab",
     "docker"
   ],
-  "port": "18789 (HTTP - Web UI), 18790 (Bridge - Device Nodes)",
-  "short_description": "Personal AI assistant — Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack, Discord, and more)",
-  "description": "Personal AI assistant — Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack, Discord, and more)",
-  "usecases": [],
+  "short_description": "Personal AI assistant — Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack...",
+  "description": "Personal AI assistant — Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack... OpenClaw is a self-hosted application focused on ai, tools, utility, self-hosted. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host OpenClaw on your home server to personal ai assistant — gateway control plane with multi-channel inbox (whatsapp, telegram, slack.. without depending on third-party cloud services.",
+    "Use OpenClaw to manage your ai workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://openclaw.ai",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 18789,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    },
+    {
+      "port": 18790,
+      "protocol": "BRIDGE",
+      "label": "Device Nodes"
+    }
+  ]
 }

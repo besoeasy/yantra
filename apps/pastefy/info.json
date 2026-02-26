@@ -9,10 +9,19 @@
     "devops",
     "self-hosted"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Feature-rich self-hosted pastebin for sharing code",
-  "description": "Feature-rich self-hosted pastebin for sharing code",
-  "usecases": [],
+  "short_description": "Feature-rich self-hosted pastebin for sharing code.",
+  "description": "Feature-rich self-hosted pastebin for sharing code. Pastefy is a self-hosted application focused on tools, productivity, git, development. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host Pastefy on your home server to feature-rich self-hosted pastebin for sharing code without depending on third-party cloud services.",
+    "Use Pastefy to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://docs.pastefy.app",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

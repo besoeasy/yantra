@@ -9,10 +9,19 @@
     "docker",
     "open-source"
   ],
-  "port": "8000 (HTTP - Web UI)",
-  "short_description": "Offline-first encrypted notes application.",
-  "description": "Offline-first encrypted notes application.",
-  "usecases": [],
+  "short_description": "Offline-first encrypted notes application. Self-host it with Docker using Yantr.",
+  "description": "Offline-first encrypted notes application. Self-host it with Docker using Yantr. ZeroNote is a self-hosted application focused on productivity, security, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host ZeroNote on your home server to offline-first encrypted notes application. self-host it with docker using yantr without depending on third-party cloud services.",
+    "Use ZeroNote to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/besoeasy/zeronote",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8000,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

@@ -9,10 +9,19 @@
     "blockchain",
     "self-hosted"
   ],
-  "port": "25441 (HTTP - Web UI)",
-  "short_description": "Bitcoin wallet interface with focus on privacy and security",
-  "description": "Bitcoin wallet interface with focus on privacy and security",
-  "usecases": [],
+  "short_description": "Bitcoin wallet interface with focus on privacy and security.",
+  "description": "Bitcoin wallet interface with focus on privacy and security. Specter Desktop is a self-hosted application focused on security, tools, bitcoin, crypto. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Specter Desktop on your home server to bitcoin wallet interface with focus on privacy and security without depending on third-party cloud services.",
+    "Use Specter Desktop to manage your security workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://specter.solutions/desktop",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 25441,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

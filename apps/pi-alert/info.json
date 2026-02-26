@@ -9,10 +9,19 @@
     "utility",
     "self-hosted"
   ],
-  "port": "20211 (UDP - Monitoring)",
-  "short_description": "Network monitoring tool for detecting new devices and security alerts",
-  "description": "Network monitoring tool for detecting new devices and security alerts",
-  "usecases": [],
+  "short_description": "Network monitoring tool for detecting new devices and security alerts.",
+  "description": "Network monitoring tool for detecting new devices and security alerts. Pi.Alert is a self-hosted application focused on network, monitoring, security, dashboard. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Pi.Alert on your home server to network monitoring tool for detecting new devices and security alerts without depending on third-party cloud services.",
+    "Use Pi.Alert to manage your network workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/jokobsk/pi.alert",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 20211,
+      "protocol": "UDP",
+      "label": "Monitoring"
+    }
+  ]
 }

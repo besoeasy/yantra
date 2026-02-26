@@ -9,10 +9,19 @@
     "docker",
     "open-source"
   ],
-  "port": "25565 (TCP - Game Server)",
-  "short_description": "Open-source sandbox game server with endless possibilities",
-  "description": "Open-source sandbox game server with endless possibilities",
-  "usecases": [],
+  "short_description": "Open-source sandbox game server with endless possibilities.",
+  "description": "Open-source sandbox game server with endless possibilities. Minecraft Server is a self-hosted application focused on gaming, server, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Minecraft Server on your home server to open-source sandbox game server with endless possibilities without depending on third-party cloud services.",
+    "Use Minecraft Server to manage your gaming workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://docker-minecraft-server.readthedocs.io/",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 25565,
+      "protocol": "TCP",
+      "label": "Game Server"
+    }
+  ]
 }

@@ -9,10 +9,19 @@
     "nostr",
     "decentralized"
   ],
-  "port": "8080 (HTTP - Web UI)",
-  "short_description": "Fast and lightweight Nostr web client built with React for easy network interaction",
-  "description": "Fast and lightweight Nostr web client built with React for easy network interaction",
-  "usecases": [],
+  "short_description": "Fast and lightweight Nostr web client built with React for easy network interaction.",
+  "description": "Fast and lightweight Nostr web client built with React for easy network interaction. Snort is a self-hosted application focused on social, security, network, firewall. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Snort on your home server to fast and lightweight nostr web client built with react for easy network interaction without depending on third-party cloud services.",
+    "Use Snort to manage your social workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://git.v0l.io/Kieran/snort",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8080,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

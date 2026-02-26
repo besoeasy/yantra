@@ -9,10 +9,19 @@
     "privacy",
     "docker"
   ],
-  "port": "22 (SSH)",
-  "short_description": "Lightweight Alpine Linux container with OpenSSH server — connect via SSH as root using a configurable password",
-  "description": "Lightweight Alpine Linux container with OpenSSH server — connect via SSH as root using a configurable password",
-  "usecases": [],
+  "short_description": "Lightweight Alpine Linux container with OpenSSH server — connect via SSH as root using a configur...",
+  "description": "Lightweight Alpine Linux container with OpenSSH server — connect via SSH as root using a configur... Alpine SSH is a self-hosted application focused on tools, utility, password-manager, security. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Alpine SSH on your home server to lightweight alpine linux container with openssh server — connect via ssh as root using a configur.. without depending on third-party cloud services.",
+    "Use Alpine SSH to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://hub.docker.com/_/alpine",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 22,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

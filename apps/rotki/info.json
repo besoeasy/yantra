@@ -9,10 +9,19 @@
     "crypto",
     "blockchain"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Privacy-focused portfolio tracker and analytics for crypto",
-  "description": "Privacy-focused portfolio tracker and analytics for crypto",
-  "usecases": [],
+  "short_description": "Privacy-focused portfolio tracker and analytics for crypto.",
+  "description": "Privacy-focused portfolio tracker and analytics for crypto. Rotki is a self-hosted application focused on productivity, security, utility, bitcoin. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Rotki on your home server to privacy-focused portfolio tracker and analytics for crypto without depending on third-party cloud services.",
+    "Use Rotki to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://rotki.com/",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

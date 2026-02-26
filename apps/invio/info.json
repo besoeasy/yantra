@@ -9,10 +9,19 @@
     "docker",
     "open-source"
   ],
-  "port": "3000 (HTTP - Web UI)",
-  "short_description": "Self-hosted invoicing without the bloat",
-  "description": "Self-hosted invoicing without the bloat",
-  "usecases": [],
+  "short_description": "Self-hosted invoicing without the bloat. Self-host it with Docker using Yantr.",
+  "description": "Self-hosted invoicing without the bloat. Self-host it with Docker using Yantr. Invio is a self-hosted application focused on productivity, utility, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Invio on your home server to self-hosted invoicing without the bloat. self-host it with docker using yantr without depending on third-party cloud services.",
+    "Use Invio to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/kittendevv/Invio/wiki",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 3000,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

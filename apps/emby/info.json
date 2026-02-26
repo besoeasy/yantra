@@ -9,10 +9,19 @@
     "music",
     "audio"
   ],
-  "port": "8096 (HTTP - Web UI)",
-  "short_description": "Media server for streaming video, music, live TV, and photos",
-  "description": "Media server for streaming video, music, live TV, and photos",
-  "usecases": [],
+  "short_description": "Media server for streaming video, music, live TV, and photos.",
+  "description": "Media server for streaming video, music, live TV, and photos. Emby is a self-hosted application focused on media, entertainment, streaming, video. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host Emby on your home server to media server for streaming video, music, live tv, and photos without depending on third-party cloud services.",
+    "Use Emby to manage your media workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://emby.media/",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8096,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

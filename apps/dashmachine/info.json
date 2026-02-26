@@ -9,10 +9,19 @@
     "homepage",
     "self-hosted"
   ],
-  "port": "5000 (HTTP - Web UI)",
-  "short_description": "Customizable personal dashboard for organizing links and services",
-  "description": "Customizable personal dashboard for organizing links and services",
-  "usecases": [],
+  "short_description": "Customizable personal dashboard for organizing links and services.",
+  "description": "Customizable personal dashboard for organizing links and services. Dashmachine is a self-hosted application focused on dashboard, organization, monitoring, utility. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Dashmachine on your home server to customizable personal dashboard for organizing links and services without depending on third-party cloud services.",
+    "Use Dashmachine to manage your dashboard workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/rmountjoy92/dashmachine",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 5000,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

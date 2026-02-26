@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "5800 (HTTP - Web UI)",
-  "short_description": "Privacy-focused web browser with Tor network integration",
-  "description": "Privacy-focused web browser with Tor network integration",
-  "usecases": [],
+  "short_description": "Privacy-focused web browser with Tor network integration.",
+  "description": "Privacy-focused web browser with Tor network integration. Tor Browser is a self-hosted application focused on privacy, security, anonymous, tor. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host Tor Browser on your home server to privacy-focused web browser with tor network integration without depending on third-party cloud services.",
+    "Use Tor Browser to manage your privacy workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/domistyle/docker-tor-browser",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 5800,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

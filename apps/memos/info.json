@@ -9,10 +9,19 @@
     "nostr",
     "decentralized"
   ],
-  "port": "5230 (HTTP - Web UI)",
   "short_description": "Open-source Markdown notes app, with a UI styled like a social feed.",
-  "description": "Open-source Markdown notes app, with a UI styled like a social feed.",
-  "usecases": [],
+  "description": "Open-source Markdown notes app, with a UI styled like a social feed. Memos is a self-hosted application focused on productivity, tools, network, social. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Memos on your home server to open-source markdown notes app, with a ui styled like a social feed without depending on third-party cloud services.",
+    "Use Memos to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/usememos/memos",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 5230,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

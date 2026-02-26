@@ -9,10 +9,19 @@
     "devops",
     "self-hosted"
   ],
-  "port": "9443 (HTTPS - Web UI)",
-  "short_description": "Container management UI for Docker environments",
-  "description": "Container management UI for Docker environments",
-  "usecases": [],
+  "short_description": "Container management UI for Docker environments. Self-host it with Docker using Yantr.",
+  "description": "Container management UI for Docker environments. Self-host it with Docker using Yantr. Portainer is a self-hosted application focused on tools, utility, docker, containers. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Portainer on your home server to container management ui for docker environments. self-host it with docker using yantr without depending on third-party cloud services.",
+    "Use Portainer to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://docs.portainer.io",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 9443,
+      "protocol": "HTTPS",
+      "label": "Web UI"
+    }
+  ]
 }

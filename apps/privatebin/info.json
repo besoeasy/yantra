@@ -9,10 +9,19 @@
     "productivity",
     "gaming"
   ],
-  "port": "8080 (HTTP - Web UI)",
-  "short_description": "Minimalist, open source online pastebin with zero-knowledge server design",
-  "description": "Minimalist, open source online pastebin with zero-knowledge server design",
-  "usecases": [],
+  "short_description": "Minimalist, open source online pastebin with zero-knowledge server design.",
+  "description": "Minimalist, open source online pastebin with zero-knowledge server design. PrivateBin is a self-hosted application focused on utility, privacy, notes, wiki. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host PrivateBin on your home server to minimalist, open source online pastebin with zero-knowledge server design without depending on third-party cloud services.",
+    "Use PrivateBin to manage your utility workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/PrivateBin/PrivateBin",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8080,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

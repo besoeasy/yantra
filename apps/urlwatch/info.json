@@ -9,10 +9,19 @@
     "homelab",
     "docker"
   ],
-  "port": "8081 (HTTP - Web UI)",
-  "short_description": "Monitor websites for changes and receive notifications on updates",
-  "description": "Monitor websites for changes and receive notifications on updates",
-  "usecases": [],
+  "short_description": "Monitor websites for changes and receive notifications on updates.",
+  "description": "Monitor websites for changes and receive notifications on updates. UrlWatch is a self-hosted application focused on utility, monitoring, dashboard, self-hosted. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host UrlWatch on your home server to monitor websites for changes and receive notifications on updates without depending on third-party cloud services.",
+    "Use UrlWatch to manage your utility workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/thp/urlwatch",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8081,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

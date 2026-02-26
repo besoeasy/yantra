@@ -9,10 +9,19 @@
     "server",
     "self-hosted"
   ],
-  "port": "4040 (HTTP - Web UI)",
-  "short_description": "Self-hosted music streaming server with web interface and mobile apps",
-  "description": "Self-hosted music streaming server with web interface and mobile apps",
-  "usecases": [],
+  "short_description": "Self-hosted music streaming server with web interface and mobile apps.",
+  "description": "Self-hosted music streaming server with web interface and mobile apps. Airsonic is a self-hosted application focused on media, music, audio, gaming. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Airsonic on your home server to self-hosted music streaming server with web interface and mobile apps without depending on third-party cloud services.",
+    "Use Airsonic to manage your media workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/airsonic/airsonic",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 4040,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

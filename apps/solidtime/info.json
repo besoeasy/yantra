@@ -9,10 +9,19 @@
     "docker",
     "open-source"
   ],
-  "port": "8000 (HTTP - Web UI)",
-  "short_description": "A simple, secure, and private time tracking app with detailed reports and CSV export",
-  "description": "A simple, secure, and private time tracking app with detailed reports and CSV export",
-  "usecases": [],
+  "short_description": "A simple, secure, and private time tracking app with detailed reports and CSV export.",
+  "description": "A simple, secure, and private time tracking app with detailed reports and CSV export. Solidtime is a self-hosted application focused on productivity, time-tracking, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Solidtime on your home server to a simple, secure, and private time tracking app with detailed reports and csv export without depending on third-party cloud services.",
+    "Use Solidtime to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://www.solidtime.io/",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8000,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

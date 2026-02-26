@@ -9,10 +9,19 @@
     "reader",
     "self-hosted"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Self-hosted RSS feed aggregator for reading news and updates from multiple sources",
-  "description": "Self-hosted RSS feed aggregator for reading news and updates from multiple sources",
-  "usecases": [],
+  "short_description": "Self-hosted RSS feed aggregator for reading news and updates from multiple sources.",
+  "description": "Self-hosted RSS feed aggregator for reading news and updates from multiple sources. FreshRSS is a self-hosted application focused on feed, productivity, rss, news. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host FreshRSS on your home server to self-hosted rss feed aggregator for reading news and updates from multiple sources without depending on third-party cloud services.",
+    "Use FreshRSS to manage your feed workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/FreshRSS/FreshRSS",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

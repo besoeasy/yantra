@@ -9,10 +9,19 @@
     "notes",
     "wiki"
   ],
-  "port": "27017 (TCP - Database)",
-  "short_description": "NoSQL document database for flexible data storage and management",
-  "description": "NoSQL document database for flexible data storage and management",
-  "usecases": [],
+  "short_description": "NoSQL document database for flexible data storage and management.",
+  "description": "NoSQL document database for flexible data storage and management. MongoDB is a self-hosted application focused on database, storage, files, utility. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host MongoDB on your home server to nosql document database for flexible data storage and management without depending on third-party cloud services.",
+    "Use MongoDB to manage your database workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/mongodb/mongo",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 27017,
+      "protocol": "TCP",
+      "label": "Database"
+    }
+  ]
 }

@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "17442 (HTTP - Web UI)",
-  "short_description": "Web UI for youtube-dl with subscription support and organization features",
-  "description": "Web UI for youtube-dl with subscription support and organization features",
-  "usecases": [],
+  "short_description": "Web UI for youtube-dl with subscription support and organization features.",
+  "description": "Web UI for youtube-dl with subscription support and organization features. YoutubeDL Material is a self-hosted application focused on media, downloader, download, utility. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host YoutubeDL Material on your home server to web ui for youtube-dl with subscription support and organization features without depending on third-party cloud services.",
+    "Use YoutubeDL Material to manage your media workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/Tzahi12345/YoutubeDL-Material",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 17442,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

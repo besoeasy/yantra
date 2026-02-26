@@ -9,10 +9,19 @@
     "homelab",
     "docker"
   ],
-  "port": "5432 (TCP - Database)",
-  "short_description": "Powerful open-source relational database with advanced features",
-  "description": "Powerful open-source relational database with advanced features",
-  "usecases": [],
+  "short_description": "Powerful open-source relational database with advanced features.",
+  "description": "Powerful open-source relational database with advanced features. PostgreSQL is a self-hosted application focused on database, storage, utility, self-hosted. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host PostgreSQL on your home server to powerful open-source relational database with advanced features without depending on third-party cloud services.",
+    "Use PostgreSQL to manage your database workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/postgres/postgres",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 5432,
+      "protocol": "TCP",
+      "label": "Database"
+    }
+  ]
 }

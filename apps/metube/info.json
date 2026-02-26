@@ -9,10 +9,19 @@
     "audio",
     "download"
   ],
-  "port": "8081 (HTTP - Web UI)",
   "short_description": "Web GUI for yt-dlp/youtube-dl with playlist support.",
-  "description": "Web GUI for yt-dlp/youtube-dl with playlist support.",
-  "usecases": [],
+  "description": "Web GUI for yt-dlp/youtube-dl with playlist support. MeTube is a self-hosted application focused on media, tools, utility, music. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host MeTube on your home server to web gui for yt-dlp/youtube-dl with playlist support without depending on third-party cloud services.",
+    "Use MeTube to manage your media workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/alexta69/metube",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8081,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

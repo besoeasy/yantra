@@ -9,10 +9,19 @@
     "gaming",
     "server"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Lightweight Bitwarden server for password management",
-  "description": "Lightweight Bitwarden server for password management",
-  "usecases": [],
+  "short_description": "Lightweight Bitwarden server for password management.",
+  "description": "Lightweight Bitwarden server for password management. Vaultwarden is a self-hosted application focused on productivity, security, password-manager, privacy. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Vaultwarden on your home server to lightweight bitwarden server for password management without depending on third-party cloud services.",
+    "Use Vaultwarden to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/dani-garcia/vaultwarden/wiki",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

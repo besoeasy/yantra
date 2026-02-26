@@ -9,10 +9,19 @@
     "docker",
     "open-source"
   ],
-  "port": "8080 (HTTP - Web UI)",
-  "short_description": "Privacy-focused metasearch engine aggregating results",
-  "description": "Privacy-focused metasearch engine aggregating results",
-  "usecases": [],
+  "short_description": "Privacy-focused metasearch engine aggregating results.",
+  "description": "Privacy-focused metasearch engine aggregating results. SearXNG is a self-hosted application focused on tools, security, self-hosted, homelab. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host SearXNG on your home server to privacy-focused metasearch engine aggregating results without depending on third-party cloud services.",
+    "Use SearXNG to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://docs.searxng.org",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8080,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

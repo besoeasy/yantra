@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "51821 (HTTP - Admin Panel)",
-  "short_description": "Fast, modern VPN with state-of-the-art cryptography",
-  "description": "Fast, modern VPN with state-of-the-art cryptography",
-  "usecases": [],
+  "short_description": "Fast, modern VPN with state-of-the-art cryptography.",
+  "description": "Fast, modern VPN with state-of-the-art cryptography. WireGuard is a self-hosted application focused on network, security, vpn, privacy. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host WireGuard on your home server to fast, modern vpn with state-of-the-art cryptography without depending on third-party cloud services.",
+    "Use WireGuard to manage your network workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://www.wireguard.com",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 51821,
+      "protocol": "HTTP",
+      "label": "Admin Panel"
+    }
+  ]
 }

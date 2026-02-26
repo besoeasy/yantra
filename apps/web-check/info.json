@@ -9,10 +9,19 @@
     "dashboard",
     "self-hosted"
   ],
-  "port": "3000 (HTTP - Web UI)",
-  "short_description": "All-in-one tool for analyzing and monitoring websites",
-  "description": "All-in-one tool for analyzing and monitoring websites",
-  "usecases": [],
+  "short_description": "All-in-one tool for analyzing and monitoring websites.",
+  "description": "All-in-one tool for analyzing and monitoring websites. Web Check is a self-hosted application focused on tools, network, utility, monitoring. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host Web Check on your home server to all-in-one tool for analyzing and monitoring websites without depending on third-party cloud services.",
+    "Use Web Check to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/lissy93/web-check",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 3000,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

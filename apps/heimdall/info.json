@@ -9,10 +9,19 @@
     "homepage",
     "self-hosted"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Application dashboard and launcher with simple icon-based interface",
-  "description": "Application dashboard and launcher with simple icon-based interface",
-  "usecases": [],
+  "short_description": "Application dashboard and launcher with simple icon-based interface.",
+  "description": "Application dashboard and launcher with simple icon-based interface. Heimdall is a self-hosted application focused on dashboard, organization, monitoring, utility. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Heimdall on your home server to application dashboard and launcher with simple icon-based interface without depending on third-party cloud services.",
+    "Use Heimdall to manage your dashboard workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/linuxserver/Heimdall",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

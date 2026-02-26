@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "3000 (HTTP - Web UI)",
-  "short_description": "AI-powered search engine that delivers conversational responses with contextual understanding",
-  "description": "AI-powered search engine that delivers conversational responses with contextual understanding",
-  "usecases": [],
+  "short_description": "AI-powered search engine that delivers conversational responses with contextual understanding.",
+  "description": "AI-powered search engine that delivers conversational responses with contextual understanding. Perplexica is a self-hosted application focused on ai, search, privacy, utility. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Perplexica on your home server to ai-powered search engine that delivers conversational responses with contextual understanding without depending on third-party cloud services.",
+    "Use Perplexica to manage your ai workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/ItzCrazyKns/Perplexica",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 3000,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

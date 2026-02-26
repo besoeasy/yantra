@@ -9,10 +9,19 @@
     "homepage",
     "self-hosted"
   ],
-  "port": "7575 (HTTP - Web UI)",
-  "short_description": "Modern customizable dashboard with 30+ integrations and 10K+ icons",
-  "description": "Modern customizable dashboard with 30+ integrations and 10K+ icons",
-  "usecases": [],
+  "short_description": "Modern customizable dashboard with 30+ integrations and 10K+ icons.",
+  "description": "Modern customizable dashboard with 30+ integrations and 10K+ icons. Homarr is a self-hosted application focused on dashboard, tools, monitoring, utility. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Homarr on your home server to modern customizable dashboard with 30+ integrations and 10k+ icons without depending on third-party cloud services.",
+    "Use Homarr to manage your dashboard workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/homarr-labs/homarr",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 7575,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

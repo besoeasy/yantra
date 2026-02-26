@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "8080 (HTTP - Web UI)",
-  "short_description": "Lightweight download manager for managing files with web interface",
-  "description": "Lightweight download manager for managing files with web interface",
-  "usecases": [],
+  "short_description": "Lightweight download manager for managing files with web interface.",
+  "description": "Lightweight download manager for managing files with web interface. Davos is a self-hosted application focused on download, file-management, media, utility. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Davos on your home server to lightweight download manager for managing files with web interface without depending on third-party cloud services.",
+    "Use Davos to manage your download workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/linuxserver/docker-davos",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8080,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

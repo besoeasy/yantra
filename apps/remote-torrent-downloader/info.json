@@ -9,10 +9,29 @@
     "video",
     "torrent"
   ],
-  "port": "6798 (HTTP - Web UI), 6799 (HTTP - DOWNLOADS), 4445 (SMB - Samba Drive)",
-  "short_description": "Media streaming and sharing platform with Telegram integration",
-  "description": "Media streaming and sharing platform with Telegram integration",
-  "usecases": [],
+  "short_description": "Media streaming and sharing platform with Telegram integration.",
+  "description": "Media streaming and sharing platform with Telegram integration. Remote Torrent Downloader is a self-hosted application focused on media, download, utility, streaming. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Remote Torrent Downloader on your home server to media streaming and sharing platform with telegram integration without depending on third-party cloud services.",
+    "Use Remote Torrent Downloader to manage your media workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/besoeasy/Remote-Torrent-Downloader",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 6798,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    },
+    {
+      "port": 6799,
+      "protocol": "HTTP",
+      "label": "DOWNLOADS"
+    },
+    {
+      "port": 4445,
+      "protocol": "SMB",
+      "label": "Samba Drive"
+    }
+  ]
 }

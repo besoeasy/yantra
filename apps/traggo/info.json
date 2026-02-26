@@ -9,10 +9,19 @@
     "docker",
     "open-source"
   ],
-  "port": "3030 (HTTP - Web UI)",
-  "short_description": "Simple and lightweight time tracking application for personal productivity",
-  "description": "Simple and lightweight time tracking application for personal productivity",
-  "usecases": [],
+  "short_description": "Simple and lightweight time tracking application for personal productivity.",
+  "description": "Simple and lightweight time tracking application for personal productivity. Traggo is a self-hosted application focused on productivity, time-tracking, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Traggo on your home server to simple and lightweight time tracking application for personal productivity without depending on third-party cloud services.",
+    "Use Traggo to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/traggo/server",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 3030,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

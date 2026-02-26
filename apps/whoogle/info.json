@@ -9,10 +9,19 @@
     "homelab",
     "docker"
   ],
-  "port": "5000 (HTTP - Web UI)",
-  "short_description": "Privacy-focused metasearch engine - fast, clean Google-like search results",
-  "description": "Privacy-focused metasearch engine - fast, clean Google-like search results",
-  "usecases": [],
+  "short_description": "Privacy-focused metasearch engine - fast, clean Google-like search results.",
+  "description": "Privacy-focused metasearch engine - fast, clean Google-like search results. Whoogle is a self-hosted application focused on search, privacy, utility, self-hosted. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Whoogle on your home server to privacy-focused metasearch engine - fast, clean google-like search results without depending on third-party cloud services.",
+    "Use Whoogle to manage your search workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/benbusby/whoogle",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 5000,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

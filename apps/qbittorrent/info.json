@@ -9,10 +9,29 @@
     "search",
     "privacy"
   ],
-  "port": "8080 (HTTP - Web UI), 6881 (TCP - Torrent), 6881 (UDP - Torrent)",
-  "short_description": "Feature-rich BitTorrent client with integrated search engine and web interface",
-  "description": "Feature-rich BitTorrent client with integrated search engine and web interface",
-  "usecases": [],
+  "short_description": "Feature-rich BitTorrent client with integrated search engine and web interface.",
+  "description": "Feature-rich BitTorrent client with integrated search engine and web interface. qBittorrent is a self-hosted application focused on download, network, torrent, p2p. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host qBittorrent on your home server to feature-rich bittorrent client with integrated search engine and web interface without depending on third-party cloud services.",
+    "Use qBittorrent to manage your download workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/linuxserver/docker-qbittorrent",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8080,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    },
+    {
+      "port": 6881,
+      "protocol": "TCP",
+      "label": "Torrent"
+    },
+    {
+      "port": 6881,
+      "protocol": "UDP",
+      "label": "Torrent"
+    }
+  ]
 }

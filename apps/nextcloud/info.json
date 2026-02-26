@@ -9,10 +9,19 @@
     "sync",
     "cloud"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing",
-  "description": "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing",
-  "usecases": [],
+  "short_description": "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing.",
+  "description": "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing. Nextcloud is a self-hosted application focused on productivity, utility, storage, files. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Nextcloud on your home server to self-hosted file sync and collaboration platform with calendar, contacts, and sharing without depending on third-party cloud services.",
+    "Use Nextcloud to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/nextcloud/server",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

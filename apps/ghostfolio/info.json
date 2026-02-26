@@ -9,10 +9,19 @@
     "portfolio",
     "self-hosted"
   ],
-  "port": "3333 (HTTP - Web UI)",
-  "short_description": "Open source wealth management for portfolio tracking",
-  "description": "Open source wealth management for portfolio tracking",
-  "usecases": [],
+  "short_description": "Open source wealth management for portfolio tracking.",
+  "description": "Open source wealth management for portfolio tracking. Ghostfolio is a self-hosted application focused on productivity, utility, finance, crypto. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host Ghostfolio on your home server to open source wealth management for portfolio tracking without depending on third-party cloud services.",
+    "Use Ghostfolio to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://ghostfol.io",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 3333,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

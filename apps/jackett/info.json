@@ -9,10 +9,19 @@
     "download",
     "p2p"
   ],
-  "port": "9117 (HTTP - Web UI)",
   "short_description": "API proxy for torrent trackers with Sonarr/Radarr support.",
-  "description": "API proxy for torrent trackers with Sonarr/Radarr support.",
-  "usecases": [],
+  "description": "API proxy for torrent trackers with Sonarr/Radarr support. Jackett is a self-hosted application focused on media, tools, utility, torrent. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host Jackett on your home server to api proxy for torrent trackers with sonarr/radarr support without depending on third-party cloud services.",
+    "Use Jackett to manage your media workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/Jackett/Jackett",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 9117,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

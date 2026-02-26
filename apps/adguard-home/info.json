@@ -9,10 +9,16 @@
     "adblock",
     "self-hosted"
   ],
-  "port": "3000 (HTTP - Initial Setup), 80 (HTTP - Web UI)",
-  "short_description": "DNS-level ad blocking and privacy protection with parental controls",
-  "description": "DNS-level ad blocking and privacy protection with parental controls",
-  "usecases": [],
-  "website": "https://github.com/AdguardTeam/AdGuardHome",
+  "ports": [
+    { "port": 3000, "protocol": "HTTP", "label": "Initial Setup" },
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "DNS-level ad blocking and privacy protection with parental controls.",
+  "description": "AdGuard Home is a network-wide DNS server that blocks ads and trackers at the DNS level, protecting every device on your network without per-device configuration. It supports custom DNS rules, parental controls, safe search enforcement, query logs, and statistics dashboards.",
+  "usecases": [
+    "Block ads and tracking domains across all devices on your home network using a single DNS server.",
+    "Apply parental controls and safe search enforcement network-wide without installing software on each device."
+  ],
+  "website": "https://adguard.com/en/adguard-home/overview.html",
   "dependencies": []
 }

@@ -9,10 +9,15 @@
     "homelab",
     "docker"
   ],
-  "port": "5006 (HTTP - Web UI)",
-  "short_description": "Self-hosted personal finance app with powerful budgeting and tracking features",
-  "description": "Self-hosted personal finance app with powerful budgeting and tracking features",
-  "usecases": [],
-  "website": "https://github.com/actualbudget/actual",
+  "ports": [
+    { "port": 5006, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted personal finance app with powerful budgeting and tracking features.",
+  "description": "Actual Budget is a fast, privacy-focused personal finance manager you host yourself. It uses a local-first sync engine so your data stays on your devices. Features include envelope budgeting, transaction imports, reports, and goal tracking — all without subscriptions or cloud lock-in.",
+  "usecases": [
+    "Track monthly household spending and stay on top of budgets across multiple categories.",
+    "Import bank transactions and reconcile accounts without sharing data with third-party services."
+  ],
+  "website": "https://actualbudget.org",
   "dependencies": []
 }

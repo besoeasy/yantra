@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "61208 (HTTP - Web UI)",
-  "short_description": "Real-time system monitoring for containers and host metrics",
-  "description": "Real-time system monitoring for containers and host metrics",
-  "usecases": [],
+  "short_description": "Real-time system monitoring for containers and host metrics.",
+  "description": "Real-time system monitoring for containers and host metrics. Glances is a self-hosted application focused on monitoring, tools, dashboard, utility. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Glances on your home server to real-time system monitoring for containers and host metrics without depending on third-party cloud services.",
+    "Use Glances to manage your monitoring workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://nicolargo.github.io/glances/",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 61208,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

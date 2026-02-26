@@ -9,10 +9,24 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "9001 (HTTP - Console), 9000 (HTTP - API)",
-  "short_description": "High Performance Object Storage compatible with Amazon S3 API",
-  "description": "High Performance Object Storage compatible with Amazon S3 API",
-  "usecases": [],
+  "short_description": "High Performance Object Storage compatible with Amazon S3 API.",
+  "description": "High Performance Object Storage compatible with Amazon S3 API. MinIO is a self-hosted application focused on utility, tools, storage, files. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host MinIO on your home server to high performance object storage compatible with amazon s3 api without depending on third-party cloud services.",
+    "Use MinIO to manage your utility workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://min.io",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 9001,
+      "protocol": "HTTP",
+      "label": "Console"
+    },
+    {
+      "port": 9000,
+      "protocol": "HTTP",
+      "label": "API"
+    }
+  ]
 }

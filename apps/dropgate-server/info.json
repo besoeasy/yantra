@@ -9,10 +9,19 @@
     "utility",
     "gaming"
   ],
-  "port": "52443 (HTTP - Web UI)",
-  "short_description": "Privacy-first file sharing solution with end-to-end encryption, supporting hosted uploads and P2P transfers.",
-  "description": "Privacy-first file sharing solution with end-to-end encryption, supporting hosted uploads and P2P transfers.",
-  "usecases": [],
+  "short_description": "Privacy-first file sharing solution with end-to-end encryption, supporting hosted uploads and P2P...",
+  "description": "Privacy-first file sharing solution with end-to-end encryption, supporting hosted uploads and P2P... Dropgate Server is a self-hosted application focused on tools, privacy, storage, files. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Dropgate Server on your home server to privacy-first file sharing solution with end-to-end encryption, supporting hosted uploads and p2p.. without depending on third-party cloud services.",
+    "Use Dropgate Server to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/WillTDA/Dropgate",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 52443,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

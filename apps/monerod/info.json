@@ -9,10 +9,24 @@
     "wallet",
     "privacy"
   ],
-  "port": "18089 (TCP - Restricted RPC), 18080 (TCP - P2P)",
-  "short_description": "Pruned Monero full node with restricted RPC for wallets and apps",
-  "description": "Pruned Monero full node with restricted RPC for wallets and apps",
-  "usecases": [],
+  "short_description": "Pruned Monero full node with restricted RPC for wallets and apps.",
+  "description": "Pruned Monero full node with restricted RPC for wallets and apps. Monero Node is a self-hosted application focused on cryptocurrency, blockchain, network, crypto. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Monero Node on your home server to pruned monero full node with restricted rpc for wallets and apps without depending on third-party cloud services.",
+    "Use Monero Node to manage your cryptocurrency workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/sethforprivacy/simple-monerod",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 18089,
+      "protocol": "TCP",
+      "label": "Restricted RPC"
+    },
+    {
+      "port": 18080,
+      "protocol": "TCP",
+      "label": "P2P"
+    }
+  ]
 }

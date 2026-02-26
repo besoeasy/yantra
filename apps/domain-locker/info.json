@@ -9,10 +9,19 @@
     "utility",
     "finance"
   ],
-  "port": "3000 (HTTP - Web UI)",
-  "short_description": "Complete visibility of your domain portfolio with monitoring and alerts",
-  "description": "Complete visibility of your domain portfolio with monitoring and alerts",
-  "usecases": [],
+  "short_description": "Complete visibility of your domain portfolio with monitoring and alerts.",
+  "description": "Complete visibility of your domain portfolio with monitoring and alerts. Domain Locker is a self-hosted application focused on security, tools, monitoring, dashboard. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Domain Locker on your home server to complete visibility of your domain portfolio with monitoring and alerts without depending on third-party cloud services.",
+    "Use Domain Locker to manage your security workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://domain-locker.com",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 3000,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

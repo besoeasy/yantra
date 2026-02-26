@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "5678 (HTTP - Web UI)",
-  "short_description": "Workflow automation platform with AI and 400+ integrations",
-  "description": "Workflow automation platform with AI and 400+ integrations",
-  "usecases": [],
+  "short_description": "Workflow automation platform with AI and 400+ integrations.",
+  "description": "Workflow automation platform with AI and 400+ integrations. n8n is a self-hosted application focused on productivity, tools, automation, workflow. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host n8n on your home server to workflow automation platform with ai and 400+ integrations without depending on third-party cloud services.",
+    "Use n8n to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://docs.n8n.io",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 5678,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

@@ -9,10 +9,19 @@
     "utility",
     "nostr"
   ],
-  "port": "7777 (HTTP - Web UI)",
-  "short_description": "High-performance nostr relay with LMDB storage",
-  "description": "High-performance nostr relay with LMDB storage",
-  "usecases": [],
+  "short_description": "High-performance nostr relay with LMDB storage. Self-host it with Docker using Yantr.",
+  "description": "High-performance nostr relay with LMDB storage. Self-host it with Docker using Yantr. Strfry is a self-hosted application focused on network, social, storage, files. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Strfry on your home server to high-performance nostr relay with lmdb storage. self-host it with docker using yantr without depending on third-party cloud services.",
+    "Use Strfry to manage your network workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/hoytech/strfry",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 7777,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

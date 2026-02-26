@@ -9,10 +9,19 @@
     "docker",
     "open-source"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Tiny HTTP service that prints system information - perfect for testing",
-  "description": "Tiny HTTP service that prints system information - perfect for testing",
-  "usecases": [],
+  "short_description": "Tiny HTTP service that prints system information - perfect for testing.",
+  "description": "Tiny HTTP service that prints system information - perfect for testing. Whoami is a self-hosted application focused on tools, utility, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Whoami on your home server to tiny http service that prints system information - perfect for testing without depending on third-party cloud services.",
+    "Use Whoami to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/traefik/whoami",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

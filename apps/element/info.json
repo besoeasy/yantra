@@ -9,10 +9,19 @@
     "communication",
     "self-hosted"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Secure and decentralized Matrix chat client for communication",
-  "description": "Secure and decentralized Matrix chat client for communication",
-  "usecases": [],
+  "short_description": "Secure and decentralized Matrix chat client for communication.",
+  "description": "Secure and decentralized Matrix chat client for communication. Element is a self-hosted application focused on productivity, security, chat, messaging. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Element on your home server to secure and decentralized matrix chat client for communication without depending on third-party cloud services.",
+    "Use Element to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://element.io",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

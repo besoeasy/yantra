@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "8989 (HTTP - Web UI)",
-  "short_description": "Lightweight self-hosted file manager and sharing solution",
-  "description": "Lightweight self-hosted file manager and sharing solution",
-  "usecases": [],
+  "short_description": "Lightweight self-hosted file manager and sharing solution.",
+  "description": "Lightweight self-hosted file manager and sharing solution. Droppy is a self-hosted application focused on file-manager, utility, storage, files. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host Droppy on your home server to lightweight self-hosted file manager and sharing solution without depending on third-party cloud services.",
+    "Use Droppy to manage your file-manager workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/silverwind/droppy",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8989,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

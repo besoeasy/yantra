@@ -9,10 +9,19 @@
     "adblock",
     "self-hosted"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Network-wide ad blocking via DNS sinkhole",
-  "description": "Network-wide ad blocking via DNS sinkhole",
-  "usecases": [],
+  "short_description": "Network-wide ad blocking via DNS sinkhole. Self-host it with Docker using Yantr.",
+  "description": "Network-wide ad blocking via DNS sinkhole. Self-host it with Docker using Yantr. Pi-hole is a self-hosted application focused on network, security, dns, privacy. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Pi-hole on your home server to network-wide ad blocking via dns sinkhole. self-host it with docker using yantr without depending on third-party cloud services.",
+    "Use Pi-hole to manage your network workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://docs.pi-hole.net",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

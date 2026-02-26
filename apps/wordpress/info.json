@@ -9,10 +9,19 @@
     "docker",
     "open-source"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "Popular open-source content management system for websites and blogs",
-  "description": "Popular open-source content management system for websites and blogs",
-  "usecases": [],
+  "short_description": "Popular open-source content management system for websites and blogs.",
+  "description": "Popular open-source content management system for websites and blogs. WordPress is a self-hosted application focused on cms, blog, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host WordPress on your home server to popular open-source content management system for websites and blogs without depending on third-party cloud services.",
+    "Use WordPress to manage your cms workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/WordPress/WordPress",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "9091 (HTTP - Web Interface)",
-  "short_description": "Fast, easy BitTorrent client with web interface",
-  "description": "Fast, easy BitTorrent client with web interface",
-  "usecases": [],
+  "short_description": "Fast, easy BitTorrent client with web interface. Self-host it with Docker using Yantr.",
+  "description": "Fast, easy BitTorrent client with web interface. Self-host it with Docker using Yantr. Transmission is a self-hosted application focused on download, network, torrent, p2p. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Transmission on your home server to fast, easy bittorrent client with web interface. self-host it with docker using yantr without depending on third-party cloud services.",
+    "Use Transmission to manage your download workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://transmissionbt.com/",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 9091,
+      "protocol": "HTTP",
+      "label": "Web Interface"
+    }
+  ]
 }

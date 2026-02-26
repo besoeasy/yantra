@@ -9,10 +9,19 @@
     "self-hosted",
     "homelab"
   ],
-  "port": "11434 (HTTP - API)",
-  "short_description": "Local LLM inference server - run models like Llama, Mistral, and more",
-  "description": "Local LLM inference server - run models like Llama, Mistral, and more",
-  "usecases": [],
+  "short_description": "Local LLM inference server - run models like Llama, Mistral, and more.",
+  "description": "Local LLM inference server - run models like Llama, Mistral, and more. Ollama is a self-hosted application focused on ai, backend, gaming, server. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "usecases": [
+    "Self-host Ollama on your home server to local llm inference server - run models like llama, mistral, and more without depending on third-party cloud services.",
+    "Use Ollama to manage your ai workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://ollama.ai",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 11434,
+      "protocol": "HTTP",
+      "label": "API"
+    }
+  ]
 }

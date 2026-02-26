@@ -9,10 +9,19 @@
     "utility",
     "ssh"
   ],
-  "port": "4096 (HTTP - Web UI)",
-  "short_description": "Open source AI coding agent for terminal, IDE, and desktop",
-  "description": "Open source AI coding agent for terminal, IDE, and desktop",
-  "usecases": [],
+  "short_description": "Open source AI coding agent for terminal, IDE, and desktop.",
+  "description": "Open source AI coding agent for terminal, IDE, and desktop. OpenCode is a self-hosted application focused on development, productivity, ai, terminal. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host OpenCode on your home server to open source ai coding agent for terminal, ide, and desktop without depending on third-party cloud services.",
+    "Use OpenCode to manage your development workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/anomalyco/opencode",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 4096,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

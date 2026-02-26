@@ -9,10 +9,19 @@
     "music",
     "audio"
   ],
-  "port": "8096 (HTTP - Web UI)",
-  "short_description": "Free and open-source media server for streaming video, music, and photos",
-  "description": "Free and open-source media server for streaming video, music, and photos",
-  "usecases": [],
+  "short_description": "Free and open-source media server for streaming video, music, and photos.",
+  "description": "Free and open-source media server for streaming video, music, and photos. Jellyfin is a self-hosted application focused on media, entertainment, streaming, video. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host Jellyfin on your home server to free and open-source media server for streaming video, music, and photos without depending on third-party cloud services.",
+    "Use Jellyfin to manage your media workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://jellyfin.org/",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 8096,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }

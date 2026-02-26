@@ -9,10 +9,19 @@
     "homelab",
     "docker"
   ],
-  "port": "80 (HTTP - Web UI)",
-  "short_description": "A nostr web client sandbox for exploring and learning the inner workings of the nostr network",
-  "description": "A nostr web client sandbox for exploring and learning the inner workings of the nostr network",
-  "usecases": [],
+  "short_description": "A nostr web client sandbox for exploring and learning the inner workings of the nostr network.",
+  "description": "A nostr web client sandbox for exploring and learning the inner workings of the nostr network. noStrudel is a self-hosted application focused on social, nostr, decentralized, self-hosted. It can be deployed on any device via Docker Compose.",
+  "usecases": [
+    "Self-host noStrudel on your home server to a nostr web client sandbox for exploring and learning the inner workings of the nostr network without depending on third-party cloud services.",
+    "Use noStrudel to manage your social workflows privately, keeping all data under your control on local infrastructure."
+  ],
   "website": "https://github.com/hzrd149/nostrudel",
-  "dependencies": []
+  "dependencies": [],
+  "ports": [
+    {
+      "port": 80,
+      "protocol": "HTTP",
+      "label": "Web UI"
+    }
+  ]
 }
