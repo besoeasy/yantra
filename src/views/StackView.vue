@@ -7,7 +7,7 @@ import { useNotification } from "../composables/useNotification";
 import { formatDuration } from "../utils/metrics";
 import {
   ArrowLeft, Globe, ExternalLink, Bot, Activity, Layers,
-  Terminal, Server, Network, Trash2, RefreshCw,
+  Terminal, Server, Network, Trash2, RefreshCw, HardDrive,
 } from "lucide-vue-next";
 
 const route = useRoute();
@@ -54,6 +54,26 @@ const visiblePorts = computed(() => {
 });
 
 const hasDescribedPorts = computed(() => enrichedPorts.value.some((p) => p.label));
+
+// Collect all unique mounts across all services
+const allMounts = computed(() => {
+  if (!stack.value) return [];
+  const seen = new Set();
+  const result = [];
+  for (const svc of stack.value.services) {
+    for (const m of (svc.mounts || [])) {
+      const key = `${m.type}:${m.source}:${m.destination}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        result.push({ ...m, svcName: svc.service });
+      }
+    }
+  }
+  // Sort: named volumes first, then bind mounts, then tmpfs
+  const order = { volume: 0, bind: 1, tmpfs: 2 };
+  result.sort((a, b) => (order[a.type] ?? 9) - (order[b.type] ?? 9));
+  return result;
+});
 
 function appUrl(hostPort, proto) {
   const scheme = proto === 'https' ? 'https' : 'http';
@@ -360,6 +380,53 @@ onUnmounted(() => {
         <span class="text-sm">No ports published to host — all services communicate internally.</span>
       </div>
 
+      <!-- ── Volume Mounts ──────────────────────────────────────────────────── -->
+      <div v-if="allMounts.length > 0" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+            <HardDrive :size="13" />
+            Volume Mounts
+          </h2>
+          <span class="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{{ allMounts.length }}</span>
+        </div>
+
+        <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden shadow-sm">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200/50 dark:border-slate-800/50">
+                <th class="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">Type</th>
+                <th class="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">Source</th>
+                <th class="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">Container Path</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
+              <tr
+                v-for="(m, i) in allMounts"
+                :key="i"
+                class="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors"
+              >
+                <td class="px-4 py-3">
+                  <span
+                    class="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded border"
+                    :class="{
+                      'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/50': m.type === 'volume',
+                      'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/50': m.type === 'bind',
+                      'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700': m.type === 'tmpfs',
+                    }"
+                  >{{ m.type }}</span>
+                </td>
+                <td class="px-4 py-3 font-mono text-xs text-slate-700 dark:text-slate-300 break-all max-w-xs">
+                  {{ m.name || m.source || '—' }}
+                </td>
+                <td class="px-4 py-3 font-mono text-xs text-slate-500 dark:text-slate-400 break-all max-w-xs">
+                  {{ m.destination }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- ── Services ───────────────────────────────────────────────────────── -->
       <div class="space-y-3">
         <div class="flex items-center justify-between">
@@ -412,10 +479,10 @@ onUnmounted(() => {
                 <span v-if="svc.info" class="hidden sm:block truncate max-w-xs">{{ svc.info }}</span>
               </div>
 
-              <!-- Per-service ports -->
+              <!-- Per-service ports (deduplicated) -->
               <div v-if="svc.rawPorts.filter(p => p.PublicPort).length > 0" class="flex items-center gap-1.5 flex-wrap pt-0.5">
                 <span
-                  v-for="p in svc.rawPorts.filter(rp => rp.PublicPort)"
+                  v-for="p in [...new Map(svc.rawPorts.filter(rp => rp.PublicPort).map(rp => [`${rp.PublicPort}:${rp.PrivatePort}:${rp.Type}`, rp])).values()]"
                   :key="`${p.PublicPort}-${p.Type}`"
                   class="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50"
                 >

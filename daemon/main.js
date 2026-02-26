@@ -933,28 +933,45 @@ app.get("/api/stacks/:projectId", asyncHandler(async (req, res) => {
   const catalogEntry = catalogMap.get(baseAppId) || null;
 
   // Build published ports map: only ports actually exposed to the host
-  const publishedPorts = [];
+  // Deduplicate by hostPort+containerPort+protocol+service (Docker reports both IPv4 and IPv6 entries)
+  const publishedPortsMap = new Map();
   for (const c of projectContainers) {
     const svcLabel = c.Labels["yantr.service"] || c.Names[0]?.replace("/", "") || "unknown";
     if (c.Ports) {
       for (const p of c.Ports) {
         if (p.PublicPort) {
-          publishedPorts.push({
-            hostPort: p.PublicPort,
-            containerPort: p.PrivatePort,
-            protocol: p.Type,
-            service: svcLabel,
-            ip: p.IP || "0.0.0.0",
-          });
+          const key = `${p.PublicPort}:${p.PrivatePort}:${p.Type}:${svcLabel}`;
+          if (!publishedPortsMap.has(key)) {
+            publishedPortsMap.set(key, {
+              hostPort: p.PublicPort,
+              containerPort: p.PrivatePort,
+              protocol: p.Type,
+              service: svcLabel,
+            });
+          }
         }
       }
     }
   }
-  publishedPorts.sort((a, b) => a.hostPort - b.hostPort);
+  const publishedPorts = [...publishedPortsMap.values()].sort((a, b) => a.hostPort - b.hostPort);
 
   // Enrich each container
   const services = projectContainers.map((c) => {
     const appLabels = parseAppLabels(c.Labels);
+    // Deduplicate mounts: prefer named volumes, strip anonymous ones, group by destination
+    const mountsMap = new Map();
+    for (const m of (c.Mounts || [])) {
+      const key = m.Destination;
+      if (!mountsMap.has(key)) {
+        mountsMap.set(key, {
+          type: m.Type,          // "volume", "bind", "tmpfs"
+          source: m.Source || "",
+          destination: m.Destination,
+          mode: m.Mode || "",
+          name: m.Name || null,  // named volume name
+        });
+      }
+    }
     return {
       id: c.Id,
       name: c.Names[0]?.replace("/", "") || "unknown",
@@ -963,6 +980,7 @@ app.get("/api/stacks/:projectId", asyncHandler(async (req, res) => {
       status: c.Status,
       created: c.Created,
       rawPorts: c.Ports || [],
+      mounts: [...mountsMap.values()],
       service: c.Labels["yantr.service"] || appLabels.service || c.Names[0]?.replace("/", "") || "unknown",
       info: c.Labels["yantr.info"] || appLabels.info || "",
       hasYantrLabel: !!(appLabels.app),
