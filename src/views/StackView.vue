@@ -63,14 +63,17 @@ const volumeBackups = ref({});
 const backingUp = ref(false);
 const showRestoreMenu = ref({});
 
-// Parse described ports from info.json port string, e.g. "3333 (HTTP - Web UI), 3334 (TCP - DHT)"
-function parsePortLabels(portStr) {
+// Build a port-number → {label, protocol} lookup from the info.json ports array
+function buildPortLabels(ports) {
   const labels = {};
-  if (!portStr) return labels;
-  const regex = /(\d+)\s*\(([^-)]+)\s*-\s*([^)]+)\)/g;
-  let m;
-  while ((m = regex.exec(portStr)) !== null) {
-    labels[m[1]] = { protocol: m[2].trim().toLowerCase(), label: m[3].trim() };
+  if (!Array.isArray(ports)) return labels;
+  for (const p of ports) {
+    if (p.port != null) {
+      labels[String(p.port)] = {
+        protocol: (p.protocol || '').toLowerCase(),
+        label: p.label || null,
+      };
+    }
   }
   return labels;
 }
@@ -78,7 +81,7 @@ function parsePortLabels(portStr) {
 // Merge published ports with described labels from info.json
 const enrichedPorts = computed(() => {
   if (!stack.value) return [];
-  const portLabels = parsePortLabels(stack.value.app?.port);
+  const portLabels = buildPortLabels(stack.value.app?.ports);
   return stack.value.publishedPorts.map((p) => ({
     ...p,
     label: portLabels[String(p.containerPort)]?.label || null,

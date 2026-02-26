@@ -53,17 +53,13 @@ const allPortMappings = computed(() => {
     return []
   }
   
-  // Parse port labels from app metadata
+  // Build port-number → {label, protocol} lookup from info.json ports array
   const portLabels = {}
-  if (selectedContainer.value.app?.port) {
-    const portStr = selectedContainer.value.app.port
-    const regex = /(\d+)\s*\(([^-\)]+)\s*-\s*([^)]+)\)/g
-    let match
-    
-    while ((match = regex.exec(portStr)) !== null) {
-      portLabels[match[1]] = {
-        protocol: match[2].trim().toLowerCase(),
-        label: match[3].trim()
+  for (const p of (selectedContainer.value.app?.ports || [])) {
+    if (p.port != null) {
+      portLabels[String(p.port)] = {
+        protocol: (p.protocol || '').toLowerCase(),
+        label: p.label || null,
       }
     }
   }

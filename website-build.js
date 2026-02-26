@@ -50,7 +50,7 @@ function parseAppFolder(appId, appPath) {
       name: info.name,
       logo: info.logo || null,
       tags: Array.isArray(info.tags) ? info.tags : [],
-      port: info.port || null,
+      ports: Array.isArray(info.ports) ? info.ports : [],
       short_description: info.short_description || '',
       description: info.description || info.short_description || '',
       usecases: Array.isArray(info.usecases) ? info.usecases : [],
