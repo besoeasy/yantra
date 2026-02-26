@@ -4,10 +4,10 @@ import { useRoute, useRouter } from "vue-router";
 import { useApiUrl } from "../composables/useApiUrl";
 import { useCurrentTime } from "../composables/useCurrentTime";
 import { useNotification } from "../composables/useNotification";
-import { formatDuration } from "../utils/metrics";
+import { formatDuration, formatBytes } from "../utils/metrics";
 import {
   ArrowLeft, Globe, ExternalLink, Bot, Activity, Layers,
-  Terminal, Server, Network, Trash2, RefreshCw, HardDrive,
+  Terminal, Server, Network, Trash2, RefreshCw, HardDrive, FolderOpen, AlertCircle,
 } from "lucide-vue-next";
 
 const route = useRoute();
@@ -22,6 +22,14 @@ const stack = ref(null);
 const loading = ref(true);
 const removing = ref(false);
 const showOnlyDescribedPorts = ref(true);
+
+// Browse / Backup state
+const browsingVolume = ref({});
+const showVolumeMenu = ref({});
+const s3Configured = ref(false);
+const volumeBackups = ref({});
+const backingUp = ref(false);
+const showRestoreMenu = ref({});
 
 // Parse described ports from info.json port string, e.g. "3333 (HTTP - Web UI), 3334 (TCP - DHT)"
 function parsePortLabels(portStr) {
@@ -55,7 +63,7 @@ const visiblePorts = computed(() => {
 
 const hasDescribedPorts = computed(() => enrichedPorts.value.some((p) => p.label));
 
-// Collect all unique mounts across all services
+// Collect all unique mounts across all services (includes svcId for backup ops)
 const allMounts = computed(() => {
   if (!stack.value) return [];
   const seen = new Set();
@@ -65,15 +73,20 @@ const allMounts = computed(() => {
       const key = `${m.type}:${m.source}:${m.destination}`;
       if (!seen.has(key)) {
         seen.add(key);
-        result.push({ ...m, svcName: svc.service });
+        result.push({ ...m, svcName: svc.service, svcId: svc.id });
       }
     }
   }
-  // Sort: named volumes first, then bind mounts, then tmpfs
   const order = { volume: 0, bind: 1, tmpfs: 2 };
   result.sort((a, b) => (order[a.type] ?? 9) - (order[b.type] ?? 9));
   return result;
 });
+
+// Named Docker volumes only — these support browse / backup / restore
+const namedVolumes = computed(() => allMounts.value.filter((m) => m.type === 'volume' && m.name));
+
+// Bind mounts and tmpfs — shown in a simple compact list
+const otherMounts = computed(() => allMounts.value.filter((m) => m.type !== 'volume' || !m.name));
 
 function appUrl(hostPort, proto) {
   const scheme = proto === 'https' ? 'https' : 'http';
@@ -158,8 +171,178 @@ async function removeStack() {
 
 // ── lifecycle ─────────────────────────────────────────────────────────────────
 
+// ── Browse / Backup / Restore ────────────────────────────────────────────────
+
+async function browseVolume(volumeName, expiryMinutes = 60) {
+  browsingVolume.value[volumeName] = true;
+  showVolumeMenu.value[volumeName] = false;
+  try {
+    const response = await fetch(`${apiUrl.value}/api/volumes/${volumeName}/browse`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ expiryMinutes }),
+    });
+    const data = await response.json();
+    if (data.success) {
+      const expiryText = expiryMinutes > 0 ? ` (expires in ${expiryMinutes}m)` : ' (no expiry)';
+      toast.success(`Volume browser started on port ${data.port}${expiryText}`);
+      if (data.port) window.open(`http://${window.location.hostname}:${data.port}`, '_blank');
+    }
+  } catch (e) {
+    toast.error('Failed to start volume browser');
+  } finally {
+    delete browsingVolume.value[volumeName];
+  }
+}
+
+async function checkS3Config() {
+  try {
+    const res = await fetch(`${apiUrl.value}/api/backup/config`);
+    const data = await res.json();
+    s3Configured.value = data.configured;
+  } catch (e) { /* silent */ }
+}
+
+async function fetchVolumeBackups() {
+  if (!stack.value) return;
+  // Collect unique svcIds that have named volumes
+  const svcIds = [...new Set(namedVolumes.value.map((m) => m.svcId))];
+  const merged = {};
+  await Promise.all(svcIds.map(async (svcId) => {
+    try {
+      const res = await fetch(`${apiUrl.value}/api/containers/${svcId}/backups`);
+      const data = await res.json();
+      if (data.success && data.backups) {
+        Object.assign(merged, data.backups);
+        if (data.configured !== false) s3Configured.value = true;
+      }
+    } catch (e) { /* silent */ }
+  }));
+  volumeBackups.value = merged;
+}
+
+async function backupVolume(svcId) {
+  if (backingUp.value) return;
+  backingUp.value = true;
+  try {
+    const res = await fetch(`${apiUrl.value}/api/containers/${svcId}/backup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = await res.json();
+    if (data.success) {
+      toast.success('Backup started');
+      pollBackupJob(data.jobId);
+    } else {
+      toast.error(data.error || 'Failed to start backup');
+    }
+  } catch (e) {
+    toast.error('Failed to start backup');
+  } finally {
+    backingUp.value = false;
+  }
+}
+
+async function backupAll() {
+  if (backingUp.value) return;
+  const svcIds = [...new Set(namedVolumes.value.map((m) => m.svcId))];
+  for (const svcId of svcIds) await backupVolume(svcId);
+}
+
+function pollBackupJob(jobId) {
+  const iv = setInterval(async () => {
+    try {
+      const res = await fetch(`${apiUrl.value}/api/backup/jobs/${jobId}`);
+      const data = await res.json();
+      if (data.success && data.job) {
+        if (data.job.status === 'completed') {
+          clearInterval(iv);
+          toast.success('Backup completed');
+          await fetchVolumeBackups();
+        } else if (data.job.status === 'failed') {
+          clearInterval(iv);
+          toast.error(`Backup failed: ${data.job.error}`);
+        }
+      }
+    } catch (e) { clearInterval(iv); }
+  }, 2000);
+}
+
+async function restoreBackup(volumeName, backupKey) {
+  if (!confirm(`Restore ${volumeName} from backup?\n\nThis will overwrite current data.`)) return;
+  try {
+    const res = await fetch(`${apiUrl.value}/api/volumes/${volumeName}/restore`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ backupKey, overwrite: true }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      toast.success('Restore started');
+      pollRestoreJob(data.jobId);
+    } else {
+      toast.error(data.error || 'Failed to start restore');
+    }
+  } catch (e) {
+    toast.error('Failed to start restore');
+  }
+  showRestoreMenu.value[volumeName] = false;
+}
+
+function pollRestoreJob(jobId) {
+  const iv = setInterval(async () => {
+    try {
+      const res = await fetch(`${apiUrl.value}/api/restore/jobs/${jobId}`);
+      const data = await res.json();
+      if (data.success && data.job) {
+        if (data.job.status === 'completed') { clearInterval(iv); toast.success('Restore completed'); }
+        else if (data.job.status === 'failed') { clearInterval(iv); toast.error(`Restore failed: ${data.job.error}`); }
+      }
+    } catch (e) { clearInterval(iv); }
+  }, 2000);
+}
+
+async function deleteBackupFile(volumeName, backupKey) {
+  const timestamp = backupKey.split('/')[1]?.replace('.tar', '');
+  if (!confirm('Delete this backup?')) return;
+  try {
+    const res = await fetch(`${apiUrl.value}/api/volumes/${volumeName}/backup/${timestamp}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success) { toast.success('Backup deleted'); await fetchVolumeBackups(); }
+    else toast.error(data.error || 'Failed to delete backup');
+  } catch (e) {
+    toast.error('Failed to delete backup');
+  }
+}
+
+function toggleRestoreMenu(volumeName) {
+  showRestoreMenu.value[volumeName] = !showRestoreMenu.value[volumeName];
+}
+
+function hasBackups(volumeName) {
+  return volumeBackups.value[volumeName]?.length > 0;
+}
+
+function getLatestBackupAge(volumeName) {
+  const backups = volumeBackups.value[volumeName];
+  if (!backups?.length) return 'Never';
+  const diffMs = Date.now() - new Date(backups[0].timestamp);
+  const m = Math.floor(diffMs / 60000);
+  const h = Math.floor(m / 60);
+  const d = Math.floor(h / 24);
+  if (d > 0) return `${d}d ago`;
+  if (h > 0) return `${h}h ago`;
+  if (m > 0) return `${m}m ago`;
+  return 'Just now';
+}
+
+function formatBackupDate(ts) {
+  return new Date(ts).toLocaleString();
+}
+
 onMounted(async () => {
   await fetchStack();
+  await Promise.all([checkS3Config(), fetchVolumeBackups()]);
   refreshInterval = setInterval(fetchStack, 8000);
 });
 
@@ -380,47 +563,132 @@ onUnmounted(() => {
         <span class="text-sm">No ports published to host — all services communicate internally.</span>
       </div>
 
-      <!-- ── Volume Mounts ──────────────────────────────────────────────────── -->
-      <div v-if="allMounts.length > 0" class="space-y-3">
+      <!-- ── Storage (Named Volumes) ────────────────────────────────────── -->
+      <div v-if="namedVolumes.length > 0" class="space-y-3">
         <div class="flex items-center justify-between">
           <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
             <HardDrive :size="13" />
-            Volume Mounts
+            Storage
           </h2>
-          <span class="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{{ allMounts.length }}</span>
+          <button
+            v-if="s3Configured && namedVolumes.length > 0"
+            @click="backupAll"
+            :disabled="backingUp"
+            class="text-xs px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
+          >{{ backingUp ? 'Backing up…' : 'Backup All' }}</button>
         </div>
 
+        <!-- S3 warning -->
+        <div v-if="!s3Configured" class="bg-yellow-100/50 dark:bg-yellow-900/20 rounded-xl p-3.5 flex items-start gap-3">
+          <AlertCircle :size="16" class="text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5" />
+          <p class="text-xs text-yellow-900 dark:text-yellow-200">
+            <span class="font-semibold">S3 storage not configured.</span>
+            <router-link to="/minioconfig" class="underline hover:text-yellow-950 dark:hover:text-yellow-100 font-semibold ml-1">Configure now</router-link> to enable backups.
+          </p>
+        </div>
+
+        <div class="grid gap-3">
+          <div
+            v-for="vol in namedVolumes"
+            :key="vol.name"
+            class="bg-white dark:bg-[#1c1c1e] border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-5 hover:shadow-md hover:border-blue-500/50 transition-all"
+          >
+            <div class="flex items-start gap-3.5 mb-4">
+              <div class="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white shrink-0 shadow-sm">
+                <HardDrive :size="22" />
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="font-semibold text-slate-900 dark:text-white truncate" :title="vol.name">{{ vol.name }}</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 font-mono truncate mt-0.5">{{ vol.destination }}</div>
+                <div class="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5">
+                  Service: <span class="font-medium text-slate-600 dark:text-slate-300">{{ vol.svcName }}</span>
+                  <span v-if="s3Configured" class="ml-3">Backup: <span class="font-medium">{{ getLatestBackupAge(vol.name) }}</span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- Browse -->
+              <div v-if="browsingVolume[vol.name]" class="text-xs text-blue-600 dark:text-blue-400 animate-pulse font-medium px-3 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                Starting WebDAV server…
+              </div>
+              <button
+                v-else-if="!showVolumeMenu[vol.name]"
+                @click="showVolumeMenu[vol.name] = true"
+                class="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+              >
+                <FolderOpen :size="13" />
+                Browse Files
+              </button>
+              <div v-else class="flex items-center gap-1.5">
+                <button @click="browseVolume(vol.name, 60)" class="px-2.5 py-2 text-[10px] font-bold uppercase bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all" title="1 Hour Access">1H</button>
+                <button @click="browseVolume(vol.name, 0)" class="px-2.5 py-2 text-[10px] font-bold uppercase bg-slate-700 dark:bg-slate-600 text-white rounded-lg hover:bg-slate-600 dark:hover:bg-slate-500 transition-all" title="Permanent Access">Perm</button>
+              </div>
+              <!-- Backup -->
+              <button
+                @click="backupVolume(vol.svcId)"
+                :disabled="backingUp || !s3Configured"
+                class="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >Backup</button>
+              <!-- Restore -->
+              <button
+                @click="toggleRestoreMenu(vol.name)"
+                :disabled="!hasBackups(vol.name) || !s3Configured"
+                class="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >Restore</button>
+            </div>
+
+            <!-- Restore dropdown -->
+            <div
+              v-if="showRestoreMenu[vol.name] && hasBackups(vol.name)"
+              class="mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-800/50"
+            >
+              <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">Available Backups</div>
+              <div class="space-y-1.5 max-h-40 overflow-y-auto">
+                <div
+                  v-for="backup in volumeBackups[vol.name]"
+                  :key="backup.key"
+                  class="flex items-center justify-between py-2 px-3 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-all"
+                >
+                  <div class="flex-1 min-w-0">
+                    <div class="font-mono text-xs text-slate-900 dark:text-white">{{ formatBackupDate(backup.timestamp) }}</div>
+                    <div class="text-slate-500 dark:text-slate-400 text-[10px] mt-0.5">{{ formatBytes(backup.size) }}</div>
+                  </div>
+                  <div class="flex gap-1.5 ml-3">
+                    <button @click="restoreBackup(vol.name, backup.key)" class="px-2.5 py-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all text-[10px] font-bold">Restore</button>
+                    <button @click="deleteBackupFile(vol.name, backup.key)" class="px-2.5 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all text-[10px] font-bold">Delete</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bind / tmpfs mounts compact list -->
+      <div v-if="otherMounts.length > 0" class="space-y-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+          <HardDrive :size="13" />
+          Bind Mounts
+        </h2>
         <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden shadow-sm">
           <table class="w-full text-left">
             <thead>
               <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200/50 dark:border-slate-800/50">
                 <th class="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">Type</th>
-                <th class="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">Source</th>
+                <th class="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">Host Path</th>
                 <th class="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">Container Path</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
-              <tr
-                v-for="(m, i) in allMounts"
-                :key="i"
-                class="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors"
-              >
+              <tr v-for="(m, i) in otherMounts" :key="i" class="hover:bg-slate-50 dark:hover:bg-slate-900/20 transition-colors">
                 <td class="px-4 py-3">
-                  <span
-                    class="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded border"
-                    :class="{
-                      'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/50': m.type === 'volume',
-                      'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/50': m.type === 'bind',
-                      'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700': m.type === 'tmpfs',
-                    }"
+                  <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded border"
+                    :class="m.type === 'bind' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/50' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'"
                   >{{ m.type }}</span>
                 </td>
-                <td class="px-4 py-3 font-mono text-xs text-slate-700 dark:text-slate-300 break-all max-w-xs">
-                  {{ m.name || m.source || '—' }}
-                </td>
-                <td class="px-4 py-3 font-mono text-xs text-slate-500 dark:text-slate-400 break-all max-w-xs">
-                  {{ m.destination }}
-                </td>
+                <td class="px-4 py-3 font-mono text-xs text-slate-700 dark:text-slate-300 break-all max-w-xs">{{ m.source || '—' }}</td>
+                <td class="px-4 py-3 font-mono text-xs text-slate-500 dark:text-slate-400 break-all max-w-xs">{{ m.destination }}</td>
               </tr>
             </tbody>
           </table>
