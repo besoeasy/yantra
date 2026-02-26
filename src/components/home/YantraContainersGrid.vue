@@ -1,8 +1,6 @@
 <script setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { useCurrentTime } from "../../composables/useCurrentTime";
-import { formatDuration } from "../../utils/metrics";
 import { Box, Layers } from "lucide-vue-next";
 
 const props = defineProps({
@@ -10,41 +8,6 @@ const props = defineProps({
 });
 
 const router = useRouter();
-const { currentTime } = useCurrentTime();
-
-function isTemporary(container) {
-  return container?.labels?.["yantr.expireAt"];
-}
-
-function formatTimeRemaining(expireAt) {
-  const remaining = parseInt(expireAt, 10) * 1000 - currentTime.value;
-  if (remaining <= 0) return 'Expired';
-  const totalSeconds = Math.floor(remaining / 1000);
-  const totalMinutes = Math.floor(totalSeconds / 60);
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  const seconds = totalSeconds % 60;
-  if (hours > 0) return `${hours}h ${minutes}m`;
-  if (minutes > 0) return `${minutes}m ${seconds}s`;
-  return `${seconds}s`;
-}
-
-function getExpirationInfo(container) {
-  if (!isTemporary(container)) return null;
-  const expireAt = container.labels["yantr.expireAt"];
-  return {
-    expireAt,
-    timeRemaining: formatTimeRemaining(expireAt),
-    isExpiringSoon: parseInt(expireAt, 10) * 1000 - currentTime.value < 60 * 60 * 1000,
-  };
-}
-
-function formatUptime(container) {
-  if (!container?.created || container.state !== 'running') return null;
-  const uptime = currentTime.value - container.created * 1000;
-  if (uptime <= 0) return 'Just started';
-  return formatDuration(uptime);
-}
 
 // Group individual containers into app stacks by app.id
 const appGroups = computed(() => {
@@ -77,7 +40,7 @@ function groupState(group) {
 }
 
 function hasTemporary(group) {
-  return group.containers.some((c) => isTemporary(c));
+  return group.containers.some((c) => c?.labels?.["yantr.expireAt"]);
 }
 
 function navigate(group) {
@@ -176,41 +139,17 @@ function navigate(group) {
             </span>
           </div>
 
-          <!-- Bottom Row: Uptime + Logo -->
-          <div class="flex items-end justify-between gap-4">
-            <div class="flex-1 space-y-2 min-w-0">
-              <div v-if="groupState(group) !== 'stopped'" class="flex flex-col gap-0.5">
-                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Uptime</span>
-                <span class="font-mono font-bold text-base tabular-nums text-slate-700 dark:text-slate-200">{{ formatUptime(primaryContainer(group)) }}</span>
-              </div>
-              <div v-else class="flex flex-col gap-0.5">
-                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Status</span>
-                <span class="font-medium text-sm text-slate-500 dark:text-slate-400 italic">Not running</span>
-              </div>
-
-              <div v-if="hasTemporary(group)" class="pt-1">
-                <span class="text-[10px] uppercase font-bold text-amber-600 dark:text-amber-500/80 block mb-0.5">Expires In</span>
-                <span
-                  class="font-mono text-sm font-bold tabular-nums"
-                  :class="getExpirationInfo(primaryContainer(group))?.timeRemaining === 'Expired'
-                    ? 'text-rose-600 dark:text-rose-400'
-                    : getExpirationInfo(primaryContainer(group))?.isExpiringSoon
-                      ? 'text-amber-600 dark:text-amber-400 animate-pulse underline'
-                      : 'text-amber-800 dark:text-amber-300'"
-                >{{ getExpirationInfo(primaryContainer(group))?.timeRemaining }}</span>
-              </div>
-            </div>
-
-            <!-- Logo -->
+          <!-- Bottom Row: Logo -->
+          <div class="flex items-end justify-end">
             <div class="relative shrink-0">
-              <div class="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800/80 flex items-center justify-center border border-slate-100 dark:border-slate-700 shadow-sm group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-md transition-all duration-500 ease-out overflow-hidden">
+              <div class="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/80 flex items-center justify-center border border-slate-100 dark:border-slate-700 shadow-sm group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-md transition-all duration-500 ease-out overflow-hidden">
                 <img
                   v-if="group.logo"
                   :src="group.logo"
                   :alt="group.name"
-                  class="w-10 h-10 object-contain drop-shadow-sm"
+                  class="w-9 h-9 object-contain drop-shadow-sm"
                 />
-                <Box v-else class="w-8 h-8 text-slate-400 dark:text-slate-500" />
+                <Box v-else class="w-7 h-7 text-slate-400 dark:text-slate-500" />
               </div>
             </div>
           </div>

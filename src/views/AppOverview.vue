@@ -5,7 +5,7 @@ import { useApiUrl } from "../composables/useApiUrl";
 import { useCurrentTime } from "../composables/useCurrentTime";
 import { formatDuration } from "../utils/metrics";
 import {
-  ArrowLeft, Layers, Server, Activity, Package, ExternalLink, Play,
+  ArrowLeft, Layers, Server, Activity, Package, ExternalLink, Play, Clock,
 } from "lucide-vue-next";
 
 const route = useRoute();
@@ -45,6 +45,25 @@ function stackUptime(stack) {
   const delta = currentTime.value - oldest;
   if (delta <= 0) return "Just started";
   return formatDuration(delta);
+}
+
+function stackExpiry(stack) {
+  // Find first temporary container in the stack
+  for (const svc of stack.services) {
+    const expireAt = svc.labels?.["yantr.expireAt"];
+    if (expireAt) {
+      const remaining = parseInt(expireAt, 10) * 1000 - currentTime.value;
+      if (remaining <= 0) return { label: 'Expired', expired: true, soon: false };
+      const totalSeconds = Math.floor(remaining / 1000);
+      const totalMinutes = Math.floor(totalSeconds / 60);
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const seconds = totalSeconds % 60;
+      const label = hours > 0 ? `${hours}h ${minutes}m` : minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+      return { label, expired: false, soon: remaining < 60 * 60 * 1000 };
+    }
+  }
+  return null;
 }
 
 async function fetchData() {
@@ -196,10 +215,27 @@ onUnmounted(() => clearInterval(interval));
               </div>
             </div>
 
-            <!-- Footer: uptime + service count -->
-            <div class="flex items-center justify-between text-[11px] text-slate-400 font-mono pt-3 border-t border-slate-100 dark:border-slate-800">
-              <span>{{ stack.services.length }} service{{ stack.services.length !== 1 ? 's' : '' }}</span>
-              <span v-if="stackUptime(stack)">↑ {{ stackUptime(stack) }}</span>
+            <!-- Footer: uptime + expiry + service count -->
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+              <div class="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                <span>{{ stack.services.length }} service{{ stack.services.length !== 1 ? 's' : '' }}</span>
+                <span v-if="stackUptime(stack)" class="flex items-center gap-1">
+                  <Clock :size="10" />
+                  {{ stackUptime(stack) }}
+                </span>
+              </div>
+              <!-- Expiry timer -->
+              <div v-if="stackExpiry(stack)" class="flex items-center justify-between">
+                <span class="text-[10px] uppercase font-bold text-amber-600 dark:text-amber-500">Expires in</span>
+                <span
+                  class="text-[11px] font-mono font-bold tabular-nums"
+                  :class="stackExpiry(stack).expired
+                    ? 'text-rose-600 dark:text-rose-400'
+                    : stackExpiry(stack).soon
+                      ? 'text-amber-500 dark:text-amber-400 animate-pulse'
+                      : 'text-amber-700 dark:text-amber-300'"
+                >{{ stackExpiry(stack).label }}</span>
+              </div>
             </div>
           </div>
         </div>
