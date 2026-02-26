@@ -1,13 +1,22 @@
 <script setup>
 import { useCurrentTime } from "../../composables/useCurrentTime";
-import { ArrowRight, FolderOpen, Clock } from "lucide-vue-next";
+import { useRouter } from "vue-router";
+import { FolderOpen, Clock, ExternalLink } from "lucide-vue-next";
 
 const { containers } = defineProps({
   containers: { type: Array, default: () => [] },
 });
 
-const emit = defineEmits(["select"]);
+const router = useRouter();
 const { currentTime } = useCurrentTime();
+
+function openBrowser(e, container) {
+  e.stopPropagation();
+  const pub = container.ports?.find((p) => p.PublicPort)?.PublicPort;
+  if (pub) {
+    window.open(`http://${window.location.hostname}:${pub}`, "_blank");
+  }
+}
 
 function isTemporary(container) {
   return container?.labels?.["yantr.expireAt"];
@@ -43,9 +52,9 @@ function getExpirationInfo(container) {
       v-for="(container, index) in containers"
       :key="container.id"
       :style="{ animationDelay: `${index * 50}ms` }"
-      @click="emit('select', container)"
-      @keydown.enter.prevent="emit('select', container)"
-      @keydown.space.prevent="emit('select', container)"
+      @click="router.push(`/containers/${container.id}`)"
+      @keydown.enter.prevent="router.push(`/containers/${container.id}`)"
+      @keydown.space.prevent="router.push(`/containers/${container.id}`)"
       role="button"
       tabindex="0"
       class="group relative h-full overflow-hidden bg-white dark:bg-slate-900 rounded-none border border-slate-200 dark:border-slate-800 hover:shadow-xl dark:hover:shadow-slate-900/50 hover:-translate-y-1 transition-all duration-300 animate-fadeIn cursor-pointer focus:outline-none focus:ring-4 focus:ring-violet-500/20"
@@ -68,9 +77,13 @@ function getExpirationInfo(container) {
                    </h3>
                
                    <div class="flex items-center gap-1.5 flex-wrap">
-                      <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
-                        File Browser
-                      </span>
+                      <button
+                        @click="openBrowser($event, container)"
+                        class="inline-flex items-center gap-1 text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border bg-violet-50 text-violet-600 border-violet-200 dark:bg-violet-900/20 dark:text-violet-400 dark:border-violet-700/50 hover:bg-violet-100 dark:hover:bg-violet-900/40 transition-colors"
+                      >
+                        <ExternalLink :size="9" />
+                        Open
+                      </button>
                       
                       <span v-if="isTemporary(container)" 
                             class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20">

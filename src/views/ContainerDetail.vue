@@ -118,7 +118,13 @@ const allPortMappings = computed(() => {
 })
 
 // Filtered port mappings based on description availability
+const hasDescribedPorts = computed(() => allPortMappings.value.some(m => m.label))
+
 const filteredPortMappings = computed(() => {
+  // If no ports have labels at all, always show everything regardless of toggle
+  if (!hasDescribedPorts.value) {
+    return allPortMappings.value
+  }
   if (!showOnlyDescribedPorts.value) {
     return allPortMappings.value
   }
@@ -620,7 +626,7 @@ onUnmounted(() => {
         <div v-if="allPortMappings.length > 0" class="space-y-3">
            <div class="flex items-center justify-between">
              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Network Access</h3>
-             <div class="flex items-center gap-1 rounded-full bg-slate-100/80 dark:bg-slate-900/50 p-1">
+             <div v-if="hasDescribedPorts" class="flex items-center gap-1 rounded-full bg-slate-100/80 dark:bg-slate-900/50 p-1">
                <button
                  @click="showOnlyDescribedPorts = false"
                  :class="!showOnlyDescribedPorts ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"

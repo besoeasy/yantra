@@ -797,6 +797,7 @@ onUnmounted(() => {
             <div class="flex items-center justify-between gap-3 flex-wrap">
               <!-- Ports -->
               <div class="flex items-center gap-1.5 flex-wrap">
+                <!-- Published ports -->
                 <template v-if="svc.rawPorts.filter(p => p.PublicPort).length > 0">
                   <span
                     v-for="p in [...new Map(svc.rawPorts.filter(rp => rp.PublicPort).map(rp => [`${rp.PublicPort}:${rp.PrivatePort}:${rp.Type}`, rp])).values()]"
@@ -807,7 +808,18 @@ onUnmounted(() => {
                     :{{ p.PublicPort }} → {{ p.PrivatePort }}
                   </span>
                 </template>
-                <span v-else class="text-[11px] text-slate-400 dark:text-slate-500 italic">No published ports</span>
+                <!-- Internal-only ports (not exposed to host) -->
+                <template v-else-if="svc.rawPorts.length > 0">
+                  <span
+                    v-for="p in [...new Map(svc.rawPorts.map(rp => [`${rp.PrivatePort}:${rp.Type}`, rp])).values()]"
+                    :key="`internal-${p.PrivatePort}-${p.Type}`"
+                    class="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700"
+                    title="Internal port (not published to host)"
+                  >
+                    <Network :size="9" />
+                    {{ p.PrivatePort }}/{{ p.Type }}
+                  </span>
+                </template>
               </div>
 
               <!-- Logs button -->

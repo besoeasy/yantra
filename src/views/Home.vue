@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
 import { Store, LayoutGrid, PackageCheck, Container, FolderOpen, Activity } from "lucide-vue-next";
 import { formatDuration } from "../utils/metrics";
 import { useApiUrl } from "../composables/useApiUrl";
@@ -20,6 +21,11 @@ import MinioStatusCard from "../components/quick-metrics/MinioStatusCard.vue";
 
 const { apiUrl } = useApiUrl();
 const { currentTime } = useCurrentTime();
+const router = useRouter();
+
+function viewContainerDetail(container) {
+  router.push(`/containers/${container.id}`);
+}
 
 const containers = ref([]);
 const volumes = ref([]);
@@ -340,7 +346,6 @@ onUnmounted(() => {
             <VolumeContainersGrid
               v-if="showVolumeBrowsers && volumeContainers.length > 0"
               :containers="volumeContainers"
-              @select="viewContainerDetail"
             />
 
             <OtherContainersGrid v-if="showDockerApps && otherContainers.length > 0" :containers="otherContainers" @select="viewContainerDetail" />
