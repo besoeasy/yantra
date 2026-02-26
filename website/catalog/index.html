@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>App Catalog | Yantr</title>
-    <meta name="description" content="Browse 100+ self-hosted apps available in Yantr. Filter by category and find the right app for your homelab." />
+    <meta name="description" content="Browse 100+ self-hosted apps you can self-host with Docker using Yantr. Search and filter by tag to find the right app for your homelab." />
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href="https://yantr.org/catalog/" />
 
@@ -150,8 +150,8 @@
         const q = searchQuery.toLowerCase();
 
         const filtered = allApps.filter(app => {
-          const matchesTag = activeTag === 'all' || (app.category || []).includes(activeTag);
-          const matchesSearch = !q || app.name.toLowerCase().includes(q) || (app.description || '').toLowerCase().includes(q);
+          const matchesTag = activeTag === 'all' || (app.tags || []).includes(activeTag);
+          const matchesSearch = !q || app.name.toLowerCase().includes(q) || (app.short_description || app.description || '').toLowerCase().includes(q) || (app.tags || []).some(t => t.includes(q));
           return matchesTag && matchesSearch;
         });
 
@@ -165,23 +165,24 @@
 
         empty.classList.add('hidden');
         grid.innerHTML = filtered.map(app => {
-          const cats = (app.category || []).map(c => `
-            <span class="text-[9px] uppercase tracking-wider px-2 py-0.5 border border-gray-200 text-gray-500">${c}</span>
+          const tags = (app.tags || []).slice(0, 4).map(t => `
+            <span class="text-[9px] uppercase tracking-wider px-2 py-0.5 border border-gray-200 text-gray-500 rounded">${t}</span>
           `).join('');
+          const desc = app.short_description || app.description || 'No description available.';
 
           return `
             <a
               href="../apps/${app.id}/"
-              class="group flex flex-col gap-4 rounded-2xl border border-gray-200 p-5 bg-white hover:border-black/20 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
+              class="group flex flex-col gap-3 rounded-2xl border border-gray-200 p-5 bg-white hover:border-black/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
               <div class="flex items-center gap-4">
                 <img src="${logoUrl(app)}" alt="${app.name} logo" class="w-12 h-12 rounded-xl border border-gray-200 object-cover shrink-0 bg-gray-50" loading="lazy" />
                 <div class="min-w-0">
                   <p class="font-semibold text-sm truncate">${app.name}</p>
-                  <p class="text-xs text-gray-500 mt-0.5 truncate">${app.description || 'No description available.'}</p>
+                  <p class="text-xs text-gray-500 mt-0.5 line-clamp-2 leading-relaxed">${desc}</p>
                 </div>
               </div>
-              ${cats ? `<div class="flex flex-wrap gap-1.5">${cats}</div>` : ''}
+              ${tags ? `<div class="flex flex-wrap gap-1.5">${tags}</div>` : ''}
             </a>
           `;
         }).join('');
@@ -225,7 +226,7 @@
         .then(r => r.json())
         .then(data => {
           allApps = (data.apps || []).sort((a, b) => a.name.localeCompare(b.name));
-          renderTags(data.meta?.categories || []);
+          renderTags(data.meta?.tags || []);
           renderGrid();
           initCatalogStars(allApps);
         })

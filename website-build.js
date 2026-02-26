@@ -56,6 +56,7 @@ function parseAppFolder(appId, appPath) {
       usecases: Array.isArray(info.usecases) ? info.usecases : [],
       website: info.website || null,
       dependencies: Array.isArray(info.dependencies) ? info.dependencies : [],
+      notes: Array.isArray(info.notes) ? info.notes : [],
       image,
       serviceName,
     };
@@ -150,6 +151,7 @@ function toAppViewModel(app) {
     name,
     dependencies,
     tags: Array.isArray(app?.tags) ? app.tags : [],
+    notes: Array.isArray(app?.notes) ? app.notes : [],
     short_description: app?.short_description || '',
     description: app?.description || app?.short_description || 'No description available.',
     usecases: Array.isArray(app?.usecases) ? app.usecases : [],
@@ -193,12 +195,16 @@ function buildPages() {
 
     const relatedApps = getRelatedApps(app, apps);
 
+    const pageDescription = app.short_description
+      ? `Self-host ${app.name} with Docker. ${app.short_description} Deploy it in seconds with Yantr.`
+      : `Learn how to self-host ${app.name} on your homelab using Docker. ${app.description}${app.description.endsWith('.') ? '' : '.'} Easy one-click setup with Yantr.`;
+
     const html = env.render('app.njk', {
       app,
       relatedApps,
       nowIso: new Date().toISOString(),
       pageTitle: `Self-Host ${app.name} with Docker | Yantr`,
-      pageDescription: `Learn how to self-host ${app.name} on your homelab using Docker. ${app.description}${app.description.endsWith('.') ? '' : '.'} Easy one-click setup with Yantr.`,
+      pageDescription,
       pageUrl: `https://yantr.org/apps/${app.id}/`,
       imageUrl: app.logoUrl,
     });

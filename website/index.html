@@ -703,7 +703,7 @@
             <img src="${logoUrl}" alt="${app.name}" class="w-12 h-12 rounded-xl object-cover shrink-0 border border-gray-100" />
             <span class="min-w-0 leading-tight">
               <span class="block text-base font-bold font-sans text-gray-900 truncate">${app.name}</span>
-              <span class="block text-sm leading-5 font-sans text-gray-500 mt-1 app-description-clamp">${app.description || "No description available."}</span>
+              <span class="block text-sm leading-5 font-sans text-gray-500 mt-1 app-description-clamp">${app.short_description || app.description || "No description available."}</span>
             </span>
           </a>
         `;
