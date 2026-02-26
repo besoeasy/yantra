@@ -76,6 +76,12 @@ async function fetchData() {
     const containersData = await containersRes.json();
     app.value = (appsData.apps || appsData).find((a) => a.id === appId.value) || null;
     containers.value = containersData.containers || containersData || [];
+
+    // Auto-redirect when there is exactly one running instance
+    if (loading.value && runningStacks.value.length === 1) {
+      router.replace(`/stacks/${runningStacks.value[0].projectId}`);
+      return;
+    }
   } catch (e) {
     console.error("AppOverview fetch error", e);
   } finally {
