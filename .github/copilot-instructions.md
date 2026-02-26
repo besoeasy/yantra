@@ -55,6 +55,19 @@ ports:
 
 **Reason**: Yantr allows users to run multiple instances of the same app. Binding to a fixed host port would cause a conflict on the second instance. Using the container-only format lets Docker assign a random available host port for each instance automatically.
 
+### Docker Compose Service Labels (REQUIRED)
+
+**Every service** in `compose.yml` must have these three labels:
+
+```yaml
+labels:
+  yantr.app: "app-id"        # matches the app directory name under apps/
+  yantr.service: "Display Name"  # human-readable service name shown in the UI
+  yantr.info: "One-line description of what this service does"
+```
+
+This applies to **all** services in the file, including bundled databases, caches, and sidecars — not just the primary service.
+
 ### Docker Compose Environment Variables
 
 **ALWAYS use key-value format for environment variables** in `compose.yml` files:
