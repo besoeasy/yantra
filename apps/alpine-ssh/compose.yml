@@ -1,0 +1,18 @@
+services:
+  alpine-ssh:
+    image: alpine:latest
+    container_name: alpine-ssh
+    command: >-
+      sh -c "apk add --no-cache openssh && ssh-keygen -A && echo 'root:$$SSH_ROOT_PASSWORD' | chpasswd && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && /usr/sbin/sshd -D"
+    environment:
+      SSH_ROOT_PASSWORD: ${SSH_ROOT_PASSWORD:-rootpass}
+    labels:
+      yantr.name: "Alpine SSH"
+      yantr.logo: "QmYW5zA5rxGpjiNFD1g7bcBaQbALAntkwLX2hruaoR82rj"
+      yantr.category: "tools,utility"
+      yantr.port: "22 (SSH)"
+      yantr.description: "Lightweight Alpine Linux container with OpenSSH server — connect via SSH as root using a configurable password"
+      yantr.website: "https://hub.docker.com/_/alpine"
+    ports:
+      - "22"
+    restart: unless-stopped

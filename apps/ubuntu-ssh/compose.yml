@@ -1,0 +1,18 @@
+services:
+  ubuntu-ssh:
+    image: ubuntu:latest
+    container_name: ubuntu-ssh
+    command: >-
+      bash -c "apt update && apt install -y openssh-server && mkdir -p /var/run/sshd && echo 'root:$$SSH_ROOT_PASSWORD' | chpasswd && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && /usr/sbin/sshd -D"
+    environment:
+      SSH_ROOT_PASSWORD: ${SSH_ROOT_PASSWORD:-rootpass}
+    labels:
+      yantr.name: "Ubuntu SSH"
+      yantr.logo: "QmWR3wxj9BFZquxyvmqUa3H94BVFUzgWzeHoaRB3515SZJ"
+      yantr.category: "tools,utility"
+      yantr.port: "22 (SSH)"
+      yantr.description: "Ubuntu Linux container with OpenSSH server — connect via SSH as root using a configurable password"
+      yantr.website: "https://hub.docker.com/_/ubuntu"
+    ports:
+      - "22"
+    restart: unless-stopped
