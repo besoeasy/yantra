@@ -4,7 +4,7 @@ services:
     container_name: ollama
     labels:
       yantr.app: "ollama"
-      yantr.service: "Local LLM inference server - run models like Llama, Mistral, and more"
+      yantr.service: "ollama"
     ports:
       - "11434"
     volumes:
@@ -20,13 +20,8 @@ services:
     mem_swappiness: 0
     shm_size: 8gb
     environment:
-      # Enable GPU use
-      NVIDIA_VISIBLE_DEVICES: all
-      NVIDIA_DRIVER_CAPABILITIES: "compute,utility"
-      # Ollama-specific: prefer GPU first, fallback to CPU if needed
       OLLAMA_PREFER_GPU: "true"
       OLLAMA_GPU_MEMORY_FALLBACK: "true"
-    runtime: nvidia
     networks:
       - ollama_network
 
