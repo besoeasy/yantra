@@ -39,6 +39,22 @@ Every app directory must contain an `info.json` file with the following fields:
 
 - **`notes`**: Optional array of strings. Only include when the app has special configuration, non-obvious setup steps, hardcoded credentials, or important port/networking caveats. Omit entirely if there is nothing noteworthy.
 
+### Docker Compose Port Mapping (IMPORTANT)
+
+**ALWAYS use container-only port format** — do NOT bind to a fixed host port:
+
+```yaml
+# ✅ Correct — Docker auto-assigns a random host port
+ports:
+  - "4096"
+
+# ❌ Wrong — fixed host port prevents multiple instances
+ports:
+  - "4096:4096"
+```
+
+**Reason**: Yantr allows users to run multiple instances of the same app. Binding to a fixed host port would cause a conflict on the second instance. Using the container-only format lets Docker assign a random available host port for each instance automatically.
+
 ### Docker Compose Environment Variables
 
 **ALWAYS use key-value format for environment variables** in `compose.yml` files:
