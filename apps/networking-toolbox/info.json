@@ -1,11 +1,14 @@
 {
   "name": "Networking Toolbox",
   "logo": "QmaU7tznY63wTMNNPtCQQbPBT4PNbPYFT9iq8utHwhfF47",
-  "category": [
+  "tags": [
     "network",
-    "tools"
+    "tools",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "3000 (HTTP - Web UI)",
   "short_description": "100+ offline-first networking tools and utilities",
   "description": "100+ offline-first networking tools and utilities",

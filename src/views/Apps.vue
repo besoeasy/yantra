@@ -22,7 +22,7 @@ const apps = ref([]);
 const containers = ref([]);
 const loading = ref(false);
 const appSearch = ref("");
-const selectedCategory = ref(null);
+const selectedTag = ref(null);
 
 const hourSeed = ref(getDateHourSeed());
 let refreshInterval = null;
@@ -53,29 +53,24 @@ const shuffledApps = computed(() => {
 
 const allAppsCount = computed(() => apps.value.length);
 
-const categories = computed(() => {
-  const categorySet = new Set();
+const tags = computed(() => {
+  const tagSet = new Set();
   apps.value.forEach((app) => {
-    if (app.category) {
-      app.category.split(",").forEach((cat) => {
-        categorySet.add(cat.trim());
-      });
+    if (Array.isArray(app.tags)) {
+      app.tags.forEach((tag) => tagSet.add(tag));
     }
   });
 
-  const categoriesArray = Array.from(categorySet).sort();
+  const tagsArray = Array.from(tagSet).sort();
 
-  return categoriesArray
-    .map((cat) => {
+  return tagsArray
+    .map((tag) => {
       const count = apps.value.filter((app) =>
-        app.category
-          .split(",")
-          .map((c) => c.trim())
-          .includes(cat)
+        Array.isArray(app.tags) && app.tags.includes(tag)
       ).length;
-      return { name: cat, count };
+      return { name: tag, count };
     })
-    .filter((cat) => cat.count > 2);
+    .filter((tag) => tag.count > 2);
 });
 
 const combinedApps = computed(() => {
@@ -84,12 +79,9 @@ const combinedApps = computed(() => {
     isInstalled: installedAppIds.value.has(app.id),
   }));
 
-  if (selectedCategory.value) {
+  if (selectedTag.value) {
     combined = combined.filter((app) =>
-      app.category
-        .split(",")
-        .map((c) => c.trim())
-        .includes(selectedCategory.value)
+      Array.isArray(app.tags) && app.tags.includes(selectedTag.value)
     );
   }
 
@@ -98,7 +90,7 @@ const combinedApps = computed(() => {
     combined = combined.filter((app) => {
       return (
         app.name.toLowerCase().includes(search) ||
-        app.category.toLowerCase().includes(search) ||
+        (Array.isArray(app.tags) && app.tags.join(' ').toLowerCase().includes(search)) ||
         (app.description && app.description.toLowerCase().includes(search))
       );
     });
@@ -233,11 +225,11 @@ onUnmounted(() => {
               {{ combinedApps.length }} app{{ combinedApps.length === 1 ? '' : 's' }}
             </span>
             <span
-              v-if="selectedCategory"
+              v-if="selectedTag"
               class="inline-flex items-center gap-1 text-xs font-medium bg-gray-900 dark:bg-slate-100 text-white dark:text-slate-900 px-2.5 py-1 rounded-full"
             >
-              {{ selectedCategory }}
-              <button @click="selectedCategory = null" class="ml-0.5 hover:opacity-70 transition-opacity">
+              {{ selectedTag }}
+              <button @click="selectedTag = null" class="ml-0.5 hover:opacity-70 transition-opacity">
                 <X :size="11" />
               </button>
             </span>
@@ -257,7 +249,7 @@ onUnmounted(() => {
                 </div>
                 <h3 class="text-lg font-bold text-slate-900 dark:text-white">No apps found</h3>
                 <p class="text-slate-500 mt-1 max-w-xs mx-auto">We couldn't find any apps matching your search filters.</p>
-                <button @click="appSearch = ''; selectedCategory = null" class="mt-4 text-sm font-medium text-blue-600 hover:underline">Clear all filters</button>
+                <button @click="appSearch = ''; selectedTag = null" class="mt-4 text-sm font-medium text-blue-600 hover:underline">Clear all filters</button>
             </div>
 
             <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
@@ -279,16 +271,16 @@ onUnmounted(() => {
 
         <!-- Header -->
         <div class="mb-6">
-          <h2 class="text-base font-bold text-gray-900 dark:text-white">Categories</h2>
+          <h2 class="text-base font-bold text-gray-900 dark:text-white">Tags</h2>
           <p class="text-xs text-gray-400 dark:text-slate-500 mt-0.5">{{ allAppsCount }} apps available</p>
         </div>
 
         <!-- All button -->
         <button
-          @click="selectedCategory = null"
+          @click="selectedTag = null"
           :class="[
             'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 mb-1',
-            selectedCategory === null
+            selectedTag === null
               ? 'bg-gray-900 dark:bg-slate-100 text-white dark:text-gray-900'
               : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/60 hover:text-gray-900 dark:hover:text-slate-200'
           ]"
@@ -299,7 +291,7 @@ onUnmounted(() => {
           </div>
           <span :class="[
             'text-xs font-semibold tabular-nums px-1.5 py-0.5 rounded-md',
-            selectedCategory === null
+            selectedTag === null
               ? 'bg-white/20 text-white dark:bg-gray-900/20 dark:text-gray-900'
               : 'bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400'
           ]">{{ allAppsCount }}</span>
@@ -311,12 +303,12 @@ onUnmounted(() => {
         <!-- Category list -->
         <div class="space-y-0.5">
           <button
-            v-for="cat in categories"
+            v-for="cat in tags"
             :key="cat.name"
-            @click="selectedCategory = cat.name"
+            @click="selectedTag = cat.name"
             :class="[
               'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group',
-              selectedCategory === cat.name
+              selectedTag === cat.name
                 ? 'bg-gray-900 dark:bg-slate-100 text-white dark:text-gray-900'
                 : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/60 hover:text-gray-900 dark:hover:text-slate-200'
             ]"
@@ -327,7 +319,7 @@ onUnmounted(() => {
             </div>
             <span :class="[
               'text-xs font-semibold tabular-nums px-1.5 py-0.5 rounded-md shrink-0 ml-2',
-              selectedCategory === cat.name
+              selectedTag === cat.name
                 ? 'bg-white/20 text-white dark:bg-gray-900/20 dark:text-gray-900'
                 : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500'
             ]">{{ cat.count }}</span>

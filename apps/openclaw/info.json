@@ -1,15 +1,17 @@
 {
   "name": "OpenClaw",
   "logo": "QmRdr8gQqpGLXkZc53NcQV3i71931yNQqYrLhpaWEpTMwp",
-  "category": [
+  "tags": [
     "ai",
     "tools",
-    "utility"
+    "utility",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "18789 (HTTP - Web UI), 18790 (Bridge - Device Nodes)",
-  "short_description": "Personal AI assistant \u2014 Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack, Discord, and more)",
-  "description": "Personal AI assistant \u2014 Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack, Discord, and more)",
+  "short_description": "Personal AI assistant — Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack, Discord, and more)",
+  "description": "Personal AI assistant — Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack, Discord, and more)",
   "usecases": [],
   "website": "https://openclaw.ai",
   "dependencies": []

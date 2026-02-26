@@ -1,11 +1,14 @@
 {
   "name": "MariaDB",
   "logo": "Qmegk86ebzbktv7YWCMnVrueBpfpZHm9wktuUSdQBHvHQx",
-  "category": [
+  "tags": [
     "database",
-    "storage"
+    "storage",
+    "utility",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "3306 (TCP - Database)",
   "short_description": "Open-source relational database compatible with MySQL",
   "description": "Open-source relational database compatible with MySQL",

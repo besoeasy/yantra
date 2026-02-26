@@ -1,10 +1,14 @@
 {
   "name": "Just. Download.",
   "logo": "Qmc9ChgqKxSUXJ37gC8ndutwEmzCic4QQrgTaxPCffuV6V",
-  "category": [
-    "media"
+  "tags": [
+    "media",
+    "torrent",
+    "download",
+    "p2p",
+    "utility",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "5000 (HTTP - Web UI)",
   "short_description": "Simple torrent downloader that bridges Torznab indexers with Transmission",
   "description": "Simple torrent downloader that bridges Torznab indexers with Transmission",

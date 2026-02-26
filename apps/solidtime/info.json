@@ -1,11 +1,14 @@
 {
   "name": "Solidtime",
   "logo": "QmQD7h1kicXUF4aQBtzwg6aYqZiDKUofxRtusbRCNUMgw6",
-  "category": [
+  "tags": [
     "productivity",
-    "time-tracking"
+    "time-tracking",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "8000 (HTTP - Web UI)",
   "short_description": "A simple, secure, and private time tracking app with detailed reports and CSV export",
   "description": "A simple, secure, and private time tracking app with detailed reports and CSV export",

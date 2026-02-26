@@ -1,12 +1,14 @@
 {
   "name": "ZeroClaw",
   "logo": "Qmex7mP7CtY1uo7a2erXmuNrvQdY6aw5FTQtxpJjAbiu8v",
-  "category": [
+  "tags": [
     "ai",
     "tools",
-    "utility"
+    "utility",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "3000 (HTTP - Gateway API)",
   "short_description": "Autonomous Rust AI assistant runtime with pluggable providers and secure local gateway",
   "description": "Autonomous Rust AI assistant runtime with pluggable providers and secure local gateway",

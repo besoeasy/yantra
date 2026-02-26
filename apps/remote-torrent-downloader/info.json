@@ -1,12 +1,14 @@
 {
   "name": "Remote Torrent Downloader",
   "logo": "QmeQL3b6vWfQX2TEbuovsof5mv23Jkxgnp8ejTyqjQMay3",
-  "category": [
+  "tags": [
     "media",
     "download",
-    "utility"
+    "utility",
+    "streaming",
+    "video",
+    "torrent"
   ],
-  "tags": [],
   "port": "6798 (HTTP - Web UI), 6799 (HTTP - DOWNLOADS), 4445 (SMB - Samba Drive)",
   "short_description": "Media streaming and sharing platform with Telegram integration",
   "description": "Media streaming and sharing platform with Telegram integration",

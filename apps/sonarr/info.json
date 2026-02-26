@@ -1,11 +1,14 @@
 {
   "name": "Sonarr",
   "logo": "QmSH43o5suJ8UUngEiPGFWedxTdDk9SFDe2GVLNqSkFhJb",
-  "category": [
+  "tags": [
     "media",
-    "tools"
+    "tools",
+    "torrent",
+    "download",
+    "p2p",
+    "monitoring"
   ],
-  "tags": [],
   "port": "8989 (HTTP - Web UI)",
   "short_description": "Smart PVR for TV show monitoring and automated downloading with Usenet and BitTorrent",
   "description": "Smart PVR for TV show monitoring and automated downloading with Usenet and BitTorrent",

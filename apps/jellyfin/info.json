@@ -1,11 +1,14 @@
 {
   "name": "Jellyfin",
   "logo": "QmcsxWwZb9CZYsG5EvAEVwqjEw2FeX3KroZD5rvo87XWMZ",
-  "category": [
+  "tags": [
     "media",
-    "entertainment"
+    "entertainment",
+    "streaming",
+    "video",
+    "music",
+    "audio"
   ],
-  "tags": [],
   "port": "8096 (HTTP - Web UI)",
   "short_description": "Free and open-source media server for streaming video, music, and photos",
   "description": "Free and open-source media server for streaming video, music, and photos",

@@ -1,11 +1,14 @@
 {
   "name": "Nextcloud",
   "logo": "QmU23rKmzJwT93oCrnprdGJQBv4VaPiaZ6re88qbfmVE2u",
-  "category": [
+  "tags": [
     "productivity",
-    "utility"
+    "utility",
+    "storage",
+    "files",
+    "sync",
+    "cloud"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing",
   "description": "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing",

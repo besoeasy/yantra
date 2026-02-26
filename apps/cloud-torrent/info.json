@@ -1,11 +1,14 @@
 {
   "name": "Cloud Torrent",
   "logo": "QmdPAfpuG5zkJs4GMX2DJ4xhKYq8vkT98TMjHgecAwkQVL",
-  "category": [
+  "tags": [
     "download",
-    "utility"
+    "utility",
+    "torrent",
+    "p2p",
+    "cloud",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "3000 (HTTP - Web UI)",
   "short_description": "Cloud-based BitTorrent client with streaming support",
   "description": "Cloud-based BitTorrent client with streaming support",

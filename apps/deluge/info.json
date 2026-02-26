@@ -1,11 +1,14 @@
 {
   "name": "Deluge",
   "logo": "QmRrKHf3JqMSib9iUfHGrNB6ViXpJmEEoNyJtkr1PB3E33",
-  "category": [
+  "tags": [
     "download",
-    "utility"
+    "utility",
+    "torrent",
+    "p2p",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "8112 (HTTP - Web UI)",
   "short_description": "Lightweight BitTorrent client with web interface",
   "description": "Lightweight BitTorrent client with web interface",

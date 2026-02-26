@@ -1,11 +1,14 @@
 {
   "name": "Tabby",
   "logo": "QmcQ3CYdea4rtPmwJTSggcFYvpKcSpSqSQMbS9RdWjzTWS",
-  "category": [
+  "tags": [
     "productivity",
-    "browsing"
+    "browsing",
+    "dashboard",
+    "utility",
+    "homepage",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Beautiful and customizable browser start page with tab management",
   "description": "Beautiful and customizable browser start page with tab management",

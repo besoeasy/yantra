@@ -1,11 +1,14 @@
 {
   "name": "MySpeed",
   "logo": "QmWg4R7p8NKHoF9WWdhPqF2XgdyrB9bHMhGxqWidEiVBEN",
-  "category": [
+  "tags": [
     "network",
-    "tools"
+    "tools",
+    "utility",
+    "speedtest",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "5216 (HTTP - Web UI)",
   "short_description": "Speed test analysis software that tracks your internet speed for 30 days",
   "description": "Speed test analysis software that tracks your internet speed for 30 days",

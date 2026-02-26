@@ -1,11 +1,14 @@
 {
   "name": "Maybe",
   "logo": "QmcZLRLn3cHum9YMRhHv3355rVDgVVgQkioRm29x8YRX9q",
-  "category": [
+  "tags": [
     "finance",
-    "productivity"
+    "productivity",
+    "accounting",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "3063 (HTTP - Web UI)",
   "short_description": "Open-source personal finance OS for managing accounts, investments, and transactions",
   "description": "Open-source personal finance OS for managing accounts, investments, and transactions",

@@ -1,11 +1,14 @@
 {
   "name": "UrlWatch",
   "logo": "QmWkNcdYSyueiheQwyHXyjkXrxcGdKLcYGBbcECLiJ6c3W",
-  "category": [
+  "tags": [
     "utility",
-    "monitoring"
+    "monitoring",
+    "dashboard",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "8081 (HTTP - Web UI)",
   "short_description": "Monitor websites for changes and receive notifications on updates",
   "description": "Monitor websites for changes and receive notifications on updates",

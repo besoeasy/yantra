@@ -1,11 +1,14 @@
 {
   "name": "LibReddit",
   "logo": "QmTieAKkWAmA12gchbEJiBGZZK64hsuKQYRtSbibJ9qWxF",
-  "category": [
+  "tags": [
     "social",
-    "privacy"
+    "privacy",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "7420 (HTTP - Web UI)",
   "short_description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking",
   "description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking",

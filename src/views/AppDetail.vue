@@ -64,9 +64,8 @@ const allPorts = computed(() => {
   return app.value.ports;
 });
 
-const categories = computed(() => {
-  if (!app.value?.category) return [];
-  return app.value.category.split(",").map((c) => c.trim());
+const appTags = computed(() => {
+  return Array.isArray(app.value?.tags) ? app.value.tags : [];
 });
 
 const dependencies = computed(() => {
@@ -490,11 +489,11 @@ onMounted(async () => {
                 <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">{{ app.name }}</h1>
                 <div class="flex flex-wrap gap-2">
                   <span
-                    v-for="cat in categories"
-                    :key="cat"
+                    v-for="tag in appTags"
+                    :key="tag"
                     class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-900/50 text-xs font-mono text-slate-700 dark:text-slate-300 rounded-lg"
                   >
-                    {{ cat }}
+                    {{ tag }}
                   </span>
                 </div>
               </div>

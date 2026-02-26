@@ -1,10 +1,14 @@
 {
   "name": "noStrudel",
   "logo": "QmQd78JBNgAnVAAk6Ux6Jo3tHUXLyzjYeaRZ1EXwMFzHNe",
-  "category": [
-    "social"
+  "tags": [
+    "social",
+    "nostr",
+    "decentralized",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "A nostr web client sandbox for exploring and learning the inner workings of the nostr network",
   "description": "A nostr web client sandbox for exploring and learning the inner workings of the nostr network",

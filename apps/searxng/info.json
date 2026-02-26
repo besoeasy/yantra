@@ -1,11 +1,14 @@
 {
   "name": "SearXNG",
   "logo": "QmRbiaDWHNx6f9MvCpQ3PedjZd7A9szb2NbM9DMCvDvLtH",
-  "category": [
+  "tags": [
     "tools",
-    "security"
+    "security",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "8080 (HTTP - Web UI)",
   "short_description": "Privacy-focused metasearch engine aggregating results",
   "description": "Privacy-focused metasearch engine aggregating results",

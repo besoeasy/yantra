@@ -1,11 +1,14 @@
 {
   "name": "Pastefy",
   "logo": "QmdxTLj7i7cdJW7VPeeYnxsjC2ZXr6SZYgMkHW3pwNwB7C",
-  "category": [
+  "tags": [
     "tools",
-    "productivity"
+    "productivity",
+    "git",
+    "development",
+    "devops",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Feature-rich self-hosted pastebin for sharing code",
   "description": "Feature-rich self-hosted pastebin for sharing code",

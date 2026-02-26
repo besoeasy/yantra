@@ -1,11 +1,14 @@
 {
   "name": "Cryptofolio",
   "logo": "QmRSzoSr1npNczcYt5sFBauWCmYFdqyCytwoj3vtXtrs89",
-  "category": [
+  "tags": [
     "finance",
-    "cryptocurrency"
+    "cryptocurrency",
+    "crypto",
+    "portfolio",
+    "indexer",
+    "servarr"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Self-hosted cryptocurrency portfolio tracker with real-time price updates",
   "description": "Self-hosted cryptocurrency portfolio tracker with real-time price updates",

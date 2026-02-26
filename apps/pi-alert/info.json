@@ -1,12 +1,14 @@
 {
   "name": "Pi.Alert",
   "logo": "QmSB7NetcjxcyHU5T7hJht4N7RLLvcanARni6Cy8yTjra3",
-  "category": [
+  "tags": [
     "network",
     "monitoring",
-    "security"
+    "security",
+    "dashboard",
+    "utility",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "20211 (UDP - Monitoring)",
   "short_description": "Network monitoring tool for detecting new devices and security alerts",
   "description": "Network monitoring tool for detecting new devices and security alerts",

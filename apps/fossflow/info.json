@@ -1,11 +1,14 @@
 {
   "name": "FossFLOW",
   "logo": "QmRAuJY5TKuw91AVqu6ci9yAvRaimuGDzBoVYqftE7oo8q",
-  "category": [
+  "tags": [
     "productivity",
-    "networking"
+    "networking",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Create beautiful isometric infrastructure diagrams with auto-save and offline support",
   "description": "Create beautiful isometric infrastructure diagrams with auto-save and offline support",

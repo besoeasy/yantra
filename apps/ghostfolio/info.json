@@ -1,11 +1,14 @@
 {
   "name": "Ghostfolio",
   "logo": "QmZ288p9irBeP9M369V2FY876tRk9nodM7u4hzeGBAYAUD",
-  "category": [
+  "tags": [
     "productivity",
-    "utility"
+    "utility",
+    "finance",
+    "crypto",
+    "portfolio",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "3333 (HTTP - Web UI)",
   "short_description": "Open source wealth management for portfolio tracking",
   "description": "Open source wealth management for portfolio tracking",

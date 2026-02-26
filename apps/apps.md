@@ -25,8 +25,7 @@ Every app **must** have an `info.json`. This is the single source of truth for a
 {
   "name": "Bitmagnet",
   "logo": "QmX2bA23zVjnxGeQgwUfv3XXuascGnnBX33ap7CWWknrXP",
-  "category": ["media", "tools", "utility"],
-  "tags": ["torrent", "indexer", "dht", "search"],
+  "tags": ["torrent", "indexer", "dht", "search", "media", "tools"],
   "port": "3333 (HTTP - Web UI)",
   "short_description": "Self-hosted BitTorrent indexer and DHT crawler.",
   "description": "Bitmagnet is a self-hosted BitTorrent indexer, DHT crawler, content classifier and torrent search engine with web UI, GraphQL API and Servarr stack integration.",
@@ -36,7 +35,6 @@ Every app **must** have an `info.json`. This is the single source of truth for a
     "Integrate with Sonarr, Radarr and other Servarr apps"
   ],
   "website": "https://bitmagnet.io",
-  "dependencies": [],
   "dependencies": []
 }
 ```
@@ -47,8 +45,7 @@ Every app **must** have an `info.json`. This is the single source of truth for a
 |---|---|---|
 | `name` | ✅ | Human-readable display name |
 | `logo` | ✅ | IPFS CID for app logo |
-| `category` | ✅ | Array of lowercase categories (max 3) |
-| `tags` | ✅ | Array of lowercase keyword tags for search |
+| `tags` | ✅ | Array of at least 6 lowercase keyword tags (used for filtering and search) |
 | `port` | if web UI | e.g. `"3333 (HTTP - Web UI)"` |
 | `short_description` | ✅ | Under 120 chars — shown on app cards |
 | `description` | ✅ | Full paragraph — shown on app detail page |

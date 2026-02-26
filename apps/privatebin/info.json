@@ -1,11 +1,14 @@
 {
   "name": "PrivateBin",
   "logo": "QmWNmuv1fVzwz63qzbD1RHwX6MbNk5xAUwC5RR2ZsPeiGj",
-  "category": [
+  "tags": [
     "utility",
-    "privacy"
+    "privacy",
+    "notes",
+    "wiki",
+    "productivity",
+    "gaming"
   ],
-  "tags": [],
   "port": "8080 (HTTP - Web UI)",
   "short_description": "Minimalist, open source online pastebin with zero-knowledge server design",
   "description": "Minimalist, open source online pastebin with zero-knowledge server design",

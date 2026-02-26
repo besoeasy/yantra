@@ -1,11 +1,14 @@
 {
   "name": "WordPress",
   "logo": "QmfTeVfmHVGfwU4Q99TUT9xvGWc3s4RjPR3kzahnjqppKP",
-  "category": [
+  "tags": [
     "cms",
-    "blog"
+    "blog",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Popular open-source content management system for websites and blogs",
   "description": "Popular open-source content management system for websites and blogs",

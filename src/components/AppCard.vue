@@ -70,7 +70,7 @@ const { app, instanceCount } = toRefs(props);
     <!-- Category tag -->
     <div class="mt-3 pt-3 border-t border-gray-100 dark:border-slate-800">
       <span class="text-[10px] font-medium text-gray-400 dark:text-slate-500 uppercase tracking-wide truncate block">
-        {{ app?.category?.split(',')[0]?.trim() || 'General' }}
+        {{ app?.tags?.[0] || '' }}
       </span>
     </div>
   </div>

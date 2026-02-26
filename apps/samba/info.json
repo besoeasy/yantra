@@ -1,12 +1,14 @@
 {
   "name": "Samba",
   "logo": "QmYNjTj44mLCz5SZrWR9GkWU94bZw7hvqZZuFAwJJcsWU7",
-  "category": [
+  "tags": [
     "network",
     "storage",
-    "utility"
+    "utility",
+    "files",
+    "gaming",
+    "server"
   ],
-  "tags": [],
   "port": "445 (SMB - File Sharing)",
   "short_description": "SMB/CIFS file sharing server for network storage access",
   "description": "SMB/CIFS file sharing server for network storage access",

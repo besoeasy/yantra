@@ -367,7 +367,6 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
           id: entry.name,
           name: info.name,
           logo: logoUrl,
-          category: Array.isArray(info.category) ? info.category.join(",") : (info.category || "uncategorized"),
           tags: Array.isArray(info.tags) ? info.tags : [],
           port: info.port || null,
           short_description: info.short_description || "",
@@ -725,7 +724,6 @@ app.get("/api/containers", asyncHandler(async (req, res) => {
           // App-level metadata (from info.json via catalog)
           name: catalogEntry?.name || appLabels.service || container.Names[0]?.replace("/", "") || "unknown",
           logo: catalogEntry?.logo || null,
-          category: catalogEntry?.category || "uncategorized",
           tags: catalogEntry?.tags || [],
           port: catalogEntry?.port || null,
           short_description: catalogEntry?.short_description || "",
@@ -830,7 +828,6 @@ app.get("/api/containers/:id", asyncHandler(async (req, res) => {
           info: appLabels.info || "",
           name: catalogEntry?.name || appLabels.service || info.Name.replace("/", ""),
           logo: catalogEntry?.logo || null,
-          category: catalogEntry?.category || "uncategorized",
           tags: catalogEntry?.tags || [],
           port: catalogEntry?.port || null,
           short_description: catalogEntry?.short_description || "",

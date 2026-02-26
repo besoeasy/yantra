@@ -1,11 +1,14 @@
 {
   "name": "Invio",
   "logo": "QmTxfLAvG4LnESZyVJ6dWMzXqJpaDYyTmKEhLxEux6PAH3",
-  "category": [
+  "tags": [
     "productivity",
-    "utility"
+    "utility",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "3000 (HTTP - Web UI)",
   "short_description": "Self-hosted invoicing without the bloat",
   "description": "Self-hosted invoicing without the bloat",

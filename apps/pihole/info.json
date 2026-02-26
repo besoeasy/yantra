@@ -1,11 +1,14 @@
 {
   "name": "Pi-hole",
   "logo": "QmYbagd1HGhQkxjcgj8KvEGc3ASyubA7MuVSZokJkSmpBr",
-  "category": [
+  "tags": [
     "network",
-    "security"
+    "security",
+    "dns",
+    "privacy",
+    "adblock",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Network-wide ad blocking via DNS sinkhole",
   "description": "Network-wide ad blocking via DNS sinkhole",

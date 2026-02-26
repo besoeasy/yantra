@@ -1,11 +1,14 @@
 {
   "name": "Nano",
   "logo": "Qmf4kNnrTW6jAtNGrhM62yC1XmvXf2x5ZtxcUfZUinegca",
-  "category": [
+  "tags": [
     "cryptocurrency",
-    "blockchain"
+    "blockchain",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "8075 (HTTP - RPC API)",
   "short_description": "Open source, green cryptocurrency and peer-to-peer payment system",
   "description": "Open source, green cryptocurrency and peer-to-peer payment system",

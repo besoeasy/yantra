@@ -1,11 +1,14 @@
 {
   "name": "PostgreSQL",
   "logo": "QmSmV8pEZ4EcmdQPZ9wsBovGFSXBxxgKTpk1H9woR79a6S",
-  "category": [
+  "tags": [
     "database",
-    "storage"
+    "storage",
+    "utility",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "5432 (TCP - Database)",
   "short_description": "Powerful open-source relational database with advanced features",
   "description": "Powerful open-source relational database with advanced features",

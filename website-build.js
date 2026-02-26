@@ -49,7 +49,6 @@ function parseAppFolder(appId, appPath) {
       id: appId,
       name: info.name,
       logo: info.logo || null,
-      category: Array.isArray(info.category) ? info.category : (info.category ? [info.category] : []),
       tags: Array.isArray(info.tags) ? info.tags : [],
       port: info.port || null,
       short_description: info.short_description || '',
@@ -112,7 +111,7 @@ function buildAppsJson() {
     meta: {
       generatedAt: new Date().toISOString(),
       totalApps: apps.length,
-      categories: [...new Set(apps.flatMap((app) => app.category))].sort(),
+      tags: [...new Set(apps.flatMap((app) => app.tags))].sort(),
     },
     apps,
   };
@@ -129,7 +128,7 @@ function buildAppsJson() {
   console.log('\n✨ apps.json generated successfully!');
   console.log(`📁 Output: ${appsJsonPath}`);
   console.log(`📦 Total apps: ${apps.length}`);
-  console.log(`🏷️  Categories: ${output.meta.categories.length}`);
+  console.log(`🏷️  Tags: ${output.meta.tags.length}`);
 }
 
 function getLogoUrl(app) {
@@ -143,14 +142,12 @@ function getLogoUrl(app) {
 function toAppViewModel(app) {
   const id = app?.id || 'unknown-app';
   const name = app?.name || id;
-  const category = Array.isArray(app?.category) ? app.category : [];
   const dependencies = Array.isArray(app?.dependencies) ? app.dependencies : [];
 
   return {
     ...app,
     id,
     name,
-    category,
     dependencies,
     tags: Array.isArray(app?.tags) ? app.tags : [],
     short_description: app?.short_description || '',
@@ -166,7 +163,7 @@ function toAppViewModel(app) {
 
 function getRelatedApps(app, allApps, count = 3) {
   const others = allApps.filter(
-    (a) => a.id !== app.id && a.category.some((c) => app.category.includes(c))
+    (a) => a.id !== app.id && a.tags.some((t) => app.tags.includes(t))
   );
   for (let i = others.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

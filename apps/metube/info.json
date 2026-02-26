@@ -1,12 +1,14 @@
 {
   "name": "MeTube",
   "logo": "QmVHF6jueKh11T7LVbBC6NCCs2tuMo7Af7tKfWJEdXSkwQ",
-  "category": [
+  "tags": [
     "media",
     "tools",
-    "utility"
+    "utility",
+    "music",
+    "audio",
+    "download"
   ],
-  "tags": [],
   "port": "8081 (HTTP - Web UI)",
   "short_description": "Web GUI for yt-dlp/youtube-dl with playlist support.",
   "description": "Web GUI for yt-dlp/youtube-dl with playlist support.",

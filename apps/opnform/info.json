@@ -1,11 +1,14 @@
 {
   "name": "OpnForm",
   "logo": "QmSmhDZydYp9xYPVCs19mvom1nMB7Cy7wrZxdtEXgbQtRT",
-  "category": [
+  "tags": [
     "productivity",
-    "forms"
+    "forms",
+    "utility",
+    "automation",
+    "workflow",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Open source form builder with advanced customization and workflow options",
   "description": "Open source form builder with advanced customization and workflow options",

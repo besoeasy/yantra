@@ -1,10 +1,14 @@
 {
   "name": "Bitcoin Knots",
   "logo": "QmagcjChBhrPKmd1S2XyQw9dCddbWn7izbtNR4gscbA1kQ",
-  "category": [
-    "cryptocurrency"
+  "tags": [
+    "cryptocurrency",
+    "bitcoin",
+    "crypto",
+    "blockchain",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "8332 (HTTP - Web UI)",
   "short_description": "Bitcoin full node with enhanced features and privacy focus.",
   "description": "Bitcoin full node with enhanced features and privacy focus.",

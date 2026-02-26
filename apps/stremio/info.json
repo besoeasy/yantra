@@ -1,11 +1,14 @@
 {
   "name": "Stremio",
   "logo": "QmUJ8LsjmfsZdPybvXWkAJsEJYadr8D6L1iqXvgtC48hfX",
-  "category": [
+  "tags": [
     "media",
-    "streaming"
+    "streaming",
+    "video",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "11470 (HTTP - Server), 12470 (HTTPS - Server)",
   "short_description": "Media center application for streaming movies, TV shows, and video content",
   "description": "Media center application for streaming movies, TV shows, and video content",

@@ -1,11 +1,14 @@
 {
   "name": "Dashmachine",
   "logo": "QmTvbLNZMCyEQmcFBbY7EkKq9hnJTPy8ut4hAYRH3Xxaiw",
-  "category": [
+  "tags": [
     "dashboard",
-    "organization"
+    "organization",
+    "monitoring",
+    "utility",
+    "homepage",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "5000 (HTTP - Web UI)",
   "short_description": "Customizable personal dashboard for organizing links and services",
   "description": "Customizable personal dashboard for organizing links and services",

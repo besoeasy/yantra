@@ -1,12 +1,14 @@
 {
   "name": "Duplicati",
   "logo": "QmX52qWfGH9q5mPvjT3mfmf6ag6BUW8fGwGX1WrbPxfqn8",
-  "category": [
+  "tags": [
     "tools",
     "security",
-    "utility"
+    "utility",
+    "backup",
+    "storage",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "8200 (HTTP - Web UI)",
   "short_description": "Free backup software for encrypted, incremental backups",
   "description": "Free backup software for encrypted, incremental backups",

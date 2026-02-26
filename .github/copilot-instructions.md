@@ -8,6 +8,8 @@ Backend is located in the `/daemon/` directory. Follow these guidelines when cre
 
 Follow the structure and naming conventions outlined in `apps/apps.md` for all application directories and `compose.yml` files. if you need better understanding feel free to pick 5 random apps from the `apps/` directory and study their structure.
 
+Each app's `info.json` **must** have a minimum of 6 `tags`. Tags are the sole classification mechanism — there is no `category` field. All tags must be lowercase, using only letters, numbers, and hyphens.
+
 ### Docker Compose Environment Variables
 
 **ALWAYS use key-value format for environment variables** in `compose.yml` files:

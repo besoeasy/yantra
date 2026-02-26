@@ -1,11 +1,14 @@
 {
   "name": "qBittorrent",
   "logo": "QmU3rohmjuaXYNe37FDEcG2P6BL8t4fzu4WvNA69voFteA",
-  "category": [
+  "tags": [
     "download",
-    "network"
+    "network",
+    "torrent",
+    "p2p",
+    "search",
+    "privacy"
   ],
-  "tags": [],
   "port": "8080 (HTTP - Web UI), 6881 (TCP - Torrent), 6881 (UDP - Torrent)",
   "short_description": "Feature-rich BitTorrent client with integrated search engine and web interface",
   "description": "Feature-rich BitTorrent client with integrated search engine and web interface",

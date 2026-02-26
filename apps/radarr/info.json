@@ -1,11 +1,14 @@
 {
   "name": "Radarr",
   "logo": "QmfNn5gZnB1QYxXdumJ3Xw4jz9o18H2Zmub5F2NXU4h8wv",
-  "category": [
+  "tags": [
     "media",
-    "tools"
+    "tools",
+    "streaming",
+    "video",
+    "servarr",
+    "automation"
   ],
-  "tags": [],
   "port": "7878 (HTTP - Web UI)",
   "short_description": "Smart PVR for movie collection management and automated downloads",
   "description": "Smart PVR for movie collection management and automated downloads",

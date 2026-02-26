@@ -1,11 +1,14 @@
 {
   "name": "Jotty",
   "logo": "QmaCFEHEEBeqHMxCD3JKPx5AQJpoU4VFAXru85xRm5qeXV",
-  "category": [
+  "tags": [
     "productivity",
-    "utility"
+    "utility",
+    "storage",
+    "files",
+    "task-manager",
+    "organizer"
   ],
-  "tags": [],
   "port": "3000 (HTTP - Web UI)",
   "short_description": "Lightweight checklists and notes app with Markdown support, Kanban boards, and file-based storage",
   "description": "Lightweight checklists and notes app with Markdown support, Kanban boards, and file-based storage",

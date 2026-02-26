@@ -1,11 +1,14 @@
 {
   "name": "Traggo",
   "logo": "QmTiS72Uz3JSJUmXTcx9GmPUnfABX5jFVEn2rMBCYzhhMj",
-  "category": [
+  "tags": [
     "productivity",
-    "time-tracking"
+    "time-tracking",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "3030 (HTTP - Web UI)",
   "short_description": "Simple and lightweight time tracking application for personal productivity",
   "description": "Simple and lightweight time tracking application for personal productivity",

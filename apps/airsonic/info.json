@@ -1,11 +1,14 @@
 {
   "name": "Airsonic",
   "logo": "Qmb3YsRHNpn9L5CFLVLM3C4h7wNtMXcGsmXYn2uofZaiHK",
-  "category": [
+  "tags": [
     "media",
-    "music"
+    "music",
+    "audio",
+    "gaming",
+    "server",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "4040 (HTTP - Web UI)",
   "short_description": "Self-hosted music streaming server with web interface and mobile apps",
   "description": "Self-hosted music streaming server with web interface and mobile apps",

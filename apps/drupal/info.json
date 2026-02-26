@@ -1,11 +1,14 @@
 {
   "name": "Drupal",
   "logo": "QmXryrL9jF3YL37TEs7eZRsv5mvDyUYSkWdPrEDKE8GM8k",
-  "category": [
+  "tags": [
     "cms",
-    "productivity"
+    "productivity",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Powerful open-source content management system for building websites",
   "description": "Powerful open-source content management system for building websites",

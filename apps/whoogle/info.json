@@ -1,11 +1,14 @@
 {
   "name": "Whoogle",
   "logo": "QmNPLDz2jjjG67UeNVAC1wgdBs9eMrUQQYkRRWXWmtSZxV",
-  "category": [
+  "tags": [
     "search",
-    "privacy"
+    "privacy",
+    "utility",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "5000 (HTTP - Web UI)",
   "short_description": "Privacy-focused metasearch engine - fast, clean Google-like search results",
   "description": "Privacy-focused metasearch engine - fast, clean Google-like search results",

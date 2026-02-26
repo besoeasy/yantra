@@ -1,11 +1,14 @@
 {
   "name": "LibreSpeed",
   "logo": "QmSPU6HmY4jRjanybWFDGQapEbSoY6ii4nc7MSUjicS5Xd",
-  "category": [
+  "tags": [
     "network",
-    "tools"
+    "tools",
+    "utility",
+    "speedtest",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "8080 (HTTP - Web UI)",
   "short_description": "Self-hosted speed test tool for bandwidth measurement",
   "description": "Self-hosted speed test tool for bandwidth measurement",

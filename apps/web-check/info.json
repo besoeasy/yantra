@@ -1,12 +1,14 @@
 {
   "name": "Web Check",
   "logo": "QmXwF1DUNZLpkLFzK7HhVdtNNPncNZMS4ktb7KHb6K8Khz",
-  "category": [
+  "tags": [
     "tools",
     "network",
-    "utility"
+    "utility",
+    "monitoring",
+    "dashboard",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "3000 (HTTP - Web UI)",
   "short_description": "All-in-one tool for analyzing and monitoring websites",
   "description": "All-in-one tool for analyzing and monitoring websites",

@@ -1,10 +1,14 @@
 {
   "name": "Minecraft Server",
   "logo": "QmPB7iXHMAu3Wor5jiEsoifm5tZyMEUojhbj6TJJefsY7s",
-  "category": [
-    "gaming"
+  "tags": [
+    "gaming",
+    "server",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "25565 (TCP - Game Server)",
   "short_description": "Open-source sandbox game server with endless possibilities",
   "description": "Open-source sandbox game server with endless possibilities",

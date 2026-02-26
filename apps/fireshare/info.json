@@ -1,11 +1,14 @@
 {
   "name": "Fireshare",
   "logo": "QmZ31p6GWvGNm2mJTmVyCUr68PAJoax6mCVfgw4DEHbTQk",
-  "category": [
+  "tags": [
     "media",
-    "file-sharing"
+    "file-sharing",
+    "streaming",
+    "video",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Self-hosted video sharing platform with seamless streaming and organization",
   "description": "Self-hosted video sharing platform with seamless streaming and organization",

@@ -1,11 +1,14 @@
 {
   "name": "Vaultwarden",
   "logo": "QmUPKRipoMCZT3VCYVCoxe3z5WpDhfpb7v4HH1dDKedQaQ",
-  "category": [
+  "tags": [
     "productivity",
-    "security"
+    "security",
+    "password-manager",
+    "privacy",
+    "gaming",
+    "server"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Lightweight Bitwarden server for password management",
   "description": "Lightweight Bitwarden server for password management",

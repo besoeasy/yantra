@@ -1,11 +1,14 @@
 {
   "name": "ConvertX",
   "logo": "QmafozB6D4dw51adzoPyrCwTTCATQv1nbVwZPME6yzDWF7",
-  "category": [
+  "tags": [
     "tools",
-    "utility"
+    "utility",
+    "storage",
+    "files",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "3000 (HTTP - Web UI)",
   "short_description": "Self-hosted file conversion tool supporting multiple formats",
   "description": "Self-hosted file conversion tool supporting multiple formats",

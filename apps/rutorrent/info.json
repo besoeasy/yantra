@@ -1,11 +1,14 @@
 {
   "name": "ruTorrent",
   "logo": "QmPt2kfbSDSajzcshVCrR3ZYyNZTzWYqEg6cTiYQPYhmMr",
-  "category": [
+  "tags": [
     "torrent",
-    "download"
+    "download",
+    "p2p",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI), 51413 (TCP - Torrent)",
   "short_description": "Lightweight torrent client with web interface for managing downloads",
   "description": "Lightweight torrent client with web interface for managing downloads",

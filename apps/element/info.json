@@ -1,11 +1,14 @@
 {
   "name": "Element",
   "logo": "QmWMcjdA7izomrqwuW6D8JT8y75K7jCANqnDMYxZRzmzHU",
-  "category": [
+  "tags": [
     "productivity",
-    "security"
+    "security",
+    "chat",
+    "messaging",
+    "communication",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Secure and decentralized Matrix chat client for communication",
   "description": "Secure and decentralized Matrix chat client for communication",

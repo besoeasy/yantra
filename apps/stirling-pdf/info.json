@@ -1,11 +1,14 @@
 {
   "name": "Stirling-PDF",
   "logo": "QmZ6nmAP1oSgpfd4N7oAYNEJrRqgQTPGndZPyN2vwmyjBE",
-  "category": [
+  "tags": [
     "tools",
-    "utility"
+    "utility",
+    "pdf",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "8080 (HTTP - Web UI)",
   "short_description": "Powerful locally hosted web-based PDF manipulation tool",
   "description": "Powerful locally hosted web-based PDF manipulation tool",

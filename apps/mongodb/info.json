@@ -1,11 +1,14 @@
 {
   "name": "MongoDB",
   "logo": "QmZYsae4jNFSyXC696vjkyiqSAR6DBGo4zKSgMGdE7ZSzy",
-  "category": [
+  "tags": [
     "database",
-    "storage"
+    "storage",
+    "files",
+    "utility",
+    "notes",
+    "wiki"
   ],
-  "tags": [],
   "port": "27017 (TCP - Database)",
   "short_description": "NoSQL document database for flexible data storage and management",
   "description": "NoSQL document database for flexible data storage and management",

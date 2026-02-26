@@ -1,11 +1,14 @@
 {
   "name": "Shugur Relay",
   "logo": "QmNR4kyKJs3sZwdRJZ47z5feUWn6S8aJw31wzZrXK2fVcD",
-  "category": [
+  "tags": [
     "network",
-    "social"
+    "social",
+    "database",
+    "storage",
+    "utility",
+    "nostr"
   ],
-  "tags": [],
   "port": "8080 (HTTP - Relay)",
   "short_description": "High-performance nostr relay with distributed database",
   "description": "High-performance nostr relay with distributed database",

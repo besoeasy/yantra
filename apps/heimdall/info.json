@@ -1,11 +1,14 @@
 {
   "name": "Heimdall",
   "logo": "QmURGit77px6MrQiuco9TGGgg3z9rkhcWs3MZ5pfSpzCE4",
-  "category": [
+  "tags": [
     "dashboard",
-    "organization"
+    "organization",
+    "monitoring",
+    "utility",
+    "homepage",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Application dashboard and launcher with simple icon-based interface",
   "description": "Application dashboard and launcher with simple icon-based interface",

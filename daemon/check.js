@@ -109,16 +109,13 @@ async function validateInfoJson(appName, infoPath) {
         }
     }
 
-    // category must be a non-empty array
-    if (!Array.isArray(info.category) || info.category.length === 0) {
-        errors.push('info.json "category" must be a non-empty array');
+    // tags must have at least 6 entries
+    if (!Array.isArray(info.tags) || info.tags.length < 6) {
+        errors.push(`info.json "tags" must have at least 6 tags (found ${info.tags?.length || 0})`);
     } else {
-        if (info.category.length > 3) {
-            errors.push(`info.json "category" has ${info.category.length} entries (max 3)`);
-        }
-        for (const cat of info.category) {
-            if (typeof cat !== 'string' || cat !== cat.toLowerCase() || !/^[a-z0-9-]+$/.test(cat)) {
-                errors.push(`info.json "category" entry "${cat}" must be lowercase letters, numbers, and hyphens only`);
+        for (const tag of info.tags) {
+            if (typeof tag !== 'string' || tag !== tag.toLowerCase() || !/^[a-z0-9-]+$/.test(tag)) {
+                errors.push(`info.json "tags" entry "${tag}" must be lowercase letters, numbers, and hyphens only`);
             }
         }
     }

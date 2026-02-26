@@ -1,12 +1,14 @@
 {
   "name": "Monero Node",
   "logo": "QmarnKCoBY8ZQRnK319Sv9QDdKrUKfnpYteZ71XiswoP8y",
-  "category": [
+  "tags": [
     "cryptocurrency",
     "blockchain",
-    "network"
+    "network",
+    "crypto",
+    "wallet",
+    "privacy"
   ],
-  "tags": [],
   "port": "18089 (TCP - Restricted RPC), 18080 (TCP - P2P)",
   "short_description": "Pruned Monero full node with restricted RPC for wallets and apps",
   "description": "Pruned Monero full node with restricted RPC for wallets and apps",

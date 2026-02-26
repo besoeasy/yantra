@@ -1,11 +1,14 @@
 {
   "name": "Cloudflared",
   "logo": "Qmcyr4xpG4SZdBp9VorVjRrvHqHoQzCu9YHCQZGNC5ck8T",
-  "category": [
+  "tags": [
     "network",
-    "security"
+    "security",
+    "vpn",
+    "privacy",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "",
   "short_description": "Cloudflare Tunnel for secure remote access without exposing ports",
   "description": "Cloudflare Tunnel for secure remote access without exposing ports",

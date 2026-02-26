@@ -1,11 +1,14 @@
 {
   "name": "Davos",
   "logo": "QmVN8Wpn8RgjPwR7ggoVxPjKqE4GzYN69uZGMiyQmu792X",
-  "category": [
+  "tags": [
     "download",
-    "file-management"
+    "file-management",
+    "media",
+    "utility",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "8080 (HTTP - Web UI)",
   "short_description": "Lightweight download manager for managing files with web interface",
   "description": "Lightweight download manager for managing files with web interface",

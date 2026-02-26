@@ -1,11 +1,14 @@
 {
   "name": "Homarr",
   "logo": "QmXrjcV7SukGrmAgqF3tHVCu2LTYYGkhADumKY74AHzLf4",
-  "category": [
+  "tags": [
     "dashboard",
-    "tools"
+    "tools",
+    "monitoring",
+    "utility",
+    "homepage",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "7575 (HTTP - Web UI)",
   "short_description": "Modern customizable dashboard with 30+ integrations and 10K+ icons",
   "description": "Modern customizable dashboard with 30+ integrations and 10K+ icons",

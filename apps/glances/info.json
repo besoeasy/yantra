@@ -1,11 +1,14 @@
 {
   "name": "Glances",
   "logo": "QmVa2UDC7pALhMyoiXgQsThyF9QszT2f7WcK168k7AGXhf",
-  "category": [
+  "tags": [
     "monitoring",
-    "tools"
+    "tools",
+    "dashboard",
+    "utility",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "61208 (HTTP - Web UI)",
   "short_description": "Real-time system monitoring for containers and host metrics",
   "description": "Real-time system monitoring for containers and host metrics",

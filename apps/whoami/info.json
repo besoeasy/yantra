@@ -1,11 +1,14 @@
 {
   "name": "Whoami",
   "logo": "QmZvfwKJRMrMvzUyRyrLJjShVCsGozSAPDrCq6Vg1Fpde5",
-  "category": [
+  "tags": [
     "tools",
-    "utility"
+    "utility",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Tiny HTTP service that prints system information - perfect for testing",
   "description": "Tiny HTTP service that prints system information - perfect for testing",

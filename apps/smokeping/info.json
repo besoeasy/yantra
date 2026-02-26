@@ -1,11 +1,14 @@
 {
   "name": "Smokeping",
   "logo": "QmerDnfp1VxvYJi47iuc18CiQSVHCJBzata77pGJjS6GPE",
-  "category": [
+  "tags": [
     "network",
-    "monitoring"
+    "monitoring",
+    "dashboard",
+    "utility",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI)",
   "short_description": "Latency and packet loss monitoring tool with graphing capabilities",
   "description": "Latency and packet loss monitoring tool with graphing capabilities",

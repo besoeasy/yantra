@@ -1,11 +1,14 @@
 {
   "name": "Syncthing",
   "logo": "Qmd864pdeSwReg9hfWERXdNiDCEqN7w3urE2416cWNGFSm",
-  "category": [
+  "tags": [
     "tools",
-    "utility"
+    "utility",
+    "storage",
+    "files",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "8384 (HTTP - Web UI)",
   "short_description": "Continuous file synchronization program. It synchronizes files between two or more computers.",
   "description": "Continuous file synchronization program. It synchronizes files between two or more computers.",

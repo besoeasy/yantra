@@ -1,11 +1,14 @@
 {
   "name": "Wiki.js",
   "logo": "QmdFpskYSKmBYLyBWGSnqronCxH2V3kxSLiDBHmCCWGVRs",
-  "category": [
+  "tags": [
     "documentation",
-    "wiki"
+    "wiki",
+    "notes",
+    "productivity",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "3000 (HTTP - Web UI)",
   "short_description": "Modern, lightweight wiki platform for creating and organizing knowledge bases",
   "description": "Modern, lightweight wiki platform for creating and organizing knowledge bases",

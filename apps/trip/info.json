@@ -1,11 +1,14 @@
 {
   "name": "Trip",
   "logo": "QmcxepcQDfmK7gcGSdWPNuyFR1oqR4qeG5jvetn2qYHg8z",
-  "category": [
+  "tags": [
     "productivity",
-    "tools"
+    "tools",
+    "indexer",
+    "servarr",
+    "automation",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "8000 (HTTP - Web UI)",
   "short_description": "Self-hostable map tracker and trip planner to visualize POIs and organize your next adventure",
   "description": "Self-hostable map tracker and trip planner to visualize POIs and organize your next adventure",

@@ -1,11 +1,14 @@
 {
   "name": "Transmission",
   "logo": "QmYNJtjCxWhoKS78Nvjfm7fc9dqA49QiGHUQBryYSmwsdQ",
-  "category": [
+  "tags": [
     "download",
-    "network"
+    "network",
+    "torrent",
+    "p2p",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "9091 (HTTP - Web Interface)",
   "short_description": "Fast, easy BitTorrent client with web interface",
   "description": "Fast, easy BitTorrent client with web interface",

@@ -1,11 +1,14 @@
 {
   "name": "Uptime Kuma",
   "logo": "Qmb7LeUwFtcWpkpbiyzEPYPecX8iXNZMtvjag9WyrCDmLV",
-  "category": [
+  "tags": [
     "tools",
-    "network"
+    "network",
+    "monitoring",
+    "dashboard",
+    "utility",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "3001 (HTTP - Web UI)",
   "short_description": "Self-hosted uptime monitoring tool",
   "description": "Self-hosted uptime monitoring tool",

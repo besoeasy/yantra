@@ -11,7 +11,6 @@ services:
     environment:
       HOME: /tmp
       XDG_CONFIG_HOME: /config
-      TZ: ${TZ:-UTC}
       POSTGRES_HOST: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgresx

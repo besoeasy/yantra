@@ -1,10 +1,14 @@
 {
   "name": "Perplexica",
   "logo": "QmXkTfV5b7aUepUyRLpo9C26P34LWrRyNcQTewFSZjezYc",
-  "category": [
-    "ai"
+  "tags": [
+    "ai",
+    "search",
+    "privacy",
+    "utility",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "3000 (HTTP - Web UI)",
   "short_description": "AI-powered search engine that delivers conversational responses with contextual understanding",
   "description": "AI-powered search engine that delivers conversational responses with contextual understanding",

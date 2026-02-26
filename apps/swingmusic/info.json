@@ -1,11 +1,14 @@
 {
   "name": "SwingMusic",
   "logo": "QmVWKyW9G8C4zxCDMMutg7eSNuugdAzUUNwzhbvjkv6j1o",
-  "category": [
+  "tags": [
     "media",
-    "entertainment"
+    "entertainment",
+    "music",
+    "audio",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "1970 (HTTP - Web UI)",
   "short_description": "Beautiful music player with a modern web interface",
   "description": "Beautiful music player with a modern web interface",

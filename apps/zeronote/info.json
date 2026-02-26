@@ -1,11 +1,14 @@
 {
   "name": "ZeroNote",
   "logo": "Qmbdks6yn4TrP2hfFZJ1dZPW84kYhrWoXDj4tLBtpWfRiF",
-  "category": [
+  "tags": [
     "productivity",
-    "security"
+    "security",
+    "self-hosted",
+    "homelab",
+    "docker",
+    "open-source"
   ],
-  "tags": [],
   "port": "8000 (HTTP - Web UI)",
   "short_description": "Offline-first encrypted notes application.",
   "description": "Offline-first encrypted notes application.",

@@ -1,11 +1,14 @@
 {
   "name": "Strfry",
   "logo": "QmNR4kyKJs3sZwdRJZ47z5feUWn6S8aJw31wzZrXK2fVcD",
-  "category": [
+  "tags": [
     "network",
-    "social"
+    "social",
+    "storage",
+    "files",
+    "utility",
+    "nostr"
   ],
-  "tags": [],
   "port": "7777 (HTTP - Web UI)",
   "short_description": "High-performance nostr relay with LMDB storage",
   "description": "High-performance nostr relay with LMDB storage",

@@ -1,11 +1,14 @@
 {
   "name": "Appsmith",
   "logo": "QmcEzSU5HXbZ9jiG6ZAY4PrqHRq2ddhQnfT2gcpXg34kuy",
-  "category": [
+  "tags": [
     "productivity",
-    "development"
+    "development",
+    "git",
+    "devops",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "80 (HTTP - Web UI), 443 (HTTPS - Web UI)",
   "short_description": "Low-code internal tools platform for rapid application development",
   "description": "Low-code internal tools platform for rapid application development",

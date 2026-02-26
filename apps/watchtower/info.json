@@ -1,11 +1,14 @@
 {
   "name": "Watchtower",
   "logo": "QmXGn6c1UzVGBQmuxcikBush4KYdM2KASxggR8Z7rH7kw4",
-  "category": [
+  "tags": [
     "tools",
-    "utility"
+    "utility",
+    "docker",
+    "containers",
+    "devops",
+    "self-hosted"
   ],
-  "tags": [],
   "port": "",
   "short_description": "Automatically update running Docker containers",
   "description": "Automatically update running Docker containers",

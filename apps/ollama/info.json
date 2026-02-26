@@ -1,11 +1,14 @@
 {
   "name": "Ollama",
   "logo": "QmdJujFNrnbZ8Z9SVzrZGoUEvcxg5TQqizNg51nUcwcp5Z",
-  "category": [
+  "tags": [
     "ai",
-    "backend"
+    "backend",
+    "gaming",
+    "server",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "11434 (HTTP - API)",
   "short_description": "Local LLM inference server - run models like Llama, Mistral, and more",
   "description": "Local LLM inference server - run models like Llama, Mistral, and more",

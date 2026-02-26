@@ -1,11 +1,14 @@
 {
   "name": "Prowlarr",
   "logo": "Qma8EiYwcHKzMtqS8vbvtGCtRApdWnhMszeZCECuuoMzz7",
-  "category": [
+  "tags": [
     "media",
-    "tools"
+    "tools",
+    "torrent",
+    "download",
+    "p2p",
+    "servarr"
   ],
-  "tags": [],
   "port": "9696 (HTTP - Web UI)",
   "short_description": "Indexer manager for automating and integrating Usenet and torrent indexers",
   "description": "Indexer manager for automating and integrating Usenet and torrent indexers",

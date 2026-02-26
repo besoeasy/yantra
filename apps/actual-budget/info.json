@@ -1,11 +1,14 @@
 {
   "name": "Actual Budget",
   "logo": "QmYhzJQFC7KG7RenmubaBZi1f8F2XkagEamPvJxQqmyqGR",
-  "category": [
+  "tags": [
     "finance",
-    "productivity"
+    "productivity",
+    "accounting",
+    "self-hosted",
+    "homelab",
+    "docker"
   ],
-  "tags": [],
   "port": "5006 (HTTP - Web UI)",
   "short_description": "Self-hosted personal finance app with powerful budgeting and tracking features",
   "description": "Self-hosted personal finance app with powerful budgeting and tracking features",

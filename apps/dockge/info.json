@@ -1,11 +1,14 @@
 {
   "name": "Dockge",
   "logo": "QmXUGnzPpcRuGks5CJB6we1cFcBW2qPau9FZUs98wPGFJL",
-  "category": [
+  "tags": [
     "docker",
-    "management"
+    "management",
+    "containers",
+    "devops",
+    "self-hosted",
+    "homelab"
   ],
-  "tags": [],
   "port": "5001 (HTTP - Web UI)",
   "short_description": "Self-hosted Docker Compose stack manager with GUI for easy deployment",
   "description": "Self-hosted Docker Compose stack manager with GUI for easy deployment",
