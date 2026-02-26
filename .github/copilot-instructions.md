@@ -37,6 +37,8 @@ Every app directory must contain an `info.json` file with the following fields:
 
 - **`dependencies`**: Array of app IDs that must be running for this app to function (e.g. `["postgresql", "redis"]`). Use an empty array `[]` if there are none. These IDs must match the directory names under `apps/`.
 
+- **`notes`**: Optional array of strings. Only include when the app has special configuration, non-obvious setup steps, hardcoded credentials, or important port/networking caveats. Omit entirely if there is nothing noteworthy.
+
 ### Docker Compose Environment Variables
 
 **ALWAYS use key-value format for environment variables** in `compose.yml` files:
