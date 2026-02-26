@@ -342,20 +342,6 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
           }
         }
 
-        // Parse info.port to identify named ports
-        const namedPorts = new Set();
-        if (info.port) {
-          const portDescRegex = /(\d+)\s*\(([^-\)]+)\s*-\s*([^)]+)\)/g;
-          let portMatch;
-          while ((portMatch = portDescRegex.exec(info.port)) !== null) {
-            namedPorts.add(portMatch[1]);
-          }
-        }
-
-        portMappings.forEach((port) => {
-          port.isNamed = namedPorts.has(port.hostPort);
-        });
-
         const logoRaw = info.logo || null;
         const logoUrl = logoRaw
           ? logoRaw.includes("://")
@@ -368,7 +354,7 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
           name: info.name,
           logo: logoUrl,
           tags: Array.isArray(info.tags) ? info.tags : [],
-          port: info.port || null,
+          ports: Array.isArray(info.ports) ? info.ports : [],
           short_description: info.short_description || "",
           description: info.description || info.short_description || "",
           usecases: Array.isArray(info.usecases) ? info.usecases : [],
@@ -377,7 +363,7 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
           path: appPath,
           composePath: composePath,
           environment: envVars,
-          ports: portMappings,
+          composePorts: portMappings,
         });
       } catch (err) {
         // Skip apps with missing/unreadable files
