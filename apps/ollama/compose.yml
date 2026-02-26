@@ -10,18 +10,8 @@ services:
     volumes:
       - ollama_data:/root/.ollama
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 28G
-        reservations:
-          devices:
-            - capabilities: ["gpu"]
-    mem_swappiness: 0
-    shm_size: 8gb
     environment:
-      OLLAMA_PREFER_GPU: "true"
-      OLLAMA_GPU_MEMORY_FALLBACK: "true"
+      OLLAMA_HOST: "0.0.0.0"
     networks:
       - ollama_network
 
