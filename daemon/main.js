@@ -774,37 +774,10 @@ app.get("/api/containers/:id", asyncHandler(async (req, res) => {
   const appId = appLabels.app || baseAppId;
   const catalogEntry = catalogMap.get(appId) || null;
 
-    // If part of a compose project, get ports from all containers in the stack
-    let allPorts = info.NetworkSettings.Ports;
-    if (composeProject) {
-      try {
-        const allContainers = await docker.listContainers({ all: false });
-        const projectContainers = allContainers.filter((c) => c.Labels["com.docker.compose.project"] === composeProject);
-
-        // Aggregate all ports from the stack
-        const portMap = {};
-        for (const pc of projectContainers) {
-          if (pc.Ports) {
-            pc.Ports.forEach((port) => {
-              if (port.PublicPort && port.PrivatePort) {
-                const key = `${port.PrivatePort}/${port.Type}`;
-                if (!portMap[key]) {
-                  portMap[key] = [
-                    {
-                      HostIp: port.IP || "0.0.0.0",
-                      HostPort: String(port.PublicPort),
-                    },
-                  ];
-                }
-              }
-            });
-          }
-        }
-        allPorts = portMap;
-      } catch (err) {
-        log("error", "Failed to aggregate stack ports:", err.message);
-      }
-    }
+    // Use only this container's own ports — never aggregate from sibling containers,
+    // as that causes sibling port labels to bleed into unrelated services (e.g. postgres
+    // showing bitmagnet's Web UI port).
+    const allPorts = info.NetworkSettings.Ports;
 
     res.json({
       success: true,

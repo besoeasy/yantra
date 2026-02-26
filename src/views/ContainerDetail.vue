@@ -76,8 +76,11 @@ const allPortMappings = computed(() => {
     const bindings = selectedContainer.value.ports[key]
     
     if (bindings && bindings.length > 0) {
+      // Deduplicate by HostPort — Docker reports both 0.0.0.0 and :: bindings for the same port
+      const seenHostPorts = new Set()
       bindings.forEach(binding => {
-        if (binding.HostPort) {
+        if (binding.HostPort && !seenHostPorts.has(binding.HostPort)) {
+          seenHostPorts.add(binding.HostPort)
           const label = portLabels[privatePort] || portLabels[binding.HostPort]
           mappings.push({
             containerPort: privatePort,
