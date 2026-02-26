@@ -122,7 +122,7 @@ onUnmounted(() => clearInterval(interval));
       <!-- App identity -->
       <div v-else-if="app" class="flex items-center gap-4">
         <div class="w-16 h-16 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
-          <img v-if="app.logo" :src="app.logo" :alt="app.name" class="w-10 h-10 object-contain" />
+          <img v-if="app.logo" :src="app.logo" :alt="app.name" loading="lazy" class="w-10 h-10 object-contain" />
           <Package v-else :size="28" class="text-slate-400" />
         </div>
         <div>
@@ -263,7 +263,7 @@ onUnmounted(() => clearInterval(interval));
         >
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
-              <img v-if="app?.logo" :src="app.logo" :alt="app?.name" class="w-6 h-6 object-contain" />
+              <img v-if="app?.logo" :src="app.logo" :alt="app?.name" loading="lazy" class="w-6 h-6 object-contain" />
               <Package v-else :size="18" class="text-slate-400" />
             </div>
             <div>

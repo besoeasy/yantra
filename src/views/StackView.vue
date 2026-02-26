@@ -459,6 +459,7 @@ onUnmounted(() => {
             v-if="stack.app?.logo"
             :src="stack.app.logo"
             :alt="stack.app.name"
+            loading="lazy"
             class="w-14 h-14 object-contain"
           />
           <Bot v-else :size="32" class="text-slate-400" />

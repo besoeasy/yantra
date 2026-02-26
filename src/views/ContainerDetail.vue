@@ -597,7 +597,7 @@ onUnmounted(() => {
         <!-- Info Card -->
         <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-6 flex flex-col sm:flex-row gap-6 shadow-sm">
            <div class="w-20 h-20 bg-slate-100/50 dark:bg-slate-900/50 rounded-xl flex items-center justify-center p-3 shrink-0">
-              <img v-if="selectedContainer.app.logo" :src="selectedContainer.app.logo" class="w-full h-full object-contain" />
+              <img v-if="selectedContainer.app.logo" :src="selectedContainer.app.logo" loading="lazy" class="w-full h-full object-contain" />
               <div v-else class="text-3xl">📦</div>
            </div>
            

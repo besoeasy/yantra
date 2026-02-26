@@ -21,7 +21,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor': ['vue', 'vue-router'],
-          'ui': ['vue-toastification', 'lucide-vue-next']
+          'ui': ['lucide-vue-next']
         }
       }
     },
