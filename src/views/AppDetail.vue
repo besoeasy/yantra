@@ -283,6 +283,14 @@ async function fillFromDependencies() {
               }
             }
           }
+
+          // Fall back: if the var has a literal default (not a ${...} reference) and at least
+          // one dependency is present in the response, the default is the correct value to use.
+          const literalDefault = env.default && !env.default.includes('${') ? env.default.trim() : null;
+          if (literalDefault && Object.keys(data.environmentVariables).length > 0) {
+            envValues.value[envVar] = literalDefault;
+            filledCount++;
+          }
         });
       }
 

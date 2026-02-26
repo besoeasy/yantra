@@ -4,7 +4,7 @@ services:
     container_name: open-webui
     labels:
       yantr.app: "open-webui"
-      yantr.service: "Web UI for chatting with local LLMs via Ollama"
+      yantr.service: "open-webui"
     ports:
       - "8080"
     environment:
