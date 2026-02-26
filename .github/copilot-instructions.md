@@ -8,7 +8,34 @@ Backend is located in the `/daemon/` directory. Follow these guidelines when cre
 
 Follow the structure and naming conventions outlined in `apps/apps.md` for all application directories and `compose.yml` files. if you need better understanding feel free to pick 5 random apps from the `apps/` directory and study their structure.
 
-Each app's `info.json` **must** have a minimum of 6 `tags`. Tags are the sole classification mechanism — there is no `category` field. All tags must be lowercase, using only letters, numbers, and hyphens.
+### `info.json` Content Requirements
+
+Every app directory must contain an `info.json` file with the following fields:
+
+- **`name`**: Human-readable display name of the app. Use the official product name with correct capitalisation (e.g. `"Nextcloud"`, `"Pi-hole"`).
+
+- **`logo`**: IPFS CID string pointing to the app's logo image. Must be a valid CIDv0 or CIDv1 hash. Used in the UI to display the app icon.
+
+- **`tags`**: Minimum 6 tags. Tags are the sole classification mechanism — there is no `category` field. All tags must be lowercase, using only letters, numbers, and hyphens. Choose tags that reflect the app's function, stack, and target use case.
+
+- **`short_description`**: 50–100 characters. One concise sentence summarising what the app does. No trailing period required. Will be shown on app cards.
+
+- **`description`**: 200–300 characters. A fuller explanation covering purpose, key features, and target audience. Shown on the app detail page.
+
+- **`usecases`**: Minimum 2 entries. Each usecase should be a concrete, distinct scenario describing how the app is used in practice. Avoid vague or duplicate entries.
+
+- **`ports`**: Array of port objects. Each entry must have `port` (number), `protocol` (e.g. `"HTTP"`, `"TCP"`, `"UDP"`), and `label` (human-readable name, e.g. `"Web UI"`). Do NOT use the old `"port"` string format.
+
+  ```json
+  "ports": [
+    { "port": 8080, "protocol": "HTTP", "label": "Web UI" },
+    { "port": 9090, "protocol": "TCP", "label": "Metrics" }
+  ]
+  ```
+
+- **`website`**: Official homepage URL of the app. Used to link out from the app detail page. Must be a valid `https://` URL.
+
+- **`dependencies`**: Array of app IDs that must be running for this app to function (e.g. `["postgresql", "redis"]`). Use an empty array `[]` if there are none. These IDs must match the directory names under `apps/`.
 
 ### Docker Compose Environment Variables
 
