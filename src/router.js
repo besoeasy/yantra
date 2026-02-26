@@ -24,9 +24,19 @@ const router = createRouter({
     },
   
     {
+      path: '/app/:appId',
+      name: 'app-overview',
+      component: () => import(/* webpackChunkName: "app-overview" */ './views/AppOverview.vue')
+    },
+    {
       path: '/containers/:id',
       name: 'container-detail',
       component: () => import(/* webpackChunkName: "container-detail" */ './views/ContainerDetail.vue')
+    },
+    {
+      path: '/stacks/:projectId',
+      name: 'stack-view',
+      component: () => import(/* webpackChunkName: "stack-view" */ './views/StackView.vue')
     },
     {
       path: '/images',

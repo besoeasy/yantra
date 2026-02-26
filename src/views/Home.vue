@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
 import { Store, LayoutGrid, PackageCheck, Container, FolderOpen, Activity } from "lucide-vue-next";
 import { formatDuration } from "../utils/metrics";
 import { useApiUrl } from "../composables/useApiUrl";
@@ -19,7 +18,6 @@ import WatchtowerNextCheckCard from "../components/quick-metrics/WatchtowerNextC
 import HostMetricsCard from "../components/quick-metrics/HostMetricsCard.vue";
 import MinioStatusCard from "../components/quick-metrics/MinioStatusCard.vue";
 
-const router = useRouter();
 const { apiUrl } = useApiUrl();
 const { currentTime } = useCurrentTime();
 
@@ -190,10 +188,6 @@ async function refreshAll() {
   await Promise.all([fetchContainers(), fetchVolumes(), fetchImages()]);
 }
 
-function viewContainerDetail(container) {
-  router.push(`/containers/${container.id}`);
-}
-
 onMounted(async () => {
   loading.value = true;
   await refreshAll();
@@ -340,7 +334,6 @@ onUnmounted(() => {
               :format-uptime="formatUptime"
               :is-temporary="isTemporary"
               :get-expiration-info="getExpirationInfo"
-              @select="viewContainerDetail"
             />
 
             <div v-if="showMetrics">

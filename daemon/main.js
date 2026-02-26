@@ -911,6 +911,89 @@ app.get("/api/containers/:id/stats", asyncHandler(async (req, res) => {
     });
 }));
 
+// GET /api/stacks/:projectId - Get all containers in a compose project (full stack view)
+app.get("/api/stacks/:projectId", asyncHandler(async (req, res) => {
+  const { projectId } = req.params;
+
+  const catalog = await getAppsCatalogCached();
+  const catalogMap = new Map(catalog.apps.map((a) => [a.id, a]));
+
+  // Get ALL containers (running + stopped) in this compose project
+  const allContainers = await docker.listContainers({ all: true });
+  const projectContainers = allContainers.filter(
+    (c) => c.Labels && c.Labels["com.docker.compose.project"] === projectId
+  );
+
+  if (projectContainers.length === 0) {
+    return res.status(404).json({ success: false, error: "Stack not found or no containers" });
+  }
+
+  // Resolve base app ID + catalog info
+  const baseAppId = getBaseAppId(projectId);
+  const catalogEntry = catalogMap.get(baseAppId) || null;
+
+  // Build published ports map: only ports actually exposed to the host
+  const publishedPorts = [];
+  for (const c of projectContainers) {
+    const svcLabel = c.Labels["yantr.service"] || c.Names[0]?.replace("/", "") || "unknown";
+    if (c.Ports) {
+      for (const p of c.Ports) {
+        if (p.PublicPort) {
+          publishedPorts.push({
+            hostPort: p.PublicPort,
+            containerPort: p.PrivatePort,
+            protocol: p.Type,
+            service: svcLabel,
+            ip: p.IP || "0.0.0.0",
+          });
+        }
+      }
+    }
+  }
+  publishedPorts.sort((a, b) => a.hostPort - b.hostPort);
+
+  // Enrich each container
+  const services = projectContainers.map((c) => {
+    const appLabels = parseAppLabels(c.Labels);
+    return {
+      id: c.Id,
+      name: c.Names[0]?.replace("/", "") || "unknown",
+      image: c.Image,
+      state: c.State,
+      status: c.Status,
+      created: c.Created,
+      rawPorts: c.Ports || [],
+      service: c.Labels["yantr.service"] || appLabels.service || c.Names[0]?.replace("/", "") || "unknown",
+      info: c.Labels["yantr.info"] || appLabels.info || "",
+      hasYantrLabel: !!(appLabels.app),
+    };
+  });
+
+  // Sort: yantr-labelled services first, then by name
+  services.sort((a, b) => {
+    if (a.hasYantrLabel !== b.hasYantrLabel) return a.hasYantrLabel ? -1 : 1;
+    return a.service.localeCompare(b.service);
+  });
+
+  res.json({
+    success: true,
+    stack: {
+      projectId,
+      appId: baseAppId,
+      app: catalogEntry ? {
+        name: catalogEntry.name,
+        logo: catalogEntry.logo,
+        tags: catalogEntry.tags,
+        port: catalogEntry.port,
+        short_description: catalogEntry.short_description,
+        website: catalogEntry.website,
+      } : null,
+      publishedPorts,
+      services,
+    },
+  });
+}));
+
 // GET /api/containers/:id/logs - Get logs from a container
 app.get("/api/containers/:id/logs", asyncHandler(async (req, res) => {
   const container = docker.getContainer(req.params.id);

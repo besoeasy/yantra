@@ -35,13 +35,19 @@ const installedAppIds = computed(() => {
 });
 
 const appInstanceCounts = computed(() => {
-  const counts = {};
+  const projectsByApp = {};
   containers.value.forEach((c) => {
     const appId = c?.app?.id;
-    if (appId) {
-      counts[appId] = (counts[appId] || 0) + 1;
+    const projectId = c?.app?.projectId;
+    if (appId && projectId) {
+      if (!projectsByApp[appId]) projectsByApp[appId] = new Set();
+      projectsByApp[appId].add(projectId);
     }
   });
+  const counts = {};
+  for (const [appId, projects] of Object.entries(projectsByApp)) {
+    counts[appId] = projects.size;
+  }
   return counts;
 });
 
