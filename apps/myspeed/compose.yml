@@ -9,12 +9,9 @@ services:
       - "5216"
     restart: unless-stopped
     labels:
-      yantr.name: "MySpeed"
-      yantr.logo: "QmWg4R7p8NKHoF9WWdhPqF2XgdyrB9bHMhGxqWidEiVBEN"
-      yantr.category: "network,tools"
-      yantr.port: "5216 (HTTP - Web UI)"
-      yantr.description: "Speed test analysis software that tracks your internet speed for 30 days"
-      yantr.website: "https://myspeed.dev"
+      yantr.app: "myspeed"
+      yantr.service: "MySpeed"
+      yantr.info: "Speed test analysis software that tracks your internet speed for 30 days"
 
 volumes:
   myspeed_data:

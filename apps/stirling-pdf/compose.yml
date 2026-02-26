@@ -3,12 +3,9 @@ services:
     image: frooodle/s-pdf:latest
     container_name: stirling-pdf
     labels:
-      yantr.name: "Stirling-PDF"
-      yantr.logo: "QmZ6nmAP1oSgpfd4N7oAYNEJrRqgQTPGndZPyN2vwmyjBE"
-      yantr.category: "tools,utility"
-      yantr.port: "8080 (HTTP - Web UI)"
-      yantr.description: "Powerful locally hosted web-based PDF manipulation tool"
-      yantr.website: "https://github.com/Stirling-Tools/Stirling-PDF"
+      yantr.app: "stirling-pdf"
+      yantr.service: "Stirling-PDF"
+      yantr.info: "Powerful locally hosted web-based PDF manipulation tool"
     ports:
       - "8080"
     volumes:

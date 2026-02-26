@@ -1,0 +1,16 @@
+{
+  "name": "Samba",
+  "logo": "QmYNjTj44mLCz5SZrWR9GkWU94bZw7hvqZZuFAwJJcsWU7",
+  "category": [
+    "network",
+    "storage",
+    "utility"
+  ],
+  "tags": [],
+  "port": "445 (SMB - File Sharing)",
+  "short_description": "SMB/CIFS file sharing server for network storage access",
+  "description": "SMB/CIFS file sharing server for network storage access",
+  "usecases": [],
+  "website": "https://github.com/dockur/samba",
+  "dependencies": []
+}

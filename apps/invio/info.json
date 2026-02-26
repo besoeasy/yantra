@@ -1,0 +1,15 @@
+{
+  "name": "Invio",
+  "logo": "QmTxfLAvG4LnESZyVJ6dWMzXqJpaDYyTmKEhLxEux6PAH3",
+  "category": [
+    "productivity",
+    "utility"
+  ],
+  "tags": [],
+  "port": "3000 (HTTP - Web UI)",
+  "short_description": "Self-hosted invoicing without the bloat",
+  "description": "Self-hosted invoicing without the bloat",
+  "usecases": [],
+  "website": "https://github.com/kittendevv/Invio/wiki",
+  "dependencies": []
+}

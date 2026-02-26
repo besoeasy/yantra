@@ -1,0 +1,15 @@
+{
+  "name": "Moltis",
+  "logo": "Qmd7xtrfkc5GfXhxpXsSECPHDYzyyHbu7YYXMzQWZ5sagd",
+  "category": [
+    "ai",
+    "tools"
+  ],
+  "tags": [],
+  "port": "13131 (HTTPS - Web UI)",
+  "short_description": "Self-hosted Moltis server with web UI and Docker access",
+  "description": "Self-hosted Moltis server with web UI and Docker access",
+  "usecases": [],
+  "website": "https://github.com/moltis-org/moltis",
+  "dependencies": []
+}

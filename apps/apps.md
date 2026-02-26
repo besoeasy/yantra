@@ -1,106 +1,122 @@
 teri# What is APP ?
 
-A app is docker container compose.yml that discribes a app.
+A app is docker container compose.yml that describes a app.
 
 ## App Structure
 
-/apps/app-name/compose.yml
+```
+apps/app-name/
+  compose.yml   ← Docker infrastructure only
+  info.json     ← App metadata (authoritative source of truth)
+  readme.md     ← Optional rich docs (setup, tips, env var guide)
+```
 
-where app-name is the application name, rules for names are
+Rules for app-name:
+1. Always lowercase
+2. Only alphabets, numbers and `-` allowed
 
-1. always smallcase
-2. only aplhabets, numbers and "-" is allowed
+---
 
-## Compose.yml Rules
+## info.json
+
+Every app **must** have an `info.json`. This is the single source of truth for all app metadata — used by both the daemon and the website builder.
+
+```json
+{
+  "name": "Bitmagnet",
+  "logo": "QmX2bA23zVjnxGeQgwUfv3XXuascGnnBX33ap7CWWknrXP",
+  "category": ["media", "tools", "utility"],
+  "tags": ["torrent", "indexer", "dht", "search"],
+  "port": "3333 (HTTP - Web UI)",
+  "short_description": "Self-hosted BitTorrent indexer and DHT crawler.",
+  "description": "Bitmagnet is a self-hosted BitTorrent indexer, DHT crawler, content classifier and torrent search engine with web UI, GraphQL API and Servarr stack integration.",
+  "usecases": [
+    "Index and search torrents from the DHT network",
+    "Browse and classify your torrent collection",
+    "Integrate with Sonarr, Radarr and other Servarr apps"
+  ],
+  "website": "https://bitmagnet.io",
+  "dependencies": [],
+  "dependencies": []
+}
+```
+
+### Fields
+
+| Field | Required | Description |
+|---|---|---|
+| `name` | ✅ | Human-readable display name |
+| `logo` | ✅ | IPFS CID for app logo |
+| `category` | ✅ | Array of lowercase categories (max 3) |
+| `tags` | ✅ | Array of lowercase keyword tags for search |
+| `port` | if web UI | e.g. `"3333 (HTTP - Web UI)"` |
+| `short_description` | ✅ | Under 120 chars — shown on app cards |
+| `description` | ✅ | Full paragraph — shown on app detail page |
+| `usecases` | ✅ | Array of use-case bullet points |
+| `website` | ✅ | Homepage or GitHub repo URL |
+| `dependencies` | ✅ | Array of app IDs that must be deployed first |
+
+
+---
+
+## compose.yml Rules
 
 1. **Storage Guidelines**
 
    - Use named Docker volumes exclusively
    - **Never** mount directly to host filesystem paths
-   - This ensures portability and proper isolation
 
 2. **Environment Management**
 
    - Use environment variables with customisable values: `${VAR_NAME:-default_value}`
-   - Avoid asking user for too much customisation, focus on environment vars which are reuired
 
-3. **PORTS MAPPING**
-   - AVOID MApping PORT OURSELVES like "HOST-PORT:CONATINER-PORT", just "CONATINER-PORT" is enough.
+3. **Port Mapping**
+   - AVOID mapping ports ourselves like `HOST-PORT:CONTAINER-PORT`, just `CONTAINER-PORT` is enough
 
 4. **Dependencies & Networking**
 
-   - Each app must be deployable on its own.
-   - Standalone apps (no inter-app communication) need no `networks` block at all.
+   - Each app must be deployable on its own
+   - Standalone apps need no `networks` block
    - For apps that expose a service to dependents, define and own a dedicated network:
      ```yaml
-     # Base app (e.g. ollama/compose.yml)
      networks:
        ollama_network:
          name: ollama_network
      ```
    - For apps that depend on another app, join that network as external:
      ```yaml
-     # Dependent app (e.g. open-webui/compose.yml)
      networks:
        ollama_network:
          name: ollama_network
          external: true
      ```
-   - Resolve dependency endpoints via container name (for example, `http://ollama:11434`).
-   - Use environment variables with sensible defaults to configure dependency endpoints.
-   - Do not use `depends_on` across different apps. Only use it within the same compose.yml if needed.
-   - Use `yantr.dependencies` labels to declare which apps must be deployed first (UI metadata + deploy guard).
+   - Do not use `depends_on` across different apps — only within the same compose.yml
+   - Declare cross-app dependencies in `info.json` under `dependencies`
 
-## Yantr labels
+## Yantr Labels
 
-We use docker labels in compose.yml to tag and work with our docker conatiner.
+Every service in every `compose.yml` **must** have these three labels:
 
-here is the requirements
+```yaml
+labels:
+  yantr.app: "bitmagnet"          # Must match the app folder name exactly
+  yantr.service: "Bitmagnet"      # Display name for this specific container
+  yantr.info: "Main application server — DHT crawler, HTTP and queue workers"
+```
 
-### 1. yantr.name (Required)
+For helper services in a multi-service stack:
 
-- **Purpose**: Human-readable display name
-- **Format**: Proper capitalization with spacing
-- **Examples**:
-  - `"Pi-hole"`
-  - `"Uptime Kuma"`
-  - `"Home Assistant"`
+```yaml
+labels:
+  yantr.app: "bitmagnet"
+  yantr.service: "Bitmagnet Postgres"
+  yantr.info: "PostgreSQL database backend"
+```
 
-### 2. yantr.logo (Required)
+### Label fields
 
-- **Purpose**: App logo for visual identification
-- **Format**: IPFS CID (Content Identifier)
-- **Why IPFS**: Provides reliability and prevents URL-based payloads/tampering
-- **Example**: `"QmYSoiyanJ26mbB4CVZXGNEk1tfGjNaEnf3hBQyhtgA85w"`
-
-### 3. yantr.category (Required)
-
-- **Purpose**: Organizes apps into browsable categories
-- **Format**: Lowercase only, comma-separated for multiple categories
-- **Limit**: Maximum 3 categories per app
-- **Best Practice**: Reuse existing categories when possible; create new ones only when necessary
-- **Examples**:
-  - `"network,security"`
-  - `"tools,utility"`
-  - `"productivity,security,utility"`
-
-### 4. yantr.port (Optional)
-
-- **Purpose**: Defines primary port(s) for the app
-- **When to Include**: Required if the app has a web interface
-- **Format Options**:
-  - Ports with labels: `"8093 (HTTPS - Web UI), 8094 (HTTPS - Admin)"`
-  
-### 5. yantr.description (Required)
-
-- **Purpose**: Brief explanation of app functionality
-- **Length**: Under 120 characters
-- **Content**: Focus on main purpose and key features
-- **Example**: `"Network-wide ad blocking via DNS sinkhole"`
-
-### 6. yantr.website (Required)
-
-- **Purpose**: Link to official resources
-- **Preference Order**:
-  1. Github repository
-  2. Project homepage
+| Label | Required | Description |
+|---|---|---|
+| `yantr.app` | ✅ | App folder name — links container to `info.json` |
+| `yantr.service` | ✅ | Display name for this container in the UI |
+| `yantr.info` | ✅ | One-line description of this container's role |

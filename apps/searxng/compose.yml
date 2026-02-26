@@ -3,12 +3,9 @@ services:
     image: searxng/searxng:latest
     container_name: searxng
     labels:
-      yantr.name: "SearXNG"
-      yantr.logo: "QmRbiaDWHNx6f9MvCpQ3PedjZd7A9szb2NbM9DMCvDvLtH"
-      yantr.category: "tools,security"
-      yantr.port: "8080 (HTTP - Web UI)"
-      yantr.description: "Privacy-focused metasearch engine aggregating results"
-      yantr.website: "https://docs.searxng.org"
+      yantr.app: "searxng"
+      yantr.service: "SearXNG"
+      yantr.info: "Privacy-focused metasearch engine aggregating results"
     ports:
       - "8080"
     volumes:

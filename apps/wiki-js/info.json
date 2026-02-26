@@ -1,0 +1,15 @@
+{
+  "name": "Wiki.js",
+  "logo": "QmdFpskYSKmBYLyBWGSnqronCxH2V3kxSLiDBHmCCWGVRs",
+  "category": [
+    "documentation",
+    "wiki"
+  ],
+  "tags": [],
+  "port": "3000 (HTTP - Web UI)",
+  "short_description": "Modern, lightweight wiki platform for creating and organizing knowledge bases",
+  "description": "Modern, lightweight wiki platform for creating and organizing knowledge bases",
+  "usecases": [],
+  "website": "https://github.com/requarks/wiki",
+  "dependencies": []
+}

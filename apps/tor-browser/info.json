@@ -1,0 +1,15 @@
+{
+  "name": "Tor Browser",
+  "logo": "QmaVTPSKHnzenoUpqydsnNHQ45WJDtRxxjnqzVqK4MiB38",
+  "category": [
+    "privacy",
+    "security"
+  ],
+  "tags": [],
+  "port": "5800 (HTTP - Web UI)",
+  "short_description": "Privacy-focused web browser with Tor network integration",
+  "description": "Privacy-focused web browser with Tor network integration",
+  "usecases": [],
+  "website": "https://github.com/domistyle/docker-tor-browser",
+  "dependencies": []
+}

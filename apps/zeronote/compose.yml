@@ -9,12 +9,9 @@ services:
       - "8000"
     restart: unless-stopped
     labels:
-      yantr.name: "ZeroNote"
-      yantr.logo: "Qmbdks6yn4TrP2hfFZJ1dZPW84kYhrWoXDj4tLBtpWfRiF"
-      yantr.category: "productivity,security"
-      yantr.port: "8000 (HTTP - Web UI)"
-      yantr.description: "Offline-first encrypted notes application."
-      yantr.website: "https://github.com/besoeasy/zeronote"
+      yantr.app: "zeronote"
+      yantr.service: "ZeroNote"
+      yantr.info: "Offline-first encrypted notes application."
 
 volumes:
   zeronote_data:

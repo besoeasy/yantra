@@ -1,0 +1,15 @@
+{
+  "name": "ConvertX",
+  "logo": "QmafozB6D4dw51adzoPyrCwTTCATQv1nbVwZPME6yzDWF7",
+  "category": [
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "3000 (HTTP - Web UI)",
+  "short_description": "Self-hosted file conversion tool supporting multiple formats",
+  "description": "Self-hosted file conversion tool supporting multiple formats",
+  "usecases": [],
+  "website": "https://github.com/C4illin/ConvertX",
+  "dependencies": []
+}

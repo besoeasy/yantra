@@ -1,0 +1,16 @@
+{
+  "name": "Memos",
+  "logo": "QmVYAHxdTDQqw3DDm6YRk6EvgmuWtMDae8Z8LQaCVqYZ2B",
+  "category": [
+    "productivity",
+    "tools",
+    "network"
+  ],
+  "tags": [],
+  "port": "5230 (HTTP - Web UI)",
+  "short_description": "Open-source Markdown notes app, with a UI styled like a social feed.",
+  "description": "Open-source Markdown notes app, with a UI styled like a social feed.",
+  "usecases": [],
+  "website": "https://github.com/usememos/memos",
+  "dependencies": []
+}

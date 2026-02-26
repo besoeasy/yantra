@@ -1,0 +1,15 @@
+{
+  "name": "MinIO",
+  "logo": "QmWgS8CxKS7UYSgNNp6nqsTLYwMF5tk8cQfroTgyvxsbQ7",
+  "category": [
+    "utility",
+    "tools"
+  ],
+  "tags": [],
+  "port": "9001 (HTTP - Console), 9000 (HTTP - API)",
+  "short_description": "High Performance Object Storage compatible with Amazon S3 API",
+  "description": "High Performance Object Storage compatible with Amazon S3 API",
+  "usecases": [],
+  "website": "https://min.io",
+  "dependencies": []
+}

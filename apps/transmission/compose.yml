@@ -14,12 +14,9 @@ services:
       - "51413/udp"
     restart: unless-stopped
     labels:
-      yantr.name: "Transmission"
-      yantr.logo: "QmYNJtjCxWhoKS78Nvjfm7fc9dqA49QiGHUQBryYSmwsdQ"
-      yantr.category: "download,network"
-      yantr.port: "9091 (HTTP - Web Interface)"
-      yantr.description: "Fast, easy BitTorrent client with web interface"
-      yantr.website: "https://transmissionbt.com/"
+      yantr.app: "transmission"
+      yantr.service: "Transmission"
+      yantr.info: "Fast, easy BitTorrent client with web interface"
 
 volumes:
   transmission_config:

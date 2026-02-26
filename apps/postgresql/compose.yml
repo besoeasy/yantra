@@ -3,12 +3,9 @@ services:
     image: postgres:latest
     container_name: postgresql
     labels:
-      yantr.name: "PostgreSQL"
-      yantr.logo: "QmSmV8pEZ4EcmdQPZ9wsBovGFSXBxxgKTpk1H9woR79a6S"
-      yantr.category: "database,storage"
-      yantr.port: "5432 (TCP - Database)"
-      yantr.description: "Powerful open-source relational database with advanced features"
-      yantr.website: "https://github.com/postgres/postgres"
+      yantr.app: "postgresql"
+      yantr.service: "PostgreSQL"
+      yantr.info: "Powerful open-source relational database with advanced features"
     ports:
       - "5432"
     environment:

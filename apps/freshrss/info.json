@@ -1,0 +1,15 @@
+{
+  "name": "FreshRSS",
+  "logo": "QmeS63xjuJXpVGUXP5B78naYoBcrcL7H5ZprF13kLZJUMq",
+  "category": [
+    "feed",
+    "productivity"
+  ],
+  "tags": [],
+  "port": "80 (HTTP - Web UI)",
+  "short_description": "Self-hosted RSS feed aggregator for reading news and updates from multiple sources",
+  "description": "Self-hosted RSS feed aggregator for reading news and updates from multiple sources",
+  "usecases": [],
+  "website": "https://github.com/FreshRSS/FreshRSS",
+  "dependencies": []
+}

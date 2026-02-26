@@ -1,0 +1,16 @@
+{
+  "name": "OpenCode",
+  "logo": "Qma92doZsMdGrS46v8GqXCgvzomrXKZPm3fFgjmwd8k9RA",
+  "category": [
+    "development",
+    "productivity",
+    "ai"
+  ],
+  "tags": [],
+  "port": "4096 (HTTP - Web UI)",
+  "short_description": "Open source AI coding agent for terminal, IDE, and desktop",
+  "description": "Open source AI coding agent for terminal, IDE, and desktop",
+  "usecases": [],
+  "website": "https://github.com/anomalyco/opencode",
+  "dependencies": []
+}

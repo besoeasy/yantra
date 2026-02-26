@@ -1,0 +1,15 @@
+{
+  "name": "Domain Locker",
+  "logo": "QmXCFhWvYYmz21YHP38zFFxsitmvMeZStbjfacg2dKrZnw",
+  "category": [
+    "security",
+    "tools"
+  ],
+  "tags": [],
+  "port": "3000 (HTTP - Web UI)",
+  "short_description": "Complete visibility of your domain portfolio with monitoring and alerts",
+  "description": "Complete visibility of your domain portfolio with monitoring and alerts",
+  "usecases": [],
+  "website": "https://domain-locker.com",
+  "dependencies": []
+}

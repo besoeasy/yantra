@@ -1,0 +1,15 @@
+{
+  "name": "Linkwarden",
+  "logo": "QmXS2iBXkfwvLA2iiVGCxj8sY3j8KKCf2NGz6hCgiuSeQU",
+  "category": [
+    "productivity",
+    "utility"
+  ],
+  "tags": [],
+  "port": "3000 (HTTP - Web UI)",
+  "short_description": "Bookmark preservation tool for individuals and teams with full-text search and archiving",
+  "description": "Bookmark preservation tool for individuals and teams with full-text search and archiving",
+  "usecases": [],
+  "website": "https://github.com/linkwarden/linkwarden",
+  "dependencies": []
+}

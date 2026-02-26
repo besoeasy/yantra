@@ -3,12 +3,9 @@ services:
     image: codeberg.org/highghlow/just-download:v1.0.9
     container_name: just-download
     labels:
-      yantr.name: "Just. Download."
-      yantr.logo: "Qmc9ChgqKxSUXJ37gC8ndutwEmzCic4QQrgTaxPCffuV6V"
-      yantr.category: "media"
-      yantr.port: "5000 (HTTP - Web UI)"
-      yantr.description: "Simple torrent downloader that bridges Torznab indexers with Transmission"
-      yantr.website: "https://codeberg.org/highghlow/just-download"
+      yantr.app: "just-download"
+      yantr.service: "Just. Download."
+      yantr.info: "Simple torrent downloader that bridges Torznab indexers with Transmission"
     ports:
       - "5000"
     volumes:

@@ -1,0 +1,15 @@
+{
+  "name": "YoutubeDL Material",
+  "logo": "QmVgdMmZ1Ms2EskZfwc8VTfS1nXB2D3EW4PsJLKCDg4zFM",
+  "category": [
+    "media",
+    "downloader"
+  ],
+  "tags": [],
+  "port": "17442 (HTTP - Web UI)",
+  "short_description": "Web UI for youtube-dl with subscription support and organization features",
+  "description": "Web UI for youtube-dl with subscription support and organization features",
+  "usecases": [],
+  "website": "https://github.com/Tzahi12345/YoutubeDL-Material",
+  "dependencies": []
+}

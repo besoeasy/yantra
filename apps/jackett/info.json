@@ -1,0 +1,16 @@
+{
+  "name": "Jackett",
+  "logo": "QmQs2oSE9ccQrueSFPw6ZPXCVHk2rFuT54HUyZAApSoqDJ",
+  "category": [
+    "media",
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "9117 (HTTP - Web UI)",
+  "short_description": "API proxy for torrent trackers with Sonarr/Radarr support.",
+  "description": "API proxy for torrent trackers with Sonarr/Radarr support.",
+  "usecases": [],
+  "website": "https://github.com/Jackett/Jackett",
+  "dependencies": []
+}

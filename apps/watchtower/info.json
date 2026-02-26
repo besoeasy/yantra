@@ -1,0 +1,15 @@
+{
+  "name": "Watchtower",
+  "logo": "QmXGn6c1UzVGBQmuxcikBush4KYdM2KASxggR8Z7rH7kw4",
+  "category": [
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "",
+  "short_description": "Automatically update running Docker containers",
+  "description": "Automatically update running Docker containers",
+  "usecases": [],
+  "website": "https://containrrr.dev/watchtower",
+  "dependencies": []
+}

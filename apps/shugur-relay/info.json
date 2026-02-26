@@ -1,0 +1,15 @@
+{
+  "name": "Shugur Relay",
+  "logo": "QmNR4kyKJs3sZwdRJZ47z5feUWn6S8aJw31wzZrXK2fVcD",
+  "category": [
+    "network",
+    "social"
+  ],
+  "tags": [],
+  "port": "8080 (HTTP - Relay)",
+  "short_description": "High-performance nostr relay with distributed database",
+  "description": "High-performance nostr relay with distributed database",
+  "usecases": [],
+  "website": "https://github.com/Shugur-Network/relay",
+  "dependencies": []
+}

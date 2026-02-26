@@ -3,12 +3,9 @@ services:
     image: itzcrazykns1337/perplexica:v1.11.2
     container_name: perplexica
     labels:
-      yantr.name: "Perplexica"
-      yantr.logo: "QmXkTfV5b7aUepUyRLpo9C26P34LWrRyNcQTewFSZjezYc"
-      yantr.category: "ai"
-      yantr.port: "3000 (HTTP - Web UI)"
-      yantr.description: "AI-powered search engine that delivers conversational responses with contextual understanding"
-      yantr.website: "https://github.com/ItzCrazyKns/Perplexica"
+      yantr.app: "perplexica"
+      yantr.service: "Perplexica"
+      yantr.info: "AI-powered search engine that delivers conversational responses with contextual understanding"
     ports:
       - "3000"
     volumes:

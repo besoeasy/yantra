@@ -1,0 +1,15 @@
+{
+  "name": "Deluge",
+  "logo": "QmRrKHf3JqMSib9iUfHGrNB6ViXpJmEEoNyJtkr1PB3E33",
+  "category": [
+    "download",
+    "utility"
+  ],
+  "tags": [],
+  "port": "8112 (HTTP - Web UI)",
+  "short_description": "Lightweight BitTorrent client with web interface",
+  "description": "Lightweight BitTorrent client with web interface",
+  "usecases": [],
+  "website": "https://deluge-torrent.org/",
+  "dependencies": []
+}

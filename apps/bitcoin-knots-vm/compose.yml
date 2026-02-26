@@ -14,12 +14,9 @@ services:
       - "8333"
     restart: unless-stopped
     labels:
-      yantr.name: "Bitcoin Knots VM"
-      yantr.logo: "QmagcjChBhrPKmd1S2XyQw9dCddbWn7izbtNR4gscbA1kQ"
-      yantr.category: "cryptocurrency"
-      yantr.port: "3000 (HTTP - Web UI), 3001 (HTTPS - Web UI)"
-      yantr.description: "Bitcoin full node with enhanced features and privacy focus."
-      yantr.website: "https://bitcoinknots.org"
+      yantr.app: "bitcoin-knots-vm"
+      yantr.service: "Bitcoin Knots VM"
+      yantr.info: "Bitcoin full node with enhanced features and privacy focus."
 
 volumes:
   bitcoin_knots_vm_config:

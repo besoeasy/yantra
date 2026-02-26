@@ -3,12 +3,9 @@ services:
     image: ghcr.io/c4illin/convertx:latest
     container_name: convertx
     labels:
-      yantr.name: "ConvertX"
-      yantr.logo: "QmafozB6D4dw51adzoPyrCwTTCATQv1nbVwZPME6yzDWF7"
-      yantr.category: "tools,utility"
-      yantr.port: "3000 (HTTP - Web UI)"
-      yantr.description: "Self-hosted file conversion tool supporting multiple formats"
-      yantr.website: "https://github.com/C4illin/ConvertX"
+      yantr.app: "convertx"
+      yantr.service: "ConvertX"
+      yantr.info: "Self-hosted file conversion tool supporting multiple formats"
     ports:
       - "3000"
     restart: unless-stopped

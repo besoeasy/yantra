@@ -1,0 +1,15 @@
+{
+  "name": "Fireshare",
+  "logo": "QmZ31p6GWvGNm2mJTmVyCUr68PAJoax6mCVfgw4DEHbTQk",
+  "category": [
+    "media",
+    "file-sharing"
+  ],
+  "tags": [],
+  "port": "80 (HTTP - Web UI)",
+  "short_description": "Self-hosted video sharing platform with seamless streaming and organization",
+  "description": "Self-hosted video sharing platform with seamless streaming and organization",
+  "usecases": [],
+  "website": "https://github.com/ShaneIsrael/fireshare",
+  "dependencies": []
+}

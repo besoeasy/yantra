@@ -247,12 +247,6 @@ function normalizeUiBasePath(value) {
   return withLeadingSlash.replace(/\/+$/, "");
 }
 
-function parseDependenciesFromContent(composeContent) {
-  const match = composeContent.match(/yantr\.dependencies:\s*["'](.+?)["']/);
-  if (!match) return [];
-  return match[1].split(",").map((dep) => dep.trim()).filter(Boolean);
-}
-
 async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) {
   const cacheIsValid = appsCatalogCache.value && appsCatalogCache.expiresAt > nowMs();
   if (!forceRefresh && cacheIsValid) {
@@ -274,32 +268,27 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
 
       const appPath = path.join(appsDir, entry.name);
       const composePath = path.join(appPath, "compose.yml");
+      const infoPath = path.join(appPath, "info.json");
 
       try {
-        // Check if compose.yml exists
+        // Both compose.yml and info.json must exist
         try {
           await access(composePath);
+          await access(infoPath);
         } catch {
-          continue; // File doesn't exist, skip
+          continue;
         }
+
+        // Read app metadata from info.json
+        const infoRaw = await readFile(infoPath, "utf-8");
+        const info = JSON.parse(infoRaw);
+
+        if (!info.name) continue; // Skip if no name
 
         const composeContent = await readFile(composePath, "utf-8");
-        const labels = {};
-
-        // Format 1: yantr.name: "value"
-        const labelRegex = /yantr\.([\w-]+):\s*["'](.+?)["']/g;
         let match;
-        while ((match = labelRegex.exec(composeContent)) !== null) {
-          labels[match[1]] = match[2];
-        }
 
-        // Format 2: - "yantr.name=value"
-        const arrayLabelRegex = /-\s*["']yantr\.([\w-]+)=(.+?)["']/g;
-        while ((match = arrayLabelRegex.exec(composeContent)) !== null) {
-          labels[match[1]] = match[2];
-        }
-
-        // Extract environment variables
+        // Extract environment variables from compose.yml
         const envVars = [];
 
         // Format 1: List format - VAR=${VAR:-default}
@@ -315,7 +304,6 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
         // Format 2: Key-value format - VAR: ${VAR:-default}
         const envKeyValueRegex = /^\s+([A-Z_][A-Z0-9_]*):\s*\$\{([A-Z_][A-Z0-9_]*):?-?([^}]*)\}/gm;
         while ((match = envKeyValueRegex.exec(composeContent)) !== null) {
-          // Avoid duplicates if already captured by list format
           const existingVar = envVars.find(v => v.envVar === match[2]);
           if (!existingVar) {
             envVars.push({
@@ -326,7 +314,7 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
           }
         }
 
-        // Extract port mappings
+        // Extract port mappings from compose.yml
         const portMappings = [];
 
         // Match fixed port mappings: - "8080:80", "53:53/tcp", "53:53/udp"
@@ -354,12 +342,12 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
           }
         }
 
-        // Parse yantr.port to identify named ports
+        // Parse info.port to identify named ports
         const namedPorts = new Set();
-        if (labels.port) {
+        if (info.port) {
           const portDescRegex = /(\d+)\s*\(([^-\)]+)\s*-\s*([^)]+)\)/g;
           let portMatch;
-          while ((portMatch = portDescRegex.exec(labels.port)) !== null) {
+          while ((portMatch = portDescRegex.exec(info.port)) !== null) {
             namedPorts.add(portMatch[1]);
           }
         }
@@ -368,32 +356,32 @@ async function getAppsCatalogCached({ forceRefresh } = { forceRefresh: false }) 
           port.isNamed = namedPorts.has(port.hostPort);
         });
 
-        const dependencies = labels.dependencies
-          ? labels.dependencies.split(",").map((dep) => dep.trim()).filter(Boolean)
-          : [];
+        const logoRaw = info.logo || null;
+        const logoUrl = logoRaw
+          ? logoRaw.includes("://")
+            ? logoRaw
+            : `https://ipfs.io/ipfs/${logoRaw}`
+          : "https://ipfs.io/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i";
 
         apps.push({
           id: entry.name,
-          name: labels.name || entry.name,
-          logo: labels.logo
-            ? labels.logo.includes("://")
-              ? labels.logo
-              : `https://ipfs.io/ipfs/${labels.logo}`
-            : "https://ipfs.io/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i",
-          category: labels.category || "uncategorized",
-          port: labels.port || null,
-          description: labels.description || "",
-
-          website: labels.website || null,
-          docs: labels.docs || null,
-          dependencies: dependencies,
+          name: info.name,
+          logo: logoUrl,
+          category: Array.isArray(info.category) ? info.category.join(",") : (info.category || "uncategorized"),
+          tags: Array.isArray(info.tags) ? info.tags : [],
+          port: info.port || null,
+          short_description: info.short_description || "",
+          description: info.description || info.short_description || "",
+          usecases: Array.isArray(info.usecases) ? info.usecases : [],
+          website: info.website || null,
+          dependencies: Array.isArray(info.dependencies) ? info.dependencies : [],
           path: appPath,
           composePath: composePath,
           environment: envVars,
           ports: portMappings,
         });
       } catch (err) {
-        // Skip apps with missing/unreadable compose.yml
+        // Skip apps with missing/unreadable files
       }
     }
 
@@ -627,21 +615,18 @@ if (process.env.NODE_ENV === "production") {
   log("info", `🧭 UI virtual root: ${uiBasePath}`);
 }
 
-// Helper function to parse app labels
+// Helper function to parse yantr service identity labels from a container
 function parseAppLabels(labels) {
   const appLabels = {};
 
-  // Safety check for labels
   if (!labels || typeof labels !== "object") {
     return appLabels;
   }
 
-  for (const [key, value] of Object.entries(labels)) {
-    if (key.startsWith("yantr.")) {
-      const labelName = key.replace("yantr.", "");
-      appLabels[labelName] = value;
-    }
-  }
+  // Only read the three service-identity labels
+  if (labels["yantr.app"])     appLabels.app     = labels["yantr.app"];
+  if (labels["yantr.service"]) appLabels.service = labels["yantr.service"];
+  if (labels["yantr.info"])    appLabels.info    = labels["yantr.info"];
 
   return appLabels;
 }
@@ -696,6 +681,10 @@ app.get("/api/logs", (req, res) => {
 app.get("/api/containers", asyncHandler(async (req, res) => {
   const containers = await docker.listContainers({ all: true });
 
+  // Load app catalog once for metadata cross-reference
+  const catalog = await getAppsCatalogCached();
+  const catalogMap = new Map(catalog.apps.map((a) => [a.id, a]));
+
     const formattedContainers = await mapWithConcurrency(containers, 8, async (container) => {
       const appLabels = parseAppLabels(container.Labels);
       const composeProject = container.Labels["com.docker.compose.project"];
@@ -711,6 +700,10 @@ app.get("/api/containers", asyncHandler(async (req, res) => {
       // Extract base app ID from compose project (remove -2, -3 suffix for instances)
       const baseAppId = getBaseAppId(composeProject) || container.Names[0]?.replace("/", "") || "unknown";
 
+      // Look up app metadata from info.json via catalog
+      const appId = appLabels.app || baseAppId;
+      const catalogEntry = catalogMap.get(appId) || null;
+
       return {
         id: container.Id,
         name: container.Names[0]?.replace("/", "") || "unknown",
@@ -720,39 +713,42 @@ app.get("/api/containers", asyncHandler(async (req, res) => {
         status: container.Status,
         created: container.Created,
         ports: container.Ports,
-        labels: container.Labels, // Keep original labels for filtering
+        labels: container.Labels,
         appLabels: appLabels,
         env: envVars,
-        // Add computed fields for easier UI access
         app: {
-          id: baseAppId, // Base app ID without instance suffix
-          projectId: composeProject || container.Names[0]?.replace("/", "") || "unknown", // Full project ID with instance suffix
-          name: appLabels.name || container.Names[0]?.replace("/", "") || "unknown",
-          logo: appLabels.logo ? (appLabels.logo.includes("://") ? appLabels.logo : `https://ipfs.io/ipfs/${appLabels.logo}`) : null,
-          category: appLabels.category || "uncategorized",
-          port: appLabels.port || null,
-          description: appLabels.description || "",
-          docs: appLabels.docs || null,
-          website: appLabels.website || null,
+          id: appId,
+          projectId: composeProject || container.Names[0]?.replace("/", "") || "unknown",
+          // Service-level identity (from container labels)
+          service: appLabels.service || container.Names[0]?.replace("/", "") || "unknown",
+          info: appLabels.info || "",
+          // App-level metadata (from info.json via catalog)
+          name: catalogEntry?.name || appLabels.service || container.Names[0]?.replace("/", "") || "unknown",
+          logo: catalogEntry?.logo || null,
+          category: catalogEntry?.category || "uncategorized",
+          tags: catalogEntry?.tags || [],
+          port: catalogEntry?.port || null,
+          short_description: catalogEntry?.short_description || "",
+          description: catalogEntry?.description || "",
+          usecases: catalogEntry?.usecases || [],
+          website: catalogEntry?.website || null,
         },
       };
     });
 
-    // Filter out auxiliary containers (sidecars)
-    // Identify stacks that have at least one explicit Yantr app
+    // Show container IF:
+    // 1. It has a yantr.app label (explicitly managed by yantr)
+    // 2. OR it does NOT belong to a compose project that has any yantr-managed container
     const yantrProjects = new Set();
     formattedContainers.forEach((c) => {
       const project = c.labels ? c.labels["com.docker.compose.project"] : null;
-      if (c.appLabels && c.appLabels.name && project) {
+      if (c.appLabels && c.appLabels.app && project) {
         yantrProjects.add(project);
       }
     });
 
-    // Filter: Show container IF:
-    // 1. It has a visible Yantr name label
-    // 2. OR it does NOT belong to a project that has a Yantr app (unmanaged/external containers)
     const filteredContainers = formattedContainers.filter((c) => {
-      const hasYantrLabel = !!(c.appLabels && c.appLabels.name);
+      const hasYantrLabel = !!(c.appLabels && c.appLabels.app);
       const project = c.labels ? c.labels["com.docker.compose.project"] : null;
       const isPartOfYantrStack = project && yantrProjects.has(project);
 
@@ -997,8 +993,15 @@ app.get("/api/apps/:id/dependency-env", asyncHandler(async (req, res) => {
     throw new NotFoundError(`App '${appId}' not found or has no compose.yml`);
   }
 
-  // Extract dependencies from compose file
-  const dependencies = parseDependenciesFromContent(composeContent);
+  // Read dependencies from info.json
+  let dependencies = [];
+  try {
+    const infoRaw = await readFile(path.join(appPath, "info.json"), "utf-8");
+    const info = JSON.parse(infoRaw);
+    dependencies = Array.isArray(info.dependencies) ? info.dependencies : [];
+  } catch {
+    // No info.json or no dependencies field
+  }
   if (dependencies.length === 0) {
     return res.json({
       success: true,
@@ -1156,8 +1159,15 @@ app.post("/api/deploy", async (req, res) => {
       }
     }
 
-    // Check dependencies
-    const deployDeps = parseDependenciesFromContent(composeContent);
+    // Check dependencies from info.json
+    let deployDeps = [];
+    try {
+      const infoRaw = await readFile(path.join(appPath, "info.json"), "utf-8");
+      const infoData = JSON.parse(infoRaw);
+      deployDeps = Array.isArray(infoData.dependencies) ? infoData.dependencies : [];
+    } catch {
+      // No info.json or no dependencies
+    }
     let dependencyWarnings = null;
     if (deployDeps.length > 0) {
       const dependencies = deployDeps;

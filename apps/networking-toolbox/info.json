@@ -1,0 +1,15 @@
+{
+  "name": "Networking Toolbox",
+  "logo": "QmaU7tznY63wTMNNPtCQQbPBT4PNbPYFT9iq8utHwhfF47",
+  "category": [
+    "network",
+    "tools"
+  ],
+  "tags": [],
+  "port": "3000 (HTTP - Web UI)",
+  "short_description": "100+ offline-first networking tools and utilities",
+  "description": "100+ offline-first networking tools and utilities",
+  "usecases": [],
+  "website": "https://networking-toolbox.as93.net",
+  "dependencies": []
+}

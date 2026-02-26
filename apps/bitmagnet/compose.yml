@@ -28,12 +28,9 @@ services:
       postgres:
         condition: service_healthy
     labels:
-      yantr.name: "Bitmagnet"
-      yantr.logo: "QmX2bA23zVjnxGeQgwUfv3XXuascGnnBX33ap7CWWknrXP"
-      yantr.category: "media,tools,utility"
-      yantr.port: "3333 (HTTP - Web UI)"
-      yantr.description: "Self-hosted BitTorrent indexer, DHT crawler, and torrent client."
-      yantr.website: "https://bitmagnet.io"
+      yantr.app: "bitmagnet"
+      yantr.service: "Bitmagnet"
+      yantr.info: "Self-hosted BitTorrent indexer, DHT crawler, and torrent client."
 
   postgres:
     image: postgres:16-alpine
@@ -51,6 +48,10 @@ services:
       start_period: 20s
       interval: 10s
 
+    labels:
+      yantr.app: "bitmagnet"
+      yantr.service: "Postgres"
+      yantr.info: "PostgreSQL database for Bitmagnet"
 volumes:
   bitmagnet_config:
   bitmagnet_db:

@@ -1,0 +1,15 @@
+{
+  "name": "LibReddit",
+  "logo": "QmTieAKkWAmA12gchbEJiBGZZK64hsuKQYRtSbibJ9qWxF",
+  "category": [
+    "social",
+    "privacy"
+  ],
+  "tags": [],
+  "port": "7420 (HTTP - Web UI)",
+  "short_description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking",
+  "description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking",
+  "usecases": [],
+  "website": "https://github.com/spikecodes/libreddit",
+  "dependencies": []
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Scality S3",
+  "logo": "QmSoQJKaWvrk9pff9x5EfxcG9QkRnGfCrkcSuGw2u8g7XJ",
+  "category": [
+    "storage",
+    "s3"
+  ],
+  "tags": [],
+  "port": "8000 (HTTP - S3 API)",
+  "short_description": "S3-compatible object storage server for self-hosted cloud storage",
+  "description": "S3-compatible object storage server for self-hosted cloud storage",
+  "usecases": [],
+  "website": "https://www.zenko.io/cloudserver/",
+  "dependencies": []
+}

@@ -3,12 +3,9 @@ services:
     image: ghcr.io/linkwarden/linkwarden:v2.13.5
     container_name: linkwarden
     labels:
-      yantr.name: "Linkwarden"
-      yantr.logo: "QmXS2iBXkfwvLA2iiVGCxj8sY3j8KKCf2NGz6hCgiuSeQU"
-      yantr.category: "productivity,utility"
-      yantr.port: "3000 (HTTP - Web UI)"
-      yantr.description: "Bookmark preservation tool for individuals and teams with full-text search and archiving"
-      yantr.website: "https://github.com/linkwarden/linkwarden"
+      yantr.app: "linkwarden"
+      yantr.service: "Linkwarden"
+      yantr.info: "Bookmark preservation tool for individuals and teams with full-text search and archiving"
     ports:
       - "3000"
     environment:
@@ -35,6 +32,10 @@ services:
       retries: 5
     restart: unless-stopped
 
+    labels:
+      yantr.app: "linkwarden"
+      yantr.service: "Linkwarden Db"
+      yantr.info: "Linkwarden Db service for Linkwarden"
 volumes:
   linkwarden_data:
   linkwarden_db:

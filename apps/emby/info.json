@@ -1,0 +1,15 @@
+{
+  "name": "Emby",
+  "logo": "QmQW3NWmVuq3Q76pibyTu2XAkzLfWVKCeSKNcywmNwXGUV",
+  "category": [
+    "media",
+    "entertainment"
+  ],
+  "tags": [],
+  "port": "8096 (HTTP - Web UI)",
+  "short_description": "Media server for streaming video, music, live TV, and photos",
+  "description": "Media server for streaming video, music, live TV, and photos",
+  "usecases": [],
+  "website": "https://emby.media/",
+  "dependencies": []
+}

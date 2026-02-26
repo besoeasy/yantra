@@ -1,0 +1,15 @@
+{
+  "name": "Ubuntu SSH",
+  "logo": "QmWR3wxj9BFZquxyvmqUa3H94BVFUzgWzeHoaRB3515SZJ",
+  "category": [
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "22 (SSH)",
+  "short_description": "Ubuntu Linux container with OpenSSH server \u2014 connect via SSH as root using a configurable password",
+  "description": "Ubuntu Linux container with OpenSSH server \u2014 connect via SSH as root using a configurable password",
+  "usecases": [],
+  "website": "https://hub.docker.com/_/ubuntu",
+  "dependencies": []
+}

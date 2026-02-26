@@ -1,0 +1,16 @@
+{
+  "name": "Monero Node",
+  "logo": "QmarnKCoBY8ZQRnK319Sv9QDdKrUKfnpYteZ71XiswoP8y",
+  "category": [
+    "cryptocurrency",
+    "blockchain",
+    "network"
+  ],
+  "tags": [],
+  "port": "18089 (TCP - Restricted RPC), 18080 (TCP - P2P)",
+  "short_description": "Pruned Monero full node with restricted RPC for wallets and apps",
+  "description": "Pruned Monero full node with restricted RPC for wallets and apps",
+  "usecases": [],
+  "website": "https://github.com/sethforprivacy/simple-monerod",
+  "dependencies": []
+}

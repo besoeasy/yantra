@@ -3,12 +3,9 @@ services:
     image: ghcr.io/maybe-finance/maybe:0.6.0
     container_name: maybe
     labels:
-      yantr.name: "Maybe"
-      yantr.logo: "QmcZLRLn3cHum9YMRhHv3355rVDgVVgQkioRm29x8YRX9q"
-      yantr.category: "finance,productivity"
-      yantr.port: "3063 (HTTP - Web UI)"
-      yantr.description: "Open-source personal finance OS for managing accounts, investments, and transactions"
-      yantr.website: "https://github.com/maybe-finance/maybe"
+      yantr.app: "maybe"
+      yantr.service: "Maybe"
+      yantr.info: "Open-source personal finance OS for managing accounts, investments, and transactions"
     ports:
       - "3063"
     volumes:
@@ -51,6 +48,10 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+    labels:
+      yantr.app: "maybe"
+      yantr.service: "Maybe Worker"
+      yantr.info: "Background worker for Maybe"
   maybe-db:
     image: postgres:16
     container_name: maybe-db
@@ -68,6 +69,10 @@ services:
       retries: 5
     restart: unless-stopped
 
+    labels:
+      yantr.app: "maybe"
+      yantr.service: "Maybe Db"
+      yantr.info: "Maybe Db service for Maybe"
   maybe-redis:
     image: redis:7.4.2
     container_name: maybe-redis
@@ -81,6 +86,10 @@ services:
       retries: 5
     restart: unless-stopped
 
+    labels:
+      yantr.app: "maybe"
+      yantr.service: "Maybe Redis"
+      yantr.info: "Redis cache for Maybe"
 volumes:
   maybe_storage:
   maybe_db:

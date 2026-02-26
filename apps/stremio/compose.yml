@@ -12,12 +12,9 @@ services:
       NO_CORS: 1
       HTTPS: 1
     labels:
-      yantr.name: "Stremio"
-      yantr.logo: "QmUJ8LsjmfsZdPybvXWkAJsEJYadr8D6L1iqXvgtC48hfX"
-      yantr.category: "media,streaming"
-      yantr.port: "11470 (HTTP - Server), 12470 (HTTPS - Server)"
-      yantr.description: "Media center application for streaming movies, TV shows, and video content"
-      yantr.website: "https://github.com/Stremio/stremio-web"
+      yantr.app: "stremio"
+      yantr.service: "Stremio"
+      yantr.info: "Media center application for streaming movies, TV shows, and video content"
 
 volumes:
   stremio-data:

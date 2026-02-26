@@ -3,12 +3,9 @@ services:
     image: mariadb:latest
     container_name: mariadb
     labels:
-      yantr.name: "MariaDB"
-      yantr.logo: "Qmegk86ebzbktv7YWCMnVrueBpfpZHm9wktuUSdQBHvHQx"
-      yantr.category: "database,storage"
-      yantr.port: "3306 (TCP - Database)"
-      yantr.description: "Open-source relational database compatible with MySQL"
-      yantr.website: "https://github.com/MariaDB/server"
+      yantr.app: "mariadb"
+      yantr.service: "MariaDB"
+      yantr.info: "Open-source relational database compatible with MySQL"
     ports:
       - "3306"
     environment:

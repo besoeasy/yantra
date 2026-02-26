@@ -3,12 +3,9 @@ services:
     image: jhumanj/opnform:latest
     container_name: opnform
     labels:
-      yantr.name: "OpnForm"
-      yantr.logo: "QmSmhDZydYp9xYPVCs19mvom1nMB7Cy7wrZxdtEXgbQtRT"
-      yantr.category: "productivity,forms"
-      yantr.port: "80 (HTTP - Web UI)"
-      yantr.description: "Open source form builder with advanced customization and workflow options"
-      yantr.website: "https://github.com/JhumanJ/opnform"
+      yantr.app: "opnform"
+      yantr.service: "OpnForm"
+      yantr.info: "Open source form builder with advanced customization and workflow options"
     ports:
       - "80"
     volumes:

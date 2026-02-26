@@ -1,0 +1,15 @@
+{
+  "name": "Dashmachine",
+  "logo": "QmTvbLNZMCyEQmcFBbY7EkKq9hnJTPy8ut4hAYRH3Xxaiw",
+  "category": [
+    "dashboard",
+    "organization"
+  ],
+  "tags": [],
+  "port": "5000 (HTTP - Web UI)",
+  "short_description": "Customizable personal dashboard for organizing links and services",
+  "description": "Customizable personal dashboard for organizing links and services",
+  "usecases": [],
+  "website": "https://github.com/rmountjoy92/dashmachine",
+  "dependencies": []
+}

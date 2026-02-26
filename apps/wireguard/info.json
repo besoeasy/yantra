@@ -1,0 +1,15 @@
+{
+  "name": "WireGuard",
+  "logo": "QmYvWBezgveN9KZARJeAczC6p8mUMsYAwLyV8NKRNHKNCi",
+  "category": [
+    "network",
+    "security"
+  ],
+  "tags": [],
+  "port": "51821 (HTTP - Admin Panel)",
+  "short_description": "Fast, modern VPN with state-of-the-art cryptography",
+  "description": "Fast, modern VPN with state-of-the-art cryptography",
+  "usecases": [],
+  "website": "https://www.wireguard.com",
+  "dependencies": []
+}

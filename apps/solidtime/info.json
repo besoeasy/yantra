@@ -1,0 +1,15 @@
+{
+  "name": "Solidtime",
+  "logo": "QmQD7h1kicXUF4aQBtzwg6aYqZiDKUofxRtusbRCNUMgw6",
+  "category": [
+    "productivity",
+    "time-tracking"
+  ],
+  "tags": [],
+  "port": "8000 (HTTP - Web UI)",
+  "short_description": "A simple, secure, and private time tracking app with detailed reports and CSV export",
+  "description": "A simple, secure, and private time tracking app with detailed reports and CSV export",
+  "usecases": [],
+  "website": "https://www.solidtime.io/",
+  "dependencies": []
+}

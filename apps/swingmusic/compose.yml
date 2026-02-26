@@ -9,12 +9,9 @@ services:
       - "1970"
     restart: unless-stopped
     labels:
-      yantr.name: "SwingMusic"
-      yantr.logo: "QmVWKyW9G8C4zxCDMMutg7eSNuugdAzUUNwzhbvjkv6j1o"
-      yantr.category: "media,entertainment"
-      yantr.port: "1970 (HTTP - Web UI)"
-      yantr.description: "Beautiful music player with a modern web interface"
-      yantr.website: "https://swingmusic.vercel.app/"
+      yantr.app: "swingmusic"
+      yantr.service: "SwingMusic"
+      yantr.info: "Beautiful music player with a modern web interface"
 
 volumes:
   swingmusic-music:

@@ -3,12 +3,9 @@ services:
     image: linuxserver/duplicati:latest
     container_name: duplicati
     labels:
-      yantr.name: "Duplicati"
-      yantr.logo: "QmX52qWfGH9q5mPvjT3mfmf6ag6BUW8fGwGX1WrbPxfqn8"
-      yantr.category: "tools,security,utility"
-      yantr.port: "8200 (HTTP - Web UI)"
-      yantr.description: "Free backup software for encrypted, incremental backups"
-      yantr.website: "https://www.duplicati.com"
+      yantr.app: "duplicati"
+      yantr.service: "Duplicati"
+      yantr.info: "Free backup software for encrypted, incremental backups"
     ports:
       - "8200"
     volumes:

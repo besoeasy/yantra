@@ -1,0 +1,15 @@
+{
+  "name": "PostgreSQL",
+  "logo": "QmSmV8pEZ4EcmdQPZ9wsBovGFSXBxxgKTpk1H9woR79a6S",
+  "category": [
+    "database",
+    "storage"
+  ],
+  "tags": [],
+  "port": "5432 (TCP - Database)",
+  "short_description": "Powerful open-source relational database with advanced features",
+  "description": "Powerful open-source relational database with advanced features",
+  "usecases": [],
+  "website": "https://github.com/postgres/postgres",
+  "dependencies": []
+}

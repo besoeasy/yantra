@@ -1,0 +1,15 @@
+{
+  "name": "Alpine SSH",
+  "logo": "QmYW5zA5rxGpjiNFD1g7bcBaQbALAntkwLX2hruaoR82rj",
+  "category": [
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "22 (SSH)",
+  "short_description": "Lightweight Alpine Linux container with OpenSSH server \u2014 connect via SSH as root using a configurable password",
+  "description": "Lightweight Alpine Linux container with OpenSSH server \u2014 connect via SSH as root using a configurable password",
+  "usecases": [],
+  "website": "https://hub.docker.com/_/alpine",
+  "dependencies": []
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Traggo",
+  "logo": "QmTiS72Uz3JSJUmXTcx9GmPUnfABX5jFVEn2rMBCYzhhMj",
+  "category": [
+    "productivity",
+    "time-tracking"
+  ],
+  "tags": [],
+  "port": "3030 (HTTP - Web UI)",
+  "short_description": "Simple and lightweight time tracking application for personal productivity",
+  "description": "Simple and lightweight time tracking application for personal productivity",
+  "usecases": [],
+  "website": "https://github.com/traggo/server",
+  "dependencies": []
+}

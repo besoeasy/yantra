@@ -11,12 +11,9 @@ services:
     volumes:
       - zeroclaw_data:/data
     labels:
-      yantr.name: "ZeroClaw"
-      yantr.logo: "Qmex7mP7CtY1uo7a2erXmuNrvQdY6aw5FTQtxpJjAbiu8v"
-      yantr.category: "ai,tools,utility"
-      yantr.port: "3000 (HTTP - Gateway API)"
-      yantr.description: "Autonomous Rust AI assistant runtime with pluggable providers and secure local gateway"
-      yantr.website: "https://github.com/theonlyhennygod/zeroclaw"
+      yantr.app: "zeroclaw"
+      yantr.service: "ZeroClaw"
+      yantr.info: "Autonomous Rust AI assistant runtime with pluggable providers and secure local gateway"
 
 volumes:
   zeroclaw_data:

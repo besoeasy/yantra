@@ -3,12 +3,9 @@ services:
     image: louislam/uptime-kuma:latest
     container_name: uptime-kuma
     labels:
-      yantr.name: "Uptime Kuma"
-      yantr.logo: "Qmb7LeUwFtcWpkpbiyzEPYPecX8iXNZMtvjag9WyrCDmLV"
-      yantr.category: "tools,network"
-      yantr.port: "3001 (HTTP - Web UI)"
-      yantr.description: "Self-hosted uptime monitoring tool"
-      yantr.website: "https://github.com/louislam/uptime-kuma/wiki"
+      yantr.app: "uptime-kuma"
+      yantr.service: "Uptime Kuma"
+      yantr.info: "Self-hosted uptime monitoring tool"
     ports:
       - "3001"
     volumes:

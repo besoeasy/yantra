@@ -1,0 +1,15 @@
+{
+  "name": "UrlWatch",
+  "logo": "QmWkNcdYSyueiheQwyHXyjkXrxcGdKLcYGBbcECLiJ6c3W",
+  "category": [
+    "utility",
+    "monitoring"
+  ],
+  "tags": [],
+  "port": "8081 (HTTP - Web UI)",
+  "short_description": "Monitor websites for changes and receive notifications on updates",
+  "description": "Monitor websites for changes and receive notifications on updates",
+  "usecases": [],
+  "website": "https://github.com/thp/urlwatch",
+  "dependencies": []
+}

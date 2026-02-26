@@ -3,12 +3,9 @@ services:
     image: docker.n8n.io/n8nio/n8n:latest
     container_name: n8n
     labels:
-      yantr.name: "n8n"
-      yantr.logo: "QmT4ncfKSqhVEpoQi7FZpzyRyHemgXDjqXX896esZtMxGM"
-      yantr.category: "productivity,tools"
-      yantr.port: "5678 (HTTP - Web UI)"
-      yantr.description: "Workflow automation platform with AI and 400+ integrations"
-      yantr.website: "https://docs.n8n.io"
+      yantr.app: "n8n"
+      yantr.service: "n8n"
+      yantr.info: "Workflow automation platform with AI and 400+ integrations"
     ports:
       - "5678"
     volumes:

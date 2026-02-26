@@ -3,12 +3,9 @@ services:
     image: ghcr.io/gotify/server
     container_name: gotify
     labels:
-      yantr.name: "Gotify"
-      yantr.logo: "QmfUMSBFU2WKRyvG9kQa4fzRU8Apr7rC3N8HkYSL7gY5XX"
-      yantr.category: "notification,tools"
-      yantr.port: "80 (HTTP - Web UI)"
-      yantr.description: "Self-hosted push notification service for sending and receiving notifications"
-      yantr.website: "https://github.com/gotify/server"
+      yantr.app: "gotify"
+      yantr.service: "Gotify"
+      yantr.info: "Self-hosted push notification service for sending and receiving notifications"
     ports:
       - "80"
     environment:

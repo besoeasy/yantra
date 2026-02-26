@@ -1,0 +1,16 @@
+{
+  "name": "AdGuard Home",
+  "logo": "QmSBZ3r1XdbMZ9CiUUvtQvfL9HYjLGMF4nqftRJ2XHAS3j",
+  "category": [
+    "network",
+    "security",
+    "dns"
+  ],
+  "tags": [],
+  "port": "3000 (HTTP - Initial Setup), 80 (HTTP - Web UI)",
+  "short_description": "DNS-level ad blocking and privacy protection with parental controls",
+  "description": "DNS-level ad blocking and privacy protection with parental controls",
+  "usecases": [],
+  "website": "https://github.com/AdguardTeam/AdGuardHome",
+  "dependencies": []
+}

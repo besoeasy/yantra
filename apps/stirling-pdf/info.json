@@ -1,0 +1,15 @@
+{
+  "name": "Stirling-PDF",
+  "logo": "QmZ6nmAP1oSgpfd4N7oAYNEJrRqgQTPGndZPyN2vwmyjBE",
+  "category": [
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "8080 (HTTP - Web UI)",
+  "short_description": "Powerful locally hosted web-based PDF manipulation tool",
+  "description": "Powerful locally hosted web-based PDF manipulation tool",
+  "usecases": [],
+  "website": "https://github.com/Stirling-Tools/Stirling-PDF",
+  "dependencies": []
+}

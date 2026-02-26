@@ -1,0 +1,15 @@
+{
+  "name": "Smokeping",
+  "logo": "QmerDnfp1VxvYJi47iuc18CiQSVHCJBzata77pGJjS6GPE",
+  "category": [
+    "network",
+    "monitoring"
+  ],
+  "tags": [],
+  "port": "80 (HTTP - Web UI)",
+  "short_description": "Latency and packet loss monitoring tool with graphing capabilities",
+  "description": "Latency and packet loss monitoring tool with graphing capabilities",
+  "usecases": [],
+  "website": "https://github.com/linuxserver/docker-smokeping",
+  "dependencies": []
+}

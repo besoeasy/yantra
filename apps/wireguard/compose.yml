@@ -16,12 +16,9 @@ services:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
     labels:
-      yantr.name: "WireGuard"
-      yantr.logo: "QmYvWBezgveN9KZARJeAczC6p8mUMsYAwLyV8NKRNHKNCi"
-      yantr.category: "network,security"
-      yantr.port: "51821 (HTTP - Admin Panel)"
-      yantr.description: "Fast, modern VPN with state-of-the-art cryptography"
-      yantr.website: "https://www.wireguard.com"
+      yantr.app: "wireguard"
+      yantr.service: "WireGuard"
+      yantr.info: "Fast, modern VPN with state-of-the-art cryptography"
 
 volumes:
   wireguard_data:

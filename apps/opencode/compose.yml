@@ -4,12 +4,9 @@ services:
     command: ["web", "--hostname", "0.0.0.0", "--port", "4096"]
     container_name: opencode
     labels:
-      yantr.name: "OpenCode"
-      yantr.logo: "Qma92doZsMdGrS46v8GqXCgvzomrXKZPm3fFgjmwd8k9RA"
-      yantr.category: "development,productivity,ai"
-      yantr.port: "4096 (HTTP - Web UI)"
-      yantr.description: "Open source AI coding agent for terminal, IDE, and desktop"
-      yantr.website: "https://github.com/anomalyco/opencode"
+      yantr.app: "opencode"
+      yantr.service: "OpenCode"
+      yantr.info: "Open source AI coding agent for terminal, IDE, and desktop"
     environment:
       HOME: /home/opencode
     ports:

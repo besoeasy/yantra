@@ -3,12 +3,9 @@ services:
     image: actualbudget/actual-server:latest
     container_name: actual-budget
     labels:
-      yantr.name: "Actual Budget"
-      yantr.logo: "QmYhzJQFC7KG7RenmubaBZi1f8F2XkagEamPvJxQqmyqGR"
-      yantr.category: "finance,productivity"
-      yantr.port: "5006 (HTTP - Web UI)"
-      yantr.description: "Self-hosted personal finance app with powerful budgeting and tracking features"
-      yantr.website: "https://github.com/actualbudget/actual"
+      yantr.app: "actual-budget"
+      yantr.service: "Actual Budget"
+      yantr.info: "Self-hosted personal finance app with powerful budgeting and tracking features"
     ports:
       - "5006"
     volumes:

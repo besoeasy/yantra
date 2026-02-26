@@ -1,0 +1,16 @@
+{
+  "name": "Rotki",
+  "logo": "QmXg6Zmw6rFktbgFCFkuEA15BfK3fJGLUTuZqm53GwWa1z",
+  "category": [
+    "productivity",
+    "security",
+    "utility"
+  ],
+  "tags": [],
+  "port": "80 (HTTP - Web UI)",
+  "short_description": "Privacy-focused portfolio tracker and analytics for crypto",
+  "description": "Privacy-focused portfolio tracker and analytics for crypto",
+  "usecases": [],
+  "website": "https://rotki.com/",
+  "dependencies": []
+}

@@ -3,12 +3,9 @@ services:
     image: linuxserver/rutorrent:latest
     container_name: rutorrent
     labels:
-      yantr.name: "ruTorrent"
-      yantr.logo: "QmPt2kfbSDSajzcshVCrR3ZYyNZTzWYqEg6cTiYQPYhmMr"
-      yantr.category: "torrent,download"
-      yantr.port: "80 (HTTP - Web UI), 51413 (TCP - Torrent)"
-      yantr.description: "Lightweight torrent client with web interface for managing downloads"
-      yantr.website: "https://github.com/linuxserver/docker-rutorrent"
+      yantr.app: "rutorrent"
+      yantr.service: "ruTorrent"
+      yantr.info: "Lightweight torrent client with web interface for managing downloads"
     ports:
       - "80"
       - "51413"

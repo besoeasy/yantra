@@ -1,0 +1,15 @@
+{
+  "name": "Strfry",
+  "logo": "QmNR4kyKJs3sZwdRJZ47z5feUWn6S8aJw31wzZrXK2fVcD",
+  "category": [
+    "network",
+    "social"
+  ],
+  "tags": [],
+  "port": "7777 (HTTP - Web UI)",
+  "short_description": "High-performance nostr relay with LMDB storage",
+  "description": "High-performance nostr relay with LMDB storage",
+  "usecases": [],
+  "website": "https://github.com/hoytech/strfry",
+  "dependencies": []
+}

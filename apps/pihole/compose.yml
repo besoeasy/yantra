@@ -4,12 +4,9 @@ services:
     container_name: pihole
     entrypoint: /app/entrypoint.sh
     labels:
-      yantr.name: "Pi-hole"
-      yantr.logo: "QmYbagd1HGhQkxjcgj8KvEGc3ASyubA7MuVSZokJkSmpBr"
-      yantr.category: "network,security"
-      yantr.port: "80 (HTTP - Web UI)"
-      yantr.description: "Network-wide ad blocking via DNS sinkhole"
-      yantr.website: "https://docs.pi-hole.net"
+      yantr.app: "pihole"
+      yantr.service: "Pi-hole"
+      yantr.info: "Network-wide ad blocking via DNS sinkhole"
     ports:
       - "53:53/tcp"
       - "53:53/udp"

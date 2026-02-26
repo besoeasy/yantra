@@ -11,12 +11,9 @@ services:
       - "6881/udp"
     restart: unless-stopped
     labels:
-      yantr.name: "Deluge"
-      yantr.logo: "QmRrKHf3JqMSib9iUfHGrNB6ViXpJmEEoNyJtkr1PB3E33"
-      yantr.category: "download,utility"
-      yantr.port: "8112 (HTTP - Web UI)"
-      yantr.description: "Lightweight BitTorrent client with web interface"
-      yantr.website: "https://deluge-torrent.org/"
+      yantr.app: "deluge"
+      yantr.service: "Deluge"
+      yantr.info: "Lightweight BitTorrent client with web interface"
 
 volumes:
   deluge-config:

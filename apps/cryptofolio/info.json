@@ -1,0 +1,15 @@
+{
+  "name": "Cryptofolio",
+  "logo": "QmRSzoSr1npNczcYt5sFBauWCmYFdqyCytwoj3vtXtrs89",
+  "category": [
+    "finance",
+    "cryptocurrency"
+  ],
+  "tags": [],
+  "port": "80 (HTTP - Web UI)",
+  "short_description": "Self-hosted cryptocurrency portfolio tracker with real-time price updates",
+  "description": "Self-hosted cryptocurrency portfolio tracker with real-time price updates",
+  "usecases": [],
+  "website": "https://github.com/xtrendence/cryptofolio",
+  "dependencies": []
+}

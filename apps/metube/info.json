@@ -1,0 +1,16 @@
+{
+  "name": "MeTube",
+  "logo": "QmVHF6jueKh11T7LVbBC6NCCs2tuMo7Af7tKfWJEdXSkwQ",
+  "category": [
+    "media",
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "8081 (HTTP - Web UI)",
+  "short_description": "Web GUI for yt-dlp/youtube-dl with playlist support.",
+  "description": "Web GUI for yt-dlp/youtube-dl with playlist support.",
+  "usecases": [],
+  "website": "https://github.com/alexta69/metube",
+  "dependencies": []
+}

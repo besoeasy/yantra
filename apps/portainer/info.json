@@ -1,0 +1,15 @@
+{
+  "name": "Portainer",
+  "logo": "QmXyDE7nzzoUS8dez7bWBgeP2X2xkJ6XesJ7QSWUsvdV5F",
+  "category": [
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "9443 (HTTPS - Web UI)",
+  "short_description": "Container management UI for Docker environments",
+  "description": "Container management UI for Docker environments",
+  "usecases": [],
+  "website": "https://docs.portainer.io",
+  "dependencies": []
+}

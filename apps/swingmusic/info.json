@@ -1,0 +1,15 @@
+{
+  "name": "SwingMusic",
+  "logo": "QmVWKyW9G8C4zxCDMMutg7eSNuugdAzUUNwzhbvjkv6j1o",
+  "category": [
+    "media",
+    "entertainment"
+  ],
+  "tags": [],
+  "port": "1970 (HTTP - Web UI)",
+  "short_description": "Beautiful music player with a modern web interface",
+  "description": "Beautiful music player with a modern web interface",
+  "usecases": [],
+  "website": "https://swingmusic.vercel.app/",
+  "dependencies": []
+}

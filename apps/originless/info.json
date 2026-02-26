@@ -1,0 +1,15 @@
+{
+  "name": "Originless",
+  "logo": "QmWMCDAFxDjqfYRjjaqRx4UCt7ZF9TK6r5SpZEWWko9c63",
+  "category": [
+    "utility",
+    "tools"
+  ],
+  "tags": [],
+  "port": "3232 (HTTP - Web UI)",
+  "short_description": "All-in-one anonymous storage backend for apps, screenshot tools, and file hosting",
+  "description": "All-in-one anonymous storage backend for apps, screenshot tools, and file hosting",
+  "usecases": [],
+  "website": "https://github.com/besoeasy/originless",
+  "dependencies": []
+}

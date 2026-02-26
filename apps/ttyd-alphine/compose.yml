@@ -3,12 +3,9 @@ services:
     image: tsl0922/ttyd:alpine
     container_name: ttyd-alphine
     labels:
-      yantr.name: "ttyd-alphine"
-      yantr.logo: "QmTmQC83sbUchesGegyWhHsDU8ndQwiYbPow6QsTeLmCMt"
-      yantr.category: "tools,utility"
-      yantr.port: "7681 (HTTP - Web Terminal)"
-      yantr.description: "Share your terminal over the web — runs a bash shell in Alpine Linux accessible from any browser"
-      yantr.website: "https://github.com/tsl0922/ttyd"
+      yantr.app: "ttyd-alphine"
+      yantr.service: "ttyd-alphine"
+      yantr.info: "Share your terminal over the web — runs a bash shell in Alpine Linux accessible from any browser"
     ports:
       - "7681"
     restart: unless-stopped

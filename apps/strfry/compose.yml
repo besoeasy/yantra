@@ -12,12 +12,9 @@ services:
         target: /etc/strfry.conf
     command: relay --config /etc/strfry.conf
     labels:
-      yantr.name: "Strfry"
-      yantr.logo: "QmNR4kyKJs3sZwdRJZ47z5feUWn6S8aJw31wzZrXK2fVcD"
-      yantr.category: "network,social"
-      yantr.port: "7777 (HTTP - Web UI)"
-      yantr.description: "High-performance nostr relay with LMDB storage"
-      yantr.website: "https://github.com/hoytech/strfry"
+      yantr.app: "strfry"
+      yantr.service: "Strfry"
+      yantr.info: "High-performance nostr relay with LMDB storage"
 
 configs:
   strfry-config:

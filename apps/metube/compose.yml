@@ -9,12 +9,9 @@ services:
       - "8081"
     restart: unless-stopped
     labels:
-      yantr.name: "MeTube"
-      yantr.logo: "QmVHF6jueKh11T7LVbBC6NCCs2tuMo7Af7tKfWJEdXSkwQ"
-      yantr.category: "media,tools,utility"
-      yantr.port: "8081 (HTTP - Web UI)"
-      yantr.description: "Web GUI for yt-dlp/youtube-dl with playlist support."
-      yantr.website: "https://github.com/alexta69/metube"
+      yantr.app: "metube"
+      yantr.service: "MeTube"
+      yantr.info: "Web GUI for yt-dlp/youtube-dl with playlist support."
 
 volumes:
   metube_downloads:

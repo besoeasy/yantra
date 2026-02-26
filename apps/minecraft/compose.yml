@@ -19,12 +19,9 @@ services:
       - minecraft-data:/data
     restart: unless-stopped
     labels:
-      yantr.name: "Minecraft Server"
-      yantr.logo: "QmPB7iXHMAu3Wor5jiEsoifm5tZyMEUojhbj6TJJefsY7s"
-      yantr.category: "gaming"
-      yantr.port: "25565 (TCP - Game Server)"
-      yantr.description: "Open-source sandbox game server with endless possibilities"
-      yantr.website: "https://docker-minecraft-server.readthedocs.io/"
+      yantr.app: "minecraft"
+      yantr.service: "Minecraft Server"
+      yantr.info: "Open-source sandbox game server with endless possibilities"
 
 volumes:
   minecraft-data:

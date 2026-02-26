@@ -3,12 +3,9 @@ services:
     image: wordpress:latest
     container_name: wordpress
     labels:
-      yantr.name: "WordPress"
-      yantr.logo: "QmfTeVfmHVGfwU4Q99TUT9xvGWc3s4RjPR3kzahnjqppKP"
-      yantr.category: "cms,blog"
-      yantr.port: "80 (HTTP - Web UI)"
-      yantr.description: "Popular open-source content management system for websites and blogs"
-      yantr.website: "https://github.com/WordPress/WordPress"
+      yantr.app: "wordpress"
+      yantr.service: "WordPress"
+      yantr.info: "Popular open-source content management system for websites and blogs"
     restart: unless-stopped
     ports:
       - "80"
@@ -35,6 +32,10 @@ services:
     volumes:
       - wordpress_db:/var/lib/mysql
 
+    labels:
+      yantr.app: "wordpress"
+      yantr.service: "Wordpress Db"
+      yantr.info: "Wordpress Db service for WordPress"
 volumes:
   wordpress_data:
   wordpress_db:

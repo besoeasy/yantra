@@ -1,0 +1,15 @@
+{
+  "name": "Debian SSH",
+  "logo": "QmdQonQcXcbUnPM3wKwN7zykQvsjEH7v9s441xK5z878N6",
+  "category": [
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "22 (SSH)",
+  "short_description": "Debian Linux container with OpenSSH server \u2014 connect via SSH as root using a configurable password",
+  "description": "Debian Linux container with OpenSSH server \u2014 connect via SSH as root using a configurable password",
+  "usecases": [],
+  "website": "https://hub.docker.com/_/debian",
+  "dependencies": []
+}

@@ -3,12 +3,9 @@ services:
     image: nicolargo/glances:latest
     container_name: glances
     labels:
-      yantr.name: "Glances"
-      yantr.logo: "QmVa2UDC7pALhMyoiXgQsThyF9QszT2f7WcK168k7AGXhf"
-      yantr.category: "monitoring,tools"
-      yantr.port: "61208 (HTTP - Web UI)"
-      yantr.description: "Real-time system monitoring for containers and host metrics"
-      yantr.website: "https://nicolargo.github.io/glances/"
+      yantr.app: "glances"
+      yantr.service: "Glances"
+      yantr.info: "Real-time system monitoring for containers and host metrics"
     ports:
       - "61208"
     volumes:

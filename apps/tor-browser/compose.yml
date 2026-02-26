@@ -5,9 +5,6 @@ services:
     ports:
       - "5800"
     labels:
-      yantr.name: "Tor Browser"
-      yantr.logo: "QmaVTPSKHnzenoUpqydsnNHQ45WJDtRxxjnqzVqK4MiB38"
-      yantr.description: "Privacy-focused web browser with Tor network integration"
-      yantr.category: "privacy,security"
-      yantr.port: "5800 (HTTP - Web UI)"
-      yantr.website: "https://github.com/domistyle/docker-tor-browser"
+      yantr.app: "tor-browser"
+      yantr.service: "Tor Browser"
+      yantr.info: "Privacy-focused web browser with Tor network integration"

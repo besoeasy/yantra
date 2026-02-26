@@ -1,0 +1,15 @@
+{
+  "name": "OpnForm",
+  "logo": "QmSmhDZydYp9xYPVCs19mvom1nMB7Cy7wrZxdtEXgbQtRT",
+  "category": [
+    "productivity",
+    "forms"
+  ],
+  "tags": [],
+  "port": "80 (HTTP - Web UI)",
+  "short_description": "Open source form builder with advanced customization and workflow options",
+  "description": "Open source form builder with advanced customization and workflow options",
+  "usecases": [],
+  "website": "https://github.com/JhumanJ/opnform",
+  "dependencies": []
+}

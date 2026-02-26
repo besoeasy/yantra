@@ -3,12 +3,9 @@ services:
     image: vaultwarden/server:latest
     container_name: vaultwarden
     labels:
-      yantr.name: "Vaultwarden"
-      yantr.logo: "QmUPKRipoMCZT3VCYVCoxe3z5WpDhfpb7v4HH1dDKedQaQ"
-      yantr.category: "productivity,security"
-      yantr.port: "80 (HTTP - Web UI)"
-      yantr.description: "Lightweight Bitwarden server for password management"
-      yantr.website: "https://github.com/dani-garcia/vaultwarden/wiki"
+      yantr.app: "vaultwarden"
+      yantr.service: "Vaultwarden"
+      yantr.info: "Lightweight Bitwarden server for password management"
     ports:
       - "80"
     volumes:

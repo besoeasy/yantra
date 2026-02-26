@@ -3,12 +3,9 @@ services:
     image: ceramicwhite/libreddit:0.22.9
     container_name: libreddit
     labels:
-      yantr.name: "LibReddit"
-      yantr.logo: "QmTieAKkWAmA12gchbEJiBGZZK64hsuKQYRtSbibJ9qWxF"
-      yantr.category: "social,privacy"
-      yantr.port: "7420 (HTTP - Web UI)"
-      yantr.description: "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking"
-      yantr.website: "https://github.com/spikecodes/libreddit"
+      yantr.app: "libreddit"
+      yantr.service: "LibReddit"
+      yantr.info: "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking"
     ports:
       - "7420"
     environment:

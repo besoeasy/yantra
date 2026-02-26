@@ -1,0 +1,15 @@
+{
+  "name": "n8n",
+  "logo": "QmT4ncfKSqhVEpoQi7FZpzyRyHemgXDjqXX896esZtMxGM",
+  "category": [
+    "productivity",
+    "tools"
+  ],
+  "tags": [],
+  "port": "5678 (HTTP - Web UI)",
+  "short_description": "Workflow automation platform with AI and 400+ integrations",
+  "description": "Workflow automation platform with AI and 400+ integrations",
+  "usecases": [],
+  "website": "https://docs.n8n.io",
+  "dependencies": []
+}

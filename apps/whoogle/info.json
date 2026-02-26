@@ -1,0 +1,15 @@
+{
+  "name": "Whoogle",
+  "logo": "QmNPLDz2jjjG67UeNVAC1wgdBs9eMrUQQYkRRWXWmtSZxV",
+  "category": [
+    "search",
+    "privacy"
+  ],
+  "tags": [],
+  "port": "5000 (HTTP - Web UI)",
+  "short_description": "Privacy-focused metasearch engine - fast, clean Google-like search results",
+  "description": "Privacy-focused metasearch engine - fast, clean Google-like search results",
+  "usecases": [],
+  "website": "https://github.com/benbusby/whoogle",
+  "dependencies": []
+}

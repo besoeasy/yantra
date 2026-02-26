@@ -1,0 +1,15 @@
+{
+  "name": "Tabby",
+  "logo": "QmcQ3CYdea4rtPmwJTSggcFYvpKcSpSqSQMbS9RdWjzTWS",
+  "category": [
+    "productivity",
+    "browsing"
+  ],
+  "tags": [],
+  "port": "80 (HTTP - Web UI)",
+  "short_description": "Beautiful and customizable browser start page with tab management",
+  "description": "Beautiful and customizable browser start page with tab management",
+  "usecases": [],
+  "website": "https://github.com/parksauce/tabby",
+  "dependencies": []
+}

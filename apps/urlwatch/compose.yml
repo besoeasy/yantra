@@ -3,12 +3,9 @@ services:
     image: mediadepot/urlwatch:master
     container_name: urlwatch
     labels:
-      yantr.name: "UrlWatch"
-      yantr.logo: "QmWkNcdYSyueiheQwyHXyjkXrxcGdKLcYGBbcECLiJ6c3W"
-      yantr.category: "utility,monitoring"
-      yantr.port: "8081 (HTTP - Web UI)"
-      yantr.description: "Monitor websites for changes and receive notifications on updates"
-      yantr.website: "https://github.com/thp/urlwatch"
+      yantr.app: "urlwatch"
+      yantr.service: "UrlWatch"
+      yantr.info: "Monitor websites for changes and receive notifications on updates"
     ports:
       - "8081"
     volumes:

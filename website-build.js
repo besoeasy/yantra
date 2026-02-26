@@ -13,69 +13,55 @@ const appsJsonPath = path.join(websiteDir, 'apps.json');
 const appsOutputDir = path.join(websiteDir, 'apps');
 const appsDir = path.join(__dirname, 'apps');
 
-function extractYantrLabels(service) {
-  const labels = service?.labels || {};
-  const yantrData = {};
+function parseAppFolder(appId, appPath) {
+  const infoPath = path.join(appPath, 'info.json');
+  const composePath = path.join(appPath, 'compose.yml');
 
-  if (Array.isArray(labels)) {
-    for (const rawLabel of labels) {
-      if (typeof rawLabel !== 'string') continue;
-      const separatorIndex = rawLabel.indexOf('=');
-      if (separatorIndex === -1) continue;
-
-      const key = rawLabel.slice(0, separatorIndex).trim();
-      const value = rawLabel.slice(separatorIndex + 1).trim();
-      if (!key.startsWith('yantr.')) continue;
-
-      yantrData[key.replace('yantr.', '')] = value;
-    }
-
-    return yantrData;
-  }
-
-  for (const [key, value] of Object.entries(labels)) {
-    if (key.startsWith('yantr.')) {
-      const labelName = key.replace('yantr.', '');
-      yantrData[labelName] = value;
-    }
-  }
-
-  return yantrData;
-}
-
-function parseComposeFile(appId, composePath) {
   try {
-    const composeContent = fs.readFileSync(composePath, 'utf8');
-    const composeData = parse(composeContent);
-
-    if (!composeData?.services) {
-      console.warn(`⚠️  No services found in ${appId}/compose.yml`);
+    if (!fs.existsSync(infoPath)) {
+      console.warn(`⚠️  No info.json found for ${appId}`);
       return null;
     }
 
-    const firstServiceName = Object.keys(composeData.services)[0];
-    const firstService = composeData.services[firstServiceName];
+    const info = JSON.parse(fs.readFileSync(infoPath, 'utf8'));
 
-    const yantrLabels = extractYantrLabels(firstService);
-    if (!yantrLabels.name) {
-      console.warn(`⚠️  No yantr.name label found for ${appId}`);
+    if (!info.name) {
+      console.warn(`⚠️  No name field in info.json for ${appId}`);
       return null;
+    }
+
+    // Extract primary service image from compose.yml if available
+    let image = null;
+    let serviceName = null;
+    if (fs.existsSync(composePath)) {
+      try {
+        const composeData = parse(fs.readFileSync(composePath, 'utf8'));
+        if (composeData?.services) {
+          serviceName = Object.keys(composeData.services)[0];
+          image = composeData.services[serviceName]?.image || null;
+        }
+      } catch {
+        // compose.yml unreadable — skip image
+      }
     }
 
     return {
       id: appId,
-      name: yantrLabels.name || appId,
-      logo: yantrLabels.logo || null,
-      category: yantrLabels.category ? yantrLabels.category.split(',').map((item) => item.trim()) : [],
-      port: yantrLabels.port || null,
-      description: yantrLabels.description || '',
-      website: yantrLabels.website || null,
-      dependencies: yantrLabels.dependencies ? yantrLabels.dependencies.split(',').map((item) => item.trim()) : [],
-      image: firstService.image || null,
-      serviceName: firstServiceName,
+      name: info.name,
+      logo: info.logo || null,
+      category: Array.isArray(info.category) ? info.category : (info.category ? [info.category] : []),
+      tags: Array.isArray(info.tags) ? info.tags : [],
+      port: info.port || null,
+      short_description: info.short_description || '',
+      description: info.description || info.short_description || '',
+      usecases: Array.isArray(info.usecases) ? info.usecases : [],
+      website: info.website || null,
+      dependencies: Array.isArray(info.dependencies) ? info.dependencies : [],
+      image,
+      serviceName,
     };
   } catch (error) {
-    console.error(`❌ Error parsing ${appId}/compose.yml:`, error.message);
+    console.error(`❌ Error parsing ${appId}/info.json:`, error.message);
     return null;
   }
 }
@@ -103,15 +89,16 @@ function buildAppsJson() {
   };
 
   for (const appId of appDirs.sort()) {
-    const composePath = path.join(appsDir, appId, 'compose.yml');
+    const appPath = path.join(appsDir, appId);
+    const infoPath = path.join(appPath, 'info.json');
 
-    if (!fs.existsSync(composePath)) {
-      console.warn(`⚠️  Skipping ${appId}: compose.yml not found`);
+    if (!fs.existsSync(infoPath)) {
+      console.warn(`⚠️  Skipping ${appId}: info.json not found`);
       stats.skipped++;
       continue;
     }
 
-    const appData = parseComposeFile(appId, composePath);
+    const appData = parseAppFolder(appId, appPath);
     if (appData) {
       apps.push(appData);
       console.log(`✅ ${appData.name} (${appId})`);
@@ -165,10 +152,14 @@ function toAppViewModel(app) {
     name,
     category,
     dependencies,
-    description: app?.description || 'No description available.',
+    tags: Array.isArray(app?.tags) ? app.tags : [],
+    short_description: app?.short_description || '',
+    description: app?.description || app?.short_description || 'No description available.',
+    usecases: Array.isArray(app?.usecases) ? app.usecases : [],
     logoUrl: getLogoUrl(app),
     appPagePath: `/apps/${id}/`,
     sourceComposeUrl: `https://github.com/besoeasy/yantr/blob/main/apps/${id}/compose.yml`,
+    sourceInfoUrl: `https://github.com/besoeasy/yantr/blob/main/apps/${id}/info.json`,
     sourceAppFolderUrl: `https://github.com/besoeasy/yantr/tree/main/apps/${id}`,
   };
 }

@@ -1,0 +1,15 @@
+{
+  "name": "Drupal",
+  "logo": "QmXryrL9jF3YL37TEs7eZRsv5mvDyUYSkWdPrEDKE8GM8k",
+  "category": [
+    "cms",
+    "productivity"
+  ],
+  "tags": [],
+  "port": "80 (HTTP - Web UI)",
+  "short_description": "Powerful open-source content management system for building websites",
+  "description": "Powerful open-source content management system for building websites",
+  "usecases": [],
+  "website": "https://github.com/drupal/drupal",
+  "dependencies": []
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Duplicati",
+  "logo": "QmX52qWfGH9q5mPvjT3mfmf6ag6BUW8fGwGX1WrbPxfqn8",
+  "category": [
+    "tools",
+    "security",
+    "utility"
+  ],
+  "tags": [],
+  "port": "8200 (HTTP - Web UI)",
+  "short_description": "Free backup software for encrypted, incremental backups",
+  "description": "Free backup software for encrypted, incremental backups",
+  "usecases": [],
+  "website": "https://www.duplicati.com",
+  "dependencies": []
+}

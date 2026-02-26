@@ -3,12 +3,9 @@ services:
     image: lscr.io/linuxserver/airsonic:latest
     container_name: airsonic
     labels:
-      yantr.name: "Airsonic"
-      yantr.logo: "Qmb3YsRHNpn9L5CFLVLM3C4h7wNtMXcGsmXYn2uofZaiHK"
-      yantr.category: "media,music"
-      yantr.port: "4040 (HTTP - Web UI)"
-      yantr.description: "Self-hosted music streaming server with web interface and mobile apps"
-      yantr.website: "https://github.com/airsonic/airsonic"
+      yantr.app: "airsonic"
+      yantr.service: "Airsonic"
+      yantr.info: "Self-hosted music streaming server with web interface and mobile apps"
     ports:
       - "4040"
     volumes:

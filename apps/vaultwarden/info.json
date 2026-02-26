@@ -1,0 +1,15 @@
+{
+  "name": "Vaultwarden",
+  "logo": "QmUPKRipoMCZT3VCYVCoxe3z5WpDhfpb7v4HH1dDKedQaQ",
+  "category": [
+    "productivity",
+    "security"
+  ],
+  "tags": [],
+  "port": "80 (HTTP - Web UI)",
+  "short_description": "Lightweight Bitwarden server for password management",
+  "description": "Lightweight Bitwarden server for password management",
+  "usecases": [],
+  "website": "https://github.com/dani-garcia/vaultwarden/wiki",
+  "dependencies": []
+}

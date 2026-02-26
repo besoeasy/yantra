@@ -1,0 +1,16 @@
+{
+  "name": "Bitmagnet",
+  "logo": "QmX2bA23zVjnxGeQgwUfv3XXuascGnnBX33ap7CWWknrXP",
+  "category": [
+    "media",
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "3333 (HTTP - Web UI)",
+  "short_description": "Self-hosted BitTorrent indexer, DHT crawler, and torrent client.",
+  "description": "Self-hosted BitTorrent indexer, DHT crawler, and torrent client.",
+  "usecases": [],
+  "website": "https://bitmagnet.io",
+  "dependencies": []
+}

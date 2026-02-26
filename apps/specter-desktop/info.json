@@ -1,0 +1,15 @@
+{
+  "name": "Specter Desktop",
+  "logo": "QmdHMdrWHAFAcEpJZgJsv2kFnTZRR5x1A5x12KNHW2LqGY",
+  "category": [
+    "security",
+    "tools"
+  ],
+  "tags": [],
+  "port": "25441 (HTTP - Web UI)",
+  "short_description": "Bitcoin wallet interface with focus on privacy and security",
+  "description": "Bitcoin wallet interface with focus on privacy and security",
+  "usecases": [],
+  "website": "https://specter.solutions/desktop",
+  "dependencies": []
+}

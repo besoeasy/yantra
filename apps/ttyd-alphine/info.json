@@ -1,0 +1,15 @@
+{
+  "name": "ttyd-alphine",
+  "logo": "QmTmQC83sbUchesGegyWhHsDU8ndQwiYbPow6QsTeLmCMt",
+  "category": [
+    "tools",
+    "utility"
+  ],
+  "tags": [],
+  "port": "7681 (HTTP - Web Terminal)",
+  "short_description": "Share your terminal over the web \u2014 runs a bash shell in Alpine Linux accessible from any browser",
+  "description": "Share your terminal over the web \u2014 runs a bash shell in Alpine Linux accessible from any browser",
+  "usecases": [],
+  "website": "https://github.com/tsl0922/ttyd",
+  "dependencies": []
+}

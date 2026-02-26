@@ -7,12 +7,9 @@ services:
     ports:
       - 5230
     labels:
-      yantr.name: "Memos"
-      yantr.logo: "QmVYAHxdTDQqw3DDm6YRk6EvgmuWtMDae8Z8LQaCVqYZ2B"
-      yantr.category: "productivity,tools,network"
-      yantr.port: "5230 (HTTP - Web UI)"
-      yantr.description: "Open-source Markdown notes app, with a UI styled like a social feed."
-      yantr.website: "https://github.com/usememos/memos"
+      yantr.app: "memos"
+      yantr.service: "Memos"
+      yantr.info: "Open-source Markdown notes app, with a UI styled like a social feed."
 
 volumes:
   memos_data:

@@ -1,0 +1,15 @@
+{
+  "name": "Gotify",
+  "logo": "QmfUMSBFU2WKRyvG9kQa4fzRU8Apr7rC3N8HkYSL7gY5XX",
+  "category": [
+    "notification",
+    "tools"
+  ],
+  "tags": [],
+  "port": "80 (HTTP - Web UI)",
+  "short_description": "Self-hosted push notification service for sending and receiving notifications",
+  "description": "Self-hosted push notification service for sending and receiving notifications",
+  "usecases": [],
+  "website": "https://github.com/gotify/server",
+  "dependencies": []
+}

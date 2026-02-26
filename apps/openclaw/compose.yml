@@ -3,12 +3,9 @@ services:
     image: ghcr.io/getumbrel/openclaw-umbrel:2026.2.23
     container_name: openclaw
     labels:
-      yantr.name: "OpenClaw"
-      yantr.logo: "QmRdr8gQqpGLXkZc53NcQV3i71931yNQqYrLhpaWEpTMwp"
-      yantr.category: "ai,tools,utility"
-      yantr.port: "18789 (HTTP - Web UI), 18790 (Bridge - Device Nodes)"
-      yantr.description: "Personal AI assistant — Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack, Discord, and more)"
-      yantr.website: "https://openclaw.ai"
+      yantr.app: "openclaw"
+      yantr.service: "OpenClaw"
+      yantr.info: "Personal AI assistant — Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack, Discord, and more)"
     init: true
     restart: unless-stopped
     ports:

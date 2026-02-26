@@ -1,0 +1,15 @@
+{
+  "name": "Dockge",
+  "logo": "QmXUGnzPpcRuGks5CJB6we1cFcBW2qPau9FZUs98wPGFJL",
+  "category": [
+    "docker",
+    "management"
+  ],
+  "tags": [],
+  "port": "5001 (HTTP - Web UI)",
+  "short_description": "Self-hosted Docker Compose stack manager with GUI for easy deployment",
+  "description": "Self-hosted Docker Compose stack manager with GUI for easy deployment",
+  "usecases": [],
+  "website": "https://github.com/louislam/dockge",
+  "dependencies": []
+}

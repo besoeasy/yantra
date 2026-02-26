@@ -3,12 +3,9 @@ services:
     image: nextcloud:stable
     container_name: nextcloud
     labels:
-      yantr.name: "Nextcloud"
-      yantr.logo: "QmU23rKmzJwT93oCrnprdGJQBv4VaPiaZ6re88qbfmVE2u"
-      yantr.category: "productivity,utility"
-      yantr.port: "80 (HTTP - Web UI)"
-      yantr.description: "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing"
-      yantr.website: "https://github.com/nextcloud/server"
+      yantr.app: "nextcloud"
+      yantr.service: "Nextcloud"
+      yantr.info: "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing"
     ports:
       - "80"
     environment:
@@ -37,6 +34,10 @@ services:
       - nextcloud_db:/var/lib/mysql
     restart: unless-stopped
 
+    labels:
+      yantr.app: "nextcloud"
+      yantr.service: "Nextcloud Db"
+      yantr.info: "Nextcloud Db service for Nextcloud"
 volumes:
   nextcloud_data:
   nextcloud_db:

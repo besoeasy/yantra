@@ -1,0 +1,15 @@
+{
+  "name": "ZeroNote",
+  "logo": "Qmbdks6yn4TrP2hfFZJ1dZPW84kYhrWoXDj4tLBtpWfRiF",
+  "category": [
+    "productivity",
+    "security"
+  ],
+  "tags": [],
+  "port": "8000 (HTTP - Web UI)",
+  "short_description": "Offline-first encrypted notes application.",
+  "description": "Offline-first encrypted notes application.",
+  "usecases": [],
+  "website": "https://github.com/besoeasy/zeronote",
+  "dependencies": []
+}

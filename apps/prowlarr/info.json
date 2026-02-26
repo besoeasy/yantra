@@ -1,0 +1,15 @@
+{
+  "name": "Prowlarr",
+  "logo": "Qma8EiYwcHKzMtqS8vbvtGCtRApdWnhMszeZCECuuoMzz7",
+  "category": [
+    "media",
+    "tools"
+  ],
+  "tags": [],
+  "port": "9696 (HTTP - Web UI)",
+  "short_description": "Indexer manager for automating and integrating Usenet and torrent indexers",
+  "description": "Indexer manager for automating and integrating Usenet and torrent indexers",
+  "usecases": [],
+  "website": "https://github.com/linuxserver/docker-prowlarr",
+  "dependencies": []
+}

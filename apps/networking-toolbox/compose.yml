@@ -3,12 +3,9 @@ services:
     image: lissy93/networking-toolbox:latest
     container_name: networking-toolbox
     labels:
-      yantr.name: "Networking Toolbox"
-      yantr.logo: "QmaU7tznY63wTMNNPtCQQbPBT4PNbPYFT9iq8utHwhfF47"
-      yantr.category: "network,tools"
-      yantr.port: "3000 (HTTP - Web UI)"
-      yantr.description: "100+ offline-first networking tools and utilities"
-      yantr.website: "https://networking-toolbox.as93.net"
+      yantr.app: "networking-toolbox"
+      yantr.service: "Networking Toolbox"
+      yantr.info: "100+ offline-first networking tools and utilities"
     ports:
       - "3000"
     restart: unless-stopped
