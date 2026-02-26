@@ -769,6 +769,13 @@ app.get("/api/containers/:id", asyncHandler(async (req, res) => {
   const appLabels = parseAppLabels(info.Config.Labels);
   const composeProject = info.Config.Labels["com.docker.compose.project"];
 
+  // Look up app metadata from catalog (info.json)
+  const catalog = await getAppsCatalogCached();
+  const catalogMap = new Map(catalog.apps.map((a) => [a.id, a]));
+  const baseAppId = getBaseAppId(composeProject) || info.Name.replace("/", "") || "unknown";
+  const appId = appLabels.app || baseAppId;
+  const catalogEntry = catalogMap.get(appId) || null;
+
     // If part of a compose project, get ports from all containers in the stack
     let allPorts = info.NetworkSettings.Ports;
     if (composeProject) {
@@ -807,7 +814,7 @@ app.get("/api/containers/:id", asyncHandler(async (req, res) => {
         id: info.Id,
         name: info.Name.replace("/", ""),
         image: info.Config.Image,
-        imageId: info.Image, // SHA256 of the image
+        imageId: info.Image,
         state: info.State.Status || (info.State.Running ? "running" : "stopped"),
         stateDetails: info.State,
         created: info.Created,
@@ -817,17 +824,19 @@ app.get("/api/containers/:id", asyncHandler(async (req, res) => {
         labels: appLabels,
         expireAt: info.Config.Labels?.["yantr.expireAt"] || null,
         app: {
-          name: appLabels.name || info.Name.replace("/", ""),
-          logo: appLabels.logo
-            ? appLabels.logo.includes("://")
-              ? appLabels.logo
-              : `https://ipfs.io/ipfs/${appLabels.logo}`
-            : "https://ipfs.io/ipfs/QmVdbRUyvZpXCsVJAs7fo1PJPXaPHnWRtSCFx6jFTGaG5i",
-          category: appLabels.category || "uncategorized",
-          port: appLabels.port || null,
-          description: appLabels.description || "",
-          docs: appLabels.docs || null,
-          website: appLabels.website || null,
+          id: appId,
+          projectId: composeProject || info.Name.replace("/", "") || "unknown",
+          service: appLabels.service || info.Name.replace("/", ""),
+          info: appLabels.info || "",
+          name: catalogEntry?.name || appLabels.service || info.Name.replace("/", ""),
+          logo: catalogEntry?.logo || null,
+          category: catalogEntry?.category || "uncategorized",
+          tags: catalogEntry?.tags || [],
+          port: catalogEntry?.port || null,
+          short_description: catalogEntry?.short_description || "",
+          description: catalogEntry?.description || "",
+          usecases: catalogEntry?.usecases || [],
+          website: catalogEntry?.website || null,
         },
       },
     });
