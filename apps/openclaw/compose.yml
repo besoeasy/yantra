@@ -4,7 +4,7 @@ services:
     container_name: openclaw
     labels:
       yantr.app: "openclaw"
-      yantr.service: "Personal AI assistant — Gateway control plane with multi-channel inbox (WhatsApp, Telegram, Slack, Discord, and more)"
+      yantr.service: "AI Assistant"
     init: true
     restart: unless-stopped
     ports:

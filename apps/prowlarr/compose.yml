@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "prowlarr"
-      yantr.service: "Indexer manager for automating and integrating Usenet and torrent indexers"
+      yantr.service: "Indexer Manager"
 
 volumes:
   prowlarr_config:

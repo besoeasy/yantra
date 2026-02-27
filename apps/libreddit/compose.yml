@@ -4,7 +4,7 @@ services:
     container_name: libreddit
     labels:
       yantr.app: "libreddit"
-      yantr.service: "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking"
+      yantr.service: "Reddit Client"
     ports:
       - "7420"
     environment:

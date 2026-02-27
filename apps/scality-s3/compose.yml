@@ -4,7 +4,7 @@ services:
     container_name: zenko-s3
     labels:
       yantr.app: "scality-s3"
-      yantr.service: "S3-compatible object storage server for self-hosted cloud storage"
+      yantr.service: "S3 Storage"
     ports:
       - "8000"
     environment:

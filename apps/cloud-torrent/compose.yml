@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "cloud-torrent"
-      yantr.service: "Cloud-based BitTorrent client with streaming support"
+      yantr.service: "Cloud Torrent"
 
 volumes:
   cloud-torrent-downloads:

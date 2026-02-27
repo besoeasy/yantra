@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "transmission"
-      yantr.service: "Fast, easy BitTorrent client with web interface"
+      yantr.service: "Torrent Client"
 
 volumes:
   transmission_config:

@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "jellyfin"
-      yantr.service: "Free and open-source media server for streaming video, music, and photos"
+      yantr.service: "Media Server"
 
 volumes:
   jellyfin-config:

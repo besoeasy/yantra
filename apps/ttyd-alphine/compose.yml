@@ -4,7 +4,7 @@ services:
     container_name: ttyd-alphine
     labels:
       yantr.app: "ttyd-alphine"
-      yantr.service: "Share your terminal over the web — runs a bash shell in Alpine Linux accessible from any browser"
+      yantr.service: "Web Terminal"
     ports:
       - "7681"
     restart: unless-stopped

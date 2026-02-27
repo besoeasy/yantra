@@ -4,7 +4,7 @@ services:
     container_name: stirling-pdf
     labels:
       yantr.app: "stirling-pdf"
-      yantr.service: "Powerful locally hosted web-based PDF manipulation tool"
+      yantr.service: "PDF Tool"
     ports:
       - "8080"
     volumes:

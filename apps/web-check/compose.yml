@@ -7,4 +7,4 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "web-check"
-      yantr.service: "All-in-one tool for analyzing and monitoring websites"
+      yantr.service: "Web Analyzer"

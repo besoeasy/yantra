@@ -4,7 +4,7 @@ services:
     container_name: freshrss
     labels:
       yantr.app: "freshrss"
-      yantr.service: "Self-hosted RSS feed aggregator for reading news and updates from multiple sources"
+      yantr.service: "RSS Reader"
     ports:
       - "80"
     volumes:

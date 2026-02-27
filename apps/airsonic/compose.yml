@@ -4,7 +4,7 @@ services:
     container_name: airsonic
     labels:
       yantr.app: "airsonic"
-      yantr.service: "Self-hosted music streaming server with web interface and mobile apps"
+      yantr.service: "Music Streaming"
     ports:
       - "4040"
     volumes:

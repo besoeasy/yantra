@@ -8,4 +8,4 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "cloudflared"
-      yantr.service: "Cloudflare Tunnel for secure remote access without exposing ports"
+      yantr.service: "Cloudflare Tunnel"

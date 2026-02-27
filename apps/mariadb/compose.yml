@@ -4,7 +4,7 @@ services:
     container_name: mariadb
     labels:
       yantr.app: "mariadb"
-      yantr.service: "Open-source relational database compatible with MySQL"
+      yantr.service: "MariaDB"
     ports:
       - "3306"
     environment:

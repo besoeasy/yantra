@@ -4,7 +4,7 @@ services:
     container_name: appsmith
     labels:
       yantr.app: "appsmith"
-      yantr.service: "Low-code internal tools platform for rapid application development"
+      yantr.service: "Low-Code Platform"
     ports:
       - "80"
       - "443"

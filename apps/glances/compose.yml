@@ -4,7 +4,7 @@ services:
     container_name: glances
     labels:
       yantr.app: "glances"
-      yantr.service: "Real-time system monitoring for containers and host metrics"
+      yantr.service: "System Monitor"
     ports:
       - "61208"
     volumes:

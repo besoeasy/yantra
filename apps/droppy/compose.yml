@@ -4,7 +4,7 @@ services:
     container_name: droppy
     labels:
       yantr.app: "droppy"
-      yantr.service: "Lightweight self-hosted file manager and sharing solution"
+      yantr.service: "File Manager"
     ports:
       - "8989"
     volumes:

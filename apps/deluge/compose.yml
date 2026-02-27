@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "deluge"
-      yantr.service: "Lightweight BitTorrent client with web interface"
+      yantr.service: "Torrent Client"
 
 volumes:
   deluge-config:

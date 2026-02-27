@@ -4,7 +4,7 @@ services:
     container_name: davos
     labels:
       yantr.app: "davos"
-      yantr.service: "Lightweight download manager for managing files with web interface"
+      yantr.service: "Download Manager"
     ports:
       - "8080"
     volumes:

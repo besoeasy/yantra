@@ -6,4 +6,4 @@ services:
       - "5800"
     labels:
       yantr.app: "tor-browser"
-      yantr.service: "Privacy-focused web browser with Tor network integration"
+      yantr.service: "Tor Browser"

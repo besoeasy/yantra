@@ -4,7 +4,7 @@ services:
     container_name: moltis
     labels:
       yantr.app: "moltis"
-      yantr.service: "Self-hosted Moltis server with web UI and Docker access"
+      yantr.service: "Moltis Server"
     ports:
       - "13131"
     volumes:

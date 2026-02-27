@@ -4,7 +4,7 @@ services:
     container_name: watchtower
     labels:
       yantr.app: "watchtower"
-      yantr.service: "Automatically update running Docker containers"
+      yantr.service: "Auto Update"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:

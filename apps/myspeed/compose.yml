@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "myspeed"
-      yantr.service: "Speed test analysis software that tracks your internet speed for 30 days"
+      yantr.service: "Speed Test"
 
 volumes:
   myspeed_data:

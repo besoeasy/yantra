@@ -4,7 +4,7 @@ services:
     container_name: jotty
     labels:
       yantr.app: "jotty"
-      yantr.service: "Lightweight checklists and notes app with Markdown support, Kanban boards, and file-based storage"
+      yantr.service: "Tasks"
     ports:
       - "3000"
     volumes:

@@ -4,7 +4,7 @@ services:
     container_name: traggo
     labels:
       yantr.app: "traggo"
-      yantr.service: "Simple and lightweight time tracking application for personal productivity"
+      yantr.service: "Time Tracker"
     ports:
       - "3030"
     environment:

@@ -28,7 +28,7 @@ services:
         condition: service_healthy
     labels:
       yantr.app: "bitmagnet"
-      yantr.service: "Self-hosted BitTorrent indexer, DHT crawler, and torrent client."
+      yantr.service: "Torrent Indexer"
 
   postgres:
     image: postgres:16-alpine
@@ -48,7 +48,7 @@ services:
 
     labels:
       yantr.app: "bitmagnet"
-      yantr.service: "PostgreSQL database for Bitmagnet"
+      yantr.service: "Database"
 volumes:
   bitmagnet_config:
   bitmagnet_db:

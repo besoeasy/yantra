@@ -4,7 +4,7 @@ services:
     container_name: urlwatch
     labels:
       yantr.app: "urlwatch"
-      yantr.service: "Monitor websites for changes and receive notifications on updates"
+      yantr.service: "URL Monitor"
     ports:
       - "8081"
     volumes:

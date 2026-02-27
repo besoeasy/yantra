@@ -4,7 +4,7 @@ services:
     container_name: dashmachine
     labels:
       yantr.app: "dashmachine"
-      yantr.service: "Customizable personal dashboard for organizing links and services"
+      yantr.service: "Bookmarks"
     ports:
       - "5000"
     volumes:

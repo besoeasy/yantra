@@ -4,7 +4,7 @@ services:
     container_name: perplexica
     labels:
       yantr.app: "perplexica"
-      yantr.service: "AI-powered search engine that delivers conversational responses with contextual understanding"
+      yantr.service: "AI Search"
     ports:
       - "3000"
     volumes:

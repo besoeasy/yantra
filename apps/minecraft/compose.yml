@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "minecraft"
-      yantr.service: "Open-source sandbox game server with endless possibilities"
+      yantr.service: "Game Server"
 
 volumes:
   minecraft-data:

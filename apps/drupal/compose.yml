@@ -4,7 +4,7 @@ services:
     container_name: drupal
     labels:
       yantr.app: "drupal"
-      yantr.service: "Powerful open-source content management system for building websites"
+      yantr.service: "Drupal CMS"
     ports:
       - "80"
     volumes:

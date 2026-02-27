@@ -4,7 +4,7 @@ services:
     container_name: wiki-js
     labels:
       yantr.app: "wiki-js"
-      yantr.service: "Modern, lightweight wiki platform for creating and organizing knowledge bases"
+      yantr.service: "Wiki"
     ports:
       - "3000"
     volumes:

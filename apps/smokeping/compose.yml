@@ -4,7 +4,7 @@ services:
     container_name: smokeping
     labels:
       yantr.app: "smokeping"
-      yantr.service: "Latency and packet loss monitoring tool with graphing capabilities"
+      yantr.service: "Network Monitor"
     ports:
       - "80"
     volumes:

@@ -4,7 +4,7 @@ services:
     container_name: rutorrent
     labels:
       yantr.app: "rutorrent"
-      yantr.service: "Lightweight torrent client with web interface for managing downloads"
+      yantr.service: "Torrent Client"
     ports:
       - "80"
       - "51413"

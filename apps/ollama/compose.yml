@@ -4,7 +4,7 @@ services:
     container_name: ollama
     labels:
       yantr.app: "ollama"
-      yantr.service: "ollama"
+      yantr.service: "AI Models"
     ports:
       - "11434"
     volumes:

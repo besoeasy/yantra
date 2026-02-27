@@ -17,7 +17,7 @@ services:
       - net.ipv4.conf.all.src_valid_mark=1
     labels:
       yantr.app: "wireguard"
-      yantr.service: "Fast, modern VPN with state-of-the-art cryptography"
+      yantr.service: "VPN"
 
 volumes:
   wireguard_data:

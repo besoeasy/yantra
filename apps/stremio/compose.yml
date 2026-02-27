@@ -13,7 +13,7 @@ services:
       HTTPS: 1
     labels:
       yantr.app: "stremio"
-      yantr.service: "Media center application for streaming movies, TV shows, and video content"
+      yantr.service: "Media Center"
 
 volumes:
   stremio-data:

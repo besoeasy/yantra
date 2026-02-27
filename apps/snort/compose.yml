@@ -4,7 +4,7 @@ services:
     container_name: snort
     labels:
       yantr.app: "snort"
-      yantr.service: "Fast and lightweight Nostr web client built with React for easy network interaction"
+      yantr.service: "Nostr Client"
     ports:
       - "8080"
     init: true

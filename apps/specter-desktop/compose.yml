@@ -4,7 +4,7 @@ services:
     container_name: specter-desktop
     labels:
       yantr.app: "specter-desktop"
-      yantr.service: "Bitcoin wallet interface with focus on privacy and security"
+      yantr.service: "Bitcoin Wallet"
     ports:
       - "25441"
     restart: unless-stopped

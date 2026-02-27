@@ -14,7 +14,7 @@ services:
       - minio_data:/data
     labels:
       yantr.app: "minio"
-      yantr.service: "High Performance Object Storage compatible with Amazon S3 API"
+      yantr.service: "Object Storage"
 
 volumes:
   minio_data:

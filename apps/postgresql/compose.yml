@@ -4,7 +4,7 @@ services:
     container_name: postgresql
     labels:
       yantr.app: "postgresql"
-      yantr.service: "Powerful open-source relational database with advanced features"
+      yantr.service: "PostgreSQL"
     ports:
       - "5432"
     environment:

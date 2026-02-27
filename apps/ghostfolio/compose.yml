@@ -4,7 +4,7 @@ services:
     container_name: ghostfolio
     labels:
       yantr.app: "ghostfolio"
-      yantr.service: "Open source wealth management for portfolio tracking"
+      yantr.service: "Portfolio Tracker"
     ports:
       - "3333"
     volumes:
@@ -27,7 +27,7 @@ services:
 
     labels:
       yantr.app: "ghostfolio"
-      yantr.service: "Redis cache for Ghostfolio"
+      yantr.service: "Cache"
 volumes:
   ghostfolio_data:
   redis_data:

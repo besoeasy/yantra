@@ -4,7 +4,7 @@ services:
     container_name: fossflow
     labels:
       yantr.app: "fossflow"
-      yantr.service: "Create beautiful isometric infrastructure diagrams with auto-save and offline support"
+      yantr.service: "Diagram Tool"
     ports:
       - "80"
     volumes:

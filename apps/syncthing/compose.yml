@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "syncthing"
-      yantr.service: "Continuous file synchronization program. It synchronizes files between two or more computers."
+      yantr.service: "File Sync"
 
 volumes:
   syncthing_data:

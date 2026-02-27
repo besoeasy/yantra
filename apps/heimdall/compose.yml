@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "heimdall"
-      yantr.service: "Application dashboard and launcher with simple icon-based interface"
+      yantr.service: "Home Dashboard"
 
 volumes:
   heimdall-config:

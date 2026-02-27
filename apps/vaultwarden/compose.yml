@@ -4,7 +4,7 @@ services:
     container_name: vaultwarden
     labels:
       yantr.app: "vaultwarden"
-      yantr.service: "Lightweight Bitwarden server for password management"
+      yantr.service: "Password Vault"
     ports:
       - "80"
     volumes:

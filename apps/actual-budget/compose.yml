@@ -4,7 +4,7 @@ services:
     container_name: actual-budget
     labels:
       yantr.app: "actual-budget"
-      yantr.service: "Self-hosted personal finance app with powerful budgeting and tracking features"
+      yantr.service: "Budget App"
     ports:
       - "5006"
     volumes:

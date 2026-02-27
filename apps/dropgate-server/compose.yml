@@ -4,7 +4,7 @@ services:
     container_name: dropgate-server
     labels:
       yantr.app: "dropgate-server"
-      yantr.service: "Privacy-first file sharing solution with end-to-end encryption, supporting hosted uploads and P2P transfers."
+      yantr.service: "Secure Share"
     ports:
       - "52443"
     environment:

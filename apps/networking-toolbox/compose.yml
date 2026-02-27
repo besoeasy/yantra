@@ -4,7 +4,7 @@ services:
     container_name: networking-toolbox
     labels:
       yantr.app: "networking-toolbox"
-      yantr.service: "100+ offline-first networking tools and utilities"
+      yantr.service: "Net Tools"
     ports:
       - "3000"
     restart: unless-stopped

@@ -4,7 +4,7 @@ services:
     container_name: nano
     labels:
       yantr.app: "nano"
-      yantr.service: "Open source, green cryptocurrency and peer-to-peer payment system"
+      yantr.service: "Crypto Node"
     ports:
       - "8075"
       - "3000"

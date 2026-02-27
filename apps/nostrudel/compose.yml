@@ -4,7 +4,7 @@ services:
     container_name: nostrudel
     labels:
       yantr.app: "nostrudel"
-      yantr.service: "A nostr web client sandbox for exploring and learning the inner workings of the nostr network"
+      yantr.service: "Nostr Client"
     ports:
       - "80"
     environment:
@@ -22,4 +22,4 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "nostrudel"
-      yantr.service: "Nostrudel Cors service for noStrudel"
+      yantr.service: "CORS Proxy"

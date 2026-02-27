@@ -13,7 +13,7 @@ services:
     command: relay --config /etc/strfry.conf
     labels:
       yantr.app: "strfry"
-      yantr.service: "High-performance nostr relay with LMDB storage"
+      yantr.service: "Nostr Relay"
 
 configs:
   strfry-config:

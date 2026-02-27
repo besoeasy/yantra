@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "samba"
-      yantr.service: "SMB/CIFS file sharing server for network storage access"
+      yantr.service: "File Share"
 
 volumes:
   samba-storage:

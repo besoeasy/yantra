@@ -4,7 +4,7 @@ services:
     container_name: whoogle
     labels:
       yantr.app: "whoogle"
-      yantr.service: "Privacy-focused metasearch engine - fast, clean Google-like search results"
+      yantr.service: "Search Engine"
     ports:
       - "5000"
     volumes:

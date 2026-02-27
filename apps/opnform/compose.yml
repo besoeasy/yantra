@@ -4,7 +4,7 @@ services:
     container_name: opnform
     labels:
       yantr.app: "opnform"
-      yantr.service: "Open source form builder with advanced customization and workflow options"
+      yantr.service: "Form Builder"
     ports:
       - "80"
     volumes:

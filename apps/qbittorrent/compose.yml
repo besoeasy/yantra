@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "qbittorrent"
-      yantr.service: "Feature-rich BitTorrent client with integrated search engine and web interface"
+      yantr.service: "Torrent Client"
 
 volumes:
   qbittorrent-config:

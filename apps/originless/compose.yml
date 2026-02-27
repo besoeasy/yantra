@@ -14,10 +14,10 @@ services:
     restart: unless-stopped
     labels:
       yantr.app: "originless"
-      yantr.service: "All-in-one anonymous storage backend for apps, screenshot tools, and file hosting"
+      yantr.service: "Storage Backend"
 
 volumes:
   originless:
     labels:
       yantr.app: "originless"
-      yantr.service: "All-in-one anonymous storage backend for apps, screenshot tools, and file hosting"
+      yantr.service: "Storage Volume"
