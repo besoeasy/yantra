@@ -76,32 +76,32 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="h-screen flex flex-col bg-[#1e1e1e] text-gray-300 font-mono text-[13px] overflow-hidden">
+  <div class="h-[calc(100vh-4rem)] flex flex-col bg-white dark:bg-[#0A0A0A] text-gray-800 dark:text-gray-300 font-mono text-[13px] overflow-hidden border border-gray-200 dark:border-zinc-800 rounded-xl mx-4 my-4 shadow-sm">
     <!-- Toolbar -->
-    <div class="flex items-center justify-between px-4 py-2 bg-[#252526] border-b border-[#333333] shrink-0">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 bg-gray-50 dark:bg-zinc-900/50 border-b border-gray-200 dark:border-zinc-800 shrink-0 gap-3">
        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-2 text-blue-400">
+          <div class="flex items-center gap-2 text-gray-900 dark:text-white">
              <Terminal class="w-4 h-4" />
-             <span class="font-bold text-gray-100 uppercase tracking-wide text-xs">Output</span>
+             <span class="font-bold uppercase tracking-[0.2em] text-[10px]">System Output</span>
           </div>
-          <div class="h-4 w-px bg-[#333333]"></div>
+          <div class="hidden sm:block h-4 w-px bg-gray-300 dark:bg-zinc-700"></div>
           
-          <div class="flex bg-[#1e1e1e] rounded border border-[#3c3c3c] overflow-hidden">
+          <div class="flex bg-white dark:bg-[#0A0A0A] rounded-md border border-gray-200 dark:border-zinc-800 overflow-hidden shadow-sm">
              <button @click="logFilter = 'all'; fetchLogs()" 
-                :class="logFilter === 'all' ? 'bg-[#37373d] text-white' : 'text-gray-400 hover:text-gray-200'"
-                class="px-3 py-1 text-xs transition-colors">
+                :class="logFilter === 'all' ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-medium' : 'text-gray-500 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-300'"
+                class="px-3 py-1.5 text-xs transition-colors">
                 All
              </button>
-             <div class="w-px bg-[#3c3c3c]"></div>
+             <div class="w-px bg-gray-200 dark:bg-zinc-800"></div>
              <button @click="logFilter = 'info'; fetchLogs()" 
-                :class="logFilter === 'info' ? 'bg-[#37373d] text-blue-400' : 'text-gray-400 hover:text-blue-300'"
-                class="px-3 py-1 text-xs transition-colors">
+                :class="logFilter === 'info' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-500 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-300'"
+                class="px-3 py-1.5 text-xs transition-colors">
                 Info
              </button>
-             <div class="w-px bg-[#3c3c3c]"></div>
+             <div class="w-px bg-gray-200 dark:bg-zinc-800"></div>
              <button @click="logFilter = 'error'; fetchLogs()" 
-                :class="logFilter === 'error' ? 'bg-[#37373d] text-red-400' : 'text-gray-400 hover:text-red-300'"
-                class="px-3 py-1 text-xs transition-colors">
+                :class="logFilter === 'error' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-medium' : 'text-gray-500 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-300'"
+                class="px-3 py-1.5 text-xs transition-colors">
                 Errors
              </button>
           </div>
@@ -109,68 +109,68 @@ onUnmounted(() => {
 
        <div class="flex items-center gap-2">
           <div class="relative group">
-             <input v-model="searchQuery" type="text" placeholder="Filter..." class="bg-[#1e1e1e] border border-[#3c3c3c] text-gray-300 px-2 py-1 rounded text-xs w-32 focus:w-48 focus:border-blue-500 outline-none transition-all placeholder-gray-600" />
+             <input v-model="searchQuery" type="text" placeholder="Filter logs..." class="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 text-gray-900 dark:text-white px-3 py-1.5 rounded-md text-xs w-full sm:w-48 focus:w-64 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder-gray-400 dark:placeholder-zinc-600 shadow-sm" />
           </div>
           
-          <div class="h-4 w-px bg-[#333333] mx-1"></div>
+          <div class="hidden sm:block h-4 w-px bg-gray-300 dark:bg-zinc-700 mx-2"></div>
 
           <button @click="autoRefresh = !autoRefresh" 
-             :class="autoRefresh ? 'text-green-400 bg-green-500/10' : 'text-gray-400 hover:text-gray-200'"
-             class="p-1.5 rounded transition-colors" 
+             :class="autoRefresh ? 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-500/10 border-green-200 dark:border-green-500/20' : 'text-gray-500 border-gray-200 hover:bg-gray-100 dark:text-zinc-400 dark:border-zinc-800 dark:hover:bg-zinc-800'"
+             class="p-1.5 rounded-md border transition-colors shadow-sm" 
              :title="autoRefresh ? 'Pause Auto-scroll' : 'Resume Auto-scroll'">
              <Pause v-if="autoRefresh" class="w-4 h-4" />
              <Play v-else class="w-4 h-4" />
           </button>
           
-          <button @click="clearLogs" class="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-[#333] rounded transition-colors" title="Clear Console">
+          <button @click="clearLogs" class="p-1.5 text-gray-500 border border-gray-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 dark:text-zinc-400 dark:border-zinc-800 dark:hover:bg-red-900/20 dark:hover:text-red-400 dark:hover:border-red-900/30 rounded-md transition-colors shadow-sm" title="Clear Console">
              <Trash2 class="w-4 h-4" />
           </button>
        </div>
     </div>
 
     <!-- Log Viewer -->
-    <div ref="logContainer" class="flex-1 overflow-y-auto p-2 scrollbar-thin">
-       <div v-if="loading && !logsData.logs" class="flex flex-col items-center justify-center h-full text-gray-500 gap-2">
+    <div ref="logContainer" class="flex-1 overflow-y-auto p-2 scrollbar-thin bg-gray-50/50 dark:bg-[#050505]">
+       <div v-if="loading && !logsData.logs" class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-zinc-600 gap-3">
           <RefreshCw class="w-6 h-6 animate-spin" />
-          <span>Connecting...</span>
+          <span class="text-xs font-semibold uppercase tracking-widest">Connecting stream...</span>
        </div>
 
-       <div v-else-if="!logsData.logs || logsData.logs.length === 0" class="flex flex-col items-center justify-center h-full text-gray-600 gap-2">
-          <Terminal class="w-8 h-8 opacity-20" />
-          <span class="opacity-50">No output to display</span>
+       <div v-else-if="!logsData.logs || logsData.logs.length === 0" class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-zinc-600 gap-3">
+          <Terminal class="w-8 h-8 opacity-50" />
+          <span class="text-xs font-semibold uppercase tracking-widest">No output to display</span>
        </div>
 
        <div v-else class="font-mono">
           <div v-for="(log, idx) in logsData.logs" :key="idx" 
              v-show="!searchQuery || log.message.toLowerCase().includes(searchQuery.toLowerCase())"
-             class="flex gap-3 px-2 py-[2px] hover:bg-[#2a2d2e] rounded-sm group selection:bg-blue-500/30">
+             class="flex gap-4 px-3 py-1 hover:bg-white dark:hover:bg-[#0A0A0A] rounded group selection:bg-blue-500/30 transition-colors">
              
              <!-- Line Num -->
-             <div class="select-none text-gray-600 w-8 text-right opacity-50 text-[11px] pt-[2px]">{{ idx + 1 }}</div>
+             <div class="select-none text-gray-400 dark:text-zinc-600 w-8 text-right text-[11px] pt-[2px] font-medium">{{ idx + 1 }}</div>
              
              <!-- Time -->
-             <div class="select-none text-[#569cd6] w-24 shrink-0 text-[11px] pt-[2px] opacity-80">{{ formatTimestamp(log.timestamp) }}</div>
+             <div class="select-none text-blue-600 dark:text-blue-400/80 w-24 shrink-0 text-[11px] pt-[2px] font-medium tracking-tight">{{ formatTimestamp(log.timestamp) }}</div>
              
              <!-- Level -->
-             <div class="select-none w-[3px] rounded-full shrink-0 my-0.5" :class="log.level === 'error' ? 'bg-red-500' : 'bg-blue-500/50'"></div>
+             <div class="select-none w-[3px] rounded-full shrink-0 my-0.5" :class="log.level === 'error' ? 'bg-red-500' : 'bg-gray-300 dark:bg-zinc-700'"></div>
 
              <!-- Content -->
-             <div class="flex-1 break-all whitespace-pre-wrap text-gray-300 leading-relaxed">
-                <span :class="log.level === 'error' ? 'text-red-300' : ''">{{ log.message }}</span>
-                <span v-if="log.args && log.args.length" class="text-gray-500 pl-2 text-xs italic opacity-80">{{ log.args.join(' ') }}</span>
+             <div class="flex-1 break-all whitespace-pre-wrap text-gray-700 dark:text-zinc-300 leading-relaxed text-xs">
+                <span :class="log.level === 'error' ? 'text-red-600 dark:text-red-400 font-medium' : ''">{{ log.message }}</span>
+                <span v-if="log.args && log.args.length" class="text-gray-500 dark:text-zinc-500 pl-2 text-[11px] italic">{{ log.args.join(' ') }}</span>
              </div>
           </div>
        </div>
     </div>
     
     <!-- Status Bar Footer -->
-    <div class="bg-[#007acc] text-white px-3 py-1 text-[11px] flex justify-between items-center shrink-0">
-       <div class="flex gap-4">
-          <span>Ln {{ logsData.count || 0 }}, Col 1</span>
+    <div class="bg-gray-100 dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 text-gray-600 dark:text-zinc-400 px-4 py-2 text-[10px] font-bold uppercase tracking-wider flex justify-between items-center shrink-0">
+       <div class="flex gap-6">
+          <span class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 rounded-full bg-green-500" :class="{'animate-pulse': autoRefresh}"></div> LN {{ logsData.count || 0 }}</span>
           <span>UTF-8</span>
        </div>
-       <div class="flex gap-2 opacity-80 hover:opacity-100 cursor-pointer" @click="scrollToBottom">
-          <ArrowDown class="w-3 h-3" />
+       <div class="flex gap-2 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer" @click="scrollToBottom" title="Scroll to bottom">
+          <ArrowDown class="w-3.5 h-3.5" />
        </div>
     </div>
   </div>
@@ -178,21 +178,23 @@ onUnmounted(() => {
 
 <style scoped>
 .scrollbar-thin::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 .scrollbar-thin::-webkit-scrollbar-track {
-  background: #1e1e1e;
+  background: transparent;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #424242;
-  border-radius: 0;
-  border: 2px solid #1e1e1e;
+  background-color: rgba(156, 163, 175, 0.3);
+  border-radius: 4px;
+}
+:deep(.dark) .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(63, 63, 70, 0.5);
 }
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #4f4f4f;
+  background-color: rgba(156, 163, 175, 0.5);
 }
-.scrollbar-thin::-webkit-scrollbar-corner {
-  background: #1e1e1e;
+:deep(.dark) .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(82, 82, 91, 0.8);
 }
 </style>

@@ -194,30 +194,33 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-neutral-50 dark:bg-[#0f1117] font-sans text-slate-800 dark:text-slate-200 pb-20">
+  <div class="min-h-screen bg-white dark:bg-[#0A0A0A] font-sans text-gray-900 dark:text-white pb-20">
     <!-- Header -->
-    <header class="bg-white dark:bg-[#181b21] border-b border-gray-200 dark:border-gray-800 sticky top-0 z-30">
+    <header class="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-              <Layers class="w-5 h-5" />
+            <div class="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50">
+              <Layers class="w-5 h-5 text-gray-700 dark:text-zinc-300" />
             </div>
-            <h1 class="text-lg font-bold text-gray-900 dark:text-white">Images</h1>
+            <div>
+              <h1 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white">Images</h1>
+              <p class="text-xs font-medium text-gray-500 dark:text-zinc-500">Manage local Docker images</p>
+            </div>
           </div>
           
           <div class="flex items-center gap-3">
-            <div class="relative flex-1 sm:flex-initial">
-              <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <div class="relative flex-1 sm:flex-initial group">
+              <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
               <input 
                 v-model="searchQuery" 
                 type="text" 
                 placeholder="Search images..." 
-                class="w-full sm:w-64 pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-[#181b21] transition-all"
+                class="w-full sm:w-64 pl-9 pr-4 py-2 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
             </div>
-            <button @click="fetchImages" class="p-2 bg-white dark:bg-[#181b21] border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors shrink-0">
-              <Database class="w-4 h-4 text-gray-500" :class="{ 'animate-spin': loading }" />
+            <button @click="fetchImages" class="p-2 bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-600 rounded-lg transition-colors shrink-0 group">
+              <Database class="w-4 h-4 text-gray-600 dark:text-zinc-400 group-hover:text-blue-500 transition-colors" :class="{ 'animate-spin text-blue-500': loading }" />
             </button>
           </div>
         </div>
@@ -228,151 +231,171 @@ onMounted(() => {
       
       <!-- Stats Overview -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
-          <div class="flex justify-between items-start">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Images</span>
-            <Box class="w-5 h-5 text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 p-1 rounded" />
+        <div class="group relative overflow-hidden bg-white dark:bg-[#0A0A0A] p-5 rounded-xl border border-gray-200 dark:border-zinc-800 flex flex-col justify-between h-32 hover:border-gray-300 dark:hover:border-zinc-600 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="flex justify-between items-start z-10">
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500">Total Images</span>
+            <Box class="w-4 h-4 text-gray-400 dark:text-zinc-500 group-hover:text-blue-500 transition-colors" />
           </div>
-          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ imagesData.total || 0 }}</span>
+          <span class="text-4xl font-bold tracking-tighter tabular-nums text-gray-900 dark:text-white z-10">{{ imagesData.total || 0 }}</span>
         </div>
 
-        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
-          <div class="flex justify-between items-start">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">In Use</span>
-            <Check class="w-5 h-5 text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 p-1 rounded" />
+        <div class="group relative overflow-hidden bg-white dark:bg-[#0A0A0A] p-5 rounded-xl border border-gray-200 dark:border-zinc-800 flex flex-col justify-between h-32 hover:border-gray-300 dark:hover:border-zinc-600 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="flex justify-between items-start z-10">
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500">In Use</span>
+            <Check class="w-4 h-4 text-gray-400 dark:text-zinc-500 group-hover:text-green-500 transition-colors" />
           </div>
-          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ imagesData.used || 0 }}</span>
+          <span class="text-4xl font-bold tracking-tighter tabular-nums text-gray-900 dark:text-white z-10">{{ imagesData.used || 0 }}</span>
         </div>
 
-        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
-          <div class="flex justify-between items-start">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Unused</span>
-            <AlertTriangle class="w-5 h-5 text-amber-500 bg-amber-50 dark:bg-amber-500/10 p-1 rounded" />
+        <div class="group relative overflow-hidden bg-white dark:bg-[#0A0A0A] p-5 rounded-xl border border-gray-200 dark:border-zinc-800 flex flex-col justify-between h-32 hover:border-gray-300 dark:hover:border-zinc-600 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="flex justify-between items-start z-10">
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500">Unused</span>
+            <AlertTriangle class="w-4 h-4 text-gray-400 dark:text-zinc-500 group-hover:text-amber-500 transition-colors" />
           </div>
-          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ imagesData.unused || 0 }}</span>
+          <span class="text-4xl font-bold tracking-tighter tabular-nums text-gray-900 dark:text-white z-10">{{ imagesData.unused || 0 }}</span>
         </div>
 
-        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
-          <div class="flex justify-between items-start">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Reclaimable</span>
-            <HardDrive class="w-5 h-5 text-rose-500 bg-rose-50 dark:bg-rose-500/10 p-1 rounded" />
+        <div class="group relative overflow-hidden bg-white dark:bg-[#0A0A0A] p-5 rounded-xl border border-gray-200 dark:border-zinc-800 flex flex-col justify-between h-32 hover:border-gray-300 dark:hover:border-zinc-600 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="flex justify-between items-start z-10">
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500">Reclaimable</span>
+            <HardDrive class="w-4 h-4 text-gray-400 dark:text-zinc-500 group-hover:text-red-500 transition-colors" />
           </div>
-          <div class="flex items-baseline gap-1">
-            <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ imagesData.unusedSize || 0 }}</span>
-            <span class="text-sm text-gray-400">MB</span>
+          <div class="flex items-baseline gap-1 z-10">
+            <span class="text-4xl font-bold tracking-tighter tabular-nums text-gray-900 dark:text-white">{{ imagesData.unusedSize || 0 }}</span>
+            <span class="text-sm font-semibold text-gray-500 dark:text-zinc-500">MB</span>
           </div>
         </div>
       </div>
 
       <!-- Treemap Chart -->
-      <div v-if="treemapSeries.length > 0" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
-         <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Storage Distribution</h3>
-         <div class="rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900/50 p-1">
+      <div v-if="treemapSeries.length > 0" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-6">
+         <h3 class="text-sm font-semibold tracking-tight text-gray-900 dark:text-white mb-4">Storage Distribution</h3>
+         <div class="rounded-lg overflow-hidden bg-gray-50 dark:bg-zinc-900/30 border border-gray-200 dark:border-zinc-800/50 p-1">
             <VueApexCharts :options="treemapOptions" :series="treemapSeries" height="280" />
          </div>
       </div>
 
       <!-- Content Tabs -->
       <div class="space-y-4">
-        <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-1">
+        <div class="flex items-center justify-between border-b border-gray-200 dark:border-zinc-800 pb-1">
           <div class="flex gap-6">
             <button 
               @click="currentTab = 'active'"
-              :class="currentTab === 'active' ? 'text-indigo-600 dark:text-indigo-400 border-indigo-600 dark:border-indigo-400' : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300'"
-              class="pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2">
-              <Check class="w-4 h-4" />
+              :class="currentTab === 'active' ? 'text-gray-900 dark:text-white border-gray-900 dark:border-white' : 'text-gray-500 dark:text-zinc-500 border-transparent hover:text-gray-700 dark:hover:text-zinc-300'"
+              class="pb-3 text-sm font-semibold tracking-tight border-b-2 transition-colors flex items-center gap-2">
               Active Images
-              <span class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ filteredUsed.length }}</span>
+              <span class="bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 text-xs px-2 py-0.5 rounded-full font-bold tabular-nums">{{ filteredUsed.length }}</span>
             </button>
             <button 
               @click="currentTab = 'unused'"
-              :class="currentTab === 'unused' ? 'text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-400' : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300'"
-              class="pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2">
-              <AlertTriangle class="w-4 h-4" />
+              :class="currentTab === 'unused' ? 'text-gray-900 dark:text-white border-gray-900 dark:border-white' : 'text-gray-500 dark:text-zinc-500 border-transparent hover:text-gray-700 dark:hover:text-zinc-300'"
+              class="pb-3 text-sm font-semibold tracking-tight border-b-2 transition-colors flex items-center gap-2">
               Unused Images
-              <span class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ filteredUnused.length }}</span>
+              <span class="bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 text-xs px-2 py-0.5 rounded-full font-bold tabular-nums">{{ filteredUnused.length }}</span>
             </button>
           </div>
           
           <button v-if="currentTab === 'unused' && filteredUnused.length > 0"
             @click="deleteAllUnusedImages"
             :disabled="deletingAllImages"
-            class="text-xs font-semibold uppercase text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400 transition-colors flex items-center gap-1">
+            class="text-[10px] font-bold uppercase tracking-[0.2em] text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 transition-colors flex items-center gap-2 px-3 py-1.5 rounded-md border border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10">
              <Trash2 class="w-3 h-3" />
              {{ deletingAllImages ? 'Cleaning...' : 'Prune All' }}
           </button>
         </div>
 
         <!-- Active View -->
-        <div v-if="currentTab === 'active'" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-           <table class="w-full text-left border-collapse">
-              <thead>
-                 <tr class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
-                    <th class="px-6 py-4 font-medium">Tag</th>
-                    <th class="px-6 py-4 font-medium w-32">Short ID</th>
-                    <th class="px-6 py-4 font-medium w-32">Size</th>
-                    <th class="px-6 py-4 font-medium w-48">Created</th>
-                    <th class="px-4 py-4 w-24"></th>
-                 </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
-                 <tr v-if="filteredUsed.length === 0" class="bg-gray-50/50 dark:bg-gray-900/20">
-                    <td colspan="5" class="px-6 py-12 text-center text-gray-400">No active images found</td>
-                 </tr>
-                 <tr v-for="image in filteredUsed" :key="image.id" class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td class="px-6 py-4 text-gray-900 dark:text-white font-medium">
-                       <div class="flex flex-col">
-                          <span v-for="tag in image.tags" :key="tag">{{ tag }}</span>
-                       </div>
-                    </td>
-                    <td class="px-6 py-4 font-mono text-gray-500 text-xs">{{ image.shortId }}</td>
-                    <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ image.size }} MB</td>
-                    <td class="px-6 py-4 text-gray-500">{{ image.created }}</td>
-                    <td class="px-4 py-4 text-right">
-                       <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20">In Use</span>
-                    </td>
-                 </tr>
-              </tbody>
-           </table>
-        </div>
-
-        <!-- Unused View -->
-        <div v-if="currentTab === 'unused'" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-           <table class="w-full text-left border-collapse">
-              <thead>
-                 <tr class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
-                    <th class="px-6 py-4 font-medium">Tag</th>
-                    <th class="px-6 py-4 font-medium w-32">Short ID</th>
-                    <th class="px-6 py-4 font-medium w-32">Size</th>
-                    <th class="px-6 py-4 font-medium w-48">Created</th>
-                    <th class="px-4 py-4 w-24"></th>
-                 </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
-                 <tr v-if="filteredUnused.length === 0" class="bg-gray-50/50 dark:bg-gray-900/20">
-                    <td colspan="5" class="px-6 py-12 text-center text-gray-400">No unused images found on disk</td>
-                 </tr>
-                 <tr v-for="image in filteredUnused" :key="image.id" class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td class="px-6 py-4 text-gray-900 dark:text-white font-medium">
-                       <div class="flex flex-col">
-                          <span v-for="tag in image.tags" :key="tag">{{ tag }}</span>
-                       </div>
-                    </td>
-                    <td class="px-6 py-4 font-mono text-gray-500 text-xs">{{ image.shortId }}</td>
-                    <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ image.size }} MB</td>
-                    <td class="px-6 py-4 text-gray-500">{{ image.created }}</td>
-                    <td class="px-4 py-4 text-right">
-                       <button @click="deleteImage(image.id, image.tags[0])" 
-                          class="p-2 text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100">
-                          <Trash2 class="w-4 h-4" />
-                       </button>
-                    </td>
-                 </tr>
-              </tbody>
-           </table>
-        </div>
-
+        <transition name="fade" mode="out-in">
+          <div v-if="currentTab === 'active'" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden">
+             <table class="w-full text-left border-collapse">
+                <thead>
+                   <tr class="text-[10px] font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-[0.2em] border-b border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/20">
+                      <th class="px-6 py-4">Tag</th>
+                      <th class="px-6 py-4 w-32">Short ID</th>
+                      <th class="px-6 py-4 w-32">Size</th>
+                      <th class="px-6 py-4 w-48">Created</th>
+                      <th class="px-4 py-4 w-24">Status</th>
+                   </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-zinc-800 text-sm font-medium">
+                   <tr v-if="filteredUsed.length === 0">
+                      <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-zinc-500 text-sm">No active images found</td>
+                   </tr>
+                   <tr v-for="image in filteredUsed" :key="image.id" class="group hover:bg-gray-50 dark:hover:bg-zinc-900/50 transition-colors">
+                      <td class="px-6 py-4 text-gray-900 dark:text-white">
+                         <div class="flex flex-col gap-1">
+                            <span v-for="tag in image.tags" :key="tag" class="break-all">{{ tag }}</span>
+                         </div>
+                      </td>
+                      <td class="px-6 py-4 font-mono text-gray-500 dark:text-zinc-400 text-xs">{{ image.shortId }}</td>
+                      <td class="px-6 py-4 text-gray-600 dark:text-zinc-300 tabular-nums">{{ image.size }} MB</td>
+                      <td class="px-6 py-4 text-gray-500 dark:text-zinc-500 text-xs">{{ image.created }}</td>
+                      <td class="px-4 py-4 text-right">
+                         <div class="flex items-center justify-end gap-1.5">
+                            <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-green-600 dark:text-green-500">In Use</span>
+                         </div>
+                      </td>
+                   </tr>
+                </tbody>
+             </table>
+          </div>
+  
+          <!-- Unused View -->
+          <div v-else-if="currentTab === 'unused'" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden">
+             <table class="w-full text-left border-collapse">
+                <thead>
+                   <tr class="text-[10px] font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-[0.2em] border-b border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/20">
+                      <th class="px-6 py-4">Tag</th>
+                      <th class="px-6 py-4 w-32">Short ID</th>
+                      <th class="px-6 py-4 w-32">Size</th>
+                      <th class="px-6 py-4 w-48">Created</th>
+                      <th class="px-4 py-4 w-24">Action</th>
+                   </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-zinc-800 text-sm font-medium">
+                   <tr v-if="filteredUnused.length === 0">
+                      <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-zinc-500 text-sm">No unused images found</td>
+                   </tr>
+                   <tr v-for="image in filteredUnused" :key="image.id" class="group hover:bg-gray-50 dark:hover:bg-zinc-900/50 transition-colors">
+                      <td class="px-6 py-4 text-gray-900 dark:text-white">
+                         <div class="flex flex-col gap-1">
+                            <span v-for="tag in image.tags" :key="tag" class="break-all">{{ tag }}</span>
+                         </div>
+                      </td>
+                      <td class="px-6 py-4 font-mono text-gray-500 dark:text-zinc-400 text-xs">{{ image.shortId }}</td>
+                      <td class="px-6 py-4 text-gray-600 dark:text-zinc-300 tabular-nums">{{ image.size }} MB</td>
+                      <td class="px-6 py-4 text-gray-500 dark:text-zinc-500 text-xs">{{ image.created }}</td>
+                      <td class="px-4 py-4 text-right">
+                         <button @click="deleteImage(image.id, image.tags[0])" 
+                            class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+                            title="Delete Image">
+                            <Trash2 class="w-4 h-4" />
+                         </button>
+                      </td>
+                   </tr>
+                </tbody>
+             </table>
+          </div>
+        </transition>
       </div>
     </main>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(4px);
+}
+</style>

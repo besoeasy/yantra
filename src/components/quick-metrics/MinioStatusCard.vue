@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { Cloud, CheckCircle2, AlertCircle, Settings } from 'lucide-vue-next'
+import { Cloud, CheckCircle2, AlertCircle, Settings, ArrowRight, ShieldCheck, Zap } from 'lucide-vue-next'
 
 const router = useRouter()
 const apiUrl = ref('')
@@ -10,35 +10,12 @@ const loading = ref(true)
 const config = ref(null)
 
 const status = computed(() => {
-  if (loading.value) return { type: 'loading', text: 'Checking...', color: 'slate' }
-  if (configured.value) return { type: 'configured', text: 'Configured', color: 'green' }
-  return { type: 'not-configured', text: 'Not Configured', color: 'yellow' }
+  if (loading.value) return { type: 'loading', text: 'Checking', color: 'slate' }
+  if (configured.value) return { type: 'configured', text: 'Active', color: 'green' }
+  return { type: 'not-configured', text: 'Setup Required', color: 'yellow' }
 })
 
-const theme = computed(() => {
-  if (status.value.type === 'configured') {
-    return {
-      text: 'text-emerald-600 dark:text-emerald-400',
-      bg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-      border: 'group-hover:border-emerald-500/30 dark:group-hover:border-emerald-400/30',
-      pill: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
-    }
-  }
-  if (status.value.type === 'not-configured') {
-    return {
-      text: 'text-amber-600 dark:text-amber-400',
-      bg: 'bg-amber-500/10 dark:bg-amber-500/20',
-      border: 'group-hover:border-amber-500/30 dark:group-hover:border-amber-400/30',
-      pill: 'bg-amber-500/10 text-amber-700 dark:text-amber-300'
-    }
-  }
-  return {
-    text: 'text-slate-500 dark:text-slate-400',
-    bg: 'bg-slate-500/10 dark:bg-slate-500/20',
-    border: 'group-hover:border-slate-500/30 dark:group-hover:border-slate-400/30',
-    pill: 'bg-slate-500/10 text-slate-600 dark:text-slate-400'
-  }
-})
+const isConfigured = computed(() => status.value.type === 'configured')
 
 async function checkConfig() {
   loading.value = true
@@ -72,78 +49,92 @@ onMounted(() => {
 <template>
   <div
     @click="goToConfig"
-    class="relative h-full overflow-hidden group rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-lg dark:hover:shadow-slate-900/50 cursor-pointer"
-    :class="theme.border"
+    class="relative group h-full flex flex-col bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 rounded-xl p-6 cursor-pointer overflow-hidden transition-all duration-400 hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/40 hover:-translate-y-1 hover:border-gray-300 dark:hover:border-zinc-600"
   >
-    <!-- Background Texture -->
-    <div
-      class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none"
-      style="background-image: radial-gradient(circle at 1rem 1rem, currentColor 1px, transparent 0); background-size: 1rem 1rem;"
-    ></div>
+    <!-- Hover Accents -->
+    <div class="absolute top-0 left-0 w-full h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+         :class="isConfigured ? 'bg-gradient-to-r from-transparent via-blue-500 to-transparent' : 'bg-gradient-to-r from-transparent via-amber-500 to-transparent'">
+    </div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTUwLCAxNTAsIDE1MCwgMC4xKSIvPjwvc3ZnPg==')] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
 
-    <div class="relative z-10 h-full p-6 flex flex-col justify-between">
-      <!-- Header -->
-      <div class="flex items-start justify-between gap-4">
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="p-2.5 rounded-xl transition-colors duration-300" :class="theme.bg">
-            <Cloud class="w-5 h-5" :class="theme.text" />
-          </div>
-          <div class="min-w-0">
-            <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">MinIO / S3 Storage</h3>
-            <div class="mt-1 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full" :class="theme.pill">
-              <span>{{ status.text }}</span>
-            </div>
-          </div>
+    <div class="relative z-10 flex items-start justify-between mb-6">
+      <div class="flex items-center gap-4">
+        <!-- Icon Container -->
+        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 group-hover:scale-105 transition-all duration-500"
+             :class="isConfigured ? 'bg-blue-50/50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20' : 'bg-amber-50/50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20'">
+          <Cloud class="w-5 h-5" :class="isConfigured ? 'text-blue-600 dark:text-blue-500' : 'text-amber-600 dark:text-amber-500'" />
         </div>
-
-        <div class="flex items-center gap-2">
-          <div class="px-2.5 py-1 rounded-lg text-[10px] font-semibold uppercase tracking-wider border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/70 opacity-0 group-hover:opacity-100 transition-opacity">
-            Configure
+        
+        <div>
+          <h3 class="text-sm font-semibold text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            S3 Storage
+          </h3>
+          <div class="flex items-center gap-2 mt-1">
+             <div class="w-1.5 h-1.5 rounded-full"
+                  :class="loading ? 'bg-gray-400 animate-pulse' : isConfigured ? 'bg-green-500' : 'bg-amber-500 animate-pulse'">
+             </div>
+             <span class="text-[11px] font-medium uppercase tracking-wider"
+                   :class="isConfigured ? 'text-gray-500 dark:text-zinc-400' : 'text-amber-600 dark:text-amber-500'">
+               {{ status.text }}
+             </span>
           </div>
-          <div class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Settings class="w-4 h-4" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Status Details -->
-      <div v-if="!loading" class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
-        <div v-if="configured && config" class="space-y-2.5">
-          <div class="flex items-center gap-2 text-xs">
-            <CheckCircle2 :size="14" :class="theme.text" />
-            <span class="text-slate-500 dark:text-slate-400">Provider</span>
-            <span class="ml-auto font-semibold text-slate-900 dark:text-white">{{ config.provider }}</span>
-          </div>
-          <div class="flex items-center gap-2 text-xs">
-            <CheckCircle2 :size="14" :class="theme.text" />
-            <span class="text-slate-500 dark:text-slate-400">Bucket</span>
-            <span class="ml-auto font-mono text-slate-900 dark:text-white">{{ config.bucket }}</span>
-          </div>
-          <div v-if="config.endpoint" class="flex items-center gap-2 text-xs">
-            <CheckCircle2 :size="14" :class="theme.text" />
-            <span class="text-slate-500 dark:text-slate-400">Endpoint</span>
-            <span class="ml-auto font-mono text-xs text-slate-900 dark:text-white truncate">{{ config.endpoint }}</span>
-          </div>
-        </div>
-
-        <div v-else class="flex items-start gap-2 text-xs">
-          <AlertCircle :size="14" class="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-          <p class="text-amber-700 dark:text-amber-300">
-            Configure S3/MinIO storage to enable volume backups
-          </p>
         </div>
       </div>
+      
+      <div class="w-8 h-8 flex items-center justify-center rounded-md bg-gray-50 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-gray-400 group-hover:text-blue-500 group-hover:border-gray-300 dark:group-hover:border-zinc-700 transition-colors">
+         <Settings class="w-4 h-4" />
+      </div>
+    </div>
 
+    <!-- Content -->
+    <div class="relative z-10 flex-1 flex flex-col justify-end">
       <!-- Loading Skeleton -->
-      <div v-else class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
-        <div class="h-3.5 bg-slate-200 dark:bg-slate-800 rounded animate-pulse"></div>
-        <div class="h-3.5 bg-slate-200 dark:bg-slate-800 rounded animate-pulse w-3/4"></div>
+      <div v-if="loading" class="space-y-3 pt-4 border-t border-gray-100 dark:border-zinc-800/80">
+        <div class="flex items-center justify-between">
+          <div class="h-3 w-16 bg-gray-100 dark:bg-zinc-800 rounded animate-pulse"></div>
+          <div class="h-3 w-24 bg-gray-100 dark:bg-zinc-800 rounded animate-pulse"></div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="h-3 w-16 bg-gray-100 dark:bg-zinc-800 rounded animate-pulse"></div>
+          <div class="h-3 w-32 bg-gray-100 dark:bg-zinc-800 rounded animate-pulse"></div>
+        </div>
       </div>
 
-      <!-- Click hint -->
-      <div class="mt-4 text-[10px] text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors flex items-center gap-1">
-        <span>Open configuration</span>
-        <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+      <!-- Configured State -->
+      <div v-else-if="configured && config" class="space-y-3 pt-4 border-t border-gray-100 dark:border-zinc-800/80">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">Provider</span>
+          <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ config.provider }}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">Bucket</span>
+          <span class="text-xs font-mono text-gray-700 dark:text-gray-300 truncate max-w-[150px]">{{ config.bucket }}</span>
+        </div>
+      </div>
+
+      <!-- Not Configured State -->
+      <div v-else class="pt-4 border-t border-gray-100 dark:border-zinc-800/80">
+        <p class="text-sm font-medium text-gray-500 dark:text-zinc-400 leading-relaxed mb-4">
+          Configure S3/MinIO storage to enable volume backups.
+        </p>
+        <div class="flex items-center gap-1.5 text-amber-600 dark:text-amber-500 transition-colors duration-300">
+          <Zap class="w-3.5 h-3.5" />
+          <span class="text-[11px] font-bold uppercase tracking-wider">
+            Recommended
+          </span>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-4 border-t border-gray-100 dark:border-zinc-800/80 flex items-center justify-between overflow-hidden">
+        <div class="flex items-center gap-1.5 text-gray-400 dark:text-zinc-500 group-hover:text-gray-600 dark:group-hover:text-zinc-300 transition-colors duration-300">
+          <span class="text-[10px] font-semibold uppercase tracking-[0.15em]">Configuration</span>
+        </div>
+        
+        <div class="flex items-center gap-1 font-semibold text-xs transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)"
+             :class="isConfigured ? 'text-blue-600 dark:text-blue-400' : 'text-amber-600 dark:text-amber-500'">
+          <span>Manage</span>
+          <ArrowRight :size="14" class="group-hover:translate-x-1 transition-transform duration-300" />
+        </div>
       </div>
     </div>
   </div>

@@ -32,11 +32,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+  <div class="min-h-screen flex flex-col bg-[#FAFAFA] text-black dark:bg-[#0A0A0A] dark:text-white">
     <NotificationBanner />
     <!-- Desktop Sidebar -->
     <aside
-      class="hidden md:flex bg-white dark:bg-slate-950 flex-col items-center border-r border-gray-200 dark:border-slate-800 w-20 py-6 px-2 fixed h-screen z-50"
+      class="hidden md:flex bg-white dark:bg-[#0A0A0A] flex-col items-center border-r border-gray-200 dark:border-zinc-800 w-20 py-6 px-2 fixed h-screen z-50"
       style="--sidebar-size: 5rem"
     >
       <!-- Navigation (Top) -->
@@ -46,15 +46,15 @@ onMounted(() => {
           to="/home"
           :class="
             isActive('home')
-              ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/20 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-900/20'
-              : 'text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:shadow-slate-900/40'
+              ? 'bg-black text-white shadow-lg shadow-black/10 dark:bg-white dark:text-black dark:shadow-black/20'
+              : 'text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:shadow-black/40'
           "
           class="nav-item group relative w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ease-out smooth-shadow"
           title="Home"
         >
           <Home :size="20" class="group-hover:scale-110 transition-transform duration-300" />
           <span
-            class="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-slate-100 dark:text-slate-900"
+            class="absolute left-full ml-3 px-3 py-1.5 bg-black text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-white dark:text-black"
             >Home</span
           >
         </router-link>
@@ -64,15 +64,15 @@ onMounted(() => {
           to="/apps"
           :class="
             isActive('apps')
-              ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/20 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-900/20'
-              : 'text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:shadow-slate-900/40'
+              ? 'bg-black text-white shadow-lg shadow-black/10 dark:bg-white dark:text-black dark:shadow-black/20'
+              : 'text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:shadow-black/40'
           "
           class="nav-item group relative w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ease-out smooth-shadow"
           title="Apps"
         >
           <Box :size="20" class="group-hover:scale-110 transition-transform duration-300" />
           <span
-            class="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-slate-100 dark:text-slate-900"
+            class="absolute left-full ml-3 px-3 py-1.5 bg-black text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-white dark:text-black"
             >Apps</span
           >
         </router-link>
@@ -82,15 +82,15 @@ onMounted(() => {
           to="/extra"
           :class="
             isActive('extra')
-              ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/20 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-900/20'
-              : 'text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:shadow-slate-900/40'
+              ? 'bg-black text-white shadow-lg shadow-black/10 dark:bg-white dark:text-black dark:shadow-black/20'
+              : 'text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:shadow-black/40'
           "
           class="nav-item group relative w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ease-out smooth-shadow"
           title="Extra"
         >
           <Compass :size="20" class="group-hover:scale-110 transition-transform duration-300" />
           <span
-            class="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-slate-100 dark:text-slate-900"
+            class="absolute left-full ml-3 px-3 py-1.5 bg-black text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-white dark:text-black"
             >Extra</span
           >
         </router-link>
@@ -102,13 +102,13 @@ onMounted(() => {
             href="https://yantr.org"
             target="_blank"
             rel="noopener noreferrer"
-            class="group flex flex-col items-center justify-center text-center select-none rounded-xl px-2 py-2 transition-transform duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900/20 dark:focus-visible:ring-slate-100/20"
+            class="group flex flex-col items-center justify-center text-center select-none rounded-xl px-2 py-2 transition-transform duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900/20 dark:focus-visible:ring-white/20"
             aria-label="Open Yantr on GitHub"
             title="Open on GitHub"
           >
             <span
               aria-hidden="true"
-              class="flex flex-col items-center gap-[calc(var(--sidebar-size)*0.02)] text-[calc(var(--sidebar-size)*0.22)] font-black uppercase leading-[0.95] text-gray-900 dark:text-white"
+              class="flex flex-col items-center gap-[calc(var(--sidebar-size)*0.02)] text-[calc(var(--sidebar-size)*0.22)] font-black uppercase leading-[0.95] text-black dark:text-white"
             >
               <span
                 class="block will-change-transform transition-transform duration-300 ease-out group-hover:-translate-y-[calc(var(--sidebar-size)*0.03)] group-hover:scale-110 group-hover:-rotate-6 group-focus-visible:-translate-y-[calc(var(--sidebar-size)*0.03)] group-focus-visible:scale-110 group-focus-visible:-rotate-6"
@@ -145,12 +145,12 @@ onMounted(() => {
           href="https://t.me/+h4RvCk63PxUyODQ1"
           target="_blank"
           rel="noopener noreferrer"
-          class="action-btn group relative w-12 h-12 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:shadow-slate-900/40 transition-all duration-300 ease-out"
+          class="action-btn group relative w-12 h-12 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-zinc-300 dark:hover:bg-zinc-800/50 dark:hover:shadow-black/40 transition-all duration-300 ease-out"
           title="Join Telegram"
         >
           <Send :size="20" class="group-hover:scale-110 transition-transform duration-300" />
           <span
-            class="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-slate-100 dark:text-slate-900"
+            class="absolute left-full ml-3 px-3 py-1.5 bg-black text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-white dark:text-black"
           >
             Telegram
           </span>
@@ -159,12 +159,12 @@ onMounted(() => {
         <button
           type="button"
           @click="toggleTheme"
-          class="action-btn group relative w-12 h-12 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:shadow-slate-900/40 transition-all duration-300 ease-out"
+          class="action-btn group relative w-12 h-12 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-zinc-300 dark:hover:bg-zinc-800/50 dark:hover:shadow-black/40 transition-all duration-300 ease-out"
           :title="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
         >
           <component :is="theme === 'dark' ? Sun : Moon" :size="20" class="group-hover:scale-110 transition-transform duration-300" />
           <span
-            class="absolute left-full ml-3 px-3 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-slate-100 dark:text-slate-900"
+            class="absolute left-full ml-3 px-3 py-1.5 bg-black text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-white dark:text-black"
           >
             {{ theme === "dark" ? "Light mode" : "Dark mode" }}
           </span>
@@ -173,11 +173,11 @@ onMounted(() => {
     </aside>
 
     <!-- Mobile Bottom Navigation -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 dark:bg-slate-950 dark:border-slate-800 z-50 safe-area-inset-bottom">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 dark:bg-[#0A0A0A] dark:border-zinc-800 z-50 safe-area-inset-bottom">
       <div class="flex items-center justify-around px-2 py-3">
         <router-link
           to="/home"
-          :class="isActive('home') ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-gray-600 dark:text-slate-400'"
+          :class="isActive('home') ? 'bg-black text-white shadow-lg shadow-black/10 dark:bg-white dark:text-black dark:shadow-white/10' : 'text-gray-600 dark:text-zinc-400'"
           class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
           title="Home"
         >
@@ -187,7 +187,7 @@ onMounted(() => {
 
         <router-link
           to="/apps"
-          :class="isActive('apps') ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-gray-600 dark:text-slate-400'"
+          :class="isActive('apps') ? 'bg-black text-white shadow-lg shadow-black/10 dark:bg-white dark:text-black dark:shadow-white/10' : 'text-gray-600 dark:text-zinc-400'"
           class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
           title="Apps"
         >
@@ -197,7 +197,7 @@ onMounted(() => {
 
         <router-link
           to="/extra"
-          :class="isActive('extra') ? 'bg-gray-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-gray-600 dark:text-slate-400'"
+          :class="isActive('extra') ? 'bg-black text-white shadow-lg shadow-black/10 dark:bg-white dark:text-black dark:shadow-white/10' : 'text-gray-600 dark:text-zinc-400'"
           class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
           title="Extra"
         >
@@ -209,7 +209,7 @@ onMounted(() => {
           href="https://t.me/+h4RvCk63PxUyODQ1"
           target="_blank"
           rel="noopener noreferrer"
-          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95 text-gray-600 dark:text-slate-400"
+          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95 text-gray-600 dark:text-zinc-400"
           title="Join Telegram"
         >
           <Send :size="20" />
@@ -219,7 +219,7 @@ onMounted(() => {
         <button
           type="button"
           @click="toggleTheme"
-          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95 text-gray-600 dark:text-slate-400"
+          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95 text-gray-600 dark:text-zinc-400"
           :title="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
         >
           <component :is="theme === 'dark' ? Sun : Moon" :size="20" />

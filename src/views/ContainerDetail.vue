@@ -543,144 +543,147 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-200 font-sans">
+  <div class="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-zinc-100 font-sans selection:bg-blue-500/30">
     <!-- Header -->
-    <header class="bg-white dark:bg-[#18181b] border-b border-slate-200 dark:border-slate-800/50">
+    <header class="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <router-link to="/" class="inline-flex items-center justify-center w-9 h-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all text-slate-600 dark:text-slate-400">
-            <ArrowLeft :size="18" />
+          <router-link to="/" class="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all text-gray-500 dark:text-zinc-400 group">
+            <ArrowLeft :size="16" class="group-hover:-translate-x-0.5 transition-transform" />
           </router-link>
           
-          <div class="h-5 w-px bg-slate-200 dark:bg-slate-800"></div>
+          <div class="h-4 w-px bg-gray-300 dark:bg-zinc-800"></div>
 
           <div class="flex items-center gap-2.5 text-sm">
-            <span class="text-slate-500 dark:text-slate-400">Containers</span>
-            <span class="text-slate-300 dark:text-slate-700">/</span>
-            <span class="font-semibold text-slate-900 dark:text-white" v-if="selectedContainer">{{ selectedContainer.name }}</span>
-            <span v-else class="w-32 h-5 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg"></span>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">Containers</span>
+            <span class="text-gray-300 dark:text-zinc-700">/</span>
+            <span class="font-semibold tracking-tight text-gray-900 dark:text-white" v-if="selectedContainer">{{ selectedContainer.name }}</span>
+            <span v-else class="w-32 h-4 bg-gray-200 dark:bg-zinc-800 animate-pulse rounded"></span>
           </div>
         </div>
 
         <div v-if="selectedContainer" class="flex items-center gap-2">
           <!-- Expiration Badge -->
           <div v-if="expirationInfo" 
-               class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide"
+               class="flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[10px] font-bold uppercase tracking-wider"
                :class="{
-                 'bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400': expirationInfo.urgency === 'critical',
-                 'bg-orange-100 dark:bg-orange-950/50 text-orange-700 dark:text-orange-400': expirationInfo.urgency === 'warning',
-                 'bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400': expirationInfo.urgency === 'normal'
+                 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400': expirationInfo.urgency === 'critical',
+                 'bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-500/20 text-orange-600 dark:text-orange-400': expirationInfo.urgency === 'warning',
+                 'bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20 text-blue-600 dark:text-blue-400': expirationInfo.urgency === 'normal'
                }"
                :title="`Expires at: ${expirationInfo.expireAt}`">
-            <Clock :size="13" :class="expirationInfo.urgency === 'critical' ? 'animate-pulse' : ''" />
+            <Clock :size="12" :class="expirationInfo.urgency === 'critical' ? 'animate-pulse' : ''" />
             <span>{{ expirationInfo.timeLeft }}</span>
           </div>
           
           <!-- Running State Badge -->
-          <div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide"
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[10px] font-bold uppercase tracking-wider"
             :class="selectedContainer.state === 'running' 
-              ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400' 
-              : 'bg-slate-100 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400'">
-            <div class="w-1.5 h-1.5 rounded-full" :class="selectedContainer.state === 'running' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'"></div>
+              ? 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20 text-green-600 dark:text-green-400' 
+              : 'bg-gray-50 dark:bg-zinc-900 border-gray-200 dark:border-zinc-800 text-gray-600 dark:text-zinc-400'">
+            <div class="w-1.5 h-1.5 rounded-full" :class="selectedContainer.state === 'running' ? 'bg-green-500 animate-pulse' : 'bg-gray-400'"></div>
             <span>{{ selectedContainer.state }}</span>
           </div>
         </div>
       </div>
     </header>
 
-    <div v-if="!selectedContainer" class="max-w-7xl mx-auto p-8 flex justify-center">
-       <div class="animate-spin text-slate-300"><RefreshCw :size="32" /></div>
+    <div v-if="!selectedContainer" class="max-w-7xl mx-auto p-8 flex justify-center py-32">
+       <div class="w-8 h-8 border-[3px] border-gray-200 dark:border-zinc-800 border-t-blue-500 dark:border-t-blue-500 rounded-full animate-spin"></div>
     </div>
 
-    <main v-else class="max-w-7xl mx-auto px-6 py-6 space-y-5">
+    <main v-else class="max-w-7xl mx-auto px-6 py-8 space-y-6">
         
         <!-- Info Card -->
-        <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-6 flex flex-col sm:flex-row gap-6 shadow-sm">
-           <div class="w-20 h-20 bg-slate-100/50 dark:bg-slate-900/50 rounded-xl flex items-center justify-center p-3 shrink-0">
-              <img v-if="selectedContainer.app.logo" :src="selectedContainer.app.logo" loading="lazy" class="w-full h-full object-contain" />
-              <div v-else class="text-3xl">📦</div>
+        <div class="group relative bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-6 flex flex-col sm:flex-row gap-6 hover:border-gray-300 dark:hover:border-zinc-700 transition-all duration-300">
+           <!-- Glow Accent -->
+           <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+           <div class="w-20 h-20 bg-gray-50 dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-xl flex items-center justify-center p-4 shrink-0 shadow-sm transition-transform group-hover:scale-105 duration-500">
+              <img v-if="selectedContainer.app.logo" :src="selectedContainer.app.logo" loading="lazy" class="w-full h-full object-contain filter dark:brightness-90 group-hover:brightness-100 transition-all" />
+              <Package v-else :size="32" class="text-gray-400 dark:text-zinc-600" />
            </div>
            
            <div class="flex-1 space-y-3">
-              <h1 class="text-2xl font-bold text-slate-900 dark:text-white">{{ selectedContainer.name }}</h1>
-              <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed max-w-2xl">
+              <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ selectedContainer.name }}</h1>
+              <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed max-w-2xl">
                  {{ selectedContainer.app.description || "Container usage description not available." }}
               </p>
-              <div class="pt-1 flex flex-wrap gap-2">
-                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-900/50 text-xs font-mono text-slate-700 dark:text-slate-300 rounded-lg">
-                    <Database :size="12" />
+              <div class="pt-2 flex flex-wrap gap-2">
+                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50 text-[10px] font-bold tracking-widest text-gray-600 dark:text-zinc-400 rounded-md uppercase">
+                    <Database :size="10" />
                     {{ selectedContainer.image }}
                  </div>
-                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-900/50 text-xs font-mono text-slate-700 dark:text-slate-300 rounded-lg">
-                    <span class="text-slate-500">ID:</span> {{ selectedContainer.id.substring(0, 12) }}
+                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50 text-[10px] font-bold tracking-widest text-gray-600 dark:text-zinc-400 rounded-md uppercase">
+                    <span class="opacity-60">ID:</span> {{ selectedContainer.id.substring(0, 12) }}
                  </div>
               </div>
            </div>
         </div>
 
         <!-- Network Access -->
-        <div v-if="allPortMappings.length > 0" class="space-y-3">
+        <div v-if="allPortMappings.length > 0" class="space-y-4">
            <div class="flex items-center justify-between">
-             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Network Access</h3>
-             <div v-if="hasDescribedPorts" class="flex items-center gap-1 rounded-full bg-slate-100/80 dark:bg-slate-900/50 p-1">
+             <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">Network Access</h3>
+             <div v-if="hasDescribedPorts" class="flex items-center gap-1 rounded-lg bg-gray-100 dark:bg-zinc-900 p-1">
                <button
                  @click="showOnlyDescribedPorts = false"
-                 :class="!showOnlyDescribedPorts ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-                 class="px-3 py-1.5 text-xs rounded-full transition-all font-medium"
+                 :class="!showOnlyDescribedPorts ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-zinc-300'"
+                 class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all"
                >
                  All Ports
                </button>
                <button
                  @click="showOnlyDescribedPorts = true"
-                 :class="showOnlyDescribedPorts ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-                 class="px-3 py-1.5 text-xs rounded-full transition-all font-medium"
+                 :class="showOnlyDescribedPorts ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-zinc-300'"
+                 class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all"
                >
                  Described
                </button>
              </div>
            </div>
-           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
              <div v-for="(mapping, i) in filteredPortMappings" :key="i" 
-                  class="group bg-white dark:bg-[#1c1c1e] border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-5 hover:shadow-md hover:border-blue-500/50 transition-all">
+                  class="group bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 rounded-xl p-5 hover:border-gray-300 dark:hover:border-zinc-600 transition-all duration-300">
                
-               <div class="flex items-start justify-between mb-3">
-                 <div class="flex items-start gap-3 flex-1 min-w-0">
-                   <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white shrink-0 shadow-sm">
-                     <Network :size="20" />
+               <div class="flex items-start justify-between mb-4">
+                 <div class="flex items-start gap-3.5 flex-1 min-w-0">
+                   <div class="w-10 h-10 rounded-lg bg-gray-50 dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 flex items-center justify-center text-gray-600 dark:text-zinc-400 shrink-0 shadow-sm group-hover:text-blue-500 transition-colors">
+                     <Network :size="18" />
                    </div>
                    <div class="min-w-0 flex-1">
-                     <div class="flex items-center gap-2 mb-1">
-                       <span class="font-mono text-xs font-bold uppercase text-slate-700 dark:text-slate-300">{{ mapping.protocol }}</span>
-                       <span v-if="mapping.labeledProtocol" class="text-[10px] px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg uppercase font-semibold">{{ mapping.labeledProtocol }}</span>
+                     <div class="flex items-center gap-2 mb-1.5">
+                       <span class="font-mono text-[10px] font-bold uppercase text-gray-900 dark:text-white">{{ mapping.protocol }}</span>
+                       <span v-if="mapping.labeledProtocol" class="text-[9px] px-1.5 py-0.5 bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 rounded-md uppercase font-bold tracking-widest border border-gray-200 dark:border-zinc-700">{{ mapping.labeledProtocol }}</span>
                      </div>
-                     <div class="text-xs text-slate-500 dark:text-slate-400 truncate" :title="mapping.label">
+                     <div class="text-[11px] text-gray-500 dark:text-zinc-400 truncate" :title="mapping.label">
                        {{ mapping.label || 'Network Port' }}
                      </div>
                    </div>
                  </div>
                </div>
 
-               <div class="space-y-2">
-                 <div class="flex items-center justify-between text-xs">
-                   <span class="text-slate-500">Host Port</span>
-                   <span v-if="mapping.hostPort" class="font-mono font-semibold text-slate-900 dark:text-white">{{ mapping.hostPort }}</span>
-                   <span v-else class="text-slate-400 italic">Internal</span>
+               <div class="space-y-2 mb-5">
+                 <div class="flex items-center justify-between text-[11px]">
+                   <span class="text-gray-500 dark:text-zinc-500 uppercase font-bold tracking-wider">Host Port</span>
+                   <span v-if="mapping.hostPort" class="font-mono font-bold text-gray-900 dark:text-white">{{ mapping.hostPort }}</span>
+                   <span v-else class="text-gray-400 italic">Internal</span>
                  </div>
-                 <div class="flex items-center justify-between text-xs">
-                   <span class="text-slate-500">Container Port</span>
-                   <span class="font-mono text-slate-700 dark:text-slate-300">{{ mapping.containerPort }}</span>
+                 <div class="flex items-center justify-between text-[11px]">
+                   <span class="text-gray-500 dark:text-zinc-500 uppercase font-bold tracking-wider">Container Port</span>
+                   <span class="font-mono font-medium text-gray-700 dark:text-zinc-300">{{ mapping.containerPort }}</span>
                  </div>
                </div>
 
                <a v-if="mapping.hostPort && mapping.protocol === 'tcp'"
                   :href="appUrl(mapping.hostPort, mapping.labeledProtocol || 'http')"
                   target="_blank"
-                  class="mt-4 w-full flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all text-xs font-semibold"
+                  class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-all text-[11px] font-bold uppercase tracking-wider"
                >
-                  <ExternalLink :size="14" />
+                  <ExternalLink :size="12" />
                   Open
                </a>
-               <div v-else class="mt-4 w-full flex items-center justify-center px-3 py-2 bg-slate-100 dark:bg-slate-800/50 text-slate-400 rounded-lg text-xs">
+               <div v-else class="w-full flex items-center justify-center px-3 py-2 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 text-gray-400 dark:text-zinc-500 rounded-lg text-[11px] font-bold uppercase tracking-wider">
                  Internal Only
                </div>
              </div>
@@ -688,66 +691,66 @@ onUnmounted(() => {
         </div>
 
         <!-- Storage (Attached + Backups) -->
-        <div v-if="containerVolumes.length > 0" class="space-y-3">
+        <div v-if="containerVolumes.length > 0" class="space-y-4">
            <div class="flex items-center justify-between">
-             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Storage</h3>
+             <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">Storage Volumes</h3>
              <button
                v-if="s3Configured"
                @click="backupAllVolumes"
                :disabled="backingUp"
-               class="text-xs px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold"
+               class="text-[10px] uppercase tracking-wider px-3 py-1.5 bg-black dark:bg-white text-white dark:text-black rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
              >
                {{ backingUp ? 'Backing up...' : 'Backup All' }}
              </button>
            </div>
 
-           <div v-if="!s3Configured" class="bg-yellow-100/50 dark:bg-yellow-900/20 rounded-xl p-3.5 flex items-start gap-3">
-             <div class="text-yellow-600 dark:text-yellow-400 shrink-0">
-               <AlertCircle :size="16" />
+           <div v-if="!s3Configured" class="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl p-4 flex items-start gap-3">
+             <div class="text-amber-600 dark:text-amber-500 shrink-0 mt-0.5">
+               <AlertCircle :size="14" />
              </div>
-             <p class="text-xs text-yellow-900 dark:text-yellow-200">
-               <span class="font-semibold">S3 storage not configured.</span>
-               <router-link to="/minioconfig" class="underline hover:text-yellow-950 dark:hover:text-yellow-100 font-semibold ml-1">Configure now</router-link> to enable backups.
+             <p class="text-xs text-amber-900 dark:text-amber-200">
+               <span class="font-bold">S3 storage not configured.</span>
+               <router-link to="/minioconfig" class="underline hover:text-amber-700 font-semibold ml-1">Configure now</router-link> to enable backups.
              </p>
            </div>
 
-           <div class="grid gap-3">
+           <div class="grid gap-4">
                <div v-for="volume in containerVolumes" :key="volume.name" 
-                  class="group bg-white dark:bg-[#1c1c1e] border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-5 hover:shadow-md hover:border-blue-500/50 transition-all">
+                  class="group bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 rounded-xl p-5 hover:border-gray-300 dark:hover:border-zinc-600 transition-all duration-300">
                    
-                 <div class="flex items-start justify-between gap-4 mb-4">
-                  <div class="flex items-start gap-3.5 min-w-0 flex-1">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white shrink-0 shadow-sm">
-                      <HardDrive :size="22" />
+                 <div class="flex items-start justify-between gap-4 mb-5">
+                  <div class="flex items-start gap-4 min-w-0 flex-1">
+                    <div class="w-10 h-10 rounded-lg bg-gray-50 dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 flex items-center justify-center text-gray-500 dark:text-zinc-400 shrink-0 shadow-sm group-hover:text-blue-500 transition-colors">
+                      <HardDrive :size="18" />
                     </div>
                     <div class="min-w-0 flex-1">
-                      <div class="font-semibold text-slate-900 dark:text-white truncate" :title="volume.name">{{ volume.name }}</div>
-                      <div class="text-xs text-slate-500 dark:text-slate-400 font-mono truncate mt-0.5">{{ volume.destination }}</div>
-                      <div class="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5">
-                        Latest backup: <span class="font-medium">{{ getLatestBackupAge(volume.name) }}</span>
+                      <div class="font-bold text-sm text-gray-900 dark:text-white truncate tracking-tight" :title="volume.name">{{ volume.name }}</div>
+                      <div class="text-[11px] text-gray-500 dark:text-zinc-400 font-mono truncate mt-1">{{ volume.destination }}</div>
+                      <div class="text-[10px] text-gray-400 dark:text-zinc-500 mt-2 font-bold uppercase tracking-wider">
+                        Latest backup: <span class="text-gray-600 dark:text-zinc-300">{{ getLatestBackupAge(volume.name) }}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div class="flex items-center gap-2 flex-wrap">
-                  <div v-if="browsingVolume[volume.name]" class="text-xs text-blue-600 dark:text-blue-400 animate-pulse font-medium px-3 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div class="flex items-center gap-2 flex-wrap pt-4 border-t border-gray-100 dark:border-zinc-800">
+                  <div v-if="browsingVolume[volume.name]" class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 animate-pulse px-3 py-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg">
                     Starting WebDAV server...
                   </div>
                   
                   <button 
                     v-else-if="!showVolumeMenu[volume.name]"
                     @click="showVolumeMenu[volume.name] = true"
-                    class="px-3.5 py-2 text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                    class="px-3.5 py-2 text-[10px] font-bold uppercase tracking-wider border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 text-gray-700 dark:text-zinc-300 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all"
                   >
                     Browse Files
                   </button>
                        
                   <div v-else class="flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-200">
-                    <button @click="browseVolume(volume.name, 60)" class="px-2.5 py-2 text-[10px] font-bold uppercase bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all" title="1 Hour Access">
+                    <button @click="browseVolume(volume.name, 60)" class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-all" title="1 Hour Access">
                       1H
                     </button>
-                    <button @click="browseVolume(volume.name, 0)" class="px-2.5 py-2 text-[10px] font-bold uppercase bg-slate-700 dark:bg-slate-600 text-white rounded-lg hover:bg-slate-600 dark:hover:bg-slate-500 transition-all" title="Permanent Access">
+                    <button @click="browseVolume(volume.name, 0)" class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 rounded-lg hover:bg-gray-300 dark:hover:bg-zinc-700 transition-all" title="Permanent Access">
                       Perm
                     </button>
                   </div>
@@ -755,7 +758,7 @@ onUnmounted(() => {
                   <button
                     @click="backupAllVolumes"
                     :disabled="backingUp || !s3Configured"
-                    class="px-3.5 py-2 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    class="px-3.5 py-2 text-[10px] font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                     title="Backup this volume"
                   >
                     Backup
@@ -763,7 +766,7 @@ onUnmounted(() => {
                   <button
                     @click="toggleRestoreMenu(volume.name)"
                     :disabled="!hasBackups(volume.name) || !s3Configured"
-                    class="px-3.5 py-2 text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                    class="px-3.5 py-2 text-[10px] font-bold uppercase tracking-wider border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 text-gray-700 dark:text-zinc-300 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                   >
                     Restore
                   </button>
@@ -771,29 +774,29 @@ onUnmounted(() => {
 
                 <div
                   v-if="showRestoreMenu[volume.name] && hasBackups(volume.name)"
-                  class="mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-800/50"
+                  class="mt-4 pt-4 border-t border-gray-200 dark:border-zinc-800"
                 >
-                  <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">Available Backups</div>
-                  <div class="space-y-1.5 max-h-40 overflow-y-auto">
+                  <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 mb-3">Available Backups</div>
+                  <div class="space-y-2 max-h-40 overflow-y-auto scrollbar-thin">
                     <div
                       v-for="backup in volumeBackups[volume.name]"
                       :key="backup.key"
-                      class="flex items-center justify-between py-2 px-3 bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-all"
+                      class="flex items-center justify-between py-2.5 px-3 bg-gray-50 dark:bg-zinc-900/50 hover:bg-gray-100 dark:hover:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 transition-all"
                     >
                       <div class="flex-1 min-w-0">
-                        <div class="font-mono text-xs text-slate-900 dark:text-white">{{ formatBackupDate(backup.timestamp) }}</div>
-                        <div class="text-slate-500 dark:text-slate-400 text-[10px] mt-0.5">{{ formatBytes(backup.size) }}</div>
+                        <div class="font-mono text-[11px] font-medium text-gray-900 dark:text-white">{{ formatBackupDate(backup.timestamp) }}</div>
+                        <div class="text-gray-500 dark:text-zinc-400 text-[10px] mt-0.5 font-bold uppercase tracking-wider">{{ formatBytes(backup.size) }}</div>
                       </div>
-                      <div class="flex gap-1.5 ml-3">
+                      <div class="flex gap-2 ml-3">
                         <button
                           @click="restoreBackup(volume.name, backup.key)"
-                          class="px-2.5 py-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all text-[10px] font-bold"
+                          class="px-2.5 py-1.5 border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 bg-white dark:bg-[#0A0A0A] rounded-md hover:bg-gray-50 dark:hover:bg-zinc-800 transition-all text-[10px] font-bold uppercase tracking-wider"
                         >
                           Restore
                         </button>
                         <button
                           @click="deleteBackupFile(volume.name, backup.key)"
-                          class="px-2.5 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all text-[10px] font-bold"
+                          class="px-2.5 py-1.5 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-500/10 rounded-md hover:bg-red-100 dark:hover:bg-red-500/20 transition-all text-[10px] font-bold uppercase tracking-wider"
                         >
                           Delete
                         </button>
@@ -807,90 +810,90 @@ onUnmounted(() => {
         </div>
 
         <!-- System Panel (Tabs) -->
-        <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden shadow-sm">
-          <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200/50 dark:border-slate-800/50">
-            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+        <div class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-zinc-800">
+            <div class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">
               <ShieldCheck :size="14" />
-              System
+              System Diagnostics
             </div>
-            <div class="flex items-center gap-1 rounded-full bg-slate-100/80 dark:bg-slate-900/50 p-1">
+            <div class="flex items-center gap-1 rounded-lg bg-gray-100 dark:bg-zinc-900 p-1">
               <button
                 @click="activeTab = 'resources'"
-                :class="activeTab === 'resources' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-                class="px-3 py-1.5 text-xs rounded-full transition-all font-medium"
+                :class="activeTab === 'resources' ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-zinc-300'"
+                class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all"
               >
                 Resources
               </button>
               <button
                 @click="activeTab = 'output'"
-                :class="activeTab === 'output' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-                class="px-3 py-1.5 text-xs rounded-full transition-all font-medium"
+                :class="activeTab === 'output' ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-zinc-300'"
+                class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all"
               >
                 Output
               </button>
               <button
                 @click="activeTab = 'env'"
-                :class="activeTab === 'env' ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-                class="px-3 py-1.5 text-xs rounded-full transition-all font-medium"
+                :class="activeTab === 'env' ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-zinc-300'"
+                class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md transition-all"
               >
-                Environment
+                Env
               </button>
             </div>
           </div>
 
-          <div class="p-5">
+          <div class="p-6">
             <!-- Resources Tab -->
             <div v-if="activeTab === 'resources'">
-              <div v-if="containerStats" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="bg-slate-100/50 dark:bg-slate-900/30 p-4 rounded-xl">
-                  <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 mb-2">
-                    <Cpu :size="14" /> CPU
+              <div v-if="containerStats" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 p-5 rounded-xl">
+                  <div class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-3">
+                    <Cpu :size="12" /> CPU
                   </div>
-                  <div class="text-2xl font-mono font-semibold text-slate-900 dark:text-white">
+                  <div class="text-3xl font-mono font-bold tracking-tighter text-gray-900 dark:text-white">
                     {{ containerStats.cpu.percent }}%
                   </div>
                 </div>
                 
-                <div class="bg-slate-100/50 dark:bg-slate-900/30 p-4 rounded-xl">
-                  <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 mb-2">
-                    <Activity :size="14" /> RAM
+                <div class="bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 p-5 rounded-xl">
+                  <div class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-3">
+                    <Activity :size="12" /> RAM
                   </div>
-                  <div class="text-2xl font-mono font-semibold text-slate-900 dark:text-white">
+                  <div class="text-3xl font-mono font-bold tracking-tighter text-gray-900 dark:text-white">
                     {{ containerStats.memory.percent }}%
                   </div>
                 </div>
                 
-                <div class="md:col-span-2 bg-slate-100/50 dark:bg-slate-900/30 p-4 rounded-xl flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div class="md:col-span-2 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 p-5 rounded-xl flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                   <div>
-                    <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Network I/O</div>
-                    <div class="text-sm font-mono font-medium text-slate-900 dark:text-white">
-                      <span class="text-emerald-500">↓ {{ formatBytes(containerStats.network.rx) }}</span>
-                      <span class="text-slate-300 mx-2">|</span>
-                      <span class="text-blue-500">↑ {{ formatBytes(containerStats.network.tx) }}</span>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-1.5">Network I/O</div>
+                    <div class="text-sm font-mono font-semibold text-gray-900 dark:text-white">
+                      <span class="text-green-600 dark:text-green-500">↓ {{ formatBytes(containerStats.network.rx) }}</span>
+                      <span class="text-gray-300 dark:text-zinc-700 mx-3">|</span>
+                      <span class="text-blue-600 dark:text-blue-500">↑ {{ formatBytes(containerStats.network.tx) }}</span>
                     </div>
                   </div>
-                  <div>
-                    <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Block I/O</div>
-                    <div class="text-sm font-mono font-medium text-slate-900 dark:text-white text-right">
+                  <div class="sm:text-right">
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500 mb-1.5">Block I/O</div>
+                    <div class="text-sm font-mono font-semibold text-gray-900 dark:text-white">
                       {{ formatBytes(containerStats.blockIO.read) }} / {{ formatBytes(containerStats.blockIO.write) }}
                     </div>
                   </div>
                 </div>
               </div>
-              <div v-else class="text-sm text-slate-500">No resource data available.</div>
+              <div v-else class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">No resource data available.</div>
             </div>
 
             <!-- Output Tab -->
-            <div v-else-if="activeTab === 'output'" class="space-y-3">
+            <div v-else-if="activeTab === 'output'" class="space-y-4">
               <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  <Terminal :size="14" /> Output Console
+                <div class="flex items-center gap-2 text-[10px] font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-widest">
+                  <Terminal :size="12" /> Output Console
                 </div>
                 <div class="flex items-center gap-2">
-                  <button @click="autoScrollLogs = !autoScrollLogs" class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-500" :title="autoScrollLogs ? 'Pause Auto-Scroll' : 'Enable Auto-Scroll'">
+                  <button @click="autoScrollLogs = !autoScrollLogs" class="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-zinc-400 transition-colors" :title="autoScrollLogs ? 'Pause Auto-Scroll' : 'Enable Auto-Scroll'">
                     <component :is="autoScrollLogs ? Pause : Play" :size="14" />
                   </button>
-                  <button @click="fetchContainerLogs" class="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-500" :title="refreshingLogs ? 'Refreshing...' : 'Refresh'">
+                  <button @click="fetchContainerLogs" class="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-zinc-400 transition-colors" :title="refreshingLogs ? 'Refreshing...' : 'Refresh'">
                     <RefreshCw :size="14" :class="{ 'animate-spin': refreshingLogs }" />
                   </button>
                 </div>
@@ -898,57 +901,52 @@ onUnmounted(() => {
               
               <div 
                 id="terminal-logs"
-                class="h-96 overflow-y-auto p-4 font-mono text-xs leading-5 text-slate-700 dark:text-slate-200 bg-slate-100/50 dark:bg-[#1e1e1e] rounded-xl scrollbar-thin scrollbar-thumb-[#424242] scrollbar-track-transparent"
+                class="h-96 overflow-y-auto p-4 font-mono text-[11px] leading-5 text-gray-800 dark:text-gray-300 bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-zinc-800 rounded-xl scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent"
               >
-                <div v-if="containerLogs.length === 0" class="flex flex-col items-center justify-center h-full text-slate-400">
-                  <div class="mb-2 opacity-70">No output logs found</div>
+                <div v-if="containerLogs.length === 0" class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-zinc-600">
+                  <div class="mb-2 text-[10px] font-bold uppercase tracking-widest">No output logs found</div>
                 </div>
                 <div v-else class="space-y-0.5">
-                  <div v-for="(log, i) in containerLogs" :key="i" class="break-all whitespace-pre-wrap hover:bg-slate-100 dark:hover:bg-[#2a2d2e] px-1 -mx-1 rounded-sm">
-                    <span class="text-slate-400 select-none mr-2 w-6 inline-block text-right">{{ i + 1 }}</span>{{ log }}
+                  <div v-for="(log, i) in containerLogs" :key="i" class="break-all whitespace-pre-wrap hover:bg-gray-100 dark:hover:bg-zinc-900 px-1 -mx-1 rounded-sm">
+                    <span class="text-gray-400 dark:text-zinc-600 select-none mr-3 w-6 inline-block text-right">{{ i + 1 }}</span>{{ log }}
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Environment Tab -->
-            <div v-else class="space-y-3">
-              <div class="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                <Lock :size="14" /> Environment
+            <div v-else class="space-y-4">
+              <div class="flex items-center gap-2 text-[10px] font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-widest">
+                <Lock :size="12" /> Environment Variables
               </div>
-              <div v-if="selectedContainer.env && selectedContainer.env.length > 0" class="bg-slate-100/50 dark:bg-[#1e1e1e] rounded-xl p-4 max-h-80 overflow-y-auto custom-scrollbar">
-                <div v-for="(envVar, i) in selectedContainer.env" :key="i" class="font-mono text-[10px] mb-2 last:mb-0 break-all">
-                  <div class="text-slate-500 mb-0.5">{{ envVar.split('=')[0] }}</div>
-                  <div class="text-slate-800 dark:text-slate-200 pl-2">{{ envVar.split('=').slice(1).join('=') }}</div>
+              <div v-if="selectedContainer.env && selectedContainer.env.length > 0" class="bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-zinc-800 rounded-xl p-5 max-h-80 overflow-y-auto custom-scrollbar">
+                <div v-for="(envVar, i) in selectedContainer.env" :key="i" class="font-mono text-[11px] mb-3 last:mb-0 break-all flex flex-col sm:flex-row gap-1 sm:gap-4">
+                  <div class="text-gray-500 dark:text-zinc-500 font-bold shrink-0 sm:w-1/3">{{ envVar.split('=')[0] }}</div>
+                  <div class="text-gray-900 dark:text-zinc-300 flex-1">{{ envVar.split('=').slice(1).join('=') }}</div>
                 </div>
               </div>
-              <div v-else class="text-sm text-slate-500">No environment variables available.</div>
+              <div v-else class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">No environment variables available.</div>
             </div>
           </div>
         </div>
 
-      <!-- RIGHT COLUMN (now stacked) -->
-         
-
-
-         <!-- Actions -->
-         <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-5 space-y-4 shadow-sm">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Control</h3>
-            
-            <button 
-               @click="deleteContainer"
-               :disabled="deleting"
-               class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-200 dark:hover:bg-red-900/30 transition-all font-semibold text-sm"
-            >
-               <Trash2 :size="16" />
-               {{ deleting ? 'Terminating...' : 'Terminate Container' }}
-            </button>
-            
-            <p class="text-[10px] text-slate-400 text-center px-4 leading-relaxed">
-               Warning: This action is irreversible. All associated volumes and data will be permanently destroyed.
-            </p>
-         </div>
-
+        <!-- Actions -->
+        <div class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-6 space-y-4 shadow-sm">
+           <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">Control</h3>
+           
+           <button 
+              @click="deleteContainer"
+              :disabled="deleting"
+              class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-[#0A0A0A] border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-all font-bold text-[11px] uppercase tracking-wider"
+           >
+              <Trash2 :size="14" />
+              {{ deleting ? 'Terminating...' : 'Terminate Container' }}
+           </button>
+           
+           <p class="text-[10px] text-gray-500 dark:text-zinc-500 text-center px-4 leading-relaxed font-medium">
+              Warning: This action is irreversible. All associated volumes and data will be permanently destroyed.
+           </p>
+        </div>
 
     </main>
   </div>

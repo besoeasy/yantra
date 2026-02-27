@@ -97,170 +97,195 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-200 font-sans">
+  <div class="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans">
     <!-- Header -->
-    <header class="bg-white dark:bg-[#0c0c0e] border-b border-slate-200 dark:border-slate-800">
-      <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+    <header class="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <router-link to="/" class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500">
-            <ArrowLeft :size="18" />
+          <router-link to="/" class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-900 transition-colors text-gray-500 dark:text-zinc-400 group">
+            <ArrowLeft :size="18" class="group-hover:-translate-x-0.5 transition-transform" />
           </router-link>
 
-          <div class="h-4 w-px bg-slate-200 dark:bg-slate-800"></div>
+          <div class="h-4 w-px bg-gray-200 dark:bg-zinc-800"></div>
 
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-              <Cloud :size="18" class="text-purple-600 dark:text-purple-400" />
+            <div class="w-8 h-8 rounded border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50 flex items-center justify-center">
+              <Cloud :size="16" class="text-gray-700 dark:text-zinc-300" />
             </div>
             <div>
-              <h1 class="text-sm font-semibold text-slate-900 dark:text-white">MinIO / S3 Configuration</h1>
-              <p class="text-xs text-slate-500">Configure object storage for volume backups</p>
+              <h1 class="text-sm font-semibold tracking-tight text-gray-900 dark:text-white">MinIO / S3 Configuration</h1>
+              <p class="text-xs font-medium text-gray-500 dark:text-zinc-500">Configure object storage for volume backups</p>
             </div>
           </div>
         </div>
 
-        <div v-if="configured" class="px-3 py-1 rounded-full bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-xs font-semibold text-green-700 dark:text-green-400">
-          Configured
-        </div>
+        <transition name="fade">
+          <div v-if="configured" class="px-3 py-1 rounded-md bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-900/30 text-[10px] font-bold uppercase tracking-[0.2em] text-green-700 dark:text-green-500 flex items-center gap-1.5">
+            <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+            Configured
+          </div>
+        </transition>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-3xl mx-auto px-4 py-8">
+    <main class="max-w-2xl mx-auto px-4 py-12">
 
       <!-- Loading State -->
-      <div v-if="loading" class="flex justify-center py-12">
-        <RefreshCw :size="32" class="animate-spin text-slate-300" />
+      <div v-if="loading" class="flex flex-col items-center justify-center py-20 gap-4">
+        <RefreshCw :size="24" class="animate-spin text-blue-500" />
+        <span class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">Loading Configuration...</span>
       </div>
 
       <!-- Configuration Form -->
-      <div v-else class="bg-white dark:bg-[#0c0c0e] rounded-lg border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+      <transition name="fade" mode="out-in">
+        <div v-if="!loading" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-8 space-y-8 shadow-sm">
 
-        <!-- Info Banner -->
-        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-          <div class="flex gap-3">
-            <Cloud :size="20" class="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-            <div class="text-sm text-blue-900 dark:text-blue-200">
-              <p class="font-semibold mb-1">About S3 / MinIO Storage</p>
-              <p class="text-blue-700 dark:text-blue-300">
-                Configure S3-compatible object storage (AWS S3, MinIO, or other providers) to enable automatic volume backups.
-                Backups are stored securely and can be restored from any container detail page.
-              </p>
+          <!-- Info Banner -->
+          <div class="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-900/30 rounded-lg p-5">
+            <div class="flex gap-4">
+              <Cloud :size="20" class="text-blue-600 dark:text-blue-500 shrink-0 mt-0.5" />
+              <div class="text-sm">
+                <p class="font-semibold text-blue-900 dark:text-blue-400 tracking-tight mb-1.5">About S3 / MinIO Storage</p>
+                <p class="text-blue-700 dark:text-blue-300/80 leading-relaxed font-medium">
+                  Configure S3-compatible object storage (AWS S3, MinIO, or other providers) to enable automatic volume backups.
+                  Backups are stored securely and can be restored from any container detail page.
+                </p>
+              </div>
             </div>
           </div>
+
+          <div class="space-y-6">
+            <!-- Provider Selection -->
+            <div>
+              <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500 mb-2">
+                Provider
+              </label>
+              <select
+                v-model="provider"
+                class="w-full px-4 py-2.5 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg text-sm font-medium focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 dark:text-white"
+              >
+                <option value="AWS">AWS S3</option>
+                <option value="Other">MinIO / Other S3-Compatible</option>
+              </select>
+            </div>
+
+            <!-- Endpoint (for non-AWS) -->
+            <transition name="fade">
+              <div v-if="provider === 'Other'">
+                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500 mb-2">
+                  Endpoint <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="endpoint"
+                  type="text"
+                  placeholder="https://s3.example.com or https://minio.example.com:9000"
+                  class="w-full px-4 py-2.5 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg text-sm font-medium focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-600"
+                />
+                <p class="mt-2 text-[11px] font-medium text-gray-500 dark:text-zinc-500">Full URL including protocol (http:// or https://)</p>
+              </div>
+            </transition>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <!-- Bucket -->
+              <div>
+                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500 mb-2">
+                  Bucket Name <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="bucket"
+                  type="text"
+                  placeholder="yantr"
+                  class="w-full px-4 py-2.5 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg text-sm font-medium focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-600"
+                />
+                <p class="mt-2 text-[11px] font-medium text-gray-500 dark:text-zinc-500">The bucket must exist before saving configuration</p>
+              </div>
+
+              <!-- Region -->
+              <div>
+                <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500 mb-2">
+                  Region
+                </label>
+                <input
+                  v-model="region"
+                  type="text"
+                  placeholder="us-east-1"
+                  class="w-full px-4 py-2.5 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg text-sm font-medium focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-600"
+                />
+                <p class="mt-2 text-[11px] font-medium text-gray-500 dark:text-zinc-500">Default: us-east-1</p>
+              </div>
+            </div>
+
+            <!-- Access Key -->
+            <div>
+              <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500 mb-2">
+                Access Key <span class="text-red-500">*</span>
+              </label>
+              <input
+                v-model="accessKey"
+                type="text"
+                :placeholder="configured ? '••••••••••••' : 'Enter access key'"
+                class="w-full px-4 py-2.5 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg text-sm font-mono focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-600"
+              />
+            </div>
+
+            <!-- Secret Key -->
+            <div>
+              <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500 mb-2">
+                Secret Key <span class="text-red-500">*</span>
+              </label>
+              <input
+                v-model="secretKey"
+                type="password"
+                :placeholder="configured ? '••••••••••••' : 'Enter secret key'"
+                class="w-full px-4 py-2.5 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg text-sm font-mono focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-600"
+              />
+              <p class="mt-2 text-[11px] font-medium text-gray-500 dark:text-zinc-500">Required to update configuration</p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="pt-6 flex gap-4 border-t border-gray-200 dark:border-zinc-800">
+            <button
+              @click="saveConfig"
+              :disabled="saving"
+              class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 text-white dark:bg-white dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold text-xs uppercase tracking-wider"
+            >
+              <Save :size="16" v-if="!saving" />
+              <RefreshCw :size="16" class="animate-spin" v-else />
+              {{ saving ? 'Saving...' : 'Save Configuration' }}
+            </button>
+
+            <button
+              @click="router.push('/')"
+              class="px-6 py-3 bg-gray-50 dark:bg-zinc-900 text-gray-700 dark:text-zinc-300 rounded-lg border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-700 transition-all font-bold text-xs uppercase tracking-wider"
+            >
+              Cancel
+            </button>
+          </div>
+
+          <!-- Security Note -->
+          <div class="mt-8 pt-6">
+            <p class="text-[11px] font-medium leading-relaxed text-gray-500 dark:text-zinc-500">
+              <span class="font-bold text-gray-700 dark:text-zinc-300">Security Note:</span> Credentials are stored in <span class="font-mono bg-gray-100 dark:bg-zinc-900 px-1.5 py-0.5 rounded text-gray-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-800">backup-config.json</span> on the server.
+              Ensure your server is properly secured and credentials have minimal required permissions.
+            </p>
+          </div>
         </div>
-
-        <!-- Provider Selection -->
-        <div>
-          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Provider
-          </label>
-          <select
-            v-model="provider"
-            class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          >
-            <option value="AWS">AWS S3</option>
-            <option value="Other">MinIO / Other S3-Compatible</option>
-          </select>
-        </div>
-
-        <!-- Endpoint (for non-AWS) -->
-        <div v-if="provider === 'Other'">
-          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Endpoint <span class="text-red-500">*</span>
-          </label>
-          <input
-            v-model="endpoint"
-            type="text"
-            placeholder="https://s3.example.com or https://minio.example.com:9000"
-            class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          />
-          <p class="mt-1 text-xs text-slate-500">Full URL including protocol (http:// or https://)</p>
-        </div>
-
-        <!-- Bucket -->
-        <div>
-          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Bucket Name <span class="text-red-500">*</span>
-          </label>
-          <input
-            v-model="bucket"
-            type="text"
-            placeholder="yantr"
-            class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          />
-          <p class="mt-1 text-xs text-slate-500">The bucket must exist before saving configuration</p>
-        </div>
-
-        <!-- Region -->
-        <div>
-          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Region
-          </label>
-          <input
-            v-model="region"
-            type="text"
-            placeholder="us-east-1"
-            class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          />
-          <p class="mt-1 text-xs text-slate-500">Default: us-east-1 (can be left as-is for MinIO)</p>
-        </div>
-
-        <!-- Access Key -->
-        <div>
-          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Access Key <span class="text-red-500">*</span>
-          </label>
-          <input
-            v-model="accessKey"
-            type="text"
-            :placeholder="configured ? '••••••••••••' : 'Enter access key'"
-            class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent font-mono"
-          />
-        </div>
-
-        <!-- Secret Key -->
-        <div>
-          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-            Secret Key <span class="text-red-500">*</span>
-          </label>
-          <input
-            v-model="secretKey"
-            type="password"
-            :placeholder="configured ? '••••••••••••' : 'Enter secret key'"
-            class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent font-mono"
-          />
-          <p class="mt-1 text-xs text-slate-500">Required to update configuration</p>
-        </div>
-
-        <!-- Save Button -->
-        <div class="pt-4 flex gap-3">
-          <button
-            @click="saveConfig"
-            :disabled="saving"
-            class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm"
-          >
-            <Save :size="16" />
-            {{ saving ? 'Saving...' : 'Save Configuration' }}
-          </button>
-
-          <button
-            @click="router.push('/')"
-            class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 transition-all font-medium text-sm"
-          >
-            Cancel
-          </button>
-        </div>
-
-        <!-- Security Note -->
-        <div class="pt-4 border-t border-slate-200 dark:border-slate-800">
-          <p class="text-xs text-slate-500">
-            <span class="font-semibold">Security Note:</span> Credentials are stored in <span class="font-mono bg-slate-100 dark:bg-slate-900 px-1 py-0.5 rounded">backup-config.json</span> on the server.
-            Ensure your server is properly secured and credentials have minimal required permissions.
-          </p>
-        </div>
-      </div>
-
+      </transition>
     </main>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+</style>

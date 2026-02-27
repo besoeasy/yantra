@@ -24,7 +24,7 @@ const treemapOptions = computed(() => ({
     background: 'transparent',
     animations: { enabled: true, speed: 600 }
   },
-  colors: ['#8b5cf6', '#ef4444', '#f59e0b', '#3b82f6'],
+  colors: ['#10b981', '#ef4444', '#f59e0b', '#3b82f6'],
   states: {
     hover: { filter: { type: 'darken', value: 0.1 } }
   },
@@ -76,7 +76,7 @@ const treemapSeries = computed(() => {
       allVolumes.push({
         x: vol.name.length > 20 ? vol.name.substring(0, 17) + '...' : vol.name,
         y: sizeVal > 0 ? sizeVal : 0.01,
-        fillColor: '#8b5cf6' // Purple for used
+        fillColor: '#10b981' // Green for used
       })
     })
   }
@@ -259,30 +259,33 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-neutral-50 dark:bg-[#0f1117] font-sans text-slate-800 dark:text-slate-200 pb-20">
+  <div class="min-h-screen bg-white dark:bg-[#0A0A0A] font-sans text-gray-900 dark:text-white pb-20">
     <!-- Header -->
-    <header class="bg-white dark:bg-[#181b21] border-b border-gray-200 dark:border-gray-800 sticky top-0 z-30">
+    <header class="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-purple-50 dark:bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-600 dark:text-purple-400">
-              <HardDrive class="w-5 h-5" />
+            <div class="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50">
+              <HardDrive class="w-5 h-5 text-gray-700 dark:text-zinc-300" />
             </div>
-            <h1 class="text-lg font-bold text-gray-900 dark:text-white">Volumes</h1>
+            <div>
+              <h1 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white">Volumes</h1>
+              <p class="text-xs font-medium text-gray-500 dark:text-zinc-500">Manage persistent data</p>
+            </div>
           </div>
           
           <div class="flex items-center gap-3">
-            <div class="relative flex-1 sm:flex-initial">
-              <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <div class="relative flex-1 sm:flex-initial group">
+              <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
               <input 
                 v-model="searchQuery" 
                 type="text" 
                 placeholder="Search volumes..." 
-                class="w-full sm:w-64 pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:bg-white dark:focus:bg-[#181b21] transition-all"
+                class="w-full sm:w-64 pl-9 pr-4 py-2 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
               />
             </div>
-            <button @click="fetchVolumes" class="p-2 bg-white dark:bg-[#181b21] border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors shrink-0">
-              <RefreshCw class="w-4 h-4 text-gray-500" :class="{ 'animate-spin': loading }" />
+            <button @click="fetchVolumes" class="p-2 bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-600 rounded-lg transition-colors shrink-0 group">
+              <RefreshCw class="w-4 h-4 text-gray-600 dark:text-zinc-400 group-hover:text-blue-500 transition-colors" :class="{ 'animate-spin text-blue-500': loading }" />
             </button>
           </div>
         </div>
@@ -293,189 +296,207 @@ onUnmounted(() => {
       
       <!-- Stats Overview -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
-          <div class="flex justify-between items-start">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Volumes</span>
-            <Box class="w-5 h-5 text-purple-500 bg-purple-50 dark:bg-purple-500/10 p-1 rounded" />
+        <div class="group relative overflow-hidden bg-white dark:bg-[#0A0A0A] p-5 rounded-xl border border-gray-200 dark:border-zinc-800 flex flex-col justify-between h-32 hover:border-gray-300 dark:hover:border-zinc-600 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="flex justify-between items-start z-10">
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500">Total Volumes</span>
+            <Box class="w-4 h-4 text-gray-400 dark:text-zinc-500 group-hover:text-blue-500 transition-colors" />
           </div>
-          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ volumesData.total || 0 }}</span>
+          <span class="text-4xl font-bold tracking-tighter tabular-nums text-gray-900 dark:text-white z-10">{{ volumesData.total || 0 }}</span>
         </div>
 
-        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
-          <div class="flex justify-between items-start">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">In Use</span>
-            <Check class="w-5 h-5 text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 p-1 rounded" />
+        <div class="group relative overflow-hidden bg-white dark:bg-[#0A0A0A] p-5 rounded-xl border border-gray-200 dark:border-zinc-800 flex flex-col justify-between h-32 hover:border-gray-300 dark:hover:border-zinc-600 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="flex justify-between items-start z-10">
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500">In Use</span>
+            <Check class="w-4 h-4 text-gray-400 dark:text-zinc-500 group-hover:text-green-500 transition-colors" />
           </div>
-          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ volumesData.used || 0 }}</span>
+          <span class="text-4xl font-bold tracking-tighter tabular-nums text-gray-900 dark:text-white z-10">{{ volumesData.used || 0 }}</span>
         </div>
 
-        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
-          <div class="flex justify-between items-start">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Unused</span>
-            <AlertCircle class="w-5 h-5 text-amber-500 bg-amber-50 dark:bg-amber-500/10 p-1 rounded" />
+        <div class="group relative overflow-hidden bg-white dark:bg-[#0A0A0A] p-5 rounded-xl border border-gray-200 dark:border-zinc-800 flex flex-col justify-between h-32 hover:border-gray-300 dark:hover:border-zinc-600 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="flex justify-between items-start z-10">
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500">Unused</span>
+            <AlertCircle class="w-4 h-4 text-gray-400 dark:text-zinc-500 group-hover:text-amber-500 transition-colors" />
           </div>
-          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ volumesData.unused || 0 }}</span>
+          <span class="text-4xl font-bold tracking-tighter tabular-nums text-gray-900 dark:text-white z-10">{{ volumesData.unused || 0 }}</span>
         </div>
 
-        <div class="bg-white dark:bg-[#181b21] p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
-          <div class="flex justify-between items-start">
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Browsing</span>
-            <Eye class="w-5 h-5 text-blue-500 bg-blue-50 dark:bg-blue-500/10 p-1 rounded" />
+        <div class="group relative overflow-hidden bg-white dark:bg-[#0A0A0A] p-5 rounded-xl border border-gray-200 dark:border-zinc-800 flex flex-col justify-between h-32 hover:border-gray-300 dark:hover:border-zinc-600 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div class="flex justify-between items-start z-10">
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500">Browsing</span>
+            <Eye class="w-4 h-4 text-gray-400 dark:text-zinc-500 group-hover:text-blue-400 transition-colors" />
           </div>
-          <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ browsingVolumes.length || 0 }}</span>
+          <span class="text-4xl font-bold tracking-tighter tabular-nums text-gray-900 dark:text-white z-10">{{ browsingVolumes.length || 0 }}</span>
         </div>
       </div>
 
       <!-- Treemap -->
-      <div v-if="treemapSeries.length > 0" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm p-6">
-         <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Volume Size</h3>
-         <div class="rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900/50 p-1">
+      <div v-if="treemapSeries.length > 0" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-6">
+         <h3 class="text-sm font-semibold tracking-tight text-gray-900 dark:text-white mb-4">Volume Size Distribution</h3>
+         <div class="rounded-lg overflow-hidden bg-gray-50 dark:bg-zinc-900/30 border border-gray-200 dark:border-zinc-800/50 p-1">
             <VueApexCharts :options="treemapOptions" :series="treemapSeries" height="280" />
          </div>
       </div>
 
        <!-- Browsing Section - Show prominent if active -->
-       <div v-if="browsingVolumes.length > 0" class="space-y-4">
-         <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400">
-             <Eye class="w-5 h-5" />
-             <h3 class="font-bold text-lg">Active Sessions</h3>
-         </div>
-         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div v-for="volume in browsingVolumes" :key="volume.name" 
-                 class="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 rounded-xl p-5 flex flex-col">
-                <div class="flex justify-between items-start mb-3">
-                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-white dark:bg-blue-900/50 px-2 py-1 rounded">Browsing</span>
-                    <button @click="stopBrowsing(volume.name)" class="text-gray-400 hover:text-red-500 transition-colors">
-                        <EyeOff class="w-4 h-4" />
-                    </button>
-                </div>
-                <h4 class="font-mono font-medium text-sm text-gray-900 dark:text-white truncate mb-4" :title="volume.name">{{ volume.name }}</h4>
-                <div class="mt-auto flex gap-2">
-                    <a v-if="volumePorts[volume.name]"
-                       :href="`http://${window.location.hostname || 'localhost'}:${volumePorts[volume.name]}`"
-                       target="_blank"
-                       class="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors shadow-sm">
-                       <ExternalLink class="w-4 h-4" />
-                       Open Finder
-                    </a>
-                </div>
-            </div>
-         </div>
-      </div>
+       <transition name="fade">
+         <div v-if="browsingVolumes.length > 0" class="space-y-4">
+           <div class="flex items-center gap-2 text-blue-600 dark:text-blue-500">
+               <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+               <h3 class="text-sm font-bold uppercase tracking-wider">Active Sessions</h3>
+           </div>
+           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div v-for="volume in browsingVolumes" :key="volume.name" 
+                   class="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-900/30 rounded-xl p-5 flex flex-col">
+                  <div class="flex justify-between items-start mb-3">
+                      <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">Browsing</span>
+                      <button @click="stopBrowsing(volume.name)" class="text-gray-400 hover:text-red-500 transition-colors" title="Stop Browsing">
+                          <EyeOff class="w-4 h-4" />
+                      </button>
+                  </div>
+                  <h4 class="font-mono font-medium text-sm text-gray-900 dark:text-white truncate mb-4" :title="volume.name">{{ volume.name }}</h4>
+                  <div class="mt-auto flex gap-2">
+                      <a v-if="volumePorts[volume.name]"
+                         :href="`http://${window.location.hostname || 'localhost'}:${volumePorts[volume.name]}`"
+                         target="_blank"
+                         class="flex-1 flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:hover:bg-gray-100 dark:text-gray-900 rounded-lg px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors shadow-sm">
+                         <ExternalLink class="w-4 h-4" />
+                         Open Finder
+                      </a>
+                  </div>
+              </div>
+           </div>
+        </div>
+      </transition>
 
       <!-- Main Tabs -->
       <div class="space-y-4">
-        <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-1">
+        <div class="flex items-center justify-between border-b border-gray-200 dark:border-zinc-800 pb-1">
           <div class="flex gap-6">
             <button 
               @click="currentTab = 'active'"
-              :class="currentTab === 'active' ? 'text-purple-600 dark:text-purple-400 border-purple-600 dark:border-purple-400' : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300'"
-              class="pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2">
-              <Check class="w-4 h-4" />
+              :class="currentTab === 'active' ? 'text-gray-900 dark:text-white border-gray-900 dark:border-white' : 'text-gray-500 dark:text-zinc-500 border-transparent hover:text-gray-700 dark:hover:text-zinc-300'"
+              class="pb-3 text-sm font-semibold tracking-tight border-b-2 transition-colors flex items-center gap-2">
               Active Volumes
-              <span class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ filteredUsed.length }}</span>
+              <span class="bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 text-xs px-2 py-0.5 rounded-full font-bold tabular-nums">{{ filteredUsed.length }}</span>
             </button>
             <button 
               @click="currentTab = 'unused'"
-              :class="currentTab === 'unused' ? 'text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-400' : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300'"
-              class="pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2">
-              <AlertCircle class="w-4 h-4" />
+              :class="currentTab === 'unused' ? 'text-gray-900 dark:text-white border-gray-900 dark:border-white' : 'text-gray-500 dark:text-zinc-500 border-transparent hover:text-gray-700 dark:hover:text-zinc-300'"
+              class="pb-3 text-sm font-semibold tracking-tight border-b-2 transition-colors flex items-center gap-2">
               Unused Volumes
-              <span class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ filteredUnused.length }}</span>
+              <span class="bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 text-xs px-2 py-0.5 rounded-full font-bold tabular-nums">{{ filteredUnused.length }}</span>
             </button>
           </div>
           
            <button v-if="currentTab === 'unused' && filteredUnused.length > 0"
             @click="deleteAllUnusedVolumes"
             :disabled="deletingAllVolumes"
-            class="text-xs font-semibold uppercase text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400 transition-colors flex items-center gap-1">
+            class="text-[10px] font-bold uppercase tracking-[0.2em] text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 transition-colors flex items-center gap-2 px-3 py-1.5 rounded-md border border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10">
              <Trash2 class="w-3 h-3" />
              {{ deletingAllVolumes ? 'Cleaning...' : 'Prune All' }}
            </button>
         </div>
 
         <!-- Active Grid -->
-         <div v-if="currentTab === 'active'" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-           <table class="w-full text-left border-collapse">
-              <thead>
-                 <tr class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
-                    <th class="px-6 py-4 font-medium w-1/3">Name</th>
-                    <th class="px-6 py-4 font-medium">Driver</th>
-                    <th class="px-6 py-4 font-medium">Size</th>
-                    <th class="px-6 py-4 font-medium">Created</th>
-                    <th class="px-4 py-4 w-32 text-right">Actions</th>
-                 </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
-                 <tr v-if="filteredUsed.length === 0" class="bg-gray-50/50 dark:bg-gray-900/20">
-                    <td colspan="5" class="px-6 py-12 text-center text-gray-400">No active/mounted volumes found</td>
-                 </tr>
-                 <tr v-for="volume in filteredUsed" :key="volume.name" class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td class="px-6 py-4">
-                        <div class="font-medium text-gray-900 dark:text-white truncate max-w-[250px]" :title="volume.name">{{ volume.name }}</div>
-                    </td>
-                    <td class="px-6 py-4 text-gray-500">{{ volume.driver }}</td>
-                    <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ volume.size }} MB</td>
-                    <td class="px-6 py-4 text-gray-500">{{ formatDate(volume.createdAt) }}</td>
-                    <td class="px-4 py-4 text-right">
-                       <button @click="startBrowsing(volume.name)" 
-                          :disabled="actionLoading[volume.name]"
-                          class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 rounded-lg text-xs font-medium transition-colors">
-                          <Loader2 v-if="actionLoading[volume.name]" class="w-3 h-3 animate-spin" />
-                          <Eye v-else class="w-3 h-3" />
-                          Browse
-                       </button>
-                    </td>
-                 </tr>
-              </tbody>
-           </table>
-        </div>
-
-        <!-- Unused Grid -->
-        <div v-if="currentTab === 'unused'" class="bg-white dark:bg-[#181b21] rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-           <div class="overflow-x-auto">
-           <table class="w-full text-left border-collapse">
-              <thead>
-                 <tr class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
-                    <th class="px-6 py-4 font-medium w-1/3">Name</th>
-                    <th class="px-6 py-4 font-medium">Driver</th>
-                    <th class="px-6 py-4 font-medium">Size</th>
-                    <th class="px-6 py-4 font-medium">Created</th>
-                    <th class="px-4 py-4 w-32 text-right">Actions</th>
-                 </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
-                 <tr v-if="filteredUnused.length === 0" class="bg-gray-50/50 dark:bg-gray-900/20">
-                    <td colspan="5" class="px-6 py-12 text-center text-gray-400">No unused volumes found</td>
-                 </tr>
-                 <tr v-for="volume in filteredUnused" :key="volume.name" class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td class="px-6 py-4">
-                        <div class="font-medium text-gray-900 dark:text-white truncate max-w-[250px]" :title="volume.name">{{ volume.name }}</div>
-                    </td>
-                    <td class="px-6 py-4 text-gray-500">{{ volume.driver }}</td>
-                    <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ volume.size }} MB</td>
-                    <td class="px-6 py-4 text-gray-500">{{ formatDate(volume.createdAt) }}</td>
-                    <td class="px-4 py-4 text-right flex items-center justify-end gap-2">
-                       <button @click="startBrowsing(volume.name)" 
-                          :disabled="actionLoading[volume.name]"
-                          class="p-2 text-gray-400 hover:text-purple-500 rounded-lg transition-colors"
-                          title="Browse">
-                           <Loader2 v-if="actionLoading[volume.name]" class="w-4 h-4 animate-spin" />
-                           <Eye v-else class="w-4 h-4" />
-                       </button>
-                       <button @click="deleteVolume(volume.name)" 
-                          class="p-2 text-gray-400 hover:text-rose-500 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                          title="Delete">
-                          <Trash2 class="w-4 h-4" />
-                       </button>
-                    </td>
-                 </tr>
-              </tbody>
-           </table>
-           </div>
-        </div>
-
+        <transition name="fade" mode="out-in">
+          <div v-if="currentTab === 'active'" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden">
+             <table class="w-full text-left border-collapse">
+                <thead>
+                   <tr class="text-[10px] font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-[0.2em] border-b border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/20">
+                      <th class="px-6 py-4 w-1/3">Name</th>
+                      <th class="px-6 py-4">Driver</th>
+                      <th class="px-6 py-4">Size</th>
+                      <th class="px-6 py-4">Created</th>
+                      <th class="px-4 py-4 w-32 text-right">Actions</th>
+                   </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-zinc-800 text-sm font-medium">
+                   <tr v-if="filteredUsed.length === 0">
+                      <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-zinc-500 text-sm">No active/mounted volumes found</td>
+                   </tr>
+                   <tr v-for="volume in filteredUsed" :key="volume.name" class="group hover:bg-gray-50 dark:hover:bg-zinc-900/50 transition-colors">
+                      <td class="px-6 py-4">
+                          <div class="font-mono text-gray-900 dark:text-white truncate max-w-[250px] text-xs" :title="volume.name">{{ volume.name }}</div>
+                      </td>
+                      <td class="px-6 py-4 text-gray-500 dark:text-zinc-400">{{ volume.driver }}</td>
+                      <td class="px-6 py-4 text-gray-600 dark:text-zinc-300 tabular-nums">{{ volume.size }} MB</td>
+                      <td class="px-6 py-4 text-gray-500 dark:text-zinc-500 text-xs">{{ formatDate(volume.createdAt) }}</td>
+                      <td class="px-4 py-4 text-right">
+                         <button @click="startBrowsing(volume.name)" 
+                            :disabled="actionLoading[volume.name]"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:text-gray-900 dark:hover:text-white rounded-md text-[10px] font-bold uppercase tracking-wider transition-colors shadow-sm">
+                            <Loader2 v-if="actionLoading[volume.name]" class="w-3 h-3 animate-spin text-blue-500" />
+                            <Eye v-else class="w-3 h-3" />
+                            Browse
+                         </button>
+                      </td>
+                   </tr>
+                </tbody>
+             </table>
+          </div>
+  
+          <!-- Unused Grid -->
+          <div v-else-if="currentTab === 'unused'" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden">
+             <div class="overflow-x-auto">
+             <table class="w-full text-left border-collapse">
+                <thead>
+                   <tr class="text-[10px] font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-[0.2em] border-b border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/20">
+                      <th class="px-6 py-4 w-1/3">Name</th>
+                      <th class="px-6 py-4">Driver</th>
+                      <th class="px-6 py-4">Size</th>
+                      <th class="px-6 py-4">Created</th>
+                      <th class="px-4 py-4 w-32 text-right">Actions</th>
+                   </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-zinc-800 text-sm font-medium">
+                   <tr v-if="filteredUnused.length === 0">
+                      <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-zinc-500 text-sm">No unused volumes found</td>
+                   </tr>
+                   <tr v-for="volume in filteredUnused" :key="volume.name" class="group hover:bg-gray-50 dark:hover:bg-zinc-900/50 transition-colors">
+                      <td class="px-6 py-4">
+                          <div class="font-mono text-gray-900 dark:text-white truncate max-w-[250px] text-xs" :title="volume.name">{{ volume.name }}</div>
+                      </td>
+                      <td class="px-6 py-4 text-gray-500 dark:text-zinc-400">{{ volume.driver }}</td>
+                      <td class="px-6 py-4 text-gray-600 dark:text-zinc-300 tabular-nums">{{ volume.size }} MB</td>
+                      <td class="px-6 py-4 text-gray-500 dark:text-zinc-500 text-xs">{{ formatDate(volume.createdAt) }}</td>
+                      <td class="px-4 py-4 text-right flex items-center justify-end gap-2">
+                         <button @click="startBrowsing(volume.name)" 
+                            :disabled="actionLoading[volume.name]"
+                            class="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
+                            title="Browse">
+                             <Loader2 v-if="actionLoading[volume.name]" class="w-4 h-4 animate-spin text-blue-500" />
+                             <Eye v-else class="w-4 h-4" />
+                         </button>
+                         <button @click="deleteVolume(volume.name)" 
+                            class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                            title="Delete">
+                            <Trash2 class="w-4 h-4" />
+                         </button>
+                      </td>
+                   </tr>
+                </tbody>
+             </table>
+             </div>
+          </div>
+        </transition>
       </div>
     </main>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(4px);
+}
+</style>

@@ -31,15 +31,6 @@ const navItems = [
     to: "/images",
     description: "Inspect local Docker images",
     icon: Layers,
-    accent: {
-      ring: "focus:ring-emerald-500",
-      glow: "bg-emerald-200",
-      iconBg: "bg-emerald-900/30",
-      iconHover: "group-hover:bg-emerald-800/40",
-      textHover: "group-hover:text-emerald-400",
-      check: "text-emerald-400",
-      arrow: "text-emerald-400",
-    },
     features: ["List images", "Cleanup helpers"],
   },
   {
@@ -47,15 +38,6 @@ const navItems = [
     to: "/volumes",
     description: "View and manage named volumes",
     icon: HardDrive,
-    accent: {
-      ring: "focus:ring-amber-500",
-      glow: "bg-amber-200",
-      iconBg: "bg-amber-900/30",
-      iconHover: "group-hover:bg-amber-800/40",
-      textHover: "group-hover:text-amber-400",
-      check: "text-amber-400",
-      arrow: "text-amber-400",
-    },
     features: ["Safe storage", "Portable data"],
   },
   {
@@ -63,15 +45,6 @@ const navItems = [
     to: "/logs",
     description: "Read container logs and recent output",
     icon: ClipboardList,
-    accent: {
-      ring: "focus:ring-rose-500",
-      glow: "bg-rose-200",
-      iconBg: "bg-rose-900/30",
-      iconHover: "group-hover:bg-rose-800/40",
-      textHover: "group-hover:text-rose-400",
-      check: "text-rose-400",
-      arrow: "text-rose-400",
-    },
     features: ["Tail logs", "Debug quickly"],
   },
 ];
@@ -82,15 +55,6 @@ const externalItems = [
     href: "https://sponsor.besoeasy.com/",
     description: "Support Yantr development",
     icon: Heart,
-    accent: {
-      ring: "focus:ring-red-500",
-      glow: "bg-red-200",
-      iconBg: "bg-red-900/30",
-      iconHover: "group-hover:bg-red-800/40",
-      textHover: "group-hover:text-red-400",
-      check: "text-red-400",
-      arrow: "text-red-400",
-    },
     features: ["Keep the project alive", "Fund new features"],
   },
   {
@@ -98,15 +62,6 @@ const externalItems = [
     href: "https://github.com/besoeasy/Yantr",
     description: "Source code, issues, and releases",
     icon: Github,
-    accent: {
-      ring: "focus:ring-slate-400",
-      glow: "bg-slate-200",
-      iconBg: "bg-slate-900/30",
-      iconHover: "group-hover:bg-slate-800/40",
-      textHover: "group-hover:text-slate-200",
-      check: "text-slate-300",
-      arrow: "text-slate-200",
-    },
     features: ["Track updates", "Report bugs"],
   },
   {
@@ -114,140 +69,127 @@ const externalItems = [
     href: "https://github.com/besoeasy/yantr/issues",
     description: "Open a bug report or request a feature",
     icon: Bug,
-    accent: {
-      ring: "focus:ring-orange-500",
-      glow: "bg-orange-200",
-      iconBg: "bg-orange-900/30",
-      iconHover: "group-hover:bg-orange-800/40",
-      textHover: "group-hover:text-orange-400",
-      check: "text-orange-400",
-      arrow: "text-orange-400",
-    },
     features: ["Bug reports", "Feature requests"],
   },
 ];
 </script>
 
 <template>
-  <main class="flex flex-col items-center justify-center min-h-screen bg-slate-50 text-slate-900 dark:bg-black dark:text-white px-4 py-12">
-    <div class="w-full p-6 sm:p-10 lg:p-14 mx-auto animate-fade-in-up space-y-12">
+  <main class="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-white px-4 py-8">
+    <div class="max-w-7xl mx-auto space-y-12">
+      <!-- Header -->
+      <div class="space-y-2">
+        <h1 class="text-2xl font-semibold tracking-tight">Extra Tools & Links</h1>
+        <p class="text-sm text-gray-500 dark:text-zinc-500 font-medium">Additional utilities and external resources for Yantr.</p>
+      </div>
+
       <!-- Navigation Grid -->
-      <section aria-label="Navigation" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+      <section aria-label="Navigation" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <router-link
           v-for="item in navItems"
           :key="item.to"
           :to="item.to"
-          class="group relative overflow-hidden bg-white dark:bg-gray-900 rounded-3xl p-8 border border-slate-200 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 focus:outline-none focus:ring-4"
-          :class="item.accent.ring"
-          tabindex="0"
+          class="group relative overflow-hidden bg-white dark:bg-[#0A0A0A] rounded-xl p-6 border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 focus:outline-none"
           :aria-label="`${item.title}: ${item.description}`"
         >
-          <!-- Gradient Glow -->
-          <div
-            class="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-70 transition-opacity duration-500"
-            :class="item.accent.glow"
-          ></div>
+          <!-- Hover Glow Line -->
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          
+          <!-- Hover Dot Pattern -->
+          <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-          <div class="relative z-10">
-            <!-- Icon -->
-            <div
-              class="flex items-center justify-center w-20 h-20 rounded-2xl mb-6 transition-all duration-300 group-hover:scale-110"
-              :class="[item.accent.iconBg, item.accent.iconHover]"
-            >
-              <component :is="item.icon" :size="40" class="text-slate-900 dark:text-white" />
+          <div class="relative z-10 flex flex-col h-full">
+            <!-- Icon & Title -->
+            <div class="flex items-center gap-3 mb-4">
+              <div class="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50 group-hover:border-blue-500/30 group-hover:text-blue-500 transition-colors">
+                <component :is="item.icon" :size="18" />
+              </div>
+              <h2 class="text-lg font-semibold tracking-tight group-hover:text-blue-500 transition-colors">
+                {{ item.title }}
+              </h2>
             </div>
-
-            <!-- Content -->
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2 transition-colors" :class="item.accent.textHover">
-              {{ item.title }}
-            </h2>
-            <p class="text-slate-600 dark:text-gray-300 leading-relaxed mb-6">
+            
+            <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed mb-6 flex-grow">
               {{ item.description }}
             </p>
 
             <!-- Features -->
-            <ul class="space-y-2 text-sm text-slate-500 dark:text-gray-400">
+            <ul class="space-y-2 text-xs text-gray-500 dark:text-zinc-500 font-medium">
               <li v-for="feature in item.features" :key="feature" class="flex items-center gap-2">
-                <Check :size="16" :class="item.accent.check" />
+                <Check :size="12" class="text-gray-400 dark:text-zinc-600 group-hover:text-blue-400 transition-colors" />
                 {{ feature }}
               </li>
             </ul>
+            
+            <!-- Slide Action -->
+            <div class="mt-6 flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-blue-500 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+              Open Tool <ChevronRight :size="14" />
+            </div>
           </div>
         </router-link>
       </section>
 
       <!-- External Links Grid -->
-      <section aria-label="External Links" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-        <a
-          v-for="item in externalItems"
-          :key="item.href"
-          :href="item.href"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group relative overflow-hidden bg-white dark:bg-gray-900 rounded-3xl p-8 border border-slate-200 dark:border-gray-700 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 focus:outline-none focus:ring-4"
-          :class="item.accent.ring"
-          tabindex="0"
-          :aria-label="`${item.title}: ${item.description}`"
-        >
-          <!-- Gradient Glow -->
-          <div
-            class="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-70 transition-opacity duration-500"
-            :class="item.accent.glow"
-          ></div>
+      <section aria-label="External Links">
+        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500 mb-4">External Resources</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <a
+            v-for="item in externalItems"
+            :key="item.href"
+            :href="item.href"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group relative overflow-hidden bg-white dark:bg-[#0A0A0A] rounded-xl p-6 border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 focus:outline-none"
+            :aria-label="`${item.title}: ${item.description}`"
+          >
+            <!-- Hover Glow Line -->
+            <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-gray-400 dark:via-zinc-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-          <div class="relative z-10">
-            <!-- Icon -->
-            <div
-              class="flex items-center justify-center w-20 h-20 rounded-2xl mb-6 transition-all duration-300 group-hover:scale-110"
-              :class="[item.accent.iconBg, item.accent.iconHover]"
-            >
-              <component :is="item.icon" :size="40" class="text-slate-900 dark:text-white" />
+            <div class="relative z-10 flex flex-col h-full">
+              <!-- Icon & Title -->
+              <div class="flex items-center gap-3 mb-4">
+                <div class="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50 group-hover:border-gray-300 dark:group-hover:border-zinc-600 transition-colors">
+                  <component :is="item.icon" :size="18" class="text-gray-700 dark:text-zinc-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
+                </div>
+                <h2 class="text-lg font-semibold tracking-tight">
+                  {{ item.title }}
+                </h2>
+              </div>
+              
+              <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed mb-6 flex-grow">
+                {{ item.description }}
+              </p>
+
+              <!-- Features -->
+              <ul class="space-y-2 text-xs text-gray-500 dark:text-zinc-500 font-medium">
+                <li v-for="feature in item.features" :key="feature" class="flex items-center gap-2">
+                  <Check :size="12" class="text-gray-400 dark:text-zinc-600" />
+                  {{ feature }}
+                </li>
+              </ul>
+              
+              <!-- Slide Action -->
+              <div class="mt-6 flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                Visit Link <ChevronRight :size="14" />
+              </div>
             </div>
-
-            <!-- Content -->
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2 transition-colors" :class="item.accent.textHover">
-              {{ item.title }}
-            </h2>
-            <p class="text-slate-600 dark:text-gray-300 leading-relaxed mb-6">
-              {{ item.description }}
-            </p>
-
-            <!-- Features -->
-            <ul class="space-y-2 text-sm text-slate-500 dark:text-gray-400">
-              <li v-for="feature in item.features" :key="feature" class="flex items-center gap-2">
-                <Check :size="16" :class="item.accent.check" />
-                {{ feature }}
-              </li>
-            </ul>
-          </div>
-        </a>
+          </a>
+        </div>
       </section>
 
       <!-- Build Version -->
       <section aria-label="Build Information" class="w-full">
-        <div class="bg-white dark:bg-gray-900 rounded-3xl border border-slate-200 dark:border-gray-700 p-8 flex flex-col gap-3">
-          <div class="text-sm uppercase tracking-[0.2em] text-slate-500 dark:text-gray-400">Yantr build</div>
-          <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ buildTimestamp }}</div>
-          <div class="text-sm text-slate-600 dark:text-gray-300">Generated at image build time (UTC), {{ buildRelative }}.</div>
+        <div class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500">Build Info</div>
+            <div class="text-xl font-bold tracking-tighter tabular-nums text-gray-900 dark:text-white">{{ buildTimestamp }}</div>
+            <div class="text-xs text-gray-500 dark:text-zinc-500 font-medium">Generated at image build time (UTC)</div>
+          </div>
+          <div class="px-3 py-1.5 bg-gray-50 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-md text-xs font-bold text-gray-700 dark:text-zinc-300 whitespace-nowrap">
+            {{ buildRelative }}
+          </div>
         </div>
       </section>
     </div>
   </main>
 </template>
-
-<style scoped>
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-</style>

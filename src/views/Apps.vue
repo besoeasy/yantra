@@ -191,27 +191,27 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white dark:bg-black text-slate-900 dark:text-slate-200 font-sans flex flex-col lg:flex-row">
+  <div class="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-zinc-100 font-sans flex flex-col lg:flex-row selection:bg-blue-500/30">
     
     <!-- Main Content -->
     <main class="flex-1 min-w-0 order-1 lg:order-1">
         <!-- Top Bar -->
-        <div class="sticky top-0 z-30 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 px-4 sm:px-6 pt-4 pb-3">
+        <div class="sticky top-0 z-30 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 px-6 py-4">
 
           <!-- Search input -->
-          <div class="relative group">
-            <Search :size="17" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none transition-colors group-focus-within:text-gray-700 dark:group-focus-within:text-slate-300" />
+          <div class="relative group max-w-2xl">
+            <Search :size="16" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none transition-colors group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400" />
             <input
               ref="searchInput"
               v-model="appSearch"
               type="text"
-              placeholder="Search apps…"
-              class="w-full bg-gray-50 dark:bg-[#0c0c0e] border border-gray-200 dark:border-slate-800 rounded-2xl pl-11 pr-24 py-3 text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-gray-900 dark:focus:border-slate-400 focus:bg-white dark:focus:bg-[#111] focus:shadow-lg transition-all duration-200"
+              placeholder="Search applications..."
+              class="w-full bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-xl pl-11 pr-24 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-zinc-500 focus:outline-none focus:border-gray-300 dark:focus:border-zinc-700 focus:bg-white dark:focus:bg-[#0A0A0A] focus:shadow-sm transition-all duration-300"
             />
             <!-- Kbd hint -->
             <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none" :class="appSearch ? 'hidden' : ''">
-              <kbd class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-medium bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 border border-gray-200 dark:border-slate-700">
-                <Command :size="9" />
+              <kbd class="inline-flex items-center gap-0.5 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-700">
+                <Command :size="10" />
                 K
               </kbd>
             </div>
@@ -219,24 +219,24 @@ onUnmounted(() => {
             <button
               v-if="appSearch"
               @click="appSearch = ''"
-              class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+              class="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
             >
-              <X :size="15" />
+              <X :size="14" />
             </button>
           </div>
 
           <!-- Active filters + result count -->
-          <div class="mt-2.5 flex items-center gap-2 flex-wrap min-h-6">
-            <span class="text-xs text-gray-400 dark:text-slate-500">
+          <div class="mt-3 flex items-center gap-2 flex-wrap min-h-[24px]">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-500">
               {{ combinedApps.length }} app{{ combinedApps.length === 1 ? '' : 's' }}
             </span>
             <span
               v-if="selectedTag"
-              class="inline-flex items-center gap-1 text-xs font-medium bg-gray-900 dark:bg-slate-100 text-white dark:text-slate-900 px-2.5 py-1 rounded-full"
+              class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-black dark:bg-white text-white dark:text-black px-2.5 py-1 rounded-full"
             >
               {{ selectedTag }}
-              <button @click="selectedTag = null" class="ml-0.5 hover:opacity-70 transition-opacity">
-                <X :size="11" />
+              <button @click="selectedTag = null" class="ml-1 hover:opacity-70 transition-opacity">
+                <X :size="10" />
               </button>
             </span>
           </div>
@@ -244,21 +244,21 @@ onUnmounted(() => {
 
         <!-- content area -->
         <div class="p-6">
-            <div v-if="loading" class="flex flex-col items-center justify-center py-20">
-               <div class="w-8 h-8 border-2 border-slate-200 border-t-blue-500 rounded-full animate-spin mb-4"></div>
-               <div class="text-sm text-slate-500">Loading catalog...</div>
+            <div v-if="loading" class="flex flex-col items-center justify-center py-32">
+               <div class="w-8 h-8 border-[3px] border-gray-200 dark:border-zinc-800 border-t-blue-500 dark:border-t-blue-500 rounded-full animate-spin mb-6"></div>
+               <div class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">Loading catalog...</div>
             </div>
 
-            <div v-else-if="combinedApps.length === 0" class="flex flex-col items-center justify-center py-20 text-center">
-                <div class="bg-slate-100 dark:bg-slate-800 rounded-full p-4 mb-4">
-                   <Search :size="32" class="text-slate-400" />
+            <div v-else-if="combinedApps.length === 0" class="flex flex-col items-center justify-center py-32 text-center">
+                <div class="bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-2xl p-5 mb-5">
+                   <Search :size="28" class="text-gray-400 dark:text-zinc-500" />
                 </div>
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white">No apps found</h3>
-                <p class="text-slate-500 mt-1 max-w-xs mx-auto">We couldn't find any apps matching your search filters.</p>
-                <button @click="appSearch = ''; selectedTag = null" class="mt-4 text-sm font-medium text-blue-600 hover:underline">Clear all filters</button>
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white tracking-tight">No apps found</h3>
+                <p class="text-sm text-gray-500 dark:text-zinc-400 mt-2 max-w-sm mx-auto leading-relaxed">We couldn't find any applications matching your search criteria.</p>
+                <button @click="appSearch = ''; selectedTag = null" class="mt-6 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">Clear all filters</button>
             </div>
 
-            <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+            <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 <AppCard
                   v-for="app in combinedApps"
                   :key="app.id"
@@ -272,62 +272,62 @@ onUnmounted(() => {
     </main>
 
     <!-- Sidebar / Filters -->
-    <aside class="w-full lg:w-60 xl:w-64 shrink-0 bg-white dark:bg-[#0c0c0e] border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-slate-800 lg:h-screen lg:sticky lg:top-0 overflow-y-auto order-2 lg:order-2 scrollbar-none">
-      <div class="p-5">
+    <aside class="w-full lg:w-64 shrink-0 bg-white dark:bg-[#0A0A0A] border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-zinc-800 lg:h-screen lg:sticky lg:top-0 overflow-y-auto order-2 lg:order-2 scrollbar-none">
+      <div class="p-6">
 
         <!-- Header -->
-        <div class="mb-6">
-          <h2 class="text-base font-bold text-gray-900 dark:text-white">Tags</h2>
-          <p class="text-xs text-gray-400 dark:text-slate-500 mt-0.5">{{ allAppsCount }} apps available</p>
+        <div class="mb-8">
+          <h2 class="text-sm font-semibold text-gray-900 dark:text-white tracking-tight">Categories</h2>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 mt-1.5">{{ allAppsCount }} total apps</p>
         </div>
 
         <!-- All button -->
         <button
           @click="selectedTag = null"
           :class="[
-            'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 mb-1',
+            'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-200 mb-2',
             selectedTag === null
-              ? 'bg-gray-900 dark:bg-slate-100 text-white dark:text-gray-900'
-              : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/60 hover:text-gray-900 dark:hover:text-slate-200'
+              ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-md'
+              : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-900 font-medium'
           ]"
         >
-          <div class="flex items-center gap-2.5">
-            <LayoutGrid :size="15" />
+          <div class="flex items-center gap-3">
+            <LayoutGrid :size="15" :class="selectedTag === null ? 'opacity-100' : 'opacity-70'" />
             All apps
           </div>
           <span :class="[
-            'text-xs font-semibold tabular-nums px-1.5 py-0.5 rounded-md',
+            'text-[10px] font-bold tracking-widest tabular-nums px-2 py-0.5 rounded-full',
             selectedTag === null
-              ? 'bg-white/20 text-white dark:bg-gray-900/20 dark:text-gray-900'
-              : 'bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400'
+              ? 'bg-white/20 text-white dark:bg-black/10 dark:text-black'
+              : 'bg-gray-100 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-400'
           ]">{{ allAppsCount }}</span>
         </button>
 
         <!-- Divider -->
-        <div class="my-3 border-t border-gray-100 dark:border-slate-800"></div>
+        <div class="my-4 border-t border-gray-100 dark:border-zinc-800"></div>
 
         <!-- Category list -->
-        <div class="space-y-0.5">
+        <div class="space-y-1">
           <button
             v-for="cat in tags"
             :key="cat.name"
             @click="selectedTag = cat.name"
             :class="[
-              'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group',
+              'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-200 group',
               selectedTag === cat.name
-                ? 'bg-gray-900 dark:bg-slate-100 text-white dark:text-gray-900'
-                : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800/60 hover:text-gray-900 dark:hover:text-slate-200'
+                ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-md'
+                : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-900 font-medium'
             ]"
           >
-            <div class="flex items-center gap-2.5 min-w-0">
-              <Tag :size="14" class="shrink-0" />
+            <div class="flex items-center gap-3 min-w-0">
+              <Tag :size="14" class="shrink-0 transition-opacity" :class="selectedTag === cat.name ? 'opacity-100' : 'opacity-50 group-hover:opacity-100'" />
               <span class="truncate">{{ cat.name }}</span>
             </div>
             <span :class="[
-              'text-xs font-semibold tabular-nums px-1.5 py-0.5 rounded-md shrink-0 ml-2',
+              'text-[10px] font-bold tracking-widest tabular-nums px-2 py-0.5 rounded-full shrink-0 ml-2',
               selectedTag === cat.name
-                ? 'bg-white/20 text-white dark:bg-gray-900/20 dark:text-gray-900'
-                : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500'
+                ? 'bg-white/20 text-white dark:bg-black/10 dark:text-black'
+                : 'bg-gray-100 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-400 group-hover:bg-gray-200 dark:group-hover:bg-zinc-700'
             ]">{{ cat.count }}</span>
           </button>
         </div>

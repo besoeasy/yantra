@@ -1,123 +1,39 @@
-# Project Development Guidelines
+# Yantr Design Language
 
-Use Node.js as runtime environment for all JavaScript and TypeScript code.
+Yantr follows a "High-End Tech" (Linear/Vercel) aesthetic. This design language prioritizes precision, readable data density, elegant micro-interactions, and a sleek monochrome base with highly intentional color accents.
 
-Backend is located in the `/daemon/` directory. Follow these guidelines when creating or modifying API endpoints.
+## 1. Core Principles
+- **Refined Minimalism:** Use pure black/dark grays (`#0A0A0A`, `zinc-900`) or clean whites for backgrounds. Avoid bulky, soft drop-shadows and glassmorphic blurs.
+- **Subtle Boundaries:** Use extremely thin, low-contrast borders (e.g., `border-gray-200 dark:border-zinc-800`) to separate content blocks. Elements should feel flush and grounded.
+- **Intentional Color:** The UI is primarily monochrome. Use bright colors *only* for semantic meaning:
+  - **Green:** Success, Running, Healthy, Optimized.
+  - **Amber/Yellow:** Warning, Pending, Action Required.
+  - **Red:** Error, Stopped, Critical.
+  - **Blue:** Interactive hover states, links, or primary subtle accents.
+- **Data over Decoration:** Focus on clean typography and spacing to present information clearly. Avoid unnecessary decorative boxes if whitespace can do the job.
 
-## APPS Template Standards
+## 2. Typography
+- **Headings:** Medium to Semi-bold (`font-semibold`), tight letter spacing (`tracking-tight`), high contrast text (e.g., `text-gray-900 dark:text-white`).
+- **Subtitles & Labels:** Small (`text-[10px]` or `text-xs`), bold (`font-bold`), uppercase, extremely wide letter spacing (`tracking-wider` or `tracking-[0.2em]`), and low contrast (`text-gray-500 dark:text-zinc-500`).
+- **Data/Metrics:** Massive, bold numerals (`text-4xl font-bold tracking-tighter tabular-nums`) to make key stats immediately readable.
 
-Follow the structure and naming conventions outlined in `apps` for all application directories and `compose.yml` files. if you need better understanding feel free to pick 5 random apps from the `apps/` directory and study their structure.
+## 3. Micro-Interactions & Animation
+Animations should be butter-smooth, intentional, and not overwhelming. Use `transition-all duration-300` or `duration-500` broadly.
+- **Hover Glow Lines:** Interactive cards should reveal a subtle 2px gradient line at the top border on hover (e.g., `bg-gradient-to-r from-transparent via-blue-500 to-transparent`).
+- **Hover Patterns:** Reveal a faint, technical dot-grid pattern behind the card content on hover.
+- **Expanding Elements:** Badges or statuses should start as simple dots and smoothly expand (width transition) into text-filled pills on hover.
+- **Sliding Actions:** Action text (like "Manage ->") should slide up or fade in from an offset position (`translate-y-4 opacity-0` -> `translate-y-0 opacity-100`) on parent hover.
+- **Active Pulses:** Use tiny, pulsing dots (`animate-pulse`) for active, real-time states (e.g., a running container).
 
-### `info.json` Content Requirements
+## 4. Components Structure
+- **Cards (`AppCard`, `SystemCleaner`):** 
+  - Standard styling: `bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 rounded-xl p-5/6`.
+  - Hover state: `hover:border-gray-300 dark:hover:border-zinc-600 hover:shadow-2xl hover:-translate-y-1`.
+- **Icons:** Use `lucide-vue-next`. Keep them proportionate (usually `size="14"` to `size="24"`), enclosed in subtle border boxes if they act as primary logos, or floating inline with text for labels.
+- **Buttons:**
+  - *Primary/Active:* High contrast inverted (Black bg in light mode, White bg in dark mode), bold uppercase text.
+  - *Secondary/Disabled:* Flat, transparent or slight gray backgrounds (`bg-gray-50 dark:bg-zinc-900`) with subtle text colors.
 
-Every app directory must contain an `info.json` file with the following fields:
-
-- **`name`**: Human-readable display name of the app. Use the official product name with correct capitalisation (e.g. `"Nextcloud"`, `"Pi-hole"`).
-
-- **`logo`**: IPFS CID string pointing to the app's logo image. Must be a valid CIDv0 or CIDv1 hash. Used in the UI to display the app icon.
-
-- **`tags`**: Minimum 6 tags. Tags are the sole classification mechanism — there is no `category` field. All tags must be lowercase, using only letters, numbers, and hyphens. Choose tags that reflect the app's function, stack, and target use case.
-
-- **`short_description`**: 50–100 characters. One concise sentence summarising what the app does. No trailing period required. Will be shown on app cards.
-
-- **`description`**: 200–300 characters. A fuller explanation covering purpose, key features, and target audience. Shown on the app detail page.
-
-- **`usecases`**: Minimum 2 entries. Each usecase should be a concrete, distinct scenario describing how the app is used in practice. Avoid vague or duplicate entries.
-
-- **`ports`**: Array of port objects. Each entry must have `port` (number), `protocol` (e.g. `"HTTP"`, `"TCP"`, `"UDP"`), and `label` (human-readable name, e.g. `"Web UI"`). Do NOT use the old `"port"` string format.
-
-  ```json
-  "ports": [
-    { "port": 8080, "protocol": "HTTP", "label": "Web UI" },
-    { "port": 9090, "protocol": "TCP", "label": "Metrics" }
-  ]
-  ```
-
-- **`website`**: Official homepage URL of the app. Used to link out from the app detail page. Must be a valid `https://` URL.
-
-- **`dependencies`**: Array of app IDs that must be running for this app to function (e.g. `["postgresql", "redis"]`). Use an empty array `[]` if there are none. These IDs must match the directory names under `apps/`.
-
-- **`notes`**: Optional array of strings. Only include when the app has special configuration, non-obvious setup steps, hardcoded credentials, or important port/networking caveats. Omit entirely if there is nothing noteworthy.
-
-### Docker Compose Port Mapping (IMPORTANT)
-
-**ALWAYS use container-only port format** — do NOT bind to a fixed host port:
-
-```yaml
-# ✅ Correct — Docker auto-assigns a random host port
-ports:
-  - "4096"
-
-# ❌ Wrong — fixed host port prevents multiple instances
-ports:
-  - "4096:4096"
-```
-
-**Reason**: Yantr allows users to run multiple instances of the same app. Binding to a fixed host port would cause a conflict on the second instance. Using the container-only format lets Docker assign a random available host port for each instance automatically.
-
-### Docker Compose Service Labels (REQUIRED)
-
-**Every service** in `compose.yml` must have these two labels:
-
-```yaml
-labels:
-  yantr.app: "app-id"        # matches the app directory name under apps/
-  yantr.service: "Short description of what this service does"  # max 2 words
-```
-
-This applies to **all** services in the file, including bundled databases, caches, and sidecars — not just the primary service.
-
-### Docker Compose Environment Variables
-
-**ALWAYS use key-value format for environment variables** in `compose.yml` files:
-
-```yaml
-environment:
-  VAR: ${VAR:-default}
-  ANOTHER_VAR: ${ANOTHER_VAR:-value}
-```
-
-**Do NOT use list format:**
-```yaml
-# ❌ Avoid this format
-environment:
-  - VAR=${VAR:-default}
-  - ANOTHER_VAR=${ANOTHER_VAR:-value}
-```
-
-This maintains consistency across all app configurations and follows modern Docker Compose standards.
-
-## UI Design Standards
-
-Use Full width layouts for all pages unless a specific design requirement dictates otherwise.
-
-### CSS Framework
-
-- **Primary Framework**: Use TailwindCSS for all styling
-- **Custom CSS**: Avoid unless absolutely necessary for specific edge cases
-- **Rationale**: Maintains consistency and leverages utility-first approach
-  Make sure dark mode is supported throughout the application.
-
-### User Experience
-
-- **Animations**: Implement smooth transitions and animations throughout the interface
-- **Icons**: Use Lucide icons exclusively via `lucide-vue-next` package
-- **Design Philosophy**: Follow minimalistic principles prioritizing ease of use
-- **Responsiveness**: Ensure all components and pages function properly on mobile devices
-
----
-
-#### Atomicity Requirement (MOST IMPORTANT)
-
-**All Docker API actions MUST be atomic** - they must either:
-
-- Fully succeed with all changes applied, OR
-- Fully fail with no partial changes
-
-**Reason**: The application is stateless and does not use a database for tracking changes.
-
-## Post-Edit Checklist
-
-After making any changes to the codebase:
-
-- ✅ Verify all required labels are present for new apps
+## 5. Vue & Tailwind Directives
+- **Vue Transitions:** Always wrap changing states (like success messages appearing) in `<transition>` components with smooth ease-in/out classes.
+- **Tailwind Groups:** Rely heavily on Tailwind's `group` and `group-hover:` classes to trigger complex, synchronized animations across multiple child elements when a parent card is hovered.

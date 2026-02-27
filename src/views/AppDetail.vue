@@ -441,28 +441,28 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 dark:bg-[#09090b] text-slate-900 dark:text-slate-200 font-sans">
+  <div class="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-zinc-100 font-sans selection:bg-blue-500/30">
     
     <!-- Header -->
-    <header class="bg-white dark:bg-[#18181b] border-b border-slate-200 dark:border-slate-800/50">
+    <header class="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <router-link to="/apps" class="inline-flex items-center justify-center w-9 h-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all text-slate-600 dark:text-slate-400">
-            <ArrowLeft :size="18" />
+          <router-link to="/apps" class="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all text-gray-500 dark:text-zinc-400 group">
+            <ArrowLeft :size="16" class="group-hover:-translate-x-0.5 transition-transform" />
           </router-link>
 
-          <div class="h-5 w-px bg-slate-200 dark:bg-slate-800"></div>
+          <div class="h-4 w-px bg-gray-300 dark:bg-zinc-800"></div>
 
           <div class="flex items-center gap-2.5 text-sm">
-            <span class="text-slate-500 dark:text-slate-400">Catalog</span>
-            <span class="text-slate-300 dark:text-slate-700">/</span>
-            <span class="font-semibold text-slate-900 dark:text-white" v-if="app">{{ app.name }}</span>
-            <span v-else class="w-32 h-5 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-lg"></span>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">Catalog</span>
+            <span class="text-gray-300 dark:text-zinc-700">/</span>
+            <span class="font-semibold tracking-tight text-gray-900 dark:text-white" v-if="app">{{ app.name }}</span>
+            <span v-else class="w-24 h-4 bg-gray-200 dark:bg-zinc-800 animate-pulse rounded"></span>
           </div>
         </div>
 
-        <div v-if="isInstalled" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400">
-          <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+        <div v-if="isInstalled" class="flex items-center gap-2 px-2.5 py-1 rounded-md border border-green-200 dark:border-green-500/20 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-bold uppercase tracking-wider">
+          <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
           <span>Installed</span>
         </div>
       </div>
@@ -470,90 +470,90 @@ onMounted(async () => {
 
     <!-- Loading State -->
     <div v-if="loading" class="flex flex-col items-center justify-center min-h-[60vh]">
-      <div class="animate-spin text-slate-300"><Activity :size="32" /></div>
-      <div class="mt-4 font-mono text-xs tracking-widest text-slate-400 uppercase">Retrieving Manifest...</div>
+      <div class="w-8 h-8 border-[3px] border-gray-200 dark:border-zinc-800 border-t-blue-500 dark:border-t-blue-500 rounded-full animate-spin mb-6"></div>
+      <div class="font-bold text-[10px] tracking-widest text-gray-400 dark:text-zinc-500 uppercase">Retrieving Manifest...</div>
     </div>
 
-    <div v-else-if="app" class="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
+    <div v-else-if="app" class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         <!-- Left Column: Information & Specs -->
-        <div class="lg:col-span-8 space-y-5">
+        <div class="lg:col-span-8 space-y-6">
 
           <!-- Identity Card -->
-          <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-6 flex flex-col sm:flex-row gap-6 shadow-sm">
-            <div class="w-20 h-20 bg-slate-100/50 dark:bg-slate-900/50 rounded-xl flex items-center justify-center p-3 shrink-0">
-              <img :src="app.logo" :alt="app.name" loading="lazy" class="w-full h-full object-contain" />
+          <div class="group relative bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-6 flex flex-col sm:flex-row gap-6 transition-all hover:border-gray-300 dark:hover:border-zinc-700">
+            <!-- Glow Accent -->
+            <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            <div class="w-20 h-20 bg-gray-50 dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-xl flex items-center justify-center p-4 shrink-0 shadow-sm transition-transform group-hover:scale-105 duration-500">
+              <img :src="app.logo" :alt="app.name" loading="lazy" class="w-full h-full object-contain filter dark:brightness-90 group-hover:brightness-100 transition-all" />
             </div>
 
-            <div class="flex-1 space-y-3">
-              <div>
-                <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">{{ app.name }}</h1>
+            <div class="flex-1 flex flex-col">
+              <div class="flex flex-col mb-3">
+                <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">{{ app.name }}</h1>
                 <div class="flex flex-wrap gap-2">
                   <span
                     v-for="tag in appTags"
                     :key="tag"
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-900/50 text-xs font-mono text-slate-700 dark:text-slate-300 rounded-lg"
+                    class="inline-flex items-center px-2 py-0.5 border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50 text-[10px] font-bold uppercase tracking-widest text-gray-600 dark:text-zinc-400 rounded-md"
                   >
                     {{ tag }}
                   </span>
                 </div>
               </div>
 
-              <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed max-w-2xl">
+              <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed mb-6">
                 {{ app.description || "No description available for this application." }}
               </p>
 
               <!-- Action Links -->
-              <div class="flex flex-wrap gap-2 pt-1">
+              <div class="flex flex-wrap gap-3 mt-auto">
                 <a
                   v-if="app.website"
                   :href="app.website"
                   target="_blank"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:border-blue-500 hover:text-blue-500 transition-colors text-xs font-medium uppercase tracking-wide"
+                  class="inline-flex items-center gap-1.5 text-gray-500 dark:text-zinc-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-[11px] font-bold uppercase tracking-wider"
                 >
-                  <Globe :size="14" />
-                  Website
+                  <Globe :size="14" /> Website
                 </a>
                 <a
                   :href="`https://github.com/besoeasy/yantr/blob/main/apps/${app.id}/compose.yml`"
                   target="_blank"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:border-purple-500 hover:text-purple-500 transition-colors text-xs font-medium uppercase tracking-wide"
+                  class="inline-flex items-center gap-1.5 text-gray-500 dark:text-zinc-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-[11px] font-bold uppercase tracking-wider"
                 >
-                  <FileCode :size="14" />
-                  Source
+                  <FileCode :size="14" /> Source
                 </a>
                 <a
                   :href="chatGptUrl"
                   target="_blank"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/50 rounded-lg text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors text-xs font-medium uppercase tracking-wide"
+                  class="inline-flex items-center gap-1.5 text-gray-500 dark:text-zinc-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors text-[11px] font-bold uppercase tracking-wider"
                 >
-                  <Info :size="14" />
-                  Explain
+                  <Info :size="14" /> Explain
                 </a>
               </div>
             </div>
           </div>
 
           <!-- Network Requirements (from info.json ports) -->
-          <div v-if="infoPorts.length > 0" class="space-y-3">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Network Requirements</h3>
+          <div v-if="infoPorts.length > 0" class="space-y-4">
+            <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">Network Requirements</h3>
 
-            <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden shadow-sm">
+            <div class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden">
                 <table class="w-full text-left text-sm">
                     <thead>
-                        <tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200/50 dark:border-slate-800/50 text-xs font-semibold uppercase text-slate-500">
-                            <th class="px-4 py-3 font-medium">Port</th>
-                            <th class="px-4 py-3 font-medium">Protocol</th>
-                            <th class="px-4 py-3 font-medium">Label</th>
+                        <tr class="bg-gray-50 dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-400">
+                            <th class="px-4 py-3">Port</th>
+                            <th class="px-4 py-3">Protocol</th>
+                            <th class="px-4 py-3">Label</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800/50">
-                        <tr v-for="(p, idx) in infoPorts" :key="idx" class="hover:bg-slate-50 dark:hover:bg-slate-900/20">
-                            <td class="px-4 py-3 font-mono font-bold text-slate-900 dark:text-white">{{ p.port }}</td>
+                    <tbody class="divide-y divide-gray-100 dark:divide-zinc-800">
+                        <tr v-for="(p, idx) in infoPorts" :key="idx" class="hover:bg-gray-50 dark:hover:bg-zinc-900/50 transition-colors">
+                            <td class="px-4 py-3 font-mono font-bold text-gray-900 dark:text-white">{{ p.port }}</td>
                             <td class="px-4 py-3">
-                                <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 border border-slate-200 dark:border-slate-700 text-slate-500 rounded">{{ p.protocol }}</span>
+                                <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 border border-gray-200 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 rounded bg-gray-50 dark:bg-zinc-800/50">{{ p.protocol }}</span>
                             </td>
-                            <td class="px-4 py-3 text-slate-500 font-mono text-xs">{{ p.label }}</td>
+                            <td class="px-4 py-3 text-gray-500 dark:text-zinc-400 font-mono text-xs">{{ p.label }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -561,40 +561,40 @@ onMounted(async () => {
           </div>
 
           <!-- Image Details -->
-          <div v-if="imageDetails && imageDetails.length > 0" class="space-y-3">
+          <div v-if="imageDetails && imageDetails.length > 0" class="space-y-4">
              <div class="flex items-center justify-between">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Dependent Images</h3>
-                <span class="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{{ imageDetails.length }}</span>
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">Dependent Images</h3>
+                <span class="text-[10px] font-mono text-gray-500 bg-gray-100 dark:bg-zinc-800 px-2 py-0.5 rounded">{{ imageDetails.length }}</span>
              </div>
 
-             <div class="space-y-3">
-                <div v-for="img in imageDetails" :key="img.id" class="bg-white dark:bg-[#1c1c1e] border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-5 hover:shadow-md hover:border-blue-500/50 transition-all">
-                   <div class="flex items-center justify-between mb-3">
+             <div class="grid grid-cols-1 gap-3">
+                <div v-for="img in imageDetails" :key="img.id" class="group bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 rounded-xl p-5 transition-all hover:border-gray-300 dark:hover:border-zinc-600">
+                   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                        <div class="flex flex-wrap gap-2">
-                         <div v-for="tag in img.tags" :key="tag" class="flex items-center gap-1.5 px-2 py-1 bg-slate-100 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300 border border-slate-200/50 dark:border-slate-800/50 rounded-lg text-xs font-mono">
-                           <Tag :size="12" class="text-slate-400" />
+                         <div v-for="tag in img.tags" :key="tag" class="flex items-center gap-1.5 px-2 py-1 bg-gray-50 dark:bg-zinc-900/50 text-gray-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-800 rounded-md text-[10px] font-mono">
+                           <Tag :size="10" class="text-gray-400 dark:text-zinc-500" />
                            {{ tag }}
                          </div>
                        </div>
-                       <div class="font-mono text-[10px] text-slate-400">{{ img.shortId }}</div>
+                       <div class="font-mono text-[10px] text-gray-400 dark:text-zinc-500">{{ img.shortId }}</div>
                    </div>
 
                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                       <div>
-                         <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Platform</div>
-                         <div class="font-mono text-slate-900 dark:text-slate-300">{{ img.architecture }} / {{ img.os }}</div>
+                         <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 mb-1">Platform</div>
+                         <div class="font-mono text-gray-900 dark:text-zinc-200">{{ img.architecture }} / {{ img.os }}</div>
                       </div>
                       <div>
-                         <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Size</div>
-                         <div class="font-mono text-slate-900 dark:text-slate-300">{{ img.size }} MB</div>
+                         <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 mb-1">Size</div>
+                         <div class="font-mono text-gray-900 dark:text-zinc-200">{{ img.size }} MB</div>
                       </div>
                       <div>
-                         <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Created</div>
-                         <div class="font-mono text-slate-900 dark:text-slate-300 truncate" :title="img.createdDate">{{ img.relativeTime }}</div>
+                         <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 mb-1">Created</div>
+                         <div class="font-mono text-gray-900 dark:text-zinc-200 truncate" :title="img.createdDate">{{ img.relativeTime }}</div>
                       </div>
                       <div>
-                          <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Digest</div>
-                          <div class="font-mono text-slate-900 dark:text-slate-300 truncate opacity-60" :title="img.digest">{{ img.digest.substring(7, 19) }}...</div>
+                          <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 mb-1">Digest</div>
+                          <div class="font-mono text-gray-900 dark:text-zinc-200 truncate" :title="img.digest">{{ img.digest.substring(7, 19) }}...</div>
                       </div>
                    </div>
                 </div>
@@ -605,117 +605,103 @@ onMounted(async () => {
 
         <!-- Right Column: Deployment Configuration -->
         <div class="lg:col-span-4">
-          <div class="space-y-5 sticky top-6">
+          <div class="space-y-6 sticky top-24">
+            
             <!-- Dependencies -->
-            <div v-if="dependencies.length > 0" class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-5 shadow-sm">
-              <div class="flex items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/50 pb-4 mb-4">
-                <div class="flex items-center gap-3">
-                  <div class="h-11 w-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-sm">
-                    <Package :size="20" />
-                  </div>
-                  <div>
-                    <div class="text-sm font-semibold text-slate-900 dark:text-white">Dependencies</div>
-                    <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ dependencies.length }} total</div>
-                  </div>
+            <div v-if="dependencies.length > 0" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-5">
+              <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center gap-2">
+                  <div class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">Dependencies</div>
                 </div>
 
-                <div class="text-[10px] font-semibold uppercase tracking-wider">
-                  <span v-if="missingDependencies.length === 0" class="px-2 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50">All running</span>
-                  <span v-else class="px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50">{{ missingDependencies.length }} missing</span>
+                <div class="text-[9px] font-bold uppercase tracking-wider">
+                  <span v-if="missingDependencies.length === 0" class="text-green-600 dark:text-green-500">All running</span>
+                  <span v-else class="text-amber-600 dark:text-amber-500">{{ missingDependencies.length }} missing</span>
                 </div>
               </div>
 
-              <div class="grid gap-2">
+              <div class="space-y-2">
                 <button
                   v-for="dep in dependencies"
                   :key="dep"
                   @click="router.push(`/apps/${dep}`)"
-                  class="group w-full flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 transition-all hover:shadow-sm"
+                  class="group w-full flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 transition-all bg-gray-50 dark:bg-zinc-900/30"
                   :class="missingDependencies.includes(dep)
-                    ? 'border-amber-200 dark:border-amber-800/60 bg-amber-50/40 dark:bg-amber-900/10 hover:bg-amber-50 dark:hover:bg-amber-900/20'
-                    : 'border-emerald-200 dark:border-emerald-800/60 bg-emerald-50/40 dark:bg-emerald-900/10 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'"
-                  :title="`Click to view ${dep}`"
+                    ? 'border-amber-200 dark:border-amber-900/50 hover:border-amber-300 dark:hover:border-amber-700/50'
+                    : 'border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-600'"
                 >
                   <div class="flex items-center gap-2">
-                    <span class="h-2.5 w-2.5 rounded-full"
+                    <span class="h-2 w-2 rounded-full"
                       :class="missingDependencies.includes(dep)
-                        ? 'bg-amber-500 shadow-[0_0_0_3px_rgba(245,158,11,0.15)]'
-                        : 'bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.15)]'"
+                        ? 'bg-amber-500 animate-pulse'
+                        : 'bg-green-500'"
                     ></span>
-                    <span class="text-xs font-mono uppercase tracking-wider text-slate-800 dark:text-slate-200">{{ dep }}</span>
+                    <span class="text-xs font-mono uppercase tracking-wider text-gray-900 dark:text-white">{{ dep }}</span>
                   </div>
-
-                  <div class="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                    <span v-if="missingDependencies.includes(dep)">Missing</span>
-                    <span v-else>Running</span>
-                    <ExternalLink :size="12" class="opacity-50 group-hover:opacity-80" />
-                  </div>
+                  <ExternalLink :size="12" class="text-gray-400 group-hover:text-gray-700 dark:group-hover:text-white transition-colors" />
                 </button>
               </div>
 
-              <div v-if="missingDependencies.length > 0" class="mt-4 rounded-lg border border-amber-200 dark:border-amber-800/60 bg-amber-50/50 dark:bg-amber-900/10 px-3 py-2.5">
-                <div class="flex items-start gap-2 text-[11px] text-amber-700 dark:text-amber-300">
-                  <AlertTriangle :size="14" />
-                  <div class="flex-1">
-                    Some dependencies are not running. You can still deploy, but the app may not function correctly.
-                  </div>
-                </div>
+              <div v-if="missingDependencies.length > 0" class="mt-4 rounded-lg border border-amber-200/50 dark:border-amber-900/30 bg-amber-50/50 dark:bg-amber-900/10 px-3 py-2 text-[10px] text-amber-700 dark:text-amber-400 flex items-start gap-2">
+                <AlertTriangle :size="12" class="mt-0.5 shrink-0" />
+                <span>Some dependencies are missing. App may malfunction until deployed.</span>
               </div>
             </div>
 
-            <div class="bg-white dark:bg-[#1c1c1e] rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-5 shadow-sm">
+            <!-- Configuration -->
+            <div class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-5">
               <div class="flex items-center justify-between mb-5">
-                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">
                   Configuration
                 </h2>
                 <button
                   v-if="dependencies.length > 0 && app.environment?.length > 0"
                   @click="fillFromDependencies"
                   :disabled="loadingDependencyEnv || missingDependencies.length > 0"
-                  class="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg v-if="loadingDependencyEnv" class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                   <Download v-else :size="12" />
-                  <span>{{ loadingDependencyEnv ? 'Filling...' : 'Fill from Dependencies' }}</span>
+                  <span>Autofill Env</span>
                 </button>
               </div>
 
-              <div class="space-y-5">
+              <div class="space-y-6">
               <!-- Environment Vars -->
-              <div v-if="app.environment?.length > 0" class="space-y-3">
+              <div v-if="app.environment?.length > 0" class="space-y-4">
                 <div v-for="env in app.environment" :key="env.envVar" class="space-y-1.5">
-                  <label class="w-full text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide flex items-center justify-between">
+                  <label class="w-full text-[10px] font-bold text-gray-700 dark:text-zinc-300 uppercase tracking-widest flex items-center justify-between">
                     {{ env.name }}
-                    <span v-if="env.default" class="text-[10px] text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-900 px-1.5 py-0.5 rounded">{{ env.default }}</span>
+                    <span v-if="env.default" class="text-[9px] font-mono text-gray-400 dark:text-zinc-500 border border-gray-200 dark:border-zinc-800 px-1.5 py-0.5 rounded">{{ env.default }}</span>
                   </label>
                   <input
                     v-model="envValues[env.envVar]"
                     type="text"
                     :placeholder="env.default || 'Value'"
-                    class="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm font-mono text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                    class="w-full bg-transparent border border-gray-200 dark:border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                   />
-                  <p v-if="env.description" class="text-[10px] text-slate-500 leading-tight">{{ env.description }}</p>
+                  <p v-if="env.description" class="text-[10px] text-gray-500 dark:text-zinc-500 leading-tight">{{ env.description }}</p>
                 </div>
               </div>
 
               <!-- Options Toggles -->
-              <div class="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800/50">
+              <div class="space-y-3 pt-4 border-t border-gray-100 dark:border-zinc-800">
                 
                 <!-- Temporary Install -->
-                <div :class="['rounded-lg border p-3 transition-colors', temporaryInstall ? 'bg-blue-50 dark:bg-blue-900/10 border-blue-200 dark:border-blue-800' : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800']">
+                <div class="rounded-lg border border-gray-200 dark:border-zinc-800 p-3 transition-colors bg-gray-50 dark:bg-zinc-900/30">
                     <div class="flex items-start gap-3">
-                        <input type="checkbox" id="temp-install" v-model="temporaryInstall" class="mt-1 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-offset-0 focus:ring-0 cursor-pointer" />
+                        <input type="checkbox" id="temp-install" v-model="temporaryInstall" class="mt-0.5 w-3.5 h-3.5 rounded border-gray-300 dark:border-zinc-700 text-black dark:text-white focus:ring-black dark:focus:ring-white focus:ring-offset-0 cursor-pointer bg-transparent" />
                         <div class="flex-1">
-                            <label for="temp-install" class="block text-xs font-bold text-slate-800 dark:text-slate-200 cursor-pointer uppercase">Temporary Install</label>
-                            <p class="text-[10px] text-slate-500 mt-0.5">Expires & auto-deletes.</p>
+                            <label for="temp-install" class="block text-[11px] font-bold text-gray-900 dark:text-zinc-100 cursor-pointer uppercase tracking-wider">Temporary Install</label>
+                            <p class="text-[10px] text-gray-500 dark:text-zinc-500 mt-0.5">Expires and auto-deletes.</p>
                         </div>
                     </div>
                     
-                    <div v-if="temporaryInstall" class="mt-3 pl-7 animate-in fade-in slide-in-from-top-1">
-                        <select v-model.number="expirationHours" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-xs font-mono focus:border-blue-500 focus:outline-none">
+                    <div v-if="temporaryInstall" class="mt-3 pl-6">
+                        <select v-model.number="expirationHours" class="w-full bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 rounded-lg p-2 text-[11px] font-bold uppercase tracking-wider text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none transition-colors cursor-pointer">
                             <option :value="1">1 Hour</option>
                             <option :value="6">6 Hours</option>
                             <option :value="12">12 Hours</option>
@@ -729,27 +715,27 @@ onMounted(async () => {
                 </div>
 
                 <!-- Custom Ports -->
-                <div v-if="allPorts.length > 0" :class="['rounded-lg border p-3 transition-colors', customizePorts ? 'bg-indigo-50 dark:bg-indigo-900/10 border-indigo-200 dark:border-indigo-800' : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800']">
+                <div v-if="allPorts.length > 0" class="rounded-lg border border-gray-200 dark:border-zinc-800 p-3 transition-colors bg-gray-50 dark:bg-zinc-900/30">
                    <div class="flex items-start gap-3">
-                        <input type="checkbox" id="custom-ports" v-model="customizePorts" class="mt-1 w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-offset-0 focus:ring-0 cursor-pointer" />
+                        <input type="checkbox" id="custom-ports" v-model="customizePorts" class="mt-0.5 w-3.5 h-3.5 rounded border-gray-300 dark:border-zinc-700 text-black dark:text-white focus:ring-black dark:focus:ring-white focus:ring-offset-0 cursor-pointer bg-transparent" />
                         <div class="flex-1">
-                            <label for="custom-ports" class="block text-xs font-bold text-slate-800 dark:text-slate-200 cursor-pointer uppercase">Port Mapping</label>
-                            <p class="text-[10px] text-slate-500 mt-0.5">Advanced Configuration</p>
+                            <label for="custom-ports" class="block text-[11px] font-bold text-gray-900 dark:text-zinc-100 cursor-pointer uppercase tracking-wider">Port Mapping</label>
+                            <p class="text-[10px] text-gray-500 dark:text-zinc-500 mt-0.5">Advanced Configuration</p>
                         </div>
                    </div>
 
-                    <div v-if="customizePorts" class="mt-3 pl-1 space-y-3 animate-in fade-in slide-in-from-top-1">
-                        <div v-for="port in allPorts" :key="port.hostPort + '/' + port.protocol" class="space-y-1">
-                            <div class="flex items-center justify-between text-[10px] font-mono font-medium text-slate-500 uppercase tracking-wider">
+                    <div v-if="customizePorts" class="mt-4 pl-1 space-y-4">
+                        <div v-for="port in allPorts" :key="port.hostPort + '/' + port.protocol" class="space-y-1.5">
+                            <div class="flex items-center justify-between text-[10px] font-mono font-medium text-gray-500 uppercase tracking-wider">
                                 <span>INTERNAL: {{ port.containerPort }} ({{ port.protocol }})</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="text-slate-400 text-sm">→</span>
+                                <span class="text-gray-400 text-sm">→</span>
                                 <input
                                 v-model="customPortMappings[port.hostPort + '/' + port.protocol]"
                                 type="number"
                                 :placeholder="port.hostPort"
-                                class="flex-1 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 text-xs font-mono focus:border-indigo-500 focus:outline-none"
+                                class="flex-1 bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 rounded-lg px-2.5 py-1.5 text-xs font-mono focus:border-blue-500 focus:outline-none transition-colors"
                                 />
                             </div>
                             <!-- Port Status -->
@@ -758,7 +744,7 @@ onMounted(async () => {
                                     <span :class="{
                                         'text-red-500': getPortStatus(port).status === 'conflict',
                                         'text-yellow-500': getPortStatus(port).status === 'warning',
-                                        'text-emerald-500': getPortStatus(port).status === 'available'
+                                        'text-green-500': getPortStatus(port).status === 'available'
                                     }">
                                       <span v-if="getPortStatus(port).status === 'conflict'" class="flex items-center gap-1"><AlertTriangle :size="10" /> {{ getPortStatus(port).message }}</span>
                                       <span v-else-if="getPortStatus(port).status === 'available'" class="flex items-center gap-1"><Check :size="10" /> {{ getPortStatus(port).message }}</span>
@@ -772,23 +758,23 @@ onMounted(async () => {
               </div>
 
               <!-- Deploy Button -->
-              <div class="pt-2">
+              <div class="pt-4">
                  <button
                    @click="deployApp"
                    :disabled="!canDeploy"
                    :title="missingDependencies.length > 0 ? `Missing dependencies: ${missingDependencies.join(', ')} (deploy anyway)` : ''"
-                   class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
+                   class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 rounded-xl text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                  >
-                    <span v-if="deploying" class="flex items-center justify-center gap-3">
-                       <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    <span v-if="deploying" class="flex items-center justify-center gap-2">
+                       <span class="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
                        Initializing...
                     </span>
                     <span v-else class="flex items-center justify-center gap-2">
-                       <Play :size="16" fill="currentColor" />
+                       <Play :size="14" fill="currentColor" />
                        {{ instanceCount > 0 ? 'Deploy Another Instance' : 'Install Application' }}
                     </span>
                  </button>
-                 <div v-if="instanceCount > 0" class="text-center mt-3 text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                 <div v-if="instanceCount > 0" class="text-center mt-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">
                     {{ instanceCount }} Active Instance{{ instanceCount !== 1 ? 's' : '' }} running
                  </div>
               </div>

@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { Box, Layers } from "lucide-vue-next";
+import { Box, Layers, ArrowRight } from "lucide-vue-next";
 
 const props = defineProps({
   containers: { type: Array, default: () => [] },
@@ -28,10 +28,6 @@ const appGroups = computed(() => {
   return [...map.values()];
 });
 
-function primaryContainer(group) {
-  return group.containers.find((c) => c.state === "running") || group.containers[0];
-}
-
 function groupState(group) {
   const states = group.containers.map((c) => c.state);
   if (states.every((s) => s === "running")) return "running";
@@ -44,7 +40,6 @@ function hasTemporary(group) {
 }
 
 function navigate(group) {
-  // Always go to app overview which shows stacks + link to detail page
   router.push(`/app/${group.appId}`);
 }
 </script>
@@ -60,98 +55,73 @@ function navigate(group) {
       @keydown.space.prevent="navigate(group)"
       role="button"
       tabindex="0"
-      class="group relative h-full overflow-hidden bg-white dark:bg-slate-900 rounded-none border border-slate-200 dark:border-slate-800 hover:shadow-xl dark:hover:shadow-slate-900/50 hover:-translate-y-1 transition-all duration-300 animate-fadeIn cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-500/20"
+      class="group relative h-full flex flex-col bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 rounded-xl overflow-hidden transition-all duration-400 hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/40 hover:-translate-y-1 hover:border-gray-300 dark:hover:border-zinc-600 cursor-pointer animate-fadeIn focus:outline-none focus:ring-2 focus:ring-blue-500/50"
     >
-      <!-- Background Texture -->
-      <div
-        class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none transition-opacity duration-300 group-hover:opacity-[0.06] dark:group-hover:opacity-[0.08]"
-        style="background-image: radial-gradient(circle at 1rem 1rem, currentColor 1px, transparent 0); background-size: 1rem 1rem;"
-      ></div>
+      <!-- Hover Accents -->
+      <div class="absolute top-0 left-0 w-full h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+           :class="groupState(group) === 'running' ? 'bg-gradient-to-r from-transparent via-green-500 to-transparent' : 
+                   groupState(group) === 'partial' ? 'bg-gradient-to-r from-transparent via-amber-500 to-transparent' : 
+                   'bg-gradient-to-r from-transparent via-gray-500 to-transparent'">
+      </div>
+      <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTUwLCAxNTAsIDE1MCwgMC4xKSIvPjwvc3ZnPg==')] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
 
-      <!-- Hover Glow -->
-      <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 dark:bg-blue-900/40 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-x-1/3 -translate-y-1/3 pointer-events-none"></div>
+      <div class="relative z-10 flex flex-col h-full p-5">
+        <!-- Header -->
+        <div class="flex items-start justify-between mb-4">
+          <div class="min-w-0 flex-1 pr-4">
+            <h3 class="font-semibold text-base text-gray-900 dark:text-white line-clamp-1 mb-2 tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              {{ group.name }}
+            </h3>
 
-      <div class="relative z-10 h-full flex flex-col justify-between p-6">
-        <div>
-          <div class="flex items-start justify-between mb-3">
-            <div class="min-w-0 flex-1">
-              <h3 class="font-bold text-lg text-slate-900 dark:text-white line-clamp-1 mb-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                {{ group.name }}
-              </h3>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
+                    :class="groupState(group) === 'running' ? 'bg-green-50/50 dark:bg-green-500/10 text-green-600 dark:text-green-500' : 
+                            groupState(group) === 'partial' ? 'bg-amber-50/50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500' : 
+                            'bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400'">
+                {{ groupState(group) === 'partial' ? 'partial' : groupState(group) }}
+              </span>
 
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span
-                  class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border"
-                  :class="groupState(group) === 'running'
-                    ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
-                    : groupState(group) === 'partial'
-                      ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
-                      : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'"
-                >{{ groupState(group) === 'partial' ? 'partial' : groupState(group) }}</span>
+              <span v-if="group.containers.length > 1" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-gray-50 dark:bg-zinc-900 text-gray-500 dark:text-zinc-400 flex items-center gap-1">
+                <Layers :size="10" />
+                {{ group.containers.length }}
+              </span>
 
-                <span
-                  v-if="group.containers.length > 1"
-                  class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border bg-slate-50 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 flex items-center gap-1"
-                >
-                  <Layers :size="9" />
-                  {{ group.containers.length }} services
-                </span>
-
-                <span
-                  v-if="hasTemporary(group)"
-                  class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20"
-                >Temp</span>
-              </div>
-            </div>
-
-            <!-- Status Dot -->
-            <div class="relative flex h-3 w-3 mt-1.5 shrink-0">
-              <span
-                v-if="groupState(group) === 'running'"
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex rounded-full h-3 w-3"
-                :class="groupState(group) === 'running'
-                  ? 'bg-emerald-500'
-                  : groupState(group) === 'partial'
-                    ? 'bg-amber-500'
-                    : 'bg-slate-300 dark:bg-slate-600'"
-              ></span>
+              <span v-if="hasTemporary(group)" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-50/50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500">
+                Temp
+              </span>
             </div>
           </div>
 
-          <!-- Service name pills -->
-          <div class="flex flex-wrap gap-1 mb-4">
-            <span
-              v-for="c in group.containers"
-              :key="c.id"
-              class="text-[10px] font-mono px-1.5 py-0.5 rounded border flex items-center gap-1"
-              :class="c.state === 'running'
-                ? 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
-                : 'bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-600 border-slate-200 dark:border-slate-800'"
-            >
-              <span
-                class="inline-block w-1.5 h-1.5 rounded-full"
-                :class="c.state === 'running' ? 'bg-emerald-500' : 'bg-slate-400'"
-              ></span>
-              {{ c.app?.service || c.name }}
-            </span>
-          </div>
-
-          <!-- Bottom Row: Logo -->
-          <div class="flex items-end justify-end">
-            <div class="relative shrink-0">
-              <div class="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-800/80 flex items-center justify-center border border-slate-100 dark:border-slate-700 shadow-sm group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-md transition-all duration-500 ease-out overflow-hidden">
-                <img
-                  v-if="group.logo"
-                  :src="group.logo"
-                  :alt="group.name"
-                  class="w-9 h-9 object-contain drop-shadow-sm"
-                />
-                <Box v-else class="w-7 h-7 text-slate-400 dark:text-slate-500" />
-              </div>
+          <!-- Logo Container -->
+          <div class="w-12 h-12 rounded-lg bg-gray-50 dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:shadow-md transition-all duration-500 relative">
+            <img v-if="group.logo" :src="group.logo" :alt="group.name" class="w-7 h-7 object-contain filter group-hover:brightness-110 transition-all" loading="lazy" />
+            <Box v-else class="w-6 h-6 text-gray-400 dark:text-zinc-500 group-hover:text-blue-500 transition-colors" />
+            
+            <div class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-[#0A0A0A]"
+                 :class="groupState(group) === 'running' ? 'bg-green-500 animate-pulse' : groupState(group) === 'partial' ? 'bg-amber-500' : 'bg-gray-400 dark:bg-zinc-600'">
             </div>
+          </div>
+        </div>
+
+        <!-- Services -->
+        <div class="flex flex-wrap gap-1.5 mb-6">
+          <span v-for="c in group.containers" :key="c.id" 
+                class="text-[10px] font-mono px-2 py-1 rounded-md border flex items-center gap-1.5"
+                :class="c.state === 'running' ? 'bg-gray-50 dark:bg-zinc-900 text-gray-600 dark:text-zinc-300 border-gray-200 dark:border-zinc-800' : 'bg-gray-100/50 dark:bg-zinc-900/50 text-gray-400 dark:text-zinc-500 border-gray-100 dark:border-zinc-800/50'">
+            <span class="w-1.5 h-1.5 rounded-full shrink-0" :class="c.state === 'running' ? 'bg-green-500' : 'bg-gray-300 dark:bg-zinc-600'"></span>
+            <span class="truncate max-w-[120px]">{{ c.app?.service || c.name }}</span>
+          </span>
+        </div>
+
+        <!-- Bottom Action -->
+        <div class="mt-auto pt-4 border-t border-gray-100 dark:border-zinc-800/80 flex items-center justify-between overflow-hidden">
+          <div class="flex items-center gap-1.5 text-gray-400 dark:text-zinc-500 group-hover:text-gray-600 dark:group-hover:text-zinc-300 transition-colors duration-300">
+            <span class="text-[10px] font-semibold uppercase tracking-[0.15em]">Stack View</span>
+          </div>
+          
+          <div class="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-semibold text-xs transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)">
+            <span>Open</span>
+            <ArrowRight :size="14" class="group-hover:translate-x-1 transition-transform duration-300" />
           </div>
         </div>
       </div>

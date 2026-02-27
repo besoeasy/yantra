@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { Cpu, MemoryStick, HardDrive, Server } from 'lucide-vue-next'
+import { Cpu, MemoryStick, Server, ShieldCheck, Zap } from 'lucide-vue-next'
 import { formatBytes } from '../../utils/metrics'
 
 const props = defineProps({
@@ -33,29 +33,12 @@ const storageInfo = computed(() => {
   
   const { used, total } = systemInfo.value.storage
   
-  // Show storage even if we only have 'used' data
   if (used && used > 0) {
     if (total && total > 0) {
-      // We have both used and total
       const percent = Math.round((used / total) * 100)
-      return {
-        used,
-        total,
-        percent,
-        usedFormatted: formatBytes(used),
-        totalFormatted: formatBytes(total),
-        hasData: true
-      }
+      return { used, total, percent, usedFormatted: formatBytes(used), totalFormatted: formatBytes(total), hasData: true }
     } else {
-      // We only have used, show it without percentage
-      return {
-        used,
-        total: 0,
-        percent: 0,
-        usedFormatted: formatBytes(used),
-        totalFormatted: null,
-        hasData: true
-      }
+      return { used, total: 0, percent: 0, usedFormatted: formatBytes(used), totalFormatted: null, hasData: true }
     }
   }
   
@@ -67,27 +50,8 @@ const osInfo = computed(() => {
   return {
     name: systemInfo.value.os.name.replace('Debian GNU/Linux', 'Debian').replace('Ubuntu', 'Ubuntu'),
     type: systemInfo.value.os.type,
-    arch: systemInfo.value.os.arch || systemInfo.value.os.architecture, // Fallback for safety
+    arch: systemInfo.value.os.arch || systemInfo.value.os.architecture,
     kernel: systemInfo.value.os.kernel
-  }
-})
-
-const storageTheme = computed(() => {
-  const percent = storageInfo.value.percent
-  if (percent >= 90) {
-    return {
-      text: 'text-rose-600 dark:text-rose-400',
-      progress: 'bg-gradient-to-r from-rose-500 to-red-500 dark:from-rose-400 dark:to-red-400'
-    }
-  } else if (percent >= 75) {
-    return {
-      text: 'text-amber-600 dark:text-amber-400',
-      progress: 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-400 dark:to-orange-400'
-    }
-  }
-  return {
-    text: 'text-emerald-600 dark:text-emerald-400',
-    progress: 'bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-400 dark:to-teal-400'
   }
 })
 
@@ -111,137 +75,100 @@ async function fetchSystemInfo() {
 
 onMounted(() => {
   fetchSystemInfo()
-  // Refresh every 30 seconds
   refreshInterval = setInterval(fetchSystemInfo, 30000)
 })
 
 onUnmounted(() => {
-  if (refreshInterval) {
-    clearInterval(refreshInterval)
-  }
+  if (refreshInterval) clearInterval(refreshInterval)
 })
 </script>
 
 <template>
-  <div class="group relative h-full overflow-hidden rounded-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-slate-900/50 flex flex-col font-mono text-xs">
+  <div class="relative group h-full flex flex-col bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 rounded-xl overflow-hidden transition-all duration-400 hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-black/40 hover:border-gray-300 dark:hover:border-zinc-600">
     
-    <!-- Hacker Background Texture -->
-    <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" 
-         style="background-image: linear-gradient(0deg, transparent 24%, rgba(0, 0, 0, .3) 25%, rgba(0, 0, 0, .3) 26%, transparent 27%, transparent 74%, rgba(0, 0, 0, .3) 75%, rgba(0, 0, 0, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 0, 0, .3) 25%, rgba(0, 0, 0, .3) 26%, transparent 27%, transparent 74%, rgba(0, 0, 0, .3) 75%, rgba(0, 0, 0, .3) 76%, transparent 77%, transparent); background-size: 30px 30px;">
-    </div>
-    
-    <!-- Background Icon Glitch Effect -->
-    <div class="absolute -right-6 -bottom-6 opacity-5 dark:opacity-10 transform rotate-12 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-700 ease-in-out pointer-events-none">
-       <Server class="w-48 h-48 text-indigo-900 dark:text-indigo-100" />
-    </div>
+    <!-- Hover Accents -->
+    <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTUwLCAxNTAsIDE1MCwgMC4xKSIvPjwvc3ZnPg==')] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="relative z-10 p-5 flex-1 flex flex-col items-center justify-center">
-      <div class="flex items-center gap-2 text-slate-400 animate-pulse">
-         <span class="inline-block w-2 h-4 bg-slate-400"></span>
-         <span class="uppercase tracking-widest">INITIALIZING_SCAN...</span>
-      </div>
+    <div v-if="loading" class="relative z-10 p-6 flex-1 flex flex-col items-center justify-center">
+      <div class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping mb-3"></div>
+      <span class="text-[10px] font-semibold uppercase tracking-widest text-gray-400">Scanning Host...</span>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="relative z-10 p-5 flex flex-col items-center justify-center h-full text-center">
-        <div class="border border-rose-500/30 p-4 bg-rose-500/5 text-rose-600 dark:text-rose-400 max-w-full">
-            <span class="block font-bold mb-1 uppercase tracking-wider">FATAL_ERROR</span>
-            <span class="opacity-75 break-words">{{ error }}</span>
+    <div v-else-if="error" class="relative z-10 p-6 flex flex-col items-center justify-center h-full text-center">
+        <div class="border border-red-200 dark:border-red-900/50 p-4 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 w-full">
+            <span class="block text-[10px] font-bold mb-1 uppercase tracking-widest">Connection Failed</span>
+            <span class="text-xs opacity-80 break-words line-clamp-2">{{ error }}</span>
         </div>
     </div>
 
     <!-- Content -->
-    <div v-else class="relative z-10 p-5 flex flex-col h-full gap-4">
+    <div v-else class="relative z-10 p-6 flex flex-col h-full gap-5">
       
       <!-- Header -->
-      <div class="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+      <div class="flex items-start justify-between">
          <div class="min-w-0 pr-2">
-            <div class="text-[10px] text-slate-400 mb-0.5 tracking-widest">HOST__ID</div>
-            <div class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase tracking-tight truncate" :title="osInfo.name">{{ osInfo.name }}</div>
+            <div class="flex items-center gap-2 mb-1">
+               <Server class="w-3.5 h-3.5 text-blue-500" />
+               <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-zinc-500">Host System</span>
+            </div>
+            <div class="text-base font-semibold text-gray-900 dark:text-white truncate tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" :title="osInfo.name">
+               {{ osInfo.name }}
+            </div>
          </div>
          <div class="text-right shrink-0">
-             <div class="flex items-center justify-end gap-1.5 mb-0.5">
-                  <span class="relative flex h-1.5 w-1.5">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                  </span>
-                  <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">ONLINE</span>
+             <div class="flex items-center justify-end gap-1.5 mb-1.5">
+                  <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                  <span class="text-[10px] text-green-600 dark:text-green-500 font-bold uppercase tracking-wider">Online</span>
              </div>
-             <div class="text-[10px] text-slate-400 tabular-nums font-bold">KRNL: {{ osInfo.kernel }}</div>
+             <div class="text-[10px] text-gray-400 dark:text-zinc-500 font-mono">
+               {{ osInfo.arch }}
+             </div>
          </div>
       </div>
 
       <!-- Specs Grid -->
-      <div class="grid grid-cols-2 gap-x-4 gap-y-4 flex-1">
+      <div class="grid grid-cols-2 gap-4 flex-1">
          
          <!-- CPU section -->
-         <div class="flex flex-col gap-1">
-             <div class="flex justify-between items-end border-b border-slate-100 dark:border-slate-800/50 pb-1 mb-1">
-                <span class="font-bold text-slate-500 tracking-wider">CPU_CORE</span>
-                <Cpu class="w-3 h-3 text-slate-400" />
+         <div class="flex flex-col p-3 rounded-lg bg-gray-50 dark:bg-zinc-900/50 border border-gray-100 dark:border-zinc-800/50 group-hover:border-gray-200 dark:group-hover:border-zinc-700/50 transition-colors">
+             <div class="flex items-center gap-1.5 mb-2 text-gray-500 dark:text-zinc-400">
+                <Cpu class="w-3 h-3" />
+                <span class="text-[9px] font-bold uppercase tracking-widest">Processors</span>
              </div>
              <div class="flex items-baseline gap-1 mt-auto">
-                 <span class="text-2xl font-bold text-slate-800 dark:text-slate-200 tabular-nums">{{ cpuInfo.cores }}</span>
-                 <span class="text-[10px] text-slate-400 font-bold">THREADS</span>
-             </div>
-             <!-- Fake activity bar -->
-             <div class="flex gap-0.5 mt-1 h-1">
-                <div v-for="i in 5" :key="i" class="flex-1 bg-blue-500/10 dark:bg-blue-400/10 rounded-sm overflow-hidden">
-                    <div class="h-full bg-blue-500 dark:bg-blue-400 animate-pulse" :style="{ width: `${30 + Math.random() * 70}%`, animationDuration: `${0.5 + Math.random()}s` }"></div>
-                </div>
+                 <span class="text-2xl font-bold text-gray-900 dark:text-white tabular-nums tracking-tighter">{{ cpuInfo.cores }}</span>
+                 <span class="text-[10px] text-gray-400 dark:text-zinc-500 font-medium">Cores</span>
              </div>
          </div>
 
          <!-- RAM section -->
-         <div class="flex flex-col gap-1">
-            <div class="flex justify-between items-end border-b border-slate-100 dark:border-slate-800/50 pb-1 mb-1">
-                <span class="font-bold text-slate-500 tracking-wider">MEM_ALLOC</span>
-                <MemoryStick class="w-3 h-3 text-slate-400" />
+         <div class="flex flex-col p-3 rounded-lg bg-gray-50 dark:bg-zinc-900/50 border border-gray-100 dark:border-zinc-800/50 group-hover:border-gray-200 dark:group-hover:border-zinc-700/50 transition-colors">
+            <div class="flex items-center gap-1.5 mb-2 text-gray-500 dark:text-zinc-400">
+                <MemoryStick class="w-3 h-3" />
+                <span class="text-[9px] font-bold uppercase tracking-widest">Memory</span>
              </div>
              <div class="flex items-baseline gap-1 mt-auto">
-                 <span class="text-xl font-bold text-slate-800 dark:text-slate-200 tabular-nums">{{ memoryInfo.totalFormatted.split(' ')[0] }}</span>
-                 <span class="text-[10px] text-slate-400 font-bold">{{ memoryInfo.totalFormatted.split(' ')[1] }}</span>
+                 <span class="text-xl font-bold text-gray-900 dark:text-white tabular-nums tracking-tighter">{{ memoryInfo.totalFormatted.split(' ')[0] }}</span>
+                 <span class="text-[10px] text-gray-400 dark:text-zinc-500 font-medium">{{ memoryInfo.totalFormatted.split(' ')[1] }}</span>
              </div>
-             <div class="h-1 w-full bg-violet-500/10 dark:bg-violet-400/10 rounded-sm">
-                <div class="h-full bg-violet-500 dark:bg-violet-400 w-full rounded-sm opacity-50"></div>
-             </div>
+         </div>
+      </div>
+
+      <!-- Footer / Storage -->
+      <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-zinc-800/80">
+         <div class="flex items-center gap-1.5 text-gray-500 dark:text-zinc-400">
+            <ShieldCheck class="w-3.5 h-3.5" />
+            <span class="text-[10px] font-bold uppercase tracking-widest">Kernel {{ osInfo.kernel }}</span>
          </div>
          
-         <!-- Storage Section (Full Width) -->
-         <div v-if="storageInfo.hasData" class="col-span-2 mt-auto pt-2">
-             <div class="flex justify-between items-center mb-1.5">
-                 <span class="font-bold text-slate-500 tracking-wider">DOCKER_USED</span>
-                 <div class="text-xl font-bold text-slate-800 dark:text-slate-200 tabular-nums">{{ storageInfo.usedFormatted }}</div>
-             </div>
-             
-             <!-- Static Visual Bar -->
-             <div class="flex gap-0.5 h-1.5 w-full">
-                 <div v-for="i in 20" :key="i" 
-                      class="flex-1 rounded-[1px] bg-emerald-500/40 dark:bg-emerald-400/40">
-                 </div>
-             </div>
+         <div v-if="storageInfo.hasData" class="flex items-center gap-2">
+            <span class="text-[10px] font-medium text-gray-400 dark:text-zinc-500">Docker Vol:</span>
+            <span class="text-xs font-bold text-gray-700 dark:text-gray-300 tabular-nums">{{ storageInfo.usedFormatted }}</span>
          </div>
-
       </div>
-
-      <!-- Footer / Deco -->
-      <div class="text-[9px] text-slate-300 dark:text-slate-700 flex justify-between uppercase tracking-widest pt-2 border-t border-slate-50 dark:border-slate-800/50">
-          <span>SYS.MON.V1</span>
-          <span>// READY</span>
-      </div>
-
     </div>
   </div>
 </template>
-
-<style scoped>
-@keyframes shine {
-  0% { transform: translateX(-100%) rotate(-12deg); }
-  20%, 100% { transform: translateX(200%) rotate(-12deg); }
-}
-
-.animate-shine {
-  animation: shine 8s infinite ease-in-out;
-}
-</style>
