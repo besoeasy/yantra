@@ -7,21 +7,25 @@
     "download",
     "utility",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "youtube"
   ],
-  "short_description": "Web UI for youtube-dl with subscription support and organization features.",
-  "description": "Web UI for youtube-dl with subscription support and organization features. YoutubeDL Material is a self-hosted application focused on media, downloader, download, utility. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 17442, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Modern web UI for youtube-dl/yt-dlp with subscriptions, playlists, and automation.",
+  "description": "YoutubeDL Material is a full-featured Material Design web UI for youtube-dl (and its fork yt-dlp). It provides a beautiful interface for downloading videos and audio from thousands of websites including YouTube, Vimeo, SoundCloud, and many more. Features include subscription monitoring - add channels/playlists and automatically download new content, user management with different permission levels, multiple output formats (MP4, MKV, MP3), downloading entire channels or playlists, automatic transcoding, API access, and a built-in video player. Perfect for archiving YouTube channels, downloading music collections, or building a personal video library.",
   "usecases": [
-    "Self-host YoutubeDL Material on your home server to web ui for youtube-dl with subscription support and organization features without depending on third-party cloud services.",
-    "Use YoutubeDL Material to manage your media workflows privately, keeping all data under your control on local infrastructure."
+    "Subscribe to YouTube channels and automatically download new videos.",
+    "Download entire playlists or channels in bulk.",
+    "Extract audio as MP3 from videos.",
+    "Build a personal video archive of your favorite content."
   ],
   "website": "https://github.com/Tzahi12345/YoutubeDL-Material",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 17442,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Uses yt-dlp for downloading - supports 1700+ sites",
+    "Subscription checking runs on a schedule",
+    "Auto-generated thumbnails and metadata"
   ]
 }

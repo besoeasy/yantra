@@ -7,15 +7,23 @@
     "docker",
     "containers",
     "devops",
-    "self-hosted"
+    "self-hosted",
+    "automation"
   ],
-  "short_description": "Automatically update running Docker containers. Self-host it with Docker using Yantr.",
-  "description": "Automatically update running Docker containers. Self-host it with Docker using Yantr. Watchtower is a self-hosted application focused on tools, utility, docker, containers. It can be deployed on any device via Docker Compose.",
+  "ports": [],
+  "short_description": "Automatic Docker container updates - keeps your containers current without manual intervention.",
+  "description": "Watchtower is a container update tool that automatically updates your Docker containers when new images are pushed to registries. It monitors running containers, checks for updated images, stops old containers, pulls new images, and starts fresh containers with the same parameters. Features include schedule-based updates (cron), cleanup of old images after update, notification support, update filtering (include/exclude specific containers), and graceful rolling updates. Perfect for keeping your homelab up to date without manually pulling and restarting every container.",
   "usecases": [
-    "Self-host Watchtower on your home server to automatically update running docker containers. self-host it with docker using yantr without depending on third-party cloud services.",
-    "Use Watchtower to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+    "Automatically keep all your Docker containers up to date.",
+    "Schedule updates to run during off-peak hours.",
+    "Clean up old container images to save disk space.",
+    "Get notified when containers are updated."
   ],
   "website": "https://containrrr.dev/watchtower",
   "dependencies": [],
-  "ports": []
+  "notes": [
+    "Requires Docker socket access (/var/run/docker.sock)",
+    "Set schedule using cron syntax",
+    "Can exclude specific containers from updates"
+  ]
 }

@@ -7,21 +7,26 @@
     "utility",
     "files",
     "gaming",
-    "server"
+    "server",
+    "smb",
+    "file-share"
   ],
-  "short_description": "SMB/CIFS file sharing server for network storage access.",
-  "description": "SMB/CIFS file sharing server for network storage access. Samba is a self-hosted application focused on network, storage, utility, files. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 445, "protocol": "SMB", "label": "File Sharing" }
+  ],
+  "short_description": "SMB/CIFS file sharing for Windows, Mac, and Linux to access storage on your network.",
+  "description": "Samba is the standard Windows interoperability suite for Unix-like systems, providing SMB/CIFS file sharing that works with Windows, macOS, and Linux clients. This Docker image makes it easy to set up a network share that appears in your file explorer. Features include simple user management, customizable share names, persistent storage, and cross-platform compatibility. Perfect for sharing media files, documents, or backups across all devices on your network - no special software needed on the client side.",
   "usecases": [
-    "Self-host Samba on your home server to smb/cifs file sharing server for network storage access without depending on third-party cloud services.",
-    "Use Samba to manage your network workflows privately, keeping all data under your control on local infrastructure."
+    "Share folders with all computers on your network.",
+    "Access server storage from Windows, Mac, or Linux.",
+    "Create a central file repository for home or office.",
+    "Share media files for Plex/Jellyfin to scan."
   ],
   "website": "https://github.com/dockur/samba",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 445,
-      "protocol": "SMB",
-      "label": "File Sharing"
-    }
+  "notes": [
+    "SMB port 445 - no need for older NetBIOS",
+    "Configure username and password via environment variables",
+    "Mount folders as volumes for persistent storage"
   ]
 }

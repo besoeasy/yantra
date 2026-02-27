@@ -7,21 +7,26 @@
     "monitoring",
     "dashboard",
     "utility",
-    "self-hosted"
+    "self-hosted",
+    "status-page",
+    "notifications"
   ],
-  "short_description": "Self-hosted uptime monitoring tool. Self-host it with Docker using Yantr.",
-  "description": "Self-hosted uptime monitoring tool. Self-host it with Docker using Yantr. Uptime Kuma is a self-hosted application focused on tools, network, monitoring, dashboard. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 3001, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted uptime monitoring tool with status pages, notifications, and 30+ check types.",
+  "description": "Uptime Kuma is a fancy self-hosted monitoring tool that helps you monitor your services and get notified when they go down. It supports HTTP(s), TCP, Ping, DNS, Push, Steam Game Server, and more than 30 other protocol types. Features include beautiful status pages with uptime history, multi-region monitoring, certificate expiration tracking, docker container monitoring via socket, push notifications (Telegram, Discord, Slack, Email, SMS via Twilio), and a 100% open-source design. It's a modern alternative to tools like Uptime Robot or Statuspage.io that you fully own.",
   "usecases": [
-    "Self-host Uptime Kuma on your home server to self-hosted uptime monitoring tool. self-host it with docker using yantr without depending on third-party cloud services.",
-    "Use Uptime Kuma to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+    "Monitor your self-hosted services (Home Assistant, Jellyfin, Nextcloud) and get alerted when they go down.",
+    "Create a public status page to show your family or users that your services are running smoothly.",
+    "Track SSL certificate expiration dates and get notified before certificates expire.",
+    "Monitor Docker containers without installing agents - uses Docker socket for native container health checks."
   ],
   "website": "https://github.com/louislam/uptime-kuma/wiki",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 3001,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Supports over 30 monitoring types including HTTP, TCP, Ping, DNS, and more",
+    "Can monitor Docker containers directly via socket mount",
+    "Push endpoint available for services to send their own status updates"
   ]
 }

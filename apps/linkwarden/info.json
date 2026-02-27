@@ -7,21 +7,25 @@
     "bookmarks",
     "search",
     "privacy",
-    "self-hosted"
+    "self-hosted",
+    "archive"
   ],
-  "short_description": "Bookmark preservation tool for individuals and teams with full-text search and archiving.",
-  "description": "Bookmark preservation tool for individuals and teams with full-text search and archiving. Linkwarden is a self-hosted application focused on productivity, utility, bookmarks, search. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 3000, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted bookmark manager with full-text search, archiving, and collaboration features.",
+  "description": "Linkwarden is a self-hosted, open-source bookmark manager designed to preserve links and archive web pages. It allows you to save, organize, and search through your bookmarks with full-text search capabilities. Features include link previews, automatic screenshot capture, archival of web page content, collaborative collections for teams, tagging and folders for organization, import/export functionality, and a clean modern interface. Perfect for curating research, saving important articles, or managing shared bookmarks with family or team.",
   "usecases": [
-    "Self-host Linkwarden on your home server to bookmark preservation tool for individuals and teams with full-text search and archiving without depending on third-party cloud services.",
-    "Use Linkwarden to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Save and organize bookmarks with automatic archiving of web page content.",
+    "Search through saved links and archived content instantly.",
+    "Share bookmark collections with family or team members.",
+    "Preserve important web resources that might disappear from the internet."
   ],
   "website": "https://github.com/linkwarden/linkwarden",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 3000,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Uses PostgreSQL database for storage",
+    "Web pages are archived for offline access",
+    "Supports multiple users and shared collections"
   ]
 }

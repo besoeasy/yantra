@@ -7,21 +7,25 @@
     "self-hosted",
     "homelab",
     "docker",
-    "open-source"
+    "open-source",
+    "testing"
   ],
-  "short_description": "Tiny HTTP service that prints system information - perfect for testing.",
-  "description": "Tiny HTTP service that prints system information - perfect for testing. Whoami is a self-hosted application focused on tools, utility, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Simple HTTP service that displays request details - ideal for testing proxies and ingress.",
+  "description": "Whoami is an extremely simple HTTP service that prints all incoming request details back to the client. When you access it, it displays the hostname, IP address, headers, and other request information. It's primarily used for testing reverse proxies, load balancers, Kubernetes ingress, Docker networking, and other infrastructure. Features include displaying request method, path, headers, client IP, and server info in a clean format. Perfect for testing that your reverse proxy is working, checking what headers are being passed, or debugging network configurations.",
   "usecases": [
-    "Self-host Whoami on your home server to tiny http service that prints system information - perfect for testing without depending on third-party cloud services.",
-    "Use Whoami to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+    "Test reverse proxy configurations.",
+    "Verify what headers are being forwarded.",
+    "Check your public IP as seen by the server.",
+    "Debug Docker networking and port forwarding."
   ],
   "website": "https://github.com/traefik/whoami",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Tiny image - only displays request info",
+    "Useful for testing but not much else",
+    "No configuration needed - just works"
   ]
 }

@@ -7,21 +7,25 @@
     "audio",
     "gaming",
     "server",
-    "self-hosted"
+    "self-hosted",
+    "streaming"
   ],
-  "short_description": "Self-hosted music streaming server with web interface and mobile apps.",
-  "description": "Self-hosted music streaming server with web interface and mobile apps. Airsonic is a self-hosted application focused on media, music, audio, gaming. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 4040, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Open-source music streaming server with web player and mobile app support.",
+  "description": "Airsonic is a free, open-source web-based music player and streamer that lets you access your music collection from anywhere. It organizes your music with metadata, albums, artists, genres, and provides powerful search. Features include multi-user support with individual playlists, transcoding for various formats, podcast support,jukebox mode for parties, HTTP streaming for any player, and integration with various Sonos, Chromecast, and AirPlay devices. There's also an Android app for offline playback. Perfect for building your personal Spotify alternative.",
   "usecases": [
-    "Self-host Airsonic on your home server to self-hosted music streaming server with web interface and mobile apps without depending on third-party cloud services.",
-    "Use Airsonic to manage your media workflows privately, keeping all data under your control on local infrastructure."
+    "Stream your music collection to any browser or device.",
+    "Create playlists and share music with family members.",
+    "Use jukebox mode to let guests choose music at parties.",
+    "Access your music library remotely via the web interface."
   ],
   "website": "https://github.com/airsonic/airsonic",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 4040,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Supports transcoding for format compatibility",
+    "Android app available for mobile listening",
+    "Multiple users with personal libraries supported"
   ]
 }

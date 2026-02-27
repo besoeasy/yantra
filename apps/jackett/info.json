@@ -7,21 +7,26 @@
     "utility",
     "torrent",
     "download",
-    "p2p"
+    "p2p",
+    "servarr",
+    "indexer"
   ],
-  "short_description": "API proxy for torrent trackers with Sonarr/Radarr support.",
-  "description": "API proxy for torrent trackers with Sonarr/Radarr support. Jackett is a self-hosted application focused on media, tools, utility, torrent. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 9117, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "API bridge that provides torrent indexer functionality to PVR apps like Sonarr and Radarr.",
+  "description": "Jackett works as a bridge between your PVR apps (Sonarr, Radarr, SickRage, CouchPotato) and torrent trackers. It provides a unified API - your PVR sends one query to Jackett, and Jackett queries multiple torrent trackers on your behalf, returning standardized results. It supports over 500 public and private trackers, handles authentication, capsulates API differences, and provides Torznab support. Without Jackett, you'd need to configure each PVR app with each tracker's individual API - Jackett simplifies this to one integration.",
   "usecases": [
-    "Self-host Jackett on your home server to api proxy for torrent trackers with sonarr/radarr support without depending on third-party cloud services.",
-    "Use Jackett to manage your media workflows privately, keeping all data under your control on local infrastructure."
+    "Enable automated media downloading by connecting Jackett to Sonarr/Radarr.",
+    "Search for torrents across multiple trackers from one interface.",
+    "Get fresh releases automatically downloaded to your media library.",
+    "Use with multiple PVR apps (TV, movies, music) through one integration."
   ],
   "website": "https://github.com/Jackett/Jackett",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 9117,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "API key required for connecting PVR apps",
+    "Supports 500+ torrent trackers",
+    "Update tracker definitions regularly for best results"
   ]
 }

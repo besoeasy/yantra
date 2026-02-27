@@ -7,21 +7,25 @@
     "anonymous",
     "tor",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "browser"
   ],
-  "short_description": "Privacy-focused web browser with Tor network integration.",
-  "description": "Privacy-focused web browser with Tor network integration. Tor Browser is a self-hosted application focused on privacy, security, anonymous, tor. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 5800, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Dockerized Tor Browser with VNC access for anonymous web browsing through Tor network.",
+  "description": "Tor Browser in Docker allows you to browse the web anonymously through the Tor network without installing it locally on your machine. It provides a complete Tor Browser experience accessible through any browser via VNC. This is useful for running in a headless environment, providing anonymous browsing on systems without a display, or isolating Tor usage from your main system. Features include connection to the Tor network, protection against tracking and fingerprinting, access to .onion sites, and no locally stored data after container restart.",
   "usecases": [
-    "Self-host Tor Browser on your home server to privacy-focused web browser with tor network integration without depending on third-party cloud services.",
-    "Use Tor Browser to manage your privacy workflows privately, keeping all data under your control on local infrastructure."
+    "Browse the internet anonymously from any location.",
+    "Access .onion sites without installing Tor Browser locally.",
+    "Isolate Tor usage from your main system for security.",
+    "Use as a privacy-focused browsing solution on headless servers."
   ],
   "website": "https://github.com/domistyle/docker-tor-browser",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 5800,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Accessed via VNC in browser - no local installation needed",
+    "Slow due to Tor network routing - not for streaming",
+    "All browsing data is lost on container restart"
   ]
 }

@@ -7,21 +7,25 @@
     "utility",
     "self-hosted",
     "homelab",
-    "docker"
+    "docker",
+    "google"
   ],
-  "short_description": "Privacy-focused metasearch engine - fast, clean Google-like search results.",
-  "description": "Privacy-focused metasearch engine - fast, clean Google-like search results. Whoogle is a self-hosted application focused on search, privacy, utility, self-hosted. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 5000, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted, ad-free Google search proxy with privacy features and customization options.",
+  "description": "Whoogle is a self-hosted search proxy that fetches Google search results and presents them without ads, tracking, or clutter. It provides a clean, privacy-focused search experience while using Google's search algorithm. Features include no ads or tracking, customizable themes (dark, light, separator), config filters, language and region customization, HTML/DJSON/TXT export options, safe search toggle, and the ability to use as your default search engine. It's the simplest way to search Google privately - your searches never directly hit Google's servers from your IP.",
   "usecases": [
-    "Self-host Whoogle on your home server to privacy-focused metasearch engine - fast, clean google-like search results without depending on third-party cloud services.",
-    "Use Whoogle to manage your search workflows privately, keeping all data under your control on local infrastructure."
+    "Search Google without ads or tracking from your IP address.",
+    "Get clean, distraction-free search results.",
+    "Set as your browser's default search engine for privacy.",
+    "Customize search appearance with themes and filters."
   ],
   "website": "https://github.com/benbusby/whoogle",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 5000,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Proxies Google search - results come from Google's algorithm",
+    "No tracking cookies or IP logging",
+    "Can be customized with environment variables"
   ]
 }

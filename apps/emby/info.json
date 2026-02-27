@@ -7,21 +7,26 @@
     "streaming",
     "video",
     "music",
-    "audio"
+    "audio",
+    "tv",
+    "plex-alternative"
   ],
-  "short_description": "Media server for streaming video, music, live TV, and photos.",
-  "description": "Media server for streaming video, music, live TV, and photos. Emby is a self-hosted application focused on media, entertainment, streaming, video. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 8096, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Media server with theater mode, live TV, and mobile sync features.",
+  "description": "Emby is a media server that organizes your video, music, and photo collections and streams them to devices. Similar to Plex, it offers a premium experience with features like theater mode for big screens, live TV with DVR capabilities, hardware transcoding, mobile sync for offline viewing, and a comprehensive guide. Emby offers both a free and paid (Emby Premiere) version - the Docker image includes all features but some require a paid subscription. It's a solid alternative to Jellyfin with a more polished interface but less customization.",
   "usecases": [
-    "Self-host Emby on your home server to media server for streaming video, music, live tv, and photos without depending on third-party cloud services.",
-    "Use Emby to manage your media workflows privately, keeping all data under your control on local infrastructure."
+    "Stream your movie and TV collection to any device.",
+    "Watch live TV with DVR functionality (requires tuner).",
+    "Sync media to mobile devices for offline viewing.",
+    "Use theater mode for an immersive viewing experience."
   ],
   "website": "https://emby.media/",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8096,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Some features require Emby Premiere subscription",
+    "Hardware transcoding available with proper GPU setup",
+    "Similar to Jellyfin/Plex but with different feature set"
   ]
 }

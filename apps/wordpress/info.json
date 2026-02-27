@@ -7,21 +7,26 @@
     "self-hosted",
     "homelab",
     "docker",
-    "open-source"
+    "open-source",
+    "website",
+    "php"
   ],
-  "short_description": "Popular open-source content management system for websites and blogs.",
-  "description": "Popular open-source content management system for websites and blogs. WordPress is a self-hosted application focused on cms, blog, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "World's most popular CMS and blogging platform with thousands of themes and plugins.",
+  "description": "WordPress is the world's most popular content management system, powering over 40% of all websites. It started as a blogging platform but has evolved into a full-featured CMS capable of building any type of website - from simple blogs to complex e-commerce stores, membership sites, and enterprise applications. Features include the Gutenberg block editor, thousands of free and premium themes, over 60,000 plugins for added functionality, multi-user support with roles, REST API for headless implementations, SEO-friendly URLs, and a massive community for support. This Docker deployment includes MySQL as the database backend.",
   "usecases": [
-    "Self-host WordPress on your home server to popular open-source content management system for websites and blogs without depending on third-party cloud services.",
-    "Use WordPress to manage your cms workflows privately, keeping all data under your control on local infrastructure."
+    "Create a personal blog or portfolio website with complete control over your data.",
+    "Build a business website with contact forms, galleries, and custom pages.",
+    "Set up an e-commerce store using WooCommerce plugin.",
+    "Create a multi-author blog or news site with user registration and roles."
   ],
   "website": "https://github.com/WordPress/WordPress",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Includes MySQL database as dependency",
+    "Initial setup via web interface - set admin user and password there",
+    "Keep WordPress and plugins updated for security"
   ]
 }

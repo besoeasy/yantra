@@ -7,21 +7,25 @@
     "security",
     "dashboard",
     "utility",
-    "self-hosted"
+    "self-hosted",
+    "devices"
   ],
-  "short_description": "Network monitoring tool for detecting new devices and security alerts.",
-  "description": "Network monitoring tool for detecting new devices and security alerts. Pi.Alert is a self-hosted application focused on network, monitoring, security, dashboard. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 20211, "protocol": "UDP", "label": "Monitoring" }
+  ],
+  "short_description": "Network scanner that detects devices, alerts on new connections, and tracks device history.",
+  "description": "Pi.Alert is a powerful network monitoring tool that continuously scans your network to detect all connected devices. It builds a database of all devices by MAC address, hostname, and vendor, alerting you when new devices appear or unknown devices connect. Features include automatic device recognition, ARP scanning, WiFi connected device tracking, online/offline notifications, device history with timestamps, webhook alerts (Discord, Telegram, etc.), and a beautiful dashboard. Perfect for home network security - know exactly what's connected to your network at all times.",
   "usecases": [
-    "Self-host Pi.Alert on your home server to network monitoring tool for detecting new devices and security alerts without depending on third-party cloud services.",
-    "Use Pi.Alert to manage your network workflows privately, keeping all data under your control on local infrastructure."
+    "Monitor your home network for new device connections.",
+    "Get alerts when unknown devices connect to your WiFi.",
+    "Track device history - when devices joined and last seen.",
+    "Identify all devices on your network with vendor recognition."
   ],
   "website": "https://github.com/jokobsk/pi.alert",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 20211,
-      "protocol": "UDP",
-      "label": "Monitoring"
-    }
+  "notes": [
+    "Scans via ARP to discover all devices on network",
+    "Sends notifications via webhooks",
+    "Database of device history over time"
   ]
 }

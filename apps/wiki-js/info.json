@@ -7,21 +7,26 @@
     "notes",
     "productivity",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "knowledge-base",
+    "markdown"
   ],
-  "short_description": "Modern, lightweight wiki platform for creating and organizing knowledge bases.",
-  "description": "Modern, lightweight wiki platform for creating and organizing knowledge bases. Wiki.js is a self-hosted application focused on documentation, wiki, notes, productivity. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 3000, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Modern, powerful wiki platform with Markdown support, versioning, and 80+ auth providers.",
+  "description": "Wiki.js is a modern, powerful and extensible open-source wiki software. It features a beautiful and intuitive interface, Markdown support with live preview, syntax highlighting for code, diagram support (Mermaid, PlantUML), and powerful versioning with diff view. It integrates with over 80 authentication providers including Google, GitHub, Slack, Azure AD, and LDAP for enterprise deployments. Features include a built-in search engine, comments, file uploads, scheduled tasks, API access, and an extensive module system for customization. Perfect for documentation, knowledge bases, intranets, and team wikis.",
   "usecases": [
-    "Self-host Wiki.js on your home server to modern, lightweight wiki platform for creating and organizing knowledge bases without depending on third-party cloud services.",
-    "Use Wiki.js to manage your documentation workflows privately, keeping all data under your control on local infrastructure."
+    "Create a personal knowledge base for notes, tutorials, and documentation that you fully control.",
+    "Set up a team wiki for company documentation, SOPs, and internal knowledge sharing.",
+    "Build a public documentation site for your open-source project with version control.",
+    "Use as an intranet for your homelab with access controlled by your preferred auth provider."
   ],
   "website": "https://github.com/requarks/wiki",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 3000,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Requires PostgreSQL, MySQL, or MariaDB for data storage",
+    "Supports LDAP and SAML for enterprise authentication",
+    "Can export to static HTML for hosting anywhere"
   ]
 }

@@ -7,21 +7,26 @@
     "crypto",
     "blockchain",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "finance"
   ],
-  "short_description": "Bitcoin full node with enhanced features and privacy focus.",
-  "description": "Bitcoin full node with enhanced features and privacy focus. Bitcoin Knots is a self-hosted application focused on cryptocurrency, bitcoin, crypto, blockchain. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 8332, "protocol": "HTTP", "label": "RPC" },
+    { "port": 8333, "protocol": "TCP", "label": "P2P" }
+  ],
+  "short_description": "Full Bitcoin node with enhanced features, mempool visualization, and wallet support.",
+  "description": "Bitcoin Knots is a full Bitcoin node implementation with additional features beyond the reference client. It provides complete verification of the entire blockchain, enabling you to use Bitcoin without trusting third parties. Features include wallet functionality for sending/receiving BTC, full mempool visualization, RBF (Replace-By-Fee) support, advanced transaction fee estimation, custom filters for SPV clients, and access to network statistics. Running your own node gives you maximum privacy and security - you verify all transactions yourself without leaking addresses to block explorers.",
   "usecases": [
-    "Self-host Bitcoin Knots on your home server to bitcoin full node with enhanced features and privacy focus without depending on third-party cloud services.",
-    "Use Bitcoin Knots to manage your cryptocurrency workflows privately, keeping all data under your control on local infrastructure."
+    "Run a full Bitcoin node for maximum privacy and security.",
+    "Verify transactions without trusting block explorers.",
+    "Use as a backend for wallet applications.",
+    "Support the Bitcoin network by relaying transactions."
   ],
   "website": "https://bitcoinknots.org",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8332,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Full sync requires ~600GB+ and growing",
+    "Port 8332 for RPC, 8333 for P2P networking",
+    "Set RPC credentials for wallet/API access"
   ]
 }

@@ -7,21 +7,25 @@
     "dashboard",
     "utility",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "latency"
   ],
-  "short_description": "Latency and packet loss monitoring tool with graphing capabilities.",
-  "description": "Latency and packet loss monitoring tool with graphing capabilities. Smokeping is a self-hosted application focused on network, monitoring, dashboard, utility. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Network latency and packet loss monitoring with beautiful historical graphs.",
+  "description": "Smokeping is a powerful network monitoring tool that measures latency and packet loss to your network targets over time. It sends ICMP pings and visualizes the data in detailed graphs showing min/max/average response times, standard deviation, and packet loss percentages. Features include multi-target monitoring, custom ping intervals, alerting on thresholds, historical data retention, and a clean web interface showing trends over hours, days, weeks, or months. Perfect for monitoring your internet connection quality, tracking latency to game servers, or monitoring network equipment.",
   "usecases": [
-    "Self-host Smokeping on your home server to latency and packet loss monitoring tool with graphing capabilities without depending on third-party cloud services.",
-    "Use Smokeping to manage your network workflows privately, keeping all data under your control on local infrastructure."
+    "Monitor your home internet connection quality over time.",
+    "Track latency to important servers (gaming, work VPNs).",
+    "Get alerted when packet loss or latency exceeds thresholds.",
+    "Prove internet issues to your ISP with historical data."
   ],
   "website": "https://github.com/linuxserver/docker-smokeping",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Requires ICMP ping access (may need CAP_NET_RAW)",
+    "Configure targets via config file",
+    "Historical graphs show trends over extended periods"
   ]
 }

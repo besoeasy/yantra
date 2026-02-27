@@ -7,21 +7,25 @@
     "containers",
     "devops",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "compose"
   ],
-  "short_description": "Self-hosted Docker Compose stack manager with GUI for easy deployment.",
-  "description": "Self-hosted Docker Compose stack manager with GUI for easy deployment. Dockge is a self-hosted application focused on docker, management, containers, devops. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 5001, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Elegant Docker Compose management UI for creating and managing stacks interactively.",
+  "description": "Dockge is a beautiful, user-friendly alternative to Portainer specifically designed for managing Docker Compose stacks. It provides an interactive editor for writing docker-compose.yml files with syntax highlighting, a visual interface for managing services (start, stop, restart, logs), stack management, and easy interaction with the compose.yaml format. Features include compose.yaml editor with autocomplete, one-click stack deployment, service management (logs, shell, restart), and a clean modern interface. Perfect for those who prefer Docker Compose but want a visual tool.",
   "usecases": [
-    "Self-host Dockge on your home server to self-hosted docker compose stack manager with gui for easy deployment without depending on third-party cloud services.",
-    "Use Dockge to manage your docker workflows privately, keeping all data under your control on local infrastructure."
+    "Create and edit docker-compose.yml files with a visual editor.",
+    "Manage your compose stacks - start, stop, restart services.",
+    "View logs and access containers directly from the UI.",
+    "Organize multiple compose projects in one place."
   ],
   "website": "https://github.com/louislam/dockge",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 5001,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Requires Docker socket access",
+    "Stores compose files in configurable directory",
+    "Stack traces from failed deployments shown clearly"
   ]
 }

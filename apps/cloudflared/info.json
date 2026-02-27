@@ -7,15 +7,24 @@
     "vpn",
     "privacy",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "tunnel",
+    "remote-access"
   ],
-  "short_description": "Cloudflare Tunnel for secure remote access without exposing ports.",
-  "description": "Cloudflare Tunnel for secure remote access without exposing ports. Cloudflared is a self-hosted application focused on network, security, vpn, privacy. It can be deployed on any device via Docker Compose.",
+  "ports": [],
+  "short_description": "Secure tunnel from your server to Cloudflare for remote access without opening firewall ports.",
+  "description": "Cloudflared (Cloudflare Tunnel) creates a secure connection between your server and Cloudflare's global network, allowing you to expose services to the internet without opening firewall ports. This means you can access your self-hosted apps from anywhere while keeping your server protected. Features include zero-trust access controls, authentication via Cloudflare Access, automatic TLS certificates, and support for multiple services through one tunnel. It's the easiest way to securely expose your homelab services to the internet without dealing with port forwarding or dynamic DNS.",
   "usecases": [
-    "Self-host Cloudflared on your home server to cloudflare tunnel for secure remote access without exposing ports without depending on third-party cloud services.",
-    "Use Cloudflared to manage your network workflows privately, keeping all data under your control on local infrastructure."
+    "Access your home server from anywhere without router port forwarding.",
+    "Expose Jellyfin, Nextcloud, or other services securely with Cloudflare authentication.",
+    "Get free automatic HTTPS for your self-hosted services.",
+    "Set up zero-trust access - require login before reaching your services."
   ],
   "website": "https://github.com/cloudflare/cloudflared",
   "dependencies": [],
-  "ports": []
+  "notes": [
+    "Requires a Cloudflare account and tunnel token",
+    "No ports need to be opened on your firewall",
+    "Traffic routed through Cloudflare for DDoS protection"
+  ]
 }

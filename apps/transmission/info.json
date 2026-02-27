@@ -7,21 +7,25 @@
     "torrent",
     "p2p",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "bittorrent"
   ],
-  "short_description": "Fast, easy BitTorrent client with web interface. Self-host it with Docker using Yantr.",
-  "description": "Fast, easy BitTorrent client with web interface. Self-host it with Docker using Yantr. Transmission is a self-hosted application focused on download, network, torrent, p2p. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 9091, "protocol": "HTTP", "label": "Web Interface" }
+  ],
+  "short_description": "Fast, lightweight BitTorrent client with web interface and native Docker support.",
+  "description": "Transmission is a fast, lightweight BitTorrent client that runs as a daemon with a web interface. It's known for its low resource usage, simplicity, and reliability. Features include a web UI for remote management, magnet link support, peer exchange, DHT, encryption, bandwidth scheduling, watch folders for automatic downloads, and NAT-PMP/UPnP port mapping. The LinuxServer.io Docker image includes VPN support and automatic removal of completed downloads. Perfect for building a home media download server.",
   "usecases": [
-    "Self-host Transmission on your home server to fast, easy bittorrent client with web interface. self-host it with docker using yantr without depending on third-party cloud services.",
-    "Use Transmission to manage your download workflows privately, keeping all data under your control on local infrastructure."
+    "Download Linux ISOs, open-source software, and public domain media via BitTorrent.",
+    "Set up automated downloads using watch folders - drop a .torrent file and it starts downloading automatically.",
+    "Build a headless download server that runs in the background and can be controlled from any browser.",
+    "Integrate with Sonarr/Radarr for automated media downloading."
   ],
   "website": "https://transmissionbt.com/",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 9091,
-      "protocol": "HTTP",
-      "label": "Web Interface"
-    }
+  "notes": [
+    "Web interface runs on port 9091 by default",
+    "Peer port is 51413 - needs to be accessible for optimal downloads",
+    "LinuxServer.io image includes VPN and automatic cleanup features"
   ]
 }

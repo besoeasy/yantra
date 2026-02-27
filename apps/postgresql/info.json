@@ -7,21 +7,26 @@
     "utility",
     "self-hosted",
     "homelab",
-    "docker"
+    "docker",
+    "sql",
+    "orm"
   ],
-  "short_description": "Powerful open-source relational database with advanced features.",
-  "description": "Powerful open-source relational database with advanced features. PostgreSQL is a self-hosted application focused on database, storage, utility, self-hosted. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 5432, "protocol": "TCP", "label": "Database" }
+  ],
+  "short_description": "Advanced open-source relational database with JSON support, full-text search, and powerful extensions.",
+  "description": "PostgreSQL is a powerful, open-source object-relational database system known for reliability, feature robustness, and performance. It supports both SQL (relational) and JSON (non-relational) querying, making it perfect for modern applications. Features include ACID compliance, MVCC for concurrent access, foreign keys, triggers, stored procedures, views, complex queries, JSONB for document storage, full-text search, GIS extensions (PostGIS), and an extensive ecosystem of extensions (pgvector for AI, timescaledb for time-series, citus for distributed). It's the database of choice for many production applications.",
   "usecases": [
-    "Self-host PostgreSQL on your home server to powerful open-source relational database with advanced features without depending on third-party cloud services.",
-    "Use PostgreSQL to manage your database workflows privately, keeping all data under your control on local infrastructure."
+    "Use as the database backend for complex applications like Wiki.js, Ghostfolio, or Home Assistant.",
+    "Store JSON data alongside relational data in the same database.",
+    "Enable full-text search for building search features in your applications.",
+    "Use pgvector extension for storing and querying AI embeddings."
   ],
   "website": "https://github.com/postgres/postgres",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 5432,
-      "protocol": "TCP",
-      "label": "Database"
-    }
+  "notes": [
+    "Requires POSTGRES_PASSWORD environment variable",
+    "Can use volumes for data persistence",
+    "Supports numerous extensions for specialized use cases"
   ]
 }

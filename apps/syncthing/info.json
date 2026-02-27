@@ -7,21 +7,26 @@
     "storage",
     "files",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "sync",
+    "p2p"
   ],
-  "short_description": "Continuous file synchronization program. It synchronizes files between two or more computers.",
-  "description": "Continuous file synchronization program. It synchronizes files between two or more computers. Syncthing is a self-hosted application focused on tools, utility, storage, files. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 8384, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Continuous file synchronization between devices with peer-to-peer encryption and no cloud dependency.",
+  "description": "Syncthing is a continuous file synchronization program that syncs files between two or more computers in real-time. It replaces proprietary cloud services with an open, decentralized, and private solution. Files are synced directly between your devices using peer-to-peer connections, meaning your data never touches any cloud server. Features include end-to-end encryption, version control, ignore patterns, bandwidth limits, NAT traversal, file versioning, and a beautiful web UI. It's cross-platform (Windows, Mac, Linux, Android, BSD) and works great for keeping photos, documents, and important files in sync across your devices.",
   "usecases": [
-    "Self-host Syncthing on your home server to continuous file synchronization program. it synchronizes files between two or more computers without depending on third-party cloud services.",
-    "Use Syncthing to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+    "Sync your photos from your phone to your home server automatically when on WiFi.",
+    "Keep important documents synchronized across your laptop, desktop, and server without using Dropbox or Google Drive.",
+    "Create a private backup solution - sync to a secondary device for redundancy.",
+    "Share files with family members using device-to-device synchronization."
   ],
   "website": "https://syncthing.net/",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8384,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Uses ports 22000 (TCP) and 21027 (UDP) for synchronization",
+    "Works behind NAT with proper configuration",
+    "No account or cloud required - all peer-to-peer"
   ]
 }

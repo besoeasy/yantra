@@ -7,21 +7,25 @@
     "dashboard",
     "utility",
     "homepage",
-    "self-hosted"
+    "self-hosted",
+    "startpage"
   ],
-  "short_description": "Beautiful and customizable browser start page with tab management.",
-  "description": "Beautiful and customizable browser start page with tab management. Tabby is a self-hosted application focused on productivity, browsing, dashboard, utility. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Customizable start page with tabs, bookmarks, weather, and quick links.",
+  "description": "Tabby is a beautiful, customizable start page for your browser that combines a new tab experience with useful utilities. Features include a tabs interface for organizing your links into categories, weather widget, quick search bar, clock with date, background customization, bookmark management, and keyboard shortcuts. It's designed to be your browser's new tab page - every time you open a new tab, you see your organized bookmarks and quick access to your favorite sites. Uses MariaDB for storing your configuration.",
   "usecases": [
-    "Self-host Tabby on your home server to beautiful and customizable browser start page with tab management without depending on third-party cloud services.",
-    "Use Tabby to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Set as your browser's new tab page for quick access to bookmarks.",
+    "Organize bookmarks into tabs by category (Work, News, Social, etc.).",
+    "Quick search from the start page with custom search engines.",
+    "Display weather and time at a glance."
   ],
   "website": "https://github.com/parksauce/tabby",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Uses MariaDB for database storage",
+    "Customizable backgrounds and themes",
+    "Keyboard shortcuts for quick navigation"
   ]
 }

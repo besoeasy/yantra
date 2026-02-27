@@ -7,21 +7,25 @@
     "dashboard",
     "utility",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "system-info"
   ],
-  "short_description": "Real-time system monitoring for containers and host metrics.",
-  "description": "Real-time system monitoring for containers and host metrics. Glances is a self-hosted application focused on monitoring, tools, dashboard, utility. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 61208, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Cross-platform system monitoring tool showing CPU, memory, disk, network, and Docker stats.",
+  "description": "Glances is a powerful cross-platform system monitoring tool that provides a comprehensive view of your server's performance. It displays real-time metrics including CPU usage (per core), memory consumption, disk I/O and space, network traffic, process list, Docker container stats, and hardware sensors (temperature, fan speed). Features include web UI for remote monitoring, alert thresholds, historical data, export to InfluxDB for graphing, and auto-discovery of Docker containers. It's like htop but accessible through a browser with more detailed information.",
   "usecases": [
-    "Self-host Glances on your home server to real-time system monitoring for containers and host metrics without depending on third-party cloud services.",
-    "Use Glances to manage your monitoring workflows privately, keeping all data under your control on local infrastructure."
+    "Monitor server performance in real-time through the web interface.",
+    "Track Docker container resource usage alongside host metrics.",
+    "Set up alerts when CPU, memory, or disk exceeds thresholds.",
+    "View historical data by exporting to time-series databases."
   ],
   "website": "https://nicolargo.github.io/glances/",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 61208,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Requires host PID namespace for full process monitoring",
+    "Docker socket mount needed for container stats",
+    "Can export to InfluxDB for long-term storage"
   ]
 }

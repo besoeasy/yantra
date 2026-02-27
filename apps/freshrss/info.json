@@ -7,21 +7,25 @@
     "rss",
     "news",
     "reader",
-    "self-hosted"
+    "self-hosted",
+    "aggregation"
   ],
-  "short_description": "Self-hosted RSS feed aggregator for reading news and updates from multiple sources.",
-  "description": "Self-hosted RSS feed aggregator for reading news and updates from multiple sources. FreshRSS is a self-hosted application focused on feed, productivity, rss, news. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted RSS/Atom feed aggregator with multi-user support and powerful filtering.",
+  "description": "FreshRSS is a free, self-hosted, powerful RSS feed aggregator designed for reading and organizing news from multiple sources. It features a clean, modern interface, support for multiple users with individual preferences, powerful filtering and search, categorization, favorites, reading history, media playback (podcasts, videos), OPML import/export, and extensions for additional features. It's a great replacement for Google Reader and online services like Feedly. Stay updated with your favorite blogs, news sites, YouTube channels, and podcasts in one place without any tracking.",
   "usecases": [
-    "Self-host FreshRSS on your home server to self-hosted rss feed aggregator for reading news and updates from multiple sources without depending on third-party cloud services.",
-    "Use FreshRSS to manage your feed workflows privately, keeping all data under your control on local infrastructure."
+    "Aggregate all your favorite blogs and news sources into one private reader.",
+    "Follow YouTube channels and get video updates alongside text content.",
+    "Share subscriptions with family members using multi-user support.",
+    "Use filters and categories to organize feeds by topic or priority."
   ],
   "website": "https://github.com/FreshRSS/FreshRSS",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Supports OPML import for migrating from other feed readers",
+    "Can refresh feeds automatically on a schedule",
+    "Mobile-friendly interface works well on phones"
   ]
 }

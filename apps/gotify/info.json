@@ -7,21 +7,25 @@
     "notifications",
     "utility",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "push"
   ],
-  "short_description": "Self-hosted push notification service for sending and receiving notifications.",
-  "description": "Self-hosted push notification service for sending and receiving notifications. Gotify is a self-hosted application focused on notification, tools, notifications, utility. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted push notification server for sending alerts from your scripts and apps.",
+  "description": "Gotify is a simple self-hosted push notification service that allows you to send and receive messages in real-time. It's designed to be a privacy-focused alternative to services like Pushover or Parse. Features include real-time WebSocket messaging, REST API for sending notifications, multiple users and applications, message prioritization, file attachments, a web UI for managing notifications, and client libraries for various languages. Perfect for sending alerts from home automation, monitoring tools, scripts, or any application that needs to notify you.",
   "usecases": [
-    "Self-host Gotify on your home server to self-hosted push notification service for sending and receiving notifications without depending on third-party cloud services.",
-    "Use Gotify to manage your notification workflows privately, keeping all data under your control on local infrastructure."
+    "Receive alerts from Uptime Kuma when services go down.",
+    "Send notifications from your automation scripts (n8n, Home Assistant).",
+    "Get notified when Docker containers stop or crash.",
+    "Use as a simple messaging system for family or team."
   ],
   "website": "https://github.com/gotify/server",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Simple REST API for sending messages",
+    "WebSocket for real-time delivery",
+    "Supports multiple apps with different tokens"
   ]
 }

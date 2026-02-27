@@ -7,21 +7,26 @@
     "automation",
     "workflow",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "integration",
+    "no-code"
   ],
-  "short_description": "Workflow automation platform with AI and 400+ integrations.",
-  "description": "Workflow automation platform with AI and 400+ integrations. n8n is a self-hosted application focused on productivity, tools, automation, workflow. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 5678, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Powerful workflow automation platform with 400+ integrations and no-code automation builder.",
+  "description": "n8n is a powerful workflow automation tool that lets you connect apps and services to automate repetitive tasks. It features a visual no-code builder where you can create automated workflows by connecting nodes. With over 400+ integrations including Slack, Discord, Gmail, GitHub, databases, and more, n8n can connect virtually anything. Features include webhooks, scheduled triggers, error handling, retry logic, sub-nodes, and AI integration. It can run fully self-hosted, keeping all your automation data on your infrastructure. Perfect for automating notifications, data sync, backups, reporting, and complex business processes.",
   "usecases": [
-    "Self-host n8n on your home server to workflow automation platform with ai and 400+ integrations without depending on third-party cloud services.",
-    "Use n8n to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Automate notifications by connecting services - get Slack alerts when GitHub issues are created or when a sensor triggers.",
+    "Sync data between apps - automatically copy new rows from Airtable to Google Sheets, or backup form submissions to a database.",
+    "Create self-service portals - let users trigger predefined workflows without technical knowledge.",
+    "Build AI workflows - chain LLM calls, vector databases, and other AI services for document processing or chatbots."
   ],
   "website": "https://docs.n8n.io",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 5678,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Data stays on your server - no cloud dependency for automation logic",
+    "Webhooks can trigger workflows in real-time",
+    "Can be exposed for external triggers or used internally only"
   ]
 }

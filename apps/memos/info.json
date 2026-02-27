@@ -4,24 +4,28 @@
   "tags": [
     "productivity",
     "tools",
-    "network",
+    "notes",
     "social",
-    "nostr",
-    "decentralized"
+    "self-hosted",
+    "markdown",
+    "minimalist"
   ],
-  "short_description": "Open-source Markdown notes app, with a UI styled like a social feed.",
-  "description": "Open-source Markdown notes app, with a UI styled like a social feed. Memos is a self-hosted application focused on productivity, tools, network, social. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 5230, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Lightweight, self-hosted note-taking app with a clean social-media-style interface.",
+  "description": "Memos is a privacy-first, lightweight note-taking service that you can self-host. It features a unique social-media-style interface where your notes appear in a feed, making daily journaling and quick thoughts easy and visual. Features include Markdown support with live preview, tagging and filtering, public sharing via links, timeline view of all memos, fast search, file attachments, and minimal resource usage. It's perfect for daily journaling, quick notes, thought capture, and as a lightweight alternative to more complex tools like Notion or Obsidian.",
   "usecases": [
-    "Self-host Memos on your home server to open-source markdown notes app, with a ui styled like a social feed without depending on third-party cloud services.",
-    "Use Memos to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Daily journaling with a clean, distraction-free interface.",
+    "Quick note capture that syncs across your devices.",
+    "Share public notes via generated links.",
+    "Use as a minimalist knowledge base with tags for organization."
   ],
   "website": "https://github.com/usememos/memos",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 5230,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Very lightweight - runs well on minimal hardware",
+    "SQLite database for simple deployment",
+    "Mobile-friendly responsive design"
   ]
 }

@@ -7,23 +7,26 @@
     "homelab",
     "docker",
     "open-source",
-    "utility"
-  ],
-  "short_description": "Web UI for chatting with local LLMs via Ollama. Self-host it with Docker using Yantr.",
-  "description": "Web UI for chatting with local LLMs via Ollama. Self-host it with Docker using Yantr. Open WebUI is a self-hosted application focused on ai, self-hosted, homelab, docker. It can be deployed on any device via Docker Compose.",
-  "usecases": [
-    "Self-host Open WebUI on your home server to web ui for chatting with local llms via ollama. self-host it with docker using yantr without depending on third-party cloud services.",
-    "Use Open WebUI to manage your ai workflows privately, keeping all data under your control on local infrastructure."
-  ],
-  "website": "https://github.com/open-webui/open-webui",
-  "dependencies": [
-    "ollama"
+    "utility",
+    "llm",
+    "chatbot"
   ],
   "ports": [
-    {
-      "port": 8080,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+    { "port": 8080, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "User-friendly ChatGPT-style interface for running local LLMs with Ollama.",
+  "description": "Open WebUI is a powerful, extensible ChatGPT-like user interface designed specifically for running local Large Language Models through Ollama. It provides an intuitive chat experience with support for various LLM models, conversation history, prompt templates, code syntax highlighting, image generation integration, and more. Features include full-text search through conversations, admin panel for user management, RAG (Retrieval-Augmented Generation) with document upload, web search integration, custom prompts, and a pipeline system for extending functionality. It's the most popular self-hosted AI chat interface.",
+  "usecases": [
+    "Chat with local LLMs (Llama, Mistral, Codellama) completely offline for privacy.",
+    "Build a private AI assistant for work or personal use without sending data to OpenAI.",
+    "Upload documents and ask questions about them using RAG functionality.",
+    "Integrate with image generation models for a complete AI experience."
+  ],
+  "website": "https://github.com/open-webui/open-webui",
+  "dependencies": ["ollama"],
+  "notes": [
+    "Requires Ollama to be running with models downloaded",
+    "Connects to Ollama on internal Docker network",
+    "Supports multiple users with admin controls"
   ]
 }

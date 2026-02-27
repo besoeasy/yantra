@@ -7,21 +7,25 @@
     "utility",
     "speedtest",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "bandwidth"
   ],
-  "short_description": "Self-hosted speed test tool for bandwidth measurement.",
-  "description": "Self-hosted speed test tool for bandwidth measurement. LibreSpeed is a self-hosted application focused on network, tools, utility, speedtest. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 8080, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted internet speed test with detailed metrics and no tracking.",
+  "description": "LibreSpeed is a free, open-source speed test that you can self-host on your server. It measures download and upload speeds, ping, and jitter with detailed results - no ads, no tracking, and no Flash required. Features include simple installation, multiple test files, ISP info detection, results history (when using a backend), and a clean interface. Perfect for testing your home network performance, comparing ISP speeds, or monitoring network quality over time. Can also be used to test speed between locations.",
   "usecases": [
-    "Self-host LibreSpeed on your home server to self-hosted speed test tool for bandwidth measurement without depending on third-party cloud services.",
-    "Use LibreSpeed to manage your network workflows privately, keeping all data under your control on local infrastructure."
+    "Test your home internet connection speed privately.",
+    "Monitor network performance over time with regular tests.",
+    "Test speed between different network locations.",
+    "Share a private speed test with your ISP for troubleshooting."
   ],
   "website": "https://github.com/librespeed/speedtest",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8080,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "No tracking or data collection - runs entirely locally",
+    "Works on desktop and mobile browsers",
+    "Multiple test file sizes available"
   ]
 }

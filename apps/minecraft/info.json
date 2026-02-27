@@ -7,21 +7,25 @@
     "self-hosted",
     "homelab",
     "docker",
-    "open-source"
+    "open-source",
+    "game"
   ],
-  "short_description": "Open-source sandbox game server with endless possibilities.",
-  "description": "Open-source sandbox game server with endless possibilities. Minecraft Server is a self-hosted application focused on gaming, server, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 25565, "protocol": "TCP", "label": "Game Server" }
+  ],
+  "short_description": "Dockerized Minecraft server with easy configuration and mod support.",
+  "description": "This is a Docker image that makes hosting a Minecraft server easy. It supports Vanilla, Spigot, Paper, Fabric, and Forge modded servers. Features include one-command deployment, automatic startup and crash recovery, easy mod installation, backup functionality, dynamic memory allocation via environment variables, RCON for remote management, and support for multiple server types. Perfect for hosting a private game for friends or family, or running a small community server.",
   "usecases": [
-    "Self-host Minecraft Server on your home server to open-source sandbox game server with endless possibilities without depending on third-party cloud services.",
-    "Use Minecraft Server to manage your gaming workflows privately, keeping all data under your control on local infrastructure."
+    "Host a private Minecraft server for friends and family.",
+    "Run a modded server with Fabric or Forge.",
+    "Run multiple Minecraft versions with different containers.",
+    "Automate backups of your world data."
   ],
   "website": "https://docker-minecraft-server.readthedocs.io/",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 25565,
-      "protocol": "TCP",
-      "label": "Game Server"
-    }
+  "notes": [
+    "Set EULA=true to accept Minecraft EULA",
+    "Memory allocated via MEMORY environment variable",
+    "Supports Vanilla, Spigot, Paper, Fabric, Forge"
   ]
 }

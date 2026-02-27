@@ -7,26 +7,26 @@
     "network",
     "crypto",
     "wallet",
-    "privacy"
+    "privacy",
+    "monero"
   ],
-  "short_description": "Pruned Monero full node with restricted RPC for wallets and apps.",
-  "description": "Pruned Monero full node with restricted RPC for wallets and apps. Monero Node is a self-hosted application focused on cryptocurrency, blockchain, network, crypto. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 18089, "protocol": "TCP", "label": "Restricted RPC" },
+    { "port": 18080, "protocol": "TCP", "label": "P2P" }
+  ],
+  "short_description": "Privacy-focused Monero full node for wallet connections and network support.",
+  "description": "Monero Node is a pruned full node for Monero that provides RPC interface for wallets and supports the Monero network. It uses less disk space than a full node while still providing full verification. Features include pruned mode for reduced storage, restricted RPC mode for security (prevents spending), P2P network connectivity for blockchain sync, and automatic updates. Perfect for connecting your Monero wallet (GUI, CLI, or mobile) to your own node instead of relying on public nodes - improving privacy by not leaking your addresses to third parties.",
   "usecases": [
-    "Self-host Monero Node on your home server to pruned monero full node with restricted rpc for wallets and apps without depending on third-party cloud services.",
-    "Use Monero Node to manage your cryptocurrency workflows privately, keeping all data under your control on local infrastructure."
+    "Connect your Monero wallet to your own node for better privacy.",
+    "Support the Monero network by relaying transactions.",
+    "Build applications that interact with the Monero blockchain.",
+    "Avoid using public RPC nodes that could deanonymize you."
   ],
   "website": "https://github.com/sethforprivacy/simple-monerod",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 18089,
-      "protocol": "TCP",
-      "label": "Restricted RPC"
-    },
-    {
-      "port": 18080,
-      "protocol": "TCP",
-      "label": "P2P"
-    }
+  "notes": [
+    "Pruned mode uses less disk space (~50GB vs 100GB+)",
+    "Restricted RPC prevents unauthorized spending",
+    "Use restricted mode for wallet connections"
   ]
 }

@@ -7,21 +7,25 @@
     "network",
     "firewall",
     "nostr",
-    "decentralized"
+    "decentralized",
+    "client"
   ],
-  "short_description": "Fast and lightweight Nostr web client built with React for easy network interaction.",
-  "description": "Fast and lightweight Nostr web client built with React for easy network interaction. Snort is a self-hosted application focused on social, security, network, firewall. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 8080, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Fast, lightweight Nostr client with real-time updates and clean interface.",
+  "description": "Snort is a blazing fast, lightweight Nostr client built with React. It provides a clean, modern interface for using the Nostr decentralized social network. Features include real-time updates via WebSocket, following management, notes and threads, likes and reposts, zaps (Lightning payments), NIP-05 verification, multiple accounts, and DM support. It's designed for speed and simplicity - no bloat, just a fast way to use Nostr. Perfect for those who want a quick, responsive client without heavy features.",
   "usecases": [
-    "Self-host Snort on your home server to fast and lightweight nostr web client built with react for easy network interaction without depending on third-party cloud services.",
-    "Use Snort to manage your social workflows privately, keeping all data under your control on local infrastructure."
+    "Access Nostr social network through a fast, modern web interface.",
+    "Post notes, reply to threads, and interact with the community.",
+    "Follow accounts and see real-time updates from your feed.",
+    "Send and receive direct messages on the Nostr network."
   ],
   "website": "https://git.v0l.io/Kieran/snort",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8080,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Works with any Nostr relay",
+    "Can connect to multiple relays simultaneously",
+    "NIP-05 verification supported"
   ]
 }

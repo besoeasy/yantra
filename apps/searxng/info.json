@@ -7,21 +7,26 @@
     "self-hosted",
     "homelab",
     "docker",
-    "open-source"
+    "open-source",
+    "search",
+    "privacy"
   ],
-  "short_description": "Privacy-focused metasearch engine aggregating results.",
-  "description": "Privacy-focused metasearch engine aggregating results. SearXNG is a self-hosted application focused on tools, security, self-hosted, homelab. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 8080, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Privacy-focused metasearch engine that aggregates results from 80+ search engines without tracking.",
+  "description": "SearXNG is a free and privacy-focused metasearch engine that can be self-hosted. It aggregates results from over 80 search engines (Google, Bing, DuckDuckGo, Wikipedia, etc.) while keeping your searches private - no tracking, no logging, no personalization. It strips tracking parameters from URLs, blocks ads in results, and gives you a clean interface. You can customize which engines to use, create themes, enable infinite scroll, and set default preferences. Perfect for privacy-conscious users who want the power of multiple search engines without being tracked.",
   "usecases": [
-    "Self-host SearXNG on your home server to privacy-focused metasearch engine aggregating results without depending on third-party cloud services.",
-    "Use SearXNG to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+    "Search the web without being tracked - your search queries never leave your server.",
+    "Use as your default search at home to avoid Google/Bing tracking.",
+    "Access search results from multiple engines in one place with a unified interface.",
+    "Block annoying ads and tracking parameters from URLs automatically."
   ],
   "website": "https://docs.searxng.org",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8080,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "No tracking or logging of search queries by default",
+    "Can be customized with themes and engine preferences",
+    "Can be set as browser default search engine"
   ]
 }

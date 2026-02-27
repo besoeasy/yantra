@@ -7,21 +7,26 @@
     "torrent",
     "download",
     "p2p",
-    "servarr"
+    "servarr",
+    "indexer",
+    "usenet"
   ],
-  "short_description": "Indexer manager for automating and integrating Usenet and torrent indexers.",
-  "description": "Indexer manager for automating and integrating Usenet and torrent indexers. Prowlarr is a self-hosted application focused on media, tools, torrent, download. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 9696, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Unified indexer manager for both Usenet and BitTorrent with PVR app integration.",
+  "description": "Prowlarr is an indexer manager that supports both Usenet and BitTorrent trackers. It acts as a central hub connecting your PVR apps (Sonarr, Radarr, Lidarr, Readarr, Sailarr) to both Usenet indexers and BitTorrent trackers through a unified API. Unlike Jackett which only supports BitTorrent, Prowlarr handles both protocols. Features include support for 80+ Usenet indexers, BitTorrent tracker integration via Torznab/Cardigann, indexer health monitoring, RSS sync, seeding requirements per indexer, and authentication handling. It's the successor to both NZBHydra2 and Jackett.",
   "usecases": [
-    "Self-host Prowlarr on your home server to indexer manager for automating and integrating usenet and torrent indexers without depending on third-party cloud services.",
-    "Use Prowlarr to manage your media workflows privately, keeping all data under your control on local infrastructure."
+    "Manage all your Usenet and BitTorrent indexers in one place.",
+    "Connect Sonarr/Radarr to both Usenet and torrent sources.",
+    "Monitor which indexers are working and which are down.",
+    "Auto-discover new releases across all your indexers."
   ],
   "website": "https://github.com/linuxserver/docker-prowlarr",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 9696,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Supports both Usenet (NZB) and BitTorrent protocols",
+    "Replaces both NZBHydra2 and Jackett",
+    "Single API key for all your PVR apps to use"
   ]
 }

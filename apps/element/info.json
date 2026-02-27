@@ -7,21 +7,26 @@
     "chat",
     "messaging",
     "communication",
-    "self-hosted"
+    "self-hosted",
+    "matrix",
+    "decentralized"
   ],
-  "short_description": "Secure and decentralized Matrix chat client for communication.",
-  "description": "Secure and decentralized Matrix chat client for communication. Element is a self-hosted application focused on productivity, security, chat, messaging. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Feature-rich Matrix client for secure, decentralized chat, voice, and video communication.",
+  "description": "Element (formerly Riot.im) is a secure, decentralized chat application built on the Matrix open protocol. It provides end-to-end encrypted messaging, group chats, voice and video calls, and integration with the broader Matrix network. Features include direct messages and group rooms, end-to-end encryption by default, message history synchronization across devices, file sharing, threaded conversations, bridges to other chat networks (Slack, Discord, Telegram), and the ability to host your own server (homeserver) for complete control. It's a privacy-focused alternative to Discord, Slack, and WhatsApp.",
   "usecases": [
-    "Self-host Element on your home server to secure and decentralized matrix chat client for communication without depending on third-party cloud services.",
-    "Use Element to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Set up a private family chat server with end-to-end encryption.",
+    "Create a team communication platform for your projects without data leaving your infrastructure.",
+    "Join the wider Matrix network to communicate with users on other servers.",
+    "Use bridges to connect with Slack, Discord, Telegram, and other platforms."
   ],
   "website": "https://element.io",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "This is just the web client - requires a Matrix homeserver (Synapse) for full functionality",
+    "End-to-end encrypted by default for direct messages and group chats",
+    "Can connect to the public Matrix network or your own private server"
   ]
 }

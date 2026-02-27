@@ -7,21 +7,25 @@
     "storage",
     "files",
     "utility",
-    "nostr"
+    "nostr",
+    "relay"
   ],
-  "short_description": "High-performance nostr relay with LMDB storage. Self-host it with Docker using Yantr.",
-  "description": "High-performance nostr relay with LMDB storage. Self-host it with Docker using Yantr. Strfry is a self-hosted application focused on network, social, storage, files. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 7777, "protocol": "HTTP", "label": "Relay" }
+  ],
+  "short_description": "High-performance nostr relay with LMDB storage for decentralized social networking.",
+  "description": "Strfry is a high-performance relay for Nostr (Notes and Other Stuff Transmitted by Relays), a decentralized social network protocol. Nostr uses simple JSON messages that get relayed between users through multiple relays - no central server required. Running your own Strfry relay gives you control over your piece of the network, supports the protocol, and can provide a more reliable connection for your clients. Features include ultra-fast LMDB storage for high throughput, WebSocket connections, NIP-01 basic protocol support, configurable event limits, and compression.",
   "usecases": [
-    "Self-host Strfry on your home server to high-performance nostr relay with lmdb storage. self-host it with docker using yantr without depending on third-party cloud services.",
-    "Use Strfry to manage your network workflows privately, keeping all data under your control on local infrastructure."
+    "Run your own nostr relay to support the decentralized network.",
+    "Host a relay for friends or community with custom policies.",
+    "Build your own piece of the nostr network.",
+    "Use as a personal relay for your own notes."
   ],
   "website": "https://github.com/hoytech/strfry",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 7777,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Uses LMDB for fast, high-capacity storage",
+    "Connects to other relays to share events",
+    "Configure limits for spam prevention"
   ]
 }

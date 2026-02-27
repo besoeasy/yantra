@@ -7,21 +7,25 @@
     "utility",
     "backup",
     "storage",
-    "self-hosted"
+    "self-hosted",
+    "encryption"
   ],
-  "short_description": "Free backup software for encrypted, incremental backups.",
-  "description": "Free backup software for encrypted, incremental backups. Duplicati is a self-hosted application focused on tools, security, utility, backup. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 8200, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Free, open-source backup tool with encryption, deduplication, and cloud storage support.",
+  "description": "Duplicati is a free, open-source backup client that stores encrypted, incremental backups to cloud storage services or local drives. It works with a wide range of protocols including SFTP, FTP, WebDAV, and cloud providers. Features include AES-256 encryption, source-code deduplication to reduce storage, backup scheduling, retention policies, version history, email notifications, and a powerful web interface. Perfect for setting up automated backups of your server data to local NAS, remote servers, or cloud storage - all with strong encryption so even the backup location can't read your data.",
   "usecases": [
-    "Self-host Duplicati on your home server to free backup software for encrypted, incremental backups without depending on third-party cloud services.",
-    "Use Duplicati to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+    "Automated encrypted backups of your server to local NAS or remote storage.",
+    "Backup to multiple destinations (local + cloud) for redundancy.",
+    "Restore specific files or entire backups on demand.",
+    "Use deduplication to minimize storage requirements."
   ],
   "website": "https://www.duplicati.com",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8200,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Supports SFTP, FTP, WebDAV, B2, S3, and many cloud backends",
+    "AES-256 encryption keeps backups secure",
+    "Incremental backups only store changed files"
   ]
 }

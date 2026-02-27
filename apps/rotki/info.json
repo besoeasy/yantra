@@ -7,21 +7,26 @@
     "utility",
     "bitcoin",
     "crypto",
-    "blockchain"
+    "blockchain",
+    "finance",
+    "portfolio"
   ],
-  "short_description": "Privacy-focused portfolio tracker and analytics for crypto.",
-  "description": "Privacy-focused portfolio tracker and analytics for crypto. Rotki is a self-hosted application focused on productivity, security, utility, bitcoin. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted crypto portfolio tracker with DeFi support, tax reports, and privacy focus.",
+  "description": "Rotki is a free, open-source portfolio tracker and DeFi wallet analyzer with a focus on privacy. It helps you track your cryptocurrency holdings across wallets and exchanges, analyzes DeFi positions, calculates profits/losses, and generates tax reports. Features include support for 50+ exchanges API integration, Ethereum wallet tracking, DeFi protocol integration (Aave, Compound, Uniswap), manual entry for offline wallets, trade history import, tax report generation, and beautiful charts. Unlike commercial trackers, your data never leaves your server - complete privacy for your financial information.",
   "usecases": [
-    "Self-host Rotki on your home server to privacy-focused portfolio tracker and analytics for crypto without depending on third-party cloud services.",
-    "Use Rotki to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Track all your crypto holdings across exchanges in one dashboard.",
+    "Monitor DeFi positions - staked tokens, liquidity pools, lending positions.",
+    "Generate tax reports for cryptocurrency transactions.",
+    "Analyze your trading history and profit/loss over time."
   ],
   "website": "https://rotki.com/",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "API integration with major exchanges for automatic updates",
+    "Supports hardware wallets (Ledger, Trezor)",
+    "Data stored locally - no third party can see your holdings"
   ]
 }
