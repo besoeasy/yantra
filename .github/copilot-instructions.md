@@ -62,7 +62,7 @@ ports:
 ```yaml
 labels:
   yantr.app: "app-id"        # matches the app directory name under apps/
-  yantr.service: "Short description of what this service does"  # 3-8 words shown in the UI
+  yantr.service: "Short description of what this service does"  # max 2 words
 ```
 
 This applies to **all** services in the file, including bundled databases, caches, and sidecars — not just the primary service.
