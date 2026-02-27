@@ -18,6 +18,8 @@ import ExpiringContainersCard from "../components/quick-metrics/ExpiringContaine
 import WatchtowerNextCheckCard from "../components/quick-metrics/WatchtowerNextCheckCard.vue";
 import HostMetricsCard from "../components/quick-metrics/HostMetricsCard.vue";
 import MinioStatusCard from "../components/quick-metrics/MinioStatusCard.vue";
+import ToolsNavCard from "../components/home/ToolsNavCard.vue";
+import ExternalLinksCard from "../components/home/ExternalLinksCard.vue";
 
 const { apiUrl } = useApiUrl();
 const { currentTime } = useCurrentTime();
@@ -369,6 +371,14 @@ onUnmounted(() => {
 
             <div v-if="showMetrics">
               <MachineIdentityCard />
+            </div>
+
+            <div v-if="showMetrics">
+              <ToolsNavCard />
+            </div>
+            
+            <div v-if="showMetrics">
+              <ExternalLinksCard />
             </div>
           </div>
         </div>

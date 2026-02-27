@@ -77,23 +77,7 @@ onMounted(() => {
           >
         </router-link>
 
-        <!-- Extra Tab -->
-        <router-link
-          to="/extra"
-          :class="
-            isActive('extra')
-              ? 'bg-black text-white shadow-lg shadow-black/10 dark:bg-white dark:text-black dark:shadow-black/20'
-              : 'text-gray-600 hover:bg-gray-100 hover:shadow-md hover:shadow-gray-900/10 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:shadow-black/40'
-          "
-          class="nav-item group relative w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ease-out smooth-shadow"
-          title="Extra"
-        >
-          <Compass :size="20" class="group-hover:scale-110 transition-transform duration-300" />
-          <span
-            class="absolute left-full ml-3 px-3 py-1.5 bg-black text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none dark:bg-white dark:text-black"
-            >Extra</span
-          >
-        </router-link>
+        
       </nav>
 
         <!-- Logo (Centered) -->
@@ -195,15 +179,7 @@ onMounted(() => {
           <span class="text-xs font-medium">Apps</span>
         </router-link>
 
-        <router-link
-          to="/extra"
-          :class="isActive('extra') ? 'bg-black text-white shadow-lg shadow-black/10 dark:bg-white dark:text-black dark:shadow-white/10' : 'text-gray-600 dark:text-zinc-400'"
-          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
-          title="Extra"
-        >
-          <Compass :size="20" />
-          <span class="text-xs font-medium">Extra</span>
-        </router-link>
+        
 
         <a
           href="https://t.me/+h4RvCk63PxUyODQ1"
