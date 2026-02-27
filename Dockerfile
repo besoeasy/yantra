@@ -12,11 +12,9 @@ RUN VITE_BUILD_TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ) npm run build
 
 RUN rm -rf node_modules .npm
 
-FROM docker.io/library/node:slim
+FROM docker.io/library/node:alpine
 
-RUN apt-get update \
-	&& apt-get install -y --no-install-recommends docker.io docker-compose wget \
-	&& rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache docker-cli docker-cli-compose wget
 
 WORKDIR /app
 
