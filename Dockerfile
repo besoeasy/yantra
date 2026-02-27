@@ -1,7 +1,7 @@
 # =========================
 # Builder stage (Vue build)
 # =========================
-FROM docker.io/library/node:slim AS builder
+FROM docker.io/library/node:lts AS builder
 
 WORKDIR /app
 
