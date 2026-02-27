@@ -6,22 +6,27 @@
     "security",
     "password-manager",
     "privacy",
-    "gaming",
-    "server"
+    "self-hosted",
+    "docker",
+    "encryption",
+    "sync"
   ],
-  "short_description": "Lightweight Bitwarden server for password management.",
-  "description": "Lightweight Bitwarden server for password management. Vaultwarden is a self-hosted application focused on productivity, security, password-manager, privacy. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Lightweight, open-source Bitwarden-compatible password manager server written in Rust.",
+  "description": "Vaultwarden (formerly Bitwarden_RS) is a lightweight, open-source server implementation of the Bitwarden password management API, written in Rust. It's fully compatible with official Bitwarden clients including browser extensions, desktop apps, and mobile apps. All passwords are encrypted client-side before being stored on your server. Features include personal vaults, Send (secure sharing), attachments, TOTP authenticator, two-factor authentication (email, Duo, YubiKey, FIDO2 WebAuthn), organizations with collections and password sharing, event logs, and emergency access. Premium features are free when self-hosting.",
   "usecases": [
-    "Self-host Vaultwarden on your home server to lightweight bitwarden server for password management without depending on third-party cloud services.",
-    "Use Vaultwarden to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Store and manage all your passwords in a self-hosted vault that only you control, with full Bitwarden client compatibility.",
+    "Generate TOTP two-factor authentication codes directly within Vaultwarden for added security.",
+    "Securely share passwords or notes with family members using the Send feature with expiration and deletion options.",
+    "Access your passwords from any device using official Bitwarden apps while keeping your data on your own server."
   ],
   "website": "https://github.com/dani-garcia/vaultwarden/wiki",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Requires HTTPS for browser extensions to work properly",
+    "All data is encrypted client-side - server never sees your master password",
+    "WebSocket support enabled for real-time notifications"
   ]
 }

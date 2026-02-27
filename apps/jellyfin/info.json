@@ -7,21 +7,26 @@
     "streaming",
     "video",
     "music",
-    "audio"
+    "audio",
+    "self-hosted",
+    "plex-alternative"
   ],
-  "short_description": "Free and open-source media server for streaming video, music, and photos.",
-  "description": "Free and open-source media server for streaming video, music, and photos. Jellyfin is a self-hosted application focused on media, entertainment, streaming, video. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 8096, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Free and open-source media server for streaming movies, TV shows, music, and photos to any device.",
+  "description": "Jellyfin is a free, open-source media server that puts you in complete control of your media collection. It organizes your movies, TV shows, music, and photos with automatic metadata fetching, beautiful artwork, and subtitle support. Stream to any device including web browsers, mobile apps, smart TVs, and gaming consoles. Features include live TV and DVR support via HDHomeRun, hardware transcoding (Intel Quick Sync, NVIDIA NVENC, VA-API), library organization, user management, parental controls, and comprehensive client support. Unlike Plex or Emby, Jellyfin has no premium tiers, no accounts required, and no telemetry - 100% free and community-driven.",
   "usecases": [
-    "Self-host Jellyfin on your home server to free and open-source media server for streaming video, music, and photos without depending on third-party cloud services.",
-    "Use Jellyfin to manage your media workflows privately, keeping all data under your control on local infrastructure."
+    "Create a personal Netflix-like streaming service for your movie and TV show collection accessible from any device in your home.",
+    "Stream your music library with album artwork and artist information to phones, computers, or smart speakers.",
+    "Set up live TV recording with DVR functionality using HDHomeRun tuners to record broadcast TV.",
+    "Share media with family members through user accounts with parental controls and access restrictions."
   ],
   "website": "https://jellyfin.org/",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8096,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Hardware transcoding requires appropriate GPU drivers (Intel Quick Sync, NVIDIA, or VA-API)",
+    "Media folders must be mounted with read access for the container",
+    "No account required - runs completely locally with no telemetry"
   ]
 }

@@ -7,21 +7,27 @@
     "dns",
     "privacy",
     "adblock",
-    "self-hosted"
+    "self-hosted",
+    "dhcp",
+    "iot"
   ],
-  "short_description": "Network-wide ad blocking via DNS sinkhole. Self-host it with Docker using Yantr.",
-  "description": "Network-wide ad blocking via DNS sinkhole. Self-host it with Docker using Yantr. Pi-hole is a self-hosted application focused on network, security, dns, privacy. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" },
+    { "port": 53, "protocol": "UDP", "label": "DNS" }
+  ],
+  "short_description": "Network-wide DNS sinkhole that blocks ads, trackers, and malicious domains across all devices.",
+  "description": "Pi-hole is a network-wide DNS sinkhole that protects all devices on your network from unwanted content without installing any client software. It blocks ads, trackers, and malicious domains at the DNS level before they can reach your devices. Features include a modern web dashboard showing query statistics, built-in DHCP server, customizable blocklists, whitelist/blacklist management, IPv4/IPv6 support, and the ability to work as your network's DHCP provider. Unlike browser-based ad blockers, Pi-hole protects every device including Smart TVs, mobile apps, and IoT devices.",
   "usecases": [
-    "Self-host Pi-hole on your home server to network-wide ad blocking via dns sinkhole. self-host it with docker using yantr without depending on third-party cloud services.",
-    "Use Pi-hole to manage your network workflows privately, keeping all data under your control on local infrastructure."
+    "Block ads and tracking across your entire home network by configuring your router to use Pi-hole as its DNS server.",
+    "Monitor what domains your devices are connecting to using the real-time query log and statistics dashboard.",
+    "Replace your router's DHCP server with Pi-hole's built-in DHCP to automatically direct all devices through ad blocking.",
+    "Speed up your network and reduce bandwidth usage by blocking tracking and advertising domains before they load."
   ],
   "website": "https://docs.pi-hole.net",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Requires port 53 (DNS) to be available on the host",
+    "Configure your router's DHCP to point to Pi-hole as DNS server for network-wide protection",
+    "Default web password is set to 'yantr' - change it in production"
   ]
 }

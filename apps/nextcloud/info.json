@@ -7,21 +7,28 @@
     "storage",
     "files",
     "sync",
-    "cloud"
+    "cloud",
+    "self-hosted",
+    "collaboration",
+    "calendar",
+    "contacts"
   ],
-  "short_description": "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing.",
-  "description": "Self-hosted file sync and collaboration platform with calendar, contacts, and sharing. Nextcloud is a self-hosted application focused on productivity, utility, storage, files. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted cloud platform for file sync, calendars, contacts, and collaborative productivity.",
+  "description": "Nextcloud is a powerful self-hosted cloud platform that puts you in complete control of your data. It provides file sync and share capabilities, allowing you to access your files from desktop and mobile clients. Beyond files, Nextcloud includes an integrated suite of productivity apps: Calendar for scheduling and event management, Contacts for address book organization, Talk for chat and video conferencing, and Office for real-time document collaboration. Features include end-to-end encryption, two-factor authentication, file versioning, collaborative editing, federated sharing between servers, and extensive app ecosystem. It serves as a complete Google Workspace or Microsoft 365 alternative that you fully own and control.",
   "usecases": [
-    "Self-host Nextcloud on your home server to self-hosted file sync and collaboration platform with calendar, contacts, and sharing without depending on third-party cloud services.",
-    "Use Nextcloud to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Replace Google Drive or Dropbox with your own self-hosted file sync and sharing solution that keeps your data on your infrastructure.",
+    "Sync calendars and contacts across all your devices using CalDAV and CardDAV protocols.",
+    "Host video calls and chat with family or team using Nextcloud Talk.",
+    "Collaborate on documents in real-time with Nextcloud Office without sending data to third parties."
   ],
   "website": "https://github.com/nextcloud/server",
-  "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "dependencies": ["mariadb"],
+  "notes": [
+    "Requires a database (MariaDB included as dependency)",
+    "First-time setup requires web interface configuration",
+    "External storage support for mounting S3, FTP, SMB, and other backends"
   ]
 }

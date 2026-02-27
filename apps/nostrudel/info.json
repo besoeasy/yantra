@@ -7,21 +7,26 @@
     "decentralized",
     "self-hosted",
     "homelab",
-    "docker"
+    "docker",
+    "bitcoin",
+    "zapping"
   ],
-  "short_description": "A nostr web client sandbox for exploring and learning the inner workings of the nostr network.",
-  "description": "A nostr web client sandbox for exploring and learning the inner workings of the nostr network. noStrudel is a self-hosted application focused on social, nostr, decentralized, self-hosted. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Feature-rich Nostr web client for exploring the protocol, viewing events, and managing keys.",
+  "description": "noStrudel is a powerful and feature-rich Nostr web client designed for exploring the Nostr protocol. It allows users to view raw events, manage multiple accounts, explore relays, and understand the inner workings of the decentralized social network. Features include NIP-49 encrypted key storage, Blossom media uploads, Zap streaming integration with Zap.Stream, badge showcases, animated emoji support, list management (mute lists), powerful search functionality, thread tabs showing replies, quotes, zaps, and a launchpad for notifications and messages. It's designed for power users who want deep insight into how Nostr works.",
   "usecases": [
-    "Self-host noStrudel on your home server to a nostr web client sandbox for exploring and learning the inner workings of the nostr network without depending on third-party cloud services.",
-    "Use noStrudel to manage your social workflows privately, keeping all data under your control on local infrastructure."
+    "Explore the Nostr protocol by viewing raw events and understanding how data flows through relays.",
+    "Post, reply, zap, and interact with the Nostr social network using your keys.",
+    "Manage multiple Nostr accounts and switch between them easily.",
+    "Stream live content from Zap.Stream directly within the client interface."
   ],
   "website": "https://github.com/hzrd149/nostrudel",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Requires a CORS proxy service for full functionality",
+    "Supports NIP-49 encrypted private key storage with password protection",
+    "Can connect to multiple relays simultaneously"
   ]
 }

@@ -7,21 +7,26 @@
     "monitoring",
     "utility",
     "homepage",
-    "self-hosted"
+    "self-hosted",
+    "homelab",
+    "widgets"
   ],
-  "short_description": "Modern customizable dashboard with 30+ integrations and 10K+ icons.",
-  "description": "Modern customizable dashboard with 30+ integrations and 10K+ icons. Homarr is a self-hosted application focused on dashboard, tools, monitoring, utility. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 7575, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Modern, customizable dashboard for self-hosted services with drag-and-drop interface and integrations.",
+  "description": "Homarr is a sleek, modern dashboard that puts all your self-hosted services in one beautiful interface. It features a drag-and-drop layout editor, over 30 built-in integrations for popular self-hosted apps (Sonarr, Radarr, Plex, Jellyfin, Portainer, and many more), and access to 10,000+ icons. The dashboard provides at-a-glance status information for your services, quick access links, and the ability to display system information like CPU, memory, and storage usage. It's designed to be your homelab's command center, showing everything running in your network at a glance.",
   "usecases": [
-    "Self-host Homarr on your home server to modern customizable dashboard with 30+ integrations and 10k+ icons without depending on third-party cloud services.",
-    "Use Homarr to manage your dashboard workflows privately, keeping all data under your control on local infrastructure."
+    "Create a unified homepage showing all your self-hosted apps with live status indicators.",
+    "Monitor your homelab services at a glance - see which containers are running, down, or have issues.",
+    "Display system metrics (CPU, RAM, disk) from your server directly on the dashboard.",
+    "Use as your browser's start page for quick access to frequently used services and bookmarks."
   ],
   "website": "https://github.com/homarr-labs/homarr",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 7575,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Docker integration available for showing container status",
+    "Easy drag-and-drop layout customization through the UI",
+    "Encryption key required for widget functionality - set HOMARR_ENCRYPTION_KEY env variable"
   ]
 }

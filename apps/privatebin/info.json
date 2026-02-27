@@ -7,21 +7,26 @@
     "notes",
     "wiki",
     "productivity",
-    "gaming"
+    "security",
+    "encryption",
+    "pastebin"
   ],
-  "short_description": "Minimalist, open source online pastebin with zero-knowledge server design.",
-  "description": "Minimalist, open source online pastebin with zero-knowledge server design. PrivateBin is a self-hosted application focused on utility, privacy, notes, wiki. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 8080, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Minimalist open-source pastebin with zero-knowledge server design using client-side AES encryption.",
+  "description": "PrivateBin is a minimalist, open-source online pastebin where the server has zero knowledge of pasted data. All data is encrypted and decrypted in the browser using 256-bit AES in Galois Counter Mode before being sent to the server. The encryption key is part of the URL fragment, meaning even the server cannot read the content of pastes. Features include password protection, burn-after-reading, expiration times, discussion threads, file attachments, and syntax highlighting. It's a fork of ZeroBin with many additional features and security improvements.",
   "usecases": [
-    "Self-host PrivateBin on your home server to minimalist, open source online pastebin with zero-knowledge server design without depending on third-party cloud services.",
-    "Use PrivateBin to manage your utility workflows privately, keeping all data under your control on local infrastructure."
+    "Share sensitive information like passwords, API keys, or configuration files securely by generating an encrypted link that only the recipient can decrypt.",
+    "Create temporary pastes that automatically delete after a specified time or after being read once with burn-after-reading option.",
+    "Share code snippets or logs with colleagues without the paste ever being stored in plain text on the server.",
+    "Use as a private alternative to public pastebin services for sharing confidential work documents."
   ],
   "website": "https://github.com/PrivateBin/PrivateBin",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8080,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "The encryption key is in the URL anchor (#), which is never sent to the server",
+    "Set a password for additional security beyond the URL-based encryption",
+    "Server cannot read paste contents - provides plausible deniability for hosting"
   ]
 }

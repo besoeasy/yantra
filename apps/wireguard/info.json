@@ -7,21 +7,27 @@
     "vpn",
     "privacy",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "remote-access",
+    "encryption"
   ],
-  "short_description": "Fast, modern VPN with state-of-the-art cryptography.",
-  "description": "Fast, modern VPN with state-of-the-art cryptography. WireGuard is a self-hosted application focused on network, security, vpn, privacy. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 51821, "protocol": "HTTP", "label": "Admin Panel" },
+    { "port": 51820, "protocol": "UDP", "label": "VPN Tunnel" }
+  ],
+  "short_description": "Fast, modern VPN with state-of-the-art cryptography for secure remote network access.",
+  "description": "WireGuard is a fast, modern, and secure VPN protocol that uses state-of-the-art cryptography. It provides a lightweight and efficient way to create secure point-to-point connections. This deployment includes the wg-easy web UI for easy management. WireGuard is significantly faster than OpenVPN and IPSec while using less code and offering better security. Use cases include remote access to your home network, connecting to self-hosted services while away, securing public WiFi connections, and site-to-site networking. The configuration is simple - just exchange public keys like SSH, and WireGuard handles the rest automatically.",
   "usecases": [
-    "Self-host WireGuard on your home server to fast, modern vpn with state-of-the-art cryptography without depending on third-party cloud services.",
-    "Use WireGuard to manage your network workflows privately, keeping all data under your control on local infrastructure."
+    "Access your home network remotely by connecting to your WireGuard VPN from anywhere in the world.",
+    "Securely access self-hosted services (like Home Assistant, Jellyfin, Nextcloud) while traveling without exposing them to the public internet.",
+    "Protect your browsing on public WiFi by routing all traffic through your encrypted home connection.",
+    "Create site-to-site VPNs to connect multiple locations (home office, parent's house) into one network."
   ],
   "website": "https://www.wireguard.com",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 51821,
-      "protocol": "HTTP",
-      "label": "Admin Panel"
-    }
+  "notes": [
+    "Requires UDP port 51820 open in your firewall for VPN connections",
+    "Admin panel runs on port 51821 (HTTPS recommended in production)",
+    "Each client needs a QR code or config file to connect"
   ]
 }
