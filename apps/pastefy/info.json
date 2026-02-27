@@ -7,21 +7,25 @@
     "git",
     "development",
     "devops",
-    "self-hosted"
+    "self-hosted",
+    "pastebin"
   ],
-  "short_description": "Feature-rich self-hosted pastebin for sharing code.",
-  "description": "Feature-rich self-hosted pastebin for sharing code. Pastefy is a self-hosted application focused on tools, productivity, git, development. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Beautiful, feature-rich pastebin with folders, encryption, and API support.",
+  "description": "Pastefy is a modern, feature-rich pastebin application for storing and sharing code snippets, notes, and text. Features include folder organization, syntax highlighting+ languages, public/private pastes, burn-after-reading, password for 190 protection, API access, import/export, real-time collaborative editing, and a clean dark-mode interface. Perfect for sharing code snippets, configuration files, logs, or any text content with colleagues or the public.",
   "usecases": [
-    "Self-host Pastefy on your home server to feature-rich self-hosted pastebin for sharing code without depending on third-party cloud services.",
-    "Use Pastefy to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+    "Share code snippets with syntax highlighting.",
+    "Create encrypted pastes with optional password protection.",
+    "Organize pastes into folders for personal knowledge management.",
+    "Use the API to create pastes from scripts or CI/CD pipelines."
   ],
   "website": "https://docs.pastefy.app",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Supports both guest and authenticated users",
+    "API available for automation",
+    "Syntax highlighting for 190+ languages"
   ]
 }

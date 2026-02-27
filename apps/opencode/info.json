@@ -7,21 +7,24 @@
     "ai",
     "terminal",
     "utility",
-    "ssh"
+    "ssh",
+    "coding"
   ],
-  "short_description": "Open source AI coding agent for terminal, IDE, and desktop.",
-  "description": "Open source AI coding agent for terminal, IDE, and desktop. OpenCode is a self-hosted application focused on development, productivity, ai, terminal. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 4096, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "AI coding assistant in browser - edit files, run commands, and get AI help.",
+  "description": "OpenCode is an AI-powered coding environment that runs in your browser. It combines a code editor with AI assistance for writing, debugging, and explaining code. Features include file browser, terminal emulator, AI chat for code help, git integration, and cloud development environment capabilities. Perfect for coding on the go or sharing development environments.",
   "usecases": [
-    "Self-host OpenCode on your home server to open source ai coding agent for terminal, ide, and desktop without depending on third-party cloud services.",
-    "Use OpenCode to manage your development workflows privately, keeping all data under your control on local infrastructure."
+    "Code from any browser.",
+    "Get AI assistance with coding.",
+    "Collaborative development."
   ],
   "website": "https://github.com/anomalyco/opencode",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 4096,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Browser-based IDE",
+    "AI assistant integration",
+    "Terminal access"
   ]
 }

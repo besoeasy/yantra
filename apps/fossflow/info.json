@@ -7,21 +7,24 @@
     "self-hosted",
     "homelab",
     "docker",
-    "open-source"
+    "open-source",
+    "diagrams"
   ],
-  "short_description": "Create beautiful isometric infrastructure diagrams with auto-save and offline support.",
-  "description": "Create beautiful isometric infrastructure diagrams with auto-save and offline support. FossFLOW is a self-hosted application focused on productivity, networking, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Isometric diagram editor for network architecture, cloud infrastructure, and flowcharts.",
+  "description": "FossFLOW is an isometric diagram editor for creating beautiful infrastructure diagrams. Features include isometric grid, cloud provider icons, network components, auto-save, offline support, export to PNG/SVG, and real-time collaboration potential. Perfect for documenting homelab setups, cloud architectures, or network diagrams.",
   "usecases": [
-    "Self-host FossFLOW on your home server to create beautiful isometric infrastructure diagrams with auto-save and offline support without depending on third-party cloud services.",
-    "Use FossFLOW to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Create homelab network diagrams.",
+    "Document cloud infrastructure.",
+    "Build isometric flowcharts."
   ],
   "website": "https://github.com/stan-smith/FossFLOW",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Auto-save enabled",
+    "Export to PNG/SVG",
+    "Offline capable"
   ]
 }

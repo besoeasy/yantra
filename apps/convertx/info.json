@@ -7,21 +7,24 @@
     "storage",
     "files",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "conversion"
   ],
-  "short_description": "Self-hosted file conversion tool supporting multiple formats.",
-  "description": "Self-hosted file conversion tool supporting multiple formats. ConvertX is a self-hosted application focused on tools, utility, storage, files. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 3000, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted file converter - audio, video, images, documents, and archives.",
+  "description": "ConvertX is a self-hosted file conversion tool that handles various formats. Supports audio conversion, video transcoding, image conversion, document transformation, and archive extraction. All processing happens locally on your server - no files sent to external services. Simple web interface for uploading and converting files.",
   "usecases": [
-    "Self-host ConvertX on your home server to self-hosted file conversion tool supporting multiple formats without depending on third-party cloud services.",
-    "Use ConvertX to manage your tools workflows privately, keeping all data under your control on local infrastructure."
+    "Convert video files between formats.",
+    "Extract audio from video files.",
+    "Convert images to different formats."
   ],
   "website": "https://github.com/C4illin/ConvertX",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 3000,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Multiple format support",
+    "Local processing only",
+    "Web interface for easy use"
   ]
 }

@@ -7,21 +7,24 @@
     "privacy",
     "utility",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "llm"
   ],
-  "short_description": "AI-powered search engine that delivers conversational responses with contextual understanding.",
-  "description": "AI-powered search engine that delivers conversational responses with contextual understanding. Perplexica is a self-hosted application focused on ai, search, privacy, utility. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 3000, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "AI-powered search with LLM responses - open-source Perplexity alternative.",
+  "description": "Perplexica is an AI-powered search engine that uses LLMs to provide conversational answers with sources. It's an open-source alternative to Perplexity AI. Features include web search integration, source citations, multiple AI models, image search, and privacy-focused design. Uses SearXNG for search and connects to Ollama or OpenAI for LLM responses.",
   "usecases": [
-    "Self-host Perplexica on your home server to ai-powered search engine that delivers conversational responses with contextual understanding without depending on third-party cloud services.",
-    "Use Perplexica to manage your ai workflows privately, keeping all data under your control on local infrastructure."
+    "AI-powered answers with sources.",
+    "Alternative to Perplexity.",
+    "Private AI search."
   ],
   "website": "https://github.com/ItzCrazyKns/Perplexica",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 3000,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Requires Ollama or OpenAI API",
+    "Uses SearXNG for search",
+    "Source citations included"
   ]
 }

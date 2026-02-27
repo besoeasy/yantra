@@ -7,21 +7,24 @@
     "music",
     "audio",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "streaming"
   ],
-  "short_description": "Beautiful music player with a modern web interface.",
-  "description": "Beautiful music player with a modern web interface. SwingMusic is a self-hosted application focused on media, entertainment, music, audio. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 1970, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Modern self-hosted music player with clean interface and audio visualization.",
+  "description": "SwingMusic is a beautiful, modern music player for your self-hosted music library. It features a clean minimalist interface, gapless playback, queue management, playlists, search, albums/artists views, and audio visualization. Simply point it to your music folder and enjoy. Supports common audio formats and organizes your music automatically using metadata.",
   "usecases": [
-    "Self-host SwingMusic on your home server to beautiful music player with a modern web interface without depending on third-party cloud services.",
-    "Use SwingMusic to manage your media workflows privately, keeping all data under your control on local infrastructure."
+    "Stream your local music collection from any browser.",
+    "Create playlists and manage your music library.",
+    "Enjoy gapless playback with modern UI."
   ],
   "website": "https://swingmusic.vercel.app/",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 1970,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Mount music folder for library",
+    "Reads metadata automatically",
+    "Responsive mobile-friendly UI"
   ]
 }

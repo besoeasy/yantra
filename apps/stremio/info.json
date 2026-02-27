@@ -7,26 +7,25 @@
     "video",
     "self-hosted",
     "homelab",
-    "docker"
+    "docker",
+    "entertainment"
   ],
-  "short_description": "Media center application for streaming movies, TV shows, and video content.",
-  "description": "Media center application for streaming movies, TV shows, and video content. Stremio is a self-hosted application focused on media, streaming, video, self-hosted. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 11470, "protocol": "HTTP", "label": "HTTP" },
+    { "port": 12470, "protocol": "HTTPS", "label": "HTTPS" }
+  ],
+  "short_description": "Media center for streaming with addons - movies, shows, and video content.",
+  "description": "Stremio is a media center application that lets you discover and watch videos. It supports movies, TV shows, and video content through community-built addons. The server version allows you to host your own streaming backend. Features include addons for various content sources, library for tracking watched content, calendar for upcoming releases, and cross-platform streaming. Note: Use with caution and respect copyright laws.",
   "usecases": [
-    "Self-host Stremio on your home server to media center application for streaming movies, tv shows, and video content without depending on third-party cloud services.",
-    "Use Stremio to manage your media workflows privately, keeping all data under your control on local infrastructure."
+    "Organize your video library.",
+    "Discover new movies and shows through addons.",
+    "Track what you've watched."
   ],
   "website": "https://github.com/Stremio/stremio-web",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 11470,
-      "protocol": "HTTP",
-      "label": "Server"
-    },
-    {
-      "port": 12470,
-      "protocol": "HTTPS",
-      "label": "Server"
-    }
+  "notes": [
+    "Requires addon configuration",
+    "HTTPS available on port 12470",
+    "Use responsibly"
   ]
 }

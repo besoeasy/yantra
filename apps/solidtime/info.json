@@ -7,21 +7,24 @@
     "self-hosted",
     "homelab",
     "docker",
-    "open-source"
+    "open-source",
+    "reports"
   ],
-  "short_description": "A simple, secure, and private time tracking app with detailed reports and CSV export.",
-  "description": "A simple, secure, and private time tracking app with detailed reports and CSV export. Solidtime is a self-hosted application focused on productivity, time-tracking, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 8000, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Time tracking with projects, clients, invoicing, and PDF invoice generation.",
+  "description": "Solidtime is a time tracking application built with Laravel and React. It includes project and client management, time entries, detailed reports, team support, and invoice generation with PDF export. Perfect for freelancers tracking billable hours or teams managing time across projects.",
   "usecases": [
-    "Self-host Solidtime on your home server to a simple, secure, and private time tracking app with detailed reports and csv export without depending on third-party cloud services.",
-    "Use Solidtime to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Track time on projects.",
+    "Generate invoices for clients.",
+    "Team time management."
   ],
   "website": "https://www.solidtime.io/",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8000,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Uses PostgreSQL database",
+    "Invoice generation included",
+    "Gotenberg for PDF generation"
   ]
 }

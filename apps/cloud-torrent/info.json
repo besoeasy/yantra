@@ -7,21 +7,24 @@
     "torrent",
     "p2p",
     "cloud",
-    "self-hosted"
+    "self-hosted",
+    "streaming"
   ],
-  "short_description": "Cloud-based BitTorrent client with streaming support.",
-  "description": "Cloud-based BitTorrent client with streaming support. Cloud Torrent is a self-hosted application focused on download, utility, torrent, p2p. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 3000, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted torrent client with web UI and streaming download support.",
+  "description": "Cloud Torrent is a simple, self-hosted torrent client with a clean web interface. Features include torrent upload, magnet link support, download progress, file selection, streaming for partial downloads, and automatic cleanup. Lightweight and easy to use for basic torrent downloading needs.",
   "usecases": [
-    "Self-host Cloud Torrent on your home server to cloud-based bittorrent client with streaming support without depending on third-party cloud services.",
-    "Use Cloud Torrent to manage your download workflows privately, keeping all data under your control on local infrastructure."
+    "Download torrents through a simple web interface.",
+    "Stream video while downloading.",
+    "Basic torrent management without bloat."
   ],
   "website": "https://github.com/jpillora/cloud-torrent",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 3000,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Magnet link support",
+    "Streaming while downloading",
+    "Simple and lightweight"
   ]
 }

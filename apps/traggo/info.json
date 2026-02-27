@@ -9,19 +9,22 @@
     "docker",
     "open-source"
   ],
-  "short_description": "Simple and lightweight time tracking application for personal productivity.",
-  "description": "Simple and lightweight time tracking application for personal productivity. Traggo is a self-hosted application focused on productivity, time-tracking, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 3030, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Tag-based time tracking with stopwatch, reports, and data export.",
+  "description": "Traggo is a lightweight time tracking server built with Go. Unlike traditional time trackers with projects and tasks, Traggo uses tags for complete flexibility. Features include stopwatch for active timing, manual time entry, tag-based organization, custom date ranges, break tracking, data export (CSV, JSON), REST API, and a clean responsive UI. Perfect for freelancers tracking billable hours or anyone wanting simple time logging.",
   "usecases": [
-    "Self-host Traggo on your home server to simple and lightweight time tracking application for personal productivity without depending on third-party cloud services.",
-    "Use Traggo to manage your productivity workflows privately, keeping all data under your control on local infrastructure."
+    "Track time spent on different activities using tags.",
+    "Log billable hours for client work.",
+    "Generate reports on time spent per tag.",
+    "Export data for invoicing."
   ],
   "website": "https://github.com/traggo/server",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 3030,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Tag-based - no rigid project structure",
+    "API available for automation",
+    "Break tracking included"
   ]
 }

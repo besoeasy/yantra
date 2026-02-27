@@ -9,24 +9,22 @@
     "homelab",
     "docker"
   ],
-  "short_description": "Lightweight torrent client with web interface for managing downloads.",
-  "description": "Lightweight torrent client with web interface for managing downloads. ruTorrent is a self-hosted application focused on torrent, download, p2p, self-hosted. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" },
+    { "port": 51413, "protocol": "TCP", "label": "Torrent" }
+  ],
+  "short_description": "Feature-rich web frontend for rtorrent - powerful CLI-based torrent client.",
+  "description": "ruTorrent is a feature-rich web frontend for rtorrent, the robust command-line BitTorrent client. It provides a full-featured interface for managing torrents including multiple files, RSS feeds, scheduling, plugins, and detailed information. It's more powerful than many GUI clients while being lightweight. Perfect for advanced users who want full control over torrenting.",
   "usecases": [
-    "Self-host ruTorrent on your home server to lightweight torrent client with web interface for managing downloads without depending on third-party cloud services.",
-    "Use ruTorrent to manage your torrent workflows privately, keeping all data under your control on local infrastructure."
+    "Manage torrents through powerful web UI.",
+    "RSS feed automation for shows.",
+    "Advanced torrent management."
   ],
   "website": "https://github.com/linuxserver/docker-rutorrent",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    },
-    {
-      "port": 51413,
-      "protocol": "TCP",
-      "label": "Torrent"
-    }
+  "notes": [
+    "Frontend for rtorrent",
+    "Many plugins available",
+    "RSS automation support"
   ]
 }

@@ -7,21 +7,24 @@
     "bitcoin",
     "crypto",
     "blockchain",
-    "self-hosted"
+    "self-hosted",
+    "wallet"
   ],
-  "short_description": "Bitcoin wallet interface with focus on privacy and security.",
-  "description": "Bitcoin wallet interface with focus on privacy and security. Specter Desktop is a self-hosted application focused on security, tools, bitcoin, crypto. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 25441, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Bitcoin wallet with hardware device support, multisig, and air-gapped signing.",
+  "description": "Specter Desktop is a beginner-friendly yet powerful Bitcoin wallet that works with hardware wallets (Ledger, Trezor, etc.), supports multisig configurations, and offers air-gapped signing for enhanced security. It connects to your Bitcoin node for full verification while providing a clean GUI. Features include hardware wallet integration, multisig wallets, PSBT support, node connection, and watch-only wallets.",
   "usecases": [
-    "Self-host Specter Desktop on your home server to bitcoin wallet interface with focus on privacy and security without depending on third-party cloud services.",
-    "Use Specter Desktop to manage your security workflows privately, keeping all data under your control on local infrastructure."
+    "Manage Bitcoin with hardware wallet.",
+    "Set up multisig Bitcoin vault.",
+    "Air-gapped transaction signing."
   ],
   "website": "https://specter.solutions/desktop",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 25441,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Requires Bitcoin node connection",
+    "Hardware wallet support",
+    "Multisig capable"
   ]
 }

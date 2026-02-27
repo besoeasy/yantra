@@ -7,21 +7,25 @@
     "self-hosted",
     "homelab",
     "docker",
-    "open-source"
+    "open-source",
+    "utility"
   ],
-  "short_description": "100+ offline-first networking tools and utilities.",
-  "description": "100+ offline-first networking tools and utilities. Networking Toolbox is a self-hosted application focused on network, tools, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 3000, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Collection of 100+ networking utilities - port scanner, IP info, DNS tools, and more.",
+  "description": "Networking Toolbox is a collection of 100+ networking utilities useful for developers and sysadmins. Tools include port scanner, IP lookup, whois, DNS checker, HTTP headers viewer, speed test, traceroute, ping, SSL checker, certificate info, and many more. All tools work offline - no data sent to external servers. Perfect for troubleshooting network issues, checking configurations, or learning about networking.",
   "usecases": [
-    "Self-host Networking Toolbox on your home server to 100+ offline-first networking tools and utilities without depending on third-party cloud services.",
-    "Use Networking Toolbox to manage your network workflows privately, keeping all data under your control on local infrastructure."
+    "Check your public IP and location info.",
+    "Scan ports on a server.",
+    "Verify DNS records and propagation.",
+    "Check SSL certificate details."
   ],
   "website": "https://networking-toolbox.as93.net",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 3000,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "100+ networking tools included",
+    "All tools work offline",
+    "Great for troubleshooting"
   ]
 }

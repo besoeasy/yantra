@@ -9,19 +9,21 @@
     "self-hosted",
     "homelab"
   ],
-  "short_description": "Lightweight BitTorrent client with web interface. Self-host it with Docker using Yantr.",
-  "description": "Lightweight BitTorrent client with web interface. Self-host it with Docker using Yantr. Deluge is a self-hosted application focused on download, utility, torrent, p2p. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 8112, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Full-featured cross-platform BitTorrent client with plugin support.",
+  "description": "Deluge is a lightweight, full-featured BitTorrent client that can run as a daemon with web interface. Features include plugin system for extended functionality, web UI, remote management, DHT, peer exchange, encryption, bandwidth scheduling, and RSS support. Cross-platform with low memory usage. The LinuxServer.io image includes the Deluge daemon with web UI.",
   "usecases": [
-    "Self-host Deluge on your home server to lightweight bittorrent client with web interface. self-host it with docker using yantr without depending on third-party cloud services.",
-    "Use Deluge to manage your download workflows privately, keeping all data under your control on local infrastructure."
+    "Download torrents with powerful client.",
+    "Use plugins for extended features.",
+    "Remote torrent management."
   ],
   "website": "https://deluge-torrent.org/",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8112,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Web UI on port 8112",
+    "Default password is 'deluge'",
+    "Plugin ecosystem available"
   ]
 }

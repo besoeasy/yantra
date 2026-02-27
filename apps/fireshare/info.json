@@ -7,21 +7,24 @@
     "streaming",
     "video",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "sharing"
   ],
-  "short_description": "Self-hosted video sharing platform with seamless streaming and organization.",
-  "description": "Self-hosted video sharing platform with seamless streaming and organization. Fireshare is a self-hosted application focused on media, file-sharing, streaming, video. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 80, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Self-hosted video sharing - upload, organize, and stream videos to friends/family.",
+  "description": "Fireshare is a self-hosted video sharing platform for sharing videos with friends and family. Simply drop videos into a watch folder and they're automatically processed, organized, and made available for streaming. Features include automatic video processing, beautiful gallery view, streaming without full download, and simple sharing links. Perfect for sharing home videos, event recordings, or personal content privately.",
   "usecases": [
-    "Self-host Fireshare on your home server to self-hosted video sharing platform with seamless streaming and organization without depending on third-party cloud services.",
-    "Use Fireshare to manage your media workflows privately, keeping all data under your control on local infrastructure."
+    "Share home videos with family privately.",
+    "Auto-process videos from a watch folder.",
+    "Stream videos without full download."
   ],
   "website": "https://github.com/ShaneIsrael/fireshare",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 80,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Watch folder for automatic processing",
+    "Gallery-style video organization",
+    "Streaming playback"
   ]
 }

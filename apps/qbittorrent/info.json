@@ -9,29 +9,23 @@
     "search",
     "privacy"
   ],
-  "short_description": "Feature-rich BitTorrent client with integrated search engine and web interface.",
-  "description": "Feature-rich BitTorrent client with integrated search engine and web interface. qBittorrent is a self-hosted application focused on download, network, torrent, p2p. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 8080, "protocol": "HTTP", "label": "Web UI" },
+    { "port": 6881, "protocol": "TCP", "label": "Torrent" },
+    { "port": 6881, "protocol": "UDP", "label": "Torrent" }
+  ],
+  "short_description": "Popular torrent client with web UI, search plugins, and no ads.",
+  "description": "qBittorrent is a feature-packed, cross-platform torrent client with a clean modern interface. It includes integrated search engine plugins, RSS support, sequential downloading, IP filtering, bandwidth scheduling, and more. The LinuxServer.io Docker image includes the qBittorrent-nox daemon with a web UI. It's a popular alternative to uTorrent with no ads and full feature set.",
   "usecases": [
-    "Self-host qBittorrent on your home server to feature-rich bittorrent client with integrated search engine and web interface without depending on third-party cloud services.",
-    "Use qBittorrent to manage your download workflows privately, keeping all data under your control on local infrastructure."
+    "Download torrents with feature-rich UI.",
+    "Use RSS feeds for automated downloads.",
+    "Integrated search with plugins."
   ],
   "website": "https://github.com/linuxserver/docker-qbittorrent",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8080,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    },
-    {
-      "port": 6881,
-      "protocol": "TCP",
-      "label": "Torrent"
-    },
-    {
-      "port": 6881,
-      "protocol": "UDP",
-      "label": "Torrent"
-    }
+  "notes": [
+    "Web UI runs on port 8080",
+    "Peer port is 6881",
+    "Search plugins available"
   ]
 }

@@ -7,21 +7,24 @@
     "utility",
     "self-hosted",
     "homelab",
-    "docker"
+    "docker",
+    "assistant"
   ],
-  "short_description": "Autonomous Rust AI assistant runtime with pluggable providers and secure local gateway.",
-  "description": "Autonomous Rust AI assistant runtime with pluggable providers and secure local gateway. ZeroClaw is a self-hosted application focused on ai, tools, utility, self-hosted. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 3000, "protocol": "HTTP", "label": "Gateway API" }
+  ],
+  "short_description": "AI assistant gateway with pluggable LLM providers and secure local execution.",
+  "description": "ZeroClaw is an autonomous AI assistant runtime written in Rust. It provides a gateway for connecting to various LLM providers with support for multiple AI backends. Features include pluggable providers (OpenAI, local LLMs, etc.), secure local execution, tool calling, memory management, and API for building AI agents.",
   "usecases": [
-    "Self-host ZeroClaw on your home server to autonomous rust ai assistant runtime with pluggable providers and secure local gateway without depending on third-party cloud services.",
-    "Use ZeroClaw to manage your ai workflows privately, keeping all data under your control on local infrastructure."
+    "Build AI agents with tool access.",
+    "Connect to various LLM providers.",
+    "Private AI assistant gateway."
   ],
   "website": "https://github.com/theonlyhennygod/zeroclaw",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 3000,
-      "protocol": "HTTP",
-      "label": "Gateway API"
-    }
+  "notes": [
+    "Multiple LLM provider support",
+    "Tool calling capability",
+    "Rust-based runtime"
   ]
 }

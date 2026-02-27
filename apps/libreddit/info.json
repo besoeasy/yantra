@@ -7,21 +7,24 @@
     "self-hosted",
     "homelab",
     "docker",
-    "open-source"
+    "open-source",
+    "reddit"
   ],
-  "short_description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking.",
-  "description": "Private Reddit front-end written in Rust with no JavaScript, ads, or tracking. LibReddit is a self-hosted application focused on social, privacy, self-hosted, homelab. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 7420, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Private Reddit frontend - no ads, no tracking, no JavaScript required.",
+  "description": "LibReddit is a private Reddit frontend written in Rust that gives you a clean, fast Reddit experience without the bloat. It removes all ads, tracking, and JavaScript while still letting you browse, comment, vote, and post. Features include zero tracking, no ads, fast page loads, dark mode, content filtering, and video/image hosting support. Perfect for privacy-conscious Reddit users who want a better experience.",
   "usecases": [
-    "Self-host LibReddit on your home server to private reddit front-end written in rust with no javascript, ads, or tracking without depending on third-party cloud services.",
-    "Use LibReddit to manage your social workflows privately, keeping all data under your control on local infrastructure."
+    "Browse Reddit without ads or tracking.",
+    "Faster, cleaner Reddit interface.",
+    "Use as alternative to official Reddit."
   ],
   "website": "https://github.com/spikecodes/libreddit",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 7420,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "No JavaScript - works without it",
+    "Zero tracking",
+    "Fast and lightweight"
   ]
 }

@@ -7,21 +7,24 @@
     "media",
     "utility",
     "self-hosted",
-    "homelab"
+    "homelab",
+    "manager"
   ],
-  "short_description": "Lightweight download manager for managing files with web interface.",
-  "description": "Lightweight download manager for managing files with web interface. Davos is a self-hosted application focused on download, file-management, media, utility. It can be deployed on any device via Docker Compose.",
+  "ports": [
+    { "port": 8080, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Web-based download manager with queue, scheduling, and FTP/SFTP support.",
+  "description": "Davos is a web-based FTP/SFTP download manager that allows you to manage downloads from remote servers. Features include FTP/SFTP support, download queue, scheduling, automatic retry, folder watching, and a clean web interface. Perfect for downloading large files or managing bulk downloads from remote servers.",
   "usecases": [
-    "Self-host Davos on your home server to lightweight download manager for managing files with web interface without depending on third-party cloud services.",
-    "Use Davos to manage your download workflows privately, keeping all data under your control on local infrastructure."
+    "Download files from FTP/SFTP servers.",
+    "Queue downloads for later.",
+    "Schedule downloads for off-peak hours."
   ],
   "website": "https://github.com/linuxserver/docker-davos",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8080,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Supports FTP and SFTP",
+    "Download queue management",
+    "Automatic retry on failure"
   ]
 }

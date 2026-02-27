@@ -7,21 +7,24 @@
     "utility",
     "music",
     "audio",
-    "download"
+    "download",
+    "youtube"
   ],
-  "short_description": "Web GUI for yt-dlp/youtube-dl with playlist support.",
-  "description": "Web GUI for yt-dlp/youtube-dl with playlist support. MeTube is a self-hosted application focused on media, tools, utility, music. It can be deployed on any device via Docker Compose. It supports a wide range of use cases for homelabs and self-hosted infrastructure.",
+  "ports": [
+    { "port": 8081, "protocol": "HTTP", "label": "Web UI" }
+  ],
+  "short_description": "Web UI for yt-dlp - download videos/audio from YouTube and 1700+ sites.",
+  "description": "MeTube is a web frontend for yt-dlp, the powerful video/audio downloader. It allows you to download videos and audio from YouTube and 1700+ other sites through a clean web interface. Features include URL queue, download progress, automatic format selection, playlist support, authentication for premium content, and simple queue management.",
   "usecases": [
-    "Self-host MeTube on your home server to web gui for yt-dlp/youtube-dl with playlist support without depending on third-party cloud services.",
-    "Use MeTube to manage your media workflows privately, keeping all data under your control on local infrastructure."
+    "Download YouTube videos for offline viewing.",
+    "Extract audio as MP3 from videos.",
+    "Download entire playlists."
   ],
   "website": "https://github.com/alexta69/metube",
   "dependencies": [],
-  "ports": [
-    {
-      "port": 8081,
-      "protocol": "HTTP",
-      "label": "Web UI"
-    }
+  "notes": [
+    "Based on yt-dlp - supports 1700+ sites",
+    "Queue-based downloading",
+    "Audio extraction support"
   ]
 }
