@@ -807,7 +807,7 @@ onUnmounted(() => {
                     class="inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-1 rounded-md bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-500/20"
                   >
                     <Network :size="10" />
-                    :${p.PublicPort} → ${p.PrivatePort}
+                    :{{ p.PublicPort }} → {{ p.PrivatePort }}
                   </span>
                 </template>
                 <!-- Internal-only ports (not exposed to host) -->
@@ -819,7 +819,7 @@ onUnmounted(() => {
                     title="Internal port (not published to host)"
                   >
                     <Network :size="10" />
-                    ${p.PrivatePort}/${p.Type}
+                    {{ p.PrivatePort }}/{{ p.Type }}
                   </span>
                 </template>
               </div>
