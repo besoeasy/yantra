@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "docker": "docker build -t yantr:dev .",
-    "docker-run": "docker run -d --name yantr   -p 5252:5252  -v /var/run/docker.sock:/var/run/docker.sock yantr:dev",
+    "docker-run": "docker run -d --name yantr -p 5252:5252 -v /var/run/docker.sock:/var/run/docker.sock yantr:dev",
     "website": "npx @tailwindcss/cli -i ./website/tailwind.input.css -o ./website/tailwind.css --minify && node website-build.js"
   },
   "dependencies": {
