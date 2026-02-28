@@ -370,7 +370,7 @@
             <div class="rounded-xl border border-zinc-800 bg-zinc-950 p-5">
               <div class="flex items-start justify-between gap-4">
                 <code id="install-cmd" class="block text-xs sm:text-sm text-zinc-200 font-mono whitespace-pre-wrap break-all leading-relaxed flex-1"
-                  >docker run -d --name yantr -p 80:5252 -p 443:5252 \ -v /var/run/docker.sock:/var/run/docker.sock \ --restart unless-stopped
+                  >docker run -d --name yantr -p 80:5252 -p 443:5252 \ -v /var/run/docker.sock:/var/run/docker.sock \ -v /var/lib/docker/volumes:/var/lib/docker/volumes \ --restart unless-stopped
                   ghcr.io/besoeasy/yantr</code
                 >
                 <button
@@ -378,7 +378,7 @@
                   onclick="
                     navigator.clipboard
                       .writeText(
-                        'docker run -d --name yantr -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/run/docker.sock --restart unless-stopped ghcr.io/besoeasy/yantr',
+                        'docker run -d --name yantr -p 80:5252 -p 443:5252 -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes --restart unless-stopped ghcr.io/besoeasy/yantr',
                       )
                       .then(() => {
                         const b = document.getElementById('copy-install');

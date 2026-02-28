@@ -35,6 +35,7 @@ docker run -d \
   --name yantr \
   -p 80:5252 -p 443:5252 \
   -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /var/lib/docker/volumes:/var/lib/docker/volumes \
   --restart unless-stopped \
   ghcr.io/besoeasy/yantr
 ```
