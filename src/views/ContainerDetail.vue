@@ -544,23 +544,23 @@ onUnmounted(() => {
 
 <template>
   <div class="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-zinc-100 font-sans selection:bg-blue-500/30">
-    <!-- Header -->
-    <header class="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-30">
-      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <router-link to="/" class="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all text-gray-500 dark:text-zinc-400 group">
-            <ArrowLeft :size="16" class="group-hover:-translate-x-0.5 transition-transform" />
-          </router-link>
-          
-          <div class="h-4 w-px bg-gray-300 dark:bg-zinc-800"></div>
+     <!-- Header -->
+     <header class="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-30">
+       <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
+         <div class="flex items-center gap-2 sm:gap-4 min-w-0">
+           <router-link to="/" class="inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all text-gray-500 dark:text-zinc-400 group shrink-0">
+             <ArrowLeft :size="16" class="group-hover:-translate-x-0.5 transition-transform" />
+           </router-link>
+           
+           <div class="h-4 w-px bg-gray-300 dark:bg-zinc-800 shrink-0"></div>
 
-          <div class="flex items-center gap-2.5 text-sm">
-            <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">Containers</span>
-            <span class="text-gray-300 dark:text-zinc-700">/</span>
-            <span class="font-semibold tracking-tight text-gray-900 dark:text-white" v-if="selectedContainer">{{ selectedContainer.name }}</span>
-            <span v-else class="w-32 h-4 bg-gray-200 dark:bg-zinc-800 animate-pulse rounded"></span>
-          </div>
-        </div>
+           <div class="flex items-center gap-1.5 sm:gap-2.5 text-sm min-w-0">
+             <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">Containers</span>
+             <span class="hidden sm:inline text-gray-300 dark:text-zinc-700">/</span>
+             <span class="font-semibold tracking-tight text-gray-900 dark:text-white truncate" v-if="selectedContainer">{{ selectedContainer.name }}</span>
+             <span v-else class="w-32 h-4 bg-gray-200 dark:bg-zinc-800 animate-pulse rounded"></span>
+           </div>
+         </div>
 
         <div v-if="selectedContainer" class="flex items-center gap-2">
           <!-- Expiration Badge -->

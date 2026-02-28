@@ -215,7 +215,7 @@ onUnmounted(() => {
 <template>
   <div class="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans">
     <!-- Main Content -->
-    <div class="p-4 lg:p-8 max-w-[1600px] mx-auto">
+    <div class="p-3 sm:p-4 lg:p-8 max-w-[1600px] mx-auto">
       <div class="space-y-8">
         <!-- Loading State -->
         <div v-if="loading" class="flex flex-col items-center justify-center py-32">
@@ -309,7 +309,7 @@ onUnmounted(() => {
           </div>
 
           <!-- Unified Dashboard Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
             <!-- Combined Greeting + Operations Pulse -->
             <div v-if="showMetrics" class="lg:col-span-2">
               <OverviewPulseCard

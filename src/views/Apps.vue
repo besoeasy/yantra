@@ -193,8 +193,71 @@ onUnmounted(() => {
 <template>
   <div class="min-h-screen bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-zinc-100 font-sans flex flex-col lg:flex-row selection:bg-blue-500/30">
     
+    <!-- Sidebar / Filters — appears ABOVE main content on mobile, right panel on desktop -->
+    <aside class="w-full lg:w-64 shrink-0 bg-white dark:bg-[#0A0A0A] border-b lg:border-b-0 lg:border-l border-gray-200 dark:border-zinc-800 lg:h-screen lg:sticky lg:top-0 overflow-y-auto order-1 lg:order-2 scrollbar-none">
+      <div class="p-4 lg:p-6">
+
+        <!-- Header -->
+        <div class="mb-4 lg:mb-8">
+          <h2 class="text-sm font-semibold text-gray-900 dark:text-white tracking-tight">Categories</h2>
+          <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 mt-1.5">{{ allAppsCount }} total apps</p>
+        </div>
+
+        <!-- All button -->
+        <button
+          @click="selectedTag = null"
+          :class="[
+            'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-200 mb-2',
+            selectedTag === null
+              ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-md'
+              : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-900 font-medium'
+          ]"
+        >
+          <div class="flex items-center gap-3">
+            <LayoutGrid :size="15" :class="selectedTag === null ? 'opacity-100' : 'opacity-70'" />
+            All apps
+          </div>
+          <span :class="[
+            'text-[10px] font-bold tracking-widest tabular-nums px-2 py-0.5 rounded-full',
+            selectedTag === null
+              ? 'bg-white/20 text-white dark:bg-black/10 dark:text-black'
+              : 'bg-gray-100 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-400'
+          ]">{{ allAppsCount }}</span>
+        </button>
+
+        <!-- Divider -->
+        <div class="my-3 border-t border-gray-100 dark:border-zinc-800"></div>
+
+        <!-- Category list — horizontal scroll on mobile, vertical on desktop -->
+        <div class="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible pb-1 lg:pb-0 scrollbar-none lg:space-y-0">
+          <button
+            v-for="cat in tags"
+            :key="cat.name"
+            @click="selectedTag = cat.name"
+            :class="[
+              'flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all duration-200 group shrink-0 lg:w-full',
+              selectedTag === cat.name
+                ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-md'
+                : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-900 font-medium'
+            ]"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <Tag :size="14" class="shrink-0 transition-opacity" :class="selectedTag === cat.name ? 'opacity-100' : 'opacity-50 group-hover:opacity-100'" />
+              <span class="whitespace-nowrap lg:truncate">{{ cat.name }}</span>
+            </div>
+            <span :class="[
+              'text-[10px] font-bold tracking-widest tabular-nums px-2 py-0.5 rounded-full shrink-0 ml-2',
+              selectedTag === cat.name
+                ? 'bg-white/20 text-white dark:bg-black/10 dark:text-black'
+                : 'bg-gray-100 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-400 group-hover:bg-gray-200 dark:group-hover:bg-zinc-700'
+            ]">{{ cat.count }}</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
     <!-- Main Content -->
-    <main class="flex-1 min-w-0 order-1 lg:order-1">
+    <main class="flex-1 min-w-0 order-2 lg:order-1">
         <!-- Top Bar -->
         <div class="sticky top-0 z-30 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 px-6 py-4">
 
@@ -243,7 +306,7 @@ onUnmounted(() => {
         </div>
 
         <!-- content area -->
-        <div class="p-6">
+        <div class="p-4 sm:p-6">
             <div v-if="loading" class="flex flex-col items-center justify-center py-32">
                <div class="w-8 h-8 border-[3px] border-gray-200 dark:border-zinc-800 border-t-blue-500 dark:border-t-blue-500 rounded-full animate-spin mb-6"></div>
                <div class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-500">Loading catalog...</div>
@@ -270,69 +333,6 @@ onUnmounted(() => {
         </div>
 
     </main>
-
-    <!-- Sidebar / Filters -->
-    <aside class="w-full lg:w-64 shrink-0 bg-white dark:bg-[#0A0A0A] border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-zinc-800 lg:h-screen lg:sticky lg:top-0 overflow-y-auto order-2 lg:order-2 scrollbar-none">
-      <div class="p-6">
-
-        <!-- Header -->
-        <div class="mb-8">
-          <h2 class="text-sm font-semibold text-gray-900 dark:text-white tracking-tight">Categories</h2>
-          <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 mt-1.5">{{ allAppsCount }} total apps</p>
-        </div>
-
-        <!-- All button -->
-        <button
-          @click="selectedTag = null"
-          :class="[
-            'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-200 mb-2',
-            selectedTag === null
-              ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-md'
-              : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-900 font-medium'
-          ]"
-        >
-          <div class="flex items-center gap-3">
-            <LayoutGrid :size="15" :class="selectedTag === null ? 'opacity-100' : 'opacity-70'" />
-            All apps
-          </div>
-          <span :class="[
-            'text-[10px] font-bold tracking-widest tabular-nums px-2 py-0.5 rounded-full',
-            selectedTag === null
-              ? 'bg-white/20 text-white dark:bg-black/10 dark:text-black'
-              : 'bg-gray-100 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-400'
-          ]">{{ allAppsCount }}</span>
-        </button>
-
-        <!-- Divider -->
-        <div class="my-4 border-t border-gray-100 dark:border-zinc-800"></div>
-
-        <!-- Category list -->
-        <div class="space-y-1">
-          <button
-            v-for="cat in tags"
-            :key="cat.name"
-            @click="selectedTag = cat.name"
-            :class="[
-              'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all duration-200 group',
-              selectedTag === cat.name
-                ? 'bg-black dark:bg-white text-white dark:text-black font-semibold shadow-md'
-                : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-900 font-medium'
-            ]"
-          >
-            <div class="flex items-center gap-3 min-w-0">
-              <Tag :size="14" class="shrink-0 transition-opacity" :class="selectedTag === cat.name ? 'opacity-100' : 'opacity-50 group-hover:opacity-100'" />
-              <span class="truncate">{{ cat.name }}</span>
-            </div>
-            <span :class="[
-              'text-[10px] font-bold tracking-widest tabular-nums px-2 py-0.5 rounded-full shrink-0 ml-2',
-              selectedTag === cat.name
-                ? 'bg-white/20 text-white dark:bg-black/10 dark:text-black'
-                : 'bg-gray-100 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-400 group-hover:bg-gray-200 dark:group-hover:bg-zinc-700'
-            ]">{{ cat.count }}</span>
-          </button>
-        </div>
-      </div>
-    </aside>
   </div>
 </template>
 

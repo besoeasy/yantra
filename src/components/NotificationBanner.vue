@@ -68,7 +68,7 @@ const colorMap = {
         <!-- Dismiss -->
         <button
           @click="dismiss"
-          class="shrink-0 flex items-center justify-center w-6 h-6 rounded-md text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+          class="shrink-0 flex items-center justify-center w-10 h-10 rounded-md text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors -mr-1"
           aria-label="Dismiss"
         >
           <X :size="14" />

@@ -157,55 +157,53 @@ onMounted(() => {
     </aside>
 
     <!-- Mobile Bottom Navigation -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 dark:bg-[#0A0A0A] dark:border-zinc-800 z-50 safe-area-inset-bottom">
-      <div class="flex items-center justify-around px-2 py-3">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 dark:bg-[#0A0A0A] dark:border-zinc-800 z-50" style="padding-bottom: env(safe-area-inset-bottom, 0px)">
+      <div class="flex items-center justify-around px-1 py-2">
         <router-link
           to="/home"
           :class="isActive('home') ? 'bg-black text-white shadow-lg shadow-black/10 dark:bg-white dark:text-black dark:shadow-white/10' : 'text-gray-600 dark:text-zinc-400'"
-          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
+          class="flex flex-col items-center gap-1 min-w-[64px] min-h-[52px] px-3 py-2 rounded-xl transition-all active:scale-95 justify-center"
           title="Home"
         >
-          <Home :size="20" />
+          <Home :size="22" />
           <span class="text-xs font-medium">Home</span>
         </router-link>
 
         <router-link
           to="/apps"
           :class="isActive('apps') ? 'bg-black text-white shadow-lg shadow-black/10 dark:bg-white dark:text-black dark:shadow-white/10' : 'text-gray-600 dark:text-zinc-400'"
-          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95"
+          class="flex flex-col items-center gap-1 min-w-[64px] min-h-[52px] px-3 py-2 rounded-xl transition-all active:scale-95 justify-center"
           title="Apps"
         >
-          <Box :size="20" />
+          <Box :size="22" />
           <span class="text-xs font-medium">Apps</span>
         </router-link>
-
-        
 
         <a
           href="https://t.me/+h4RvCk63PxUyODQ1"
           target="_blank"
           rel="noopener noreferrer"
-          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95 text-gray-600 dark:text-zinc-400"
+          class="flex flex-col items-center gap-1 min-w-[64px] min-h-[52px] px-3 py-2 rounded-xl transition-all active:scale-95 text-gray-600 dark:text-zinc-400 justify-center"
           title="Join Telegram"
         >
-          <Send :size="20" />
-          <span class="text-[10px] font-medium">Telegram</span>
+          <Send :size="22" />
+          <span class="text-xs font-medium">Telegram</span>
         </a>
 
         <button
           type="button"
           @click="toggleTheme"
-          class="flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all active:scale-95 text-gray-600 dark:text-zinc-400"
+          class="flex flex-col items-center gap-1 min-w-[64px] min-h-[52px] px-3 py-2 rounded-xl transition-all active:scale-95 text-gray-600 dark:text-zinc-400 justify-center"
           :title="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`"
         >
-          <component :is="theme === 'dark' ? Sun : Moon" :size="20" />
-          <span class="text-[10px] font-medium">Theme</span>
+          <component :is="theme === 'dark' ? Sun : Moon" :size="22" />
+          <span class="text-xs font-medium">Theme</span>
         </button>
       </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-1 min-h-screen md:ml-20 pb-20 md:pb-0">
+    <main class="flex-1 min-h-screen md:ml-20 pb-24 md:pb-0">
       <router-view :key="route.fullPath" />
     </main>
   </div>

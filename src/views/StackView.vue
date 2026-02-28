@@ -391,19 +391,19 @@ onUnmounted(() => {
 
     <!-- Header bar -->
     <header class="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-30">
-      <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 sm:gap-4">
           <button
             @click="router.back()"
-            class="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all text-gray-500 dark:text-zinc-400 group"
+            class="inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all text-gray-500 dark:text-zinc-400 group"
           >
             <ArrowLeft :size="16" class="group-hover:-translate-x-0.5 transition-transform" />
           </button>
           <div class="h-4 w-px bg-gray-300 dark:bg-zinc-800"></div>
-          <div class="flex items-center gap-2.5 text-sm">
-            <button @click="router.push('/')" class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-300 transition-colors">Dashboard</button>
-            <span class="text-gray-300 dark:text-zinc-700">/</span>
+          <div class="flex items-center gap-2.5 text-sm min-w-0">
+            <button @click="router.push('/')" class="hidden sm:inline text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 hover:text-gray-700 dark:hover:text-zinc-300 transition-colors">Dashboard</button>
+            <span class="hidden sm:inline text-gray-300 dark:text-zinc-700">/</span>
             <span class="font-semibold tracking-tight text-gray-900 dark:text-white truncate max-w-xs">
               {{ stack?.app?.name || projectId }}
             </span>
@@ -447,10 +447,10 @@ onUnmounted(() => {
     </div>
 
     <!-- Content -->
-    <div v-else-if="stack" class="max-w-5xl mx-auto px-6 py-8 space-y-8">
+    <div v-else-if="stack" class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
 
       <!-- ── Identity card ─────────────────────────────────────────────────── -->
-      <div class="group relative bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-6 flex items-center gap-6 hover:border-gray-300 dark:hover:border-zinc-700 transition-all duration-300">
+      <div class="group relative bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-6 flex flex-col sm:flex-row sm:items-center gap-6 hover:border-gray-300 dark:hover:border-zinc-700 transition-all duration-300">
         <!-- Glow Accent -->
         <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -492,7 +492,7 @@ onUnmounted(() => {
         </div>
 
         <!-- Actions -->
-        <div class="flex flex-col gap-2.5 shrink-0">
+        <div class="flex flex-row sm:flex-col gap-2 sm:gap-2.5 shrink-0 flex-wrap">
           <a
             v-if="stack.app?.website"
             :href="stack.app.website"
@@ -708,8 +708,8 @@ onUnmounted(() => {
           <HardDrive :size="12" />
           Bind Mounts
         </h2>
-        <div class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden">
-          <table class="w-full text-left">
+        <div class="overflow-x-auto bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800">
+          <table class="w-full text-left min-w-[480px]">
             <thead>
               <tr class="bg-gray-50 dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800">
                 <th class="px-5 py-3 text-[9px] font-bold uppercase tracking-widest text-gray-500 dark:text-zinc-400">Type</th>

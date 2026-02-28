@@ -57,26 +57,22 @@ const appState = computed(() => {
         <Bot v-else :size="24" class="text-gray-400 dark:text-zinc-500 group-hover:text-blue-500 transition-colors" />
       </div>
 
-      <!-- Animated Status Indicator (Expands on hover) -->
-      <div class="flex items-center justify-end h-8">
+      <!-- Status Indicator (always expanded on mobile, expands on hover on desktop) -->
+      <div class="flex items-center justify-end">
         <!-- Running -->
-        <div v-if="appState === 'running'" class="relative flex items-center justify-end group/status">
-          <div class="flex items-center gap-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-500/20 px-2 py-1.5 rounded-full overflow-hidden transition-all duration-300 w-8 group-hover:w-[100px]">
-            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0 ml-0.5"></div>
-            <span class="text-[11px] font-bold tracking-wide uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-              Active ({{ instanceCount }})
-            </span>
-          </div>
+        <div v-if="appState === 'running'" class="flex items-center gap-2 bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-500/20 px-2 py-1.5 rounded-full">
+          <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0"></div>
+          <span class="text-[11px] font-bold tracking-wide uppercase whitespace-nowrap">
+            Active ({{ instanceCount }})
+          </span>
         </div>
         
         <!-- Installed / Ready -->
-        <div v-else-if="appState === 'installed'" class="relative flex items-center justify-end group/status">
-          <div class="flex items-center gap-2 bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 border border-yellow-200 dark:border-yellow-500/20 px-2 py-1.5 rounded-full overflow-hidden transition-all duration-300 w-8 group-hover:w-[85px]">
-            <div class="w-2 h-2 rounded-full bg-yellow-500 shrink-0 ml-0.5"></div>
-            <span class="text-[11px] font-bold tracking-wide uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
-              Ready
-            </span>
-          </div>
+        <div v-else-if="appState === 'installed'" class="flex items-center gap-2 bg-yellow-50 dark:bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 border border-yellow-200 dark:border-yellow-500/20 px-2 py-1.5 rounded-full">
+          <div class="w-2 h-2 rounded-full bg-yellow-500 shrink-0"></div>
+          <span class="text-[11px] font-bold tracking-wide uppercase whitespace-nowrap">
+            Ready
+          </span>
         </div>
       </div>
     </div>
@@ -101,8 +97,8 @@ const appState = computed(() => {
           </span>
         </div>
         
-        <!-- Slick Action Button -->
-        <div class="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-semibold text-xs transform translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)">
+        <!-- Action hint -->
+        <div class="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-semibold text-xs">
           <span>Manage</span>
           <ArrowRight :size="14" class="group-hover:translate-x-1 transition-transform duration-300" />
         </div>

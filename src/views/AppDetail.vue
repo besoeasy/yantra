@@ -445,18 +445,18 @@ onMounted(async () => {
     
     <!-- Header -->
     <header class="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-30">
-      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <router-link to="/apps" class="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all text-gray-500 dark:text-zinc-400 group">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
+        <div class="flex items-center gap-2 sm:gap-4">
+          <router-link to="/apps" class="inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-900 transition-all text-gray-500 dark:text-zinc-400 group">
             <ArrowLeft :size="16" class="group-hover:-translate-x-0.5 transition-transform" />
           </router-link>
 
           <div class="h-4 w-px bg-gray-300 dark:bg-zinc-800"></div>
 
-          <div class="flex items-center gap-2.5 text-sm">
-            <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">Catalog</span>
-            <span class="text-gray-300 dark:text-zinc-700">/</span>
-            <span class="font-semibold tracking-tight text-gray-900 dark:text-white" v-if="app">{{ app.name }}</span>
+          <div class="flex items-center gap-2.5 text-sm min-w-0">
+            <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500">Catalog</span>
+            <span class="hidden sm:inline text-gray-300 dark:text-zinc-700">/</span>
+            <span class="font-semibold tracking-tight text-gray-900 dark:text-white truncate" v-if="app">{{ app.name }}</span>
             <span v-else class="w-24 h-4 bg-gray-200 dark:bg-zinc-800 animate-pulse rounded"></span>
           </div>
         </div>
@@ -474,7 +474,7 @@ onMounted(async () => {
       <div class="font-bold text-[10px] tracking-widest text-gray-400 dark:text-zinc-500 uppercase">Retrieving Manifest...</div>
     </div>
 
-    <div v-else-if="app" class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div v-else-if="app" class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         <!-- Left Column: Information & Specs -->
         <div class="lg:col-span-8 space-y-6">
@@ -693,7 +693,7 @@ onMounted(async () => {
                 <!-- Temporary Install -->
                 <div class="rounded-lg border border-gray-200 dark:border-zinc-800 p-3 transition-colors bg-gray-50 dark:bg-zinc-900/30">
                     <div class="flex items-start gap-3">
-                        <input type="checkbox" id="temp-install" v-model="temporaryInstall" class="mt-0.5 w-3.5 h-3.5 rounded border-gray-300 dark:border-zinc-700 text-black dark:text-white focus:ring-black dark:focus:ring-white focus:ring-offset-0 cursor-pointer bg-transparent" />
+                        <input type="checkbox" id="temp-install" v-model="temporaryInstall" class="mt-0.5 w-4 h-4 shrink-0 rounded border-gray-300 dark:border-zinc-700 text-black dark:text-white focus:ring-black dark:focus:ring-white focus:ring-offset-0 cursor-pointer bg-transparent" />
                         <div class="flex-1">
                             <label for="temp-install" class="block text-[11px] font-bold text-gray-900 dark:text-zinc-100 cursor-pointer uppercase tracking-wider">Temporary Install</label>
                             <p class="text-[10px] text-gray-500 dark:text-zinc-500 mt-0.5">Expires and auto-deletes.</p>
@@ -717,7 +717,7 @@ onMounted(async () => {
                 <!-- Custom Ports -->
                 <div v-if="allPorts.length > 0" class="rounded-lg border border-gray-200 dark:border-zinc-800 p-3 transition-colors bg-gray-50 dark:bg-zinc-900/30">
                    <div class="flex items-start gap-3">
-                        <input type="checkbox" id="custom-ports" v-model="customizePorts" class="mt-0.5 w-3.5 h-3.5 rounded border-gray-300 dark:border-zinc-700 text-black dark:text-white focus:ring-black dark:focus:ring-white focus:ring-offset-0 cursor-pointer bg-transparent" />
+                        <input type="checkbox" id="custom-ports" v-model="customizePorts" class="mt-0.5 w-4 h-4 shrink-0 rounded border-gray-300 dark:border-zinc-700 text-black dark:text-white focus:ring-black dark:focus:ring-white focus:ring-offset-0 cursor-pointer bg-transparent" />
                         <div class="flex-1">
                             <label for="custom-ports" class="block text-[11px] font-bold text-gray-900 dark:text-zinc-100 cursor-pointer uppercase tracking-wider">Port Mapping</label>
                             <p class="text-[10px] text-gray-500 dark:text-zinc-500 mt-0.5">Advanced Configuration</p>

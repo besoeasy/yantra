@@ -404,6 +404,7 @@ onUnmounted(() => {
         <!-- Active Grid -->
         <transition name="fade" mode="out-in">
           <div v-if="currentTab === 'active'" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden">
+             <div class="overflow-x-auto">
              <table class="w-full text-left border-collapse">
                 <thead>
                    <tr class="text-[10px] font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-[0.2em] border-b border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/20">
@@ -435,11 +436,12 @@ onUnmounted(() => {
                          </button>
                       </td>
                    </tr>
-                </tbody>
-             </table>
-          </div>
-  
-          <!-- Unused Grid -->
+                 </tbody>
+              </table>
+              </div>
+           </div>
+   
+           <!-- Unused Grid -->
           <div v-else-if="currentTab === 'unused'" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 overflow-hidden">
              <div class="overflow-x-auto">
              <table class="w-full text-left border-collapse">

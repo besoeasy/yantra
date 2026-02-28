@@ -102,7 +102,7 @@ onMounted(() => {
     <header class="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-200 dark:border-zinc-800 sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <router-link to="/" class="inline-flex items-center justify-center w-8 h-8 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-900 transition-colors text-gray-500 dark:text-zinc-400 group">
+          <router-link to="/" class="inline-flex items-center justify-center w-10 h-10 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-900 transition-colors text-gray-500 dark:text-zinc-400 group">
             <ArrowLeft :size="18" class="group-hover:-translate-x-0.5 transition-transform" />
           </router-link>
 
@@ -129,7 +129,7 @@ onMounted(() => {
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-2xl mx-auto px-4 py-12">
+    <main class="max-w-2xl mx-auto px-4 py-8 sm:py-12">
 
       <!-- Loading State -->
       <div v-if="loading" class="flex flex-col items-center justify-center py-20 gap-4">
@@ -139,7 +139,7 @@ onMounted(() => {
 
       <!-- Configuration Form -->
       <transition name="fade" mode="out-in">
-        <div v-if="!loading" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-8 space-y-8 shadow-sm">
+        <div v-if="!loading" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-4 sm:p-8 space-y-6 sm:space-y-8 shadow-sm">
 
           <!-- Info Banner -->
           <div class="bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-900/30 rounded-lg p-5">

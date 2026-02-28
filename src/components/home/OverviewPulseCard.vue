@@ -25,7 +25,7 @@ const greeting = computed(() => {
     <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
     <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTUwLCAxNTAsIDE1MCwgMC4xKSIvPjwvc3ZnPg==')] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
 
-    <div class="relative z-10 p-6 sm:p-8 flex flex-col md:flex-row items-stretch gap-8">
+    <div class="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col md:flex-row items-stretch gap-6 sm:gap-8">
       
       <!-- Hero Section (Left) -->
       <div class="flex-1 flex flex-col justify-center min-w-[200px]">
@@ -54,7 +54,7 @@ const greeting = computed(() => {
       </div>
 
       <!-- Stats Grid (Right) -->
-      <div class="flex-none w-full md:w-auto md:min-w-[400px] grid grid-cols-2 gap-4">
+      <div class="w-full md:w-auto grid grid-cols-2 gap-4">
         
         <!-- Running Apps -->
         <div class="relative flex flex-col p-4 rounded-lg bg-gray-50 dark:bg-zinc-900/50 border border-gray-100 dark:border-zinc-800/50 transition-colors group-hover:border-gray-200 dark:group-hover:border-zinc-700/50">

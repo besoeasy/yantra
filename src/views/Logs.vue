@@ -109,7 +109,7 @@ onUnmounted(() => {
 
        <div class="flex items-center gap-2">
           <div class="relative group">
-             <input v-model="searchQuery" type="text" placeholder="Filter logs..." class="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 text-gray-900 dark:text-white px-3 py-1.5 rounded-md text-xs w-full sm:w-48 focus:w-64 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder-gray-400 dark:placeholder-zinc-600 shadow-sm" />
+             <input v-model="searchQuery" type="text" placeholder="Filter logs..." class="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-zinc-800 text-gray-900 dark:text-white px-3 py-1.5 rounded-md text-xs w-36 sm:w-48 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-gray-400 dark:placeholder-zinc-600 shadow-sm" />
           </div>
           
           <div class="hidden sm:block h-4 w-px bg-gray-300 dark:bg-zinc-700 mx-2"></div>
@@ -149,7 +149,7 @@ onUnmounted(() => {
              <div class="select-none text-gray-400 dark:text-zinc-600 w-8 text-right text-[11px] pt-[2px] font-medium">{{ idx + 1 }}</div>
              
              <!-- Time -->
-             <div class="select-none text-blue-600 dark:text-blue-400/80 w-24 shrink-0 text-[11px] pt-[2px] font-medium tracking-tight">{{ formatTimestamp(log.timestamp) }}</div>
+             <div class="select-none text-blue-600 dark:text-blue-400/80 w-16 sm:w-24 shrink-0 text-[10px] sm:text-[11px] pt-[2px] font-medium tracking-tight">{{ formatTimestamp(log.timestamp) }}</div>
              
              <!-- Level -->
              <div class="select-none w-[3px] rounded-full shrink-0 my-0.5" :class="log.level === 'error' ? 'bg-red-500' : 'bg-gray-300 dark:bg-zinc-700'"></div>
