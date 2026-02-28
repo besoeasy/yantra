@@ -21,12 +21,13 @@ function generateJobId() {
   return `job-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
+const CONFIG_PATH = path.join(__dirname, "..", "backup-config.json");
+const SCHEDULES_PATH = path.join(__dirname, "..", "backup-schedules.json");
+
 // Get S3 config from environment or config file
 export async function getS3Config() {
-  const configPath = path.join(__dirname, "..", "backup-config.json");
-
   try {
-    const content = await readFile(configPath, "utf-8");
+    const content = await readFile(CONFIG_PATH, "utf-8");
     return JSON.parse(content);
   } catch (err) {
     return null;
@@ -35,8 +36,51 @@ export async function getS3Config() {
 
 // Save S3 config
 export async function saveS3Config(config) {
-  const configPath = path.join(__dirname, "..", "backup-config.json");
-  await writeFile(configPath, JSON.stringify(config, null, 2), "utf-8");
+  await writeFile(CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
+}
+
+// ---- Schedule persistence ----
+
+/**
+ * A schedule entry:
+ * {
+ *   volumeName: string,
+ *   intervalHours: number,   // e.g. 6, 12, 24, 168
+ *   keepCount: number,       // max number of backups to retain per volume
+ *   enabled: boolean,
+ *   lastRunAt: string|null,  // ISO timestamp
+ *   nextRunAt: string|null,  // ISO timestamp (informational)
+ * }
+ */
+export async function getSchedules() {
+  try {
+    const content = await readFile(SCHEDULES_PATH, "utf-8");
+    return JSON.parse(content);
+  } catch (err) {
+    return [];
+  }
+}
+
+export async function saveSchedules(schedules) {
+  await writeFile(SCHEDULES_PATH, JSON.stringify(schedules, null, 2), "utf-8");
+}
+
+export async function upsertSchedule(schedule) {
+  const schedules = await getSchedules();
+  const idx = schedules.findIndex((s) => s.volumeName === schedule.volumeName);
+  if (idx >= 0) {
+    schedules[idx] = { ...schedules[idx], ...schedule };
+  } else {
+    schedules.push(schedule);
+  }
+  await saveSchedules(schedules);
+  return schedules.find((s) => s.volumeName === schedule.volumeName);
+}
+
+export async function deleteSchedule(volumeName) {
+  const schedules = await getSchedules();
+  const filtered = schedules.filter((s) => s.volumeName !== volumeName);
+  await saveSchedules(filtered);
 }
 
 // Create MinIO client from S3 config
@@ -1140,5 +1184,23 @@ export async function deleteVolumeBackup(volumeName, timestamp, s3Config, log) {
     return { success: true };
   } catch (err) {
     throw new Error(`Failed to delete backup: ${err.message}`);
+  }
+}
+
+// Enforce retention: delete oldest backups beyond keepCount for a given volume
+export async function enforceRetention(volumeName, keepCount, s3Config, log) {
+  if (!keepCount || keepCount <= 0) return;
+  try {
+    const backupsMap = await listVolumeBackups([volumeName], s3Config, log);
+    const list = backupsMap[volumeName] || [];
+    // list is already sorted newest-first
+    const toDelete = list.slice(keepCount);
+    for (const entry of toDelete) {
+      const timestamp = entry.key.split("/")[1].replace(".tar", "");
+      log?.("info", `[Retention] Pruning ${entry.key} (keeping last ${keepCount})`);
+      await deleteVolumeBackup(volumeName, timestamp, s3Config, log);
+    }
+  } catch (err) {
+    log?.("warn", `[Retention] Failed for ${volumeName}: ${err.message}`);
   }
 }

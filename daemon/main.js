@@ -7,6 +7,7 @@ import { dirname } from "path";
 import { resolveComposeCommand } from "./compose.js";
 import { errorHandler } from "./utils.js";
 import { startCleanupScheduler } from "./cleanup.js";
+import { startScheduler } from "./backup-scheduler.js";
 import { socketPath, log } from "./shared.js";
 
 import systemRouter from "./routes/system.js";
@@ -75,4 +76,9 @@ app.listen(PORT, "0.0.0.0", () => {
 
   log("info", "🧹 Starting automatic cleanup scheduler");
   startCleanupScheduler(11);
+
+  log("info", "⏰ Starting backup scheduler");
+  startScheduler(log).catch((err) => {
+    log("warn", `⚠️  [BACKUP SCHEDULER] ${err.message}`);
+  });
 });
