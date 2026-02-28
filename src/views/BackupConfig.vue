@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNotification } from '../composables/useNotification'
 import { useApiUrl } from '../composables/useApiUrl'
-import { ArrowLeft, Cloud, Save, RefreshCw, Clock } from 'lucide-vue-next'
+import { ArrowLeft, Cloud, Save, RefreshCw, Clock, Database } from 'lucide-vue-next'
 
 const router = useRouter()
 const toast = useNotification()
@@ -308,7 +308,7 @@ onMounted(() => {
 
           <!-- Backup Schedules shortcut (only when configured) -->
           <transition name="fade">
-            <div v-if="configured" class="pt-2">
+            <div v-if="configured" class="pt-2 space-y-2">
               <router-link
                 to="/backup-schedules"
                 class="w-full flex items-center justify-between px-5 py-3.5 rounded-lg border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-600 transition-all group"
@@ -318,6 +318,20 @@ onMounted(() => {
                   <div>
                     <p class="text-xs font-semibold text-gray-900 dark:text-white">Backup Schedules</p>
                     <p class="text-[11px] font-medium text-gray-500 dark:text-zinc-500">Configure automatic backups per volume</p>
+                  </div>
+                </div>
+                <ArrowLeft :size="14" class="text-gray-400 dark:text-zinc-600 rotate-180 group-hover:translate-x-0.5 transition-transform" />
+              </router-link>
+
+              <router-link
+                to="/backup-volumes"
+                class="w-full flex items-center justify-between px-5 py-3.5 rounded-lg border border-gray-200 dark:border-zinc-800 hover:border-gray-300 dark:hover:border-zinc-600 transition-all group"
+              >
+                <div class="flex items-center gap-3">
+                  <Database :size="15" class="text-gray-500 dark:text-zinc-500" />
+                  <div>
+                    <p class="text-xs font-semibold text-gray-900 dark:text-white">Backed-up Volumes</p>
+                    <p class="text-[11px] font-medium text-gray-500 dark:text-zinc-500">View snapshot counts and last backup times</p>
                   </div>
                 </div>
                 <ArrowLeft :size="14" class="text-gray-400 dark:text-zinc-600 rotate-180 group-hover:translate-x-0.5 transition-transform" />

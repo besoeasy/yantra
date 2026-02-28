@@ -15,6 +15,7 @@ import {
   removeScheduleTimer,
   runNow,
 } from "../backup-scheduler.js";
+import { listSnapshots } from "../restic.js";
 
 const router = Router();
 
@@ -142,6 +143,41 @@ router.post("/api/backup/schedules/:volumeName/run", asyncHandler(async (req, re
     log("error", `[Scheduler/runNow] ${volumeName}: ${err.message}`);
   });
   res.json({ success: true, message: `Backup triggered for ${volumeName}` });
+}));
+
+// ─── Backed-up Volumes ────────────────────────────────────────────────────────
+
+// GET /api/backup/volumes — list volumes that have at least one snapshot,
+// with snapshot count and newest/oldest timestamps.
+router.get("/api/backup/volumes", asyncHandler(async (req, res) => {
+  const config = await getS3Config();
+  if (!config) return res.json({ success: true, volumes: [] });
+
+  const snapshots = await listSnapshots({ tag: "yantr" }, config, log);
+
+  // Group snapshots by volume name (derived from the "vol:<name>" tag)
+  const volumeMap = new Map();
+  for (const snap of snapshots) {
+    const volTag = (snap.tags || []).find(t => t.startsWith("vol:"));
+    if (!volTag) continue;
+    const volumeName = volTag.slice(4);
+    if (!volumeMap.has(volumeName)) {
+      volumeMap.set(volumeName, []);
+    }
+    volumeMap.get(volumeName).push(snap);
+  }
+
+  const volumes = Array.from(volumeMap.entries()).map(([volumeName, snaps]) => {
+    const sorted = snaps.slice().sort((a, b) => new Date(b.time) - new Date(a.time));
+    return {
+      volumeName,
+      snapshotCount: snaps.length,
+      latestAt: sorted[0]?.time ?? null,
+      oldestAt: sorted[sorted.length - 1]?.time ?? null,
+    };
+  });
+
+  res.json({ success: true, volumes });
 }));
 
 export default router;
