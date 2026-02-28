@@ -1,5 +1,7 @@
 import Docker from "dockerode";
 import { spawnProcess } from "./utils.js";
+import { writeFile, mkdir, rm } from "fs/promises";
+import { join } from "path";
 
 const docker = new Docker({ socketPath: process.env.DOCKER_SOCKET || "/var/run/docker.sock" });
 
@@ -325,6 +327,106 @@ export async function checkRepo(s3Config, log) {
 
   log?.("info", "[restic] Repository check passed");
   return { ok: true, output: stdout };
+}
+
+// ============================================================================
+// YANTR CONFIG SYNC (schedules stored inside the restic repo)
+// ============================================================================
+
+const YANTR_CONFIG_DIR = "/tmp/yantr-config";
+const SCHEDULES_FILENAME = "schedules.json";
+const SCHEDULES_TAG = "yantr-config";
+
+/**
+ * Persist the current schedule list inside the restic repository.
+ * Writes a temp file, backs it up with --tag yantr-config, then cleans up.
+ * Non-fatal: never throws — callers fire-and-forget.
+ *
+ * @param {Array} schedules
+ * @param {Object} s3Config
+ * @param {Function} [log]
+ */
+export async function saveSchedulesToRepo(schedules, s3Config, log) {
+  const filePath = join(YANTR_CONFIG_DIR, SCHEDULES_FILENAME);
+  try {
+    await mkdir(YANTR_CONFIG_DIR, { recursive: true });
+    await writeFile(filePath, JSON.stringify(schedules, null, 2), "utf8");
+
+    const env = buildResticEnv(s3Config);
+    const { stdout, stderr, exitCode } = await spawnProcess(
+      "restic",
+      ["backup", filePath, "--tag", "yantr", "--tag", SCHEDULES_TAG, "--json"],
+      { env }
+    );
+
+    if (exitCode !== 0) {
+      log?.("warn", `[restic] saveSchedulesToRepo: backup failed (exit ${exitCode}): ${stderr || stdout}`);
+      return;
+    }
+
+    log?.("info", `[restic] Schedules (${schedules.length}) saved to repository`);
+  } catch (err) {
+    log?.("warn", `[restic] saveSchedulesToRepo: ${err.message}`);
+  } finally {
+    await rm(filePath, { force: true }).catch(() => {});
+  }
+}
+
+/**
+ * Load the most recent schedule list from the restic repository.
+ * Returns null if no yantr-config snapshot exists or parsing fails.
+ *
+ * @param {Object} s3Config
+ * @param {Function} [log]
+ * @returns {Promise<Array|null>}
+ */
+export async function loadSchedulesFromRepo(s3Config, log) {
+  try {
+    const env = buildResticEnv(s3Config);
+
+    // Find the latest snapshot tagged yantr-config
+    const { stdout: listOut, exitCode: listExit } = await spawnProcess(
+      "restic",
+      ["snapshots", "--tag", SCHEDULES_TAG, "--json"],
+      { env }
+    );
+
+    if (listExit !== 0) return null;
+
+    let snapshots;
+    try {
+      snapshots = JSON.parse(listOut.trim() || "[]");
+    } catch {
+      return null;
+    }
+
+    if (!Array.isArray(snapshots) || snapshots.length === 0) return null;
+
+    // Most recent first
+    snapshots.sort((a, b) => new Date(b.time) - new Date(a.time));
+    const snapshotId = snapshots[0].short_id || snapshots[0].id?.substring(0, 8);
+
+    // Dump the schedules file from the snapshot (stored at its original absolute path)
+    const { stdout: dumpOut, exitCode: dumpExit } = await spawnProcess(
+      "restic",
+      ["dump", snapshotId, join(YANTR_CONFIG_DIR, SCHEDULES_FILENAME)],
+      { env }
+    );
+
+    if (dumpExit !== 0) {
+      log?.("warn", `[restic] loadSchedulesFromRepo: dump failed for snapshot ${snapshotId}`);
+      return null;
+    }
+
+    const parsed = JSON.parse(dumpOut.trim());
+    if (!Array.isArray(parsed)) return null;
+
+    log?.("info", `[restic] Loaded ${parsed.length} schedule(s) from repository`);
+    return parsed;
+  } catch (err) {
+    log?.("warn", `[restic] loadSchedulesFromRepo: ${err.message}`);
+    return null;
+  }
 }
 
 // ============================================================================

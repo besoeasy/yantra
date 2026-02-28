@@ -16,7 +16,7 @@ import {
   removeScheduleTimer,
   runNow,
 } from "../backup-scheduler.js";
-import { listSnapshots } from "../restic.js";
+import { listSnapshots, saveSchedulesToRepo, loadSchedulesFromRepo } from "../restic.js";
 import { docker } from "../shared.js";
 
 const router = Router();
@@ -123,6 +123,11 @@ router.post("/api/backup/schedules", asyncHandler(async (req, res) => {
   const saved = await upsertSchedule(schedule);
   await applySchedule(saved);
 
+  // Sync the full schedule list to the restic repo in the background (non-fatal)
+  getS3Config().then(async (cfg) => {
+    if (cfg) await saveSchedulesToRepo(await getSchedules(), cfg, log);
+  }).catch(() => {});
+
   log("info", `[POST /api/backup/schedules] Schedule saved for volume: ${volumeName}`);
   res.json({ success: true, schedule: saved });
 }));
@@ -132,8 +137,36 @@ router.delete("/api/backup/schedules/:volumeName", asyncHandler(async (req, res)
   const { volumeName } = req.params;
   await deleteSchedule(volumeName);
   removeScheduleTimer(volumeName);
+
+  // Sync the updated schedule list to the restic repo in the background (non-fatal)
+  getS3Config().then(async (cfg) => {
+    if (cfg) await saveSchedulesToRepo(await getSchedules(), cfg, log);
+  }).catch(() => {});
+
   log("info", `[DELETE /api/backup/schedules] Schedule removed for volume: ${volumeName}`);
   res.json({ success: true, message: `Schedule for ${volumeName} removed` });
+}));
+
+// POST /api/backup/schedules/restore-from-repo — pull schedules from the restic repository
+// and apply them locally. Useful on a fresh install pointing at an existing S3 bucket.
+router.post("/api/backup/schedules/restore-from-repo", asyncHandler(async (req, res) => {
+  const config = await getS3Config();
+  if (!config) {
+    return res.status(400).json({ success: false, error: "S3 not configured" });
+  }
+
+  const schedules = await loadSchedulesFromRepo(config, log);
+  if (!schedules || schedules.length === 0) {
+    return res.json({ success: true, imported: 0, message: "No schedules found in repository" });
+  }
+
+  for (const schedule of schedules) {
+    await upsertSchedule(schedule);
+    await applySchedule(schedule);
+  }
+
+  log("info", `[POST /api/backup/schedules/restore-from-repo] Imported ${schedules.length} schedule(s)`);
+  res.json({ success: true, imported: schedules.length, schedules });
 }));
 
 // POST /api/backup/schedules/:volumeName/run  — trigger an immediate backup

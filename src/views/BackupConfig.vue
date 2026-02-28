@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNotification } from '../composables/useNotification'
 import { useApiUrl } from '../composables/useApiUrl'
-import { ArrowLeft, Cloud, Save, RefreshCw, Clock, Database } from 'lucide-vue-next'
+import { ArrowLeft, Cloud, Save, RefreshCw, Clock, Database, RotateCcw } from 'lucide-vue-next'
 
 const router = useRouter()
 const toast = useNotification()
@@ -12,6 +12,7 @@ const { apiUrl } = useApiUrl()
 const loading = ref(false)
 const saving = ref(false)
 const configured = ref(false)
+const restoringFromRepo = ref(false)
 
 // Form fields
 const provider = ref('Other')
@@ -107,6 +108,24 @@ async function saveConfig() {
     toast.error('Failed to save configuration')
   } finally {
     saving.value = false
+  }
+}
+
+async function restoreFromRepo() {
+  restoringFromRepo.value = true
+  try {
+    const res = await fetch(`${apiUrl.value}/api/backup/schedules/restore-from-repo`, { method: 'POST' })
+    const data = await res.json()
+    if (!data.success) throw new Error(data.error || 'Failed')
+    if (data.imported === 0) {
+      toast.error('No schedules found in the repository')
+    } else {
+      toast.success(`Restored ${data.imported} schedule${data.imported !== 1 ? 's' : ''} from S3`)
+    }
+  } catch (err) {
+    toast.error(err.message || 'Failed to restore schedules')
+  } finally {
+    restoringFromRepo.value = false
   }
 }
 
@@ -336,6 +355,20 @@ onMounted(() => {
                 </div>
                 <ArrowLeft :size="14" class="text-gray-400 dark:text-zinc-600 rotate-180 group-hover:translate-x-0.5 transition-transform" />
               </router-link>
+
+              <button
+                @click="restoreFromRepo"
+                :disabled="restoringFromRepo"
+                class="w-full flex items-center justify-between px-5 py-3.5 rounded-lg border border-dashed border-gray-300 dark:border-zinc-700 hover:border-gray-400 dark:hover:border-zinc-500 hover:bg-gray-50 dark:hover:bg-zinc-900/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <div class="flex items-center gap-3">
+                  <RotateCcw :size="15" class="text-gray-500 dark:text-zinc-500 shrink-0" :class="{ 'animate-spin': restoringFromRepo }" />
+                  <div class="text-left">
+                    <p class="text-xs font-semibold text-gray-900 dark:text-white">Restore Schedules from S3</p>
+                    <p class="text-[11px] font-medium text-gray-500 dark:text-zinc-500">Import schedules saved in the restic repository</p>
+                  </div>
+                </div>
+              </button>
             </div>
           </transition>
 

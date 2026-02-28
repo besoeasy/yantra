@@ -19,6 +19,7 @@ import {
   enforceRetention,
   getBackupJobStatus,
 } from "./backup.js";
+import { loadSchedulesFromRepo } from "./restic.js";
 
 // Map<volumeName, NodeJS.Timer>
 const activeTimers = new Map();
@@ -131,13 +132,29 @@ function registerTimer(schedule) {
 
 /**
  * Load all enabled schedules from disk and start their timers.
+ * If no local schedules exist and S3 is configured, attempts to restore
+ * schedules from the restic repository (supports stateless re-deployment).
  * Call once at startup.
  */
 export async function startScheduler(logFn) {
   _log = logFn;
   _log?.("info", "[Scheduler] Starting backup scheduler");
 
-  const schedules = await getSchedules();
+  let schedules = await getSchedules();
+
+  if (schedules.length === 0) {
+    const s3Config = await getS3Config();
+    if (s3Config) {
+      _log?.("info", "[Scheduler] No local schedules — checking restic repository for saved schedules");
+      const repoSchedules = await loadSchedulesFromRepo(s3Config, logFn);
+      if (repoSchedules && repoSchedules.length > 0) {
+        await saveSchedules(repoSchedules);
+        schedules = repoSchedules;
+        _log?.("info", `[Scheduler] Auto-restored ${schedules.length} schedule(s) from repository`);
+      }
+    }
+  }
+
   for (const schedule of schedules) {
     registerTimer(schedule);
   }
