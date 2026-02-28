@@ -1,6 +1,6 @@
 services:
   openclaw:
-    image: ghcr.io/getumbrel/openclaw-umbrel:2026.2.23
+    image: ghcr.io/getumbrel/openclaw-umbrel:2026.2.26
     container_name: openclaw
     labels:
       yantr.app: "openclaw"

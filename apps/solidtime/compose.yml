@@ -1,6 +1,6 @@
 services:
   solidtime:
-    image: solidtime/solidtime:0.10.0
+    image: solidtime/solidtime:0.11.5
     container_name: solidtime
     labels:
       yantr.app: "solidtime"
@@ -34,7 +34,7 @@ services:
       retries: 3
 
   solidtime-scheduler:
-    image: solidtime/solidtime:0.10.0
+    image: solidtime/solidtime:0.11.5
     container_name: solidtime-scheduler
     environment:
       APP_ENV: production
@@ -55,7 +55,7 @@ services:
       yantr.app: "solidtime"
       yantr.service: "Scheduler"
   solidtime-queue:
-    image: solidtime/solidtime:0.10.0
+    image: solidtime/solidtime:0.11.5
     container_name: solidtime-queue
     environment:
       APP_ENV: production
