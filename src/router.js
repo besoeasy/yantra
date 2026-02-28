@@ -49,9 +49,9 @@ const router = createRouter({
       component: () => import(/* webpackChunkName: "volumes" */ './views/Volumes.vue')
     },
     {
-      path: '/minioconfig',
-      name: 'minioconfig',
-      component: () => import(/* webpackChunkName: "minioconfig" */ './views/MinioConfig.vue')
+      path: '/backup-config',
+      name: 'backup-config',
+      component: () => import(/* webpackChunkName: "backup-config" */ './views/BackupConfig.vue')
     },
     {
       path: '/backup-schedules',

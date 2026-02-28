@@ -32,12 +32,13 @@ router.get("/api/backup/config", asyncHandler(async (req, res) => {
 
 // POST /api/backup/config
 router.post("/api/backup/config", asyncHandler(async (req, res) => {
-  const { endpoint, accessKey, secretKey, bucket, region, provider } = req.body;
+  const { endpoint, accessKey, secretKey, bucket, region, provider, resticPassword } = req.body;
   if (!endpoint || !accessKey || !secretKey || !bucket) {
     return res.status(400).json({ success: false, error: "endpoint, accessKey, secretKey, and bucket are required" });
   }
 
   const config = { endpoint, accessKey, secretKey, bucket, region: region || "us-east-1", provider: provider || "Other" };
+  if (resticPassword) config.resticPassword = resticPassword;
   await saveS3Config(config);
   log("info", "[POST /api/backup/config] S3 backup configuration saved");
   res.json({ success: true, message: "Backup configuration saved successfully" });

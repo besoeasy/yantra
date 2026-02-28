@@ -200,7 +200,7 @@ onMounted(fetchAll)
           <!-- S3 not configured warning -->
           <router-link
             v-if="!loading && !s3Configured"
-            to="/minioconfig"
+            to="/backup-config"
             class="px-3 py-1.5 rounded-md bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-700 dark:text-amber-500 flex items-center gap-1.5 hover:border-amber-400 transition-colors"
           >
             <AlertCircle :size="12" />
@@ -240,7 +240,7 @@ onMounted(fetchAll)
             <p class="font-semibold text-amber-900 dark:text-amber-400 tracking-tight mb-1">S3 storage not configured</p>
             <p class="text-amber-700 dark:text-amber-300/80 font-medium leading-relaxed">
               Scheduled backups require S3/MinIO storage.
-              <router-link to="/minioconfig" class="underline hover:text-amber-900 dark:hover:text-amber-300 transition-colors">Configure S3 settings</router-link>
+              <router-link to="/backup-config" class="underline hover:text-amber-900 dark:hover:text-amber-300 transition-colors">Configure S3 settings</router-link>
               before adding schedules.
             </p>
           </div>

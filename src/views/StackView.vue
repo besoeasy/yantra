@@ -303,13 +303,13 @@ function pollBackupJob(jobId) {
   }, 2000);
 }
 
-async function restoreBackup(volumeName, backupKey) {
+async function restoreBackup(volumeName, snapshotId) {
   if (!confirm(`Restore ${volumeName} from backup?\n\nThis will overwrite current data.`)) return;
   try {
     const res = await fetch(`${apiUrl.value}/api/volumes/${volumeName}/restore`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ backupKey, overwrite: true }),
+      body: JSON.stringify({ snapshotId, overwrite: true }),
     });
     const data = await res.json();
     if (data.success) {
@@ -337,11 +337,10 @@ function pollRestoreJob(jobId) {
   }, 2000);
 }
 
-async function deleteBackupFile(volumeName, backupKey) {
-  const timestamp = backupKey.split('/')[1]?.replace('.tar', '');
+async function deleteBackupFile(volumeName, snapshotId) {
   if (!confirm('Delete this backup?')) return;
   try {
-    const res = await fetch(`${apiUrl.value}/api/volumes/${volumeName}/backup/${timestamp}`, { method: 'DELETE' });
+    const res = await fetch(`${apiUrl.value}/api/volumes/${volumeName}/backup/${snapshotId}`, { method: 'DELETE' });
     const data = await res.json();
     if (data.success) { toast.success('Backup deleted'); await fetchVolumeBackups(); }
     else toast.error(data.error || 'Failed to delete backup');
@@ -620,7 +619,7 @@ onUnmounted(() => {
           <AlertCircle :size="14" class="text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
           <p class="text-xs text-amber-900 dark:text-amber-200">
             <span class="font-bold">S3 storage not configured.</span>
-            <router-link to="/minioconfig" class="underline hover:text-amber-700 font-semibold ml-1">Configure now</router-link> to enable backups.
+            <router-link to="/backup-config" class="underline hover:text-amber-700 font-semibold ml-1">Configure now</router-link> to enable backups.
           </p>
         </div>
 
@@ -683,19 +682,19 @@ onUnmounted(() => {
               <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-zinc-500 mb-3">Available Backups</div>
               <div class="space-y-2 max-h-40 overflow-y-auto scrollbar-thin">
                 <div
-                  v-for="backup in volumeBackups[vol.name]"
-                  :key="backup.key"
-                  class="flex items-center justify-between py-2.5 px-3 bg-gray-50 dark:bg-zinc-900/50 hover:bg-gray-100 dark:hover:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 transition-all"
-                >
-                  <div class="flex-1 min-w-0">
-                    <div class="font-mono text-[11px] font-medium text-gray-900 dark:text-white">{{ formatBackupDate(backup.timestamp) }}</div>
-                    <div class="text-gray-500 dark:text-zinc-400 text-[10px] mt-0.5 font-bold uppercase tracking-wider">{{ formatBytes(backup.size) }}</div>
-                  </div>
-                  <div class="flex gap-2 ml-3">
-                    <button @click="restoreBackup(vol.name, backup.key)" class="px-2.5 py-1.5 border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 bg-white dark:bg-[#0A0A0A] rounded-md hover:bg-gray-50 dark:hover:bg-zinc-800 transition-all text-[10px] font-bold uppercase tracking-wider">Restore</button>
-                    <button @click="deleteBackupFile(vol.name, backup.key)" class="px-2.5 py-1.5 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-500/10 rounded-md hover:bg-red-100 dark:hover:bg-red-500/20 transition-all text-[10px] font-bold uppercase tracking-wider">Delete</button>
-                  </div>
-                </div>
+                   v-for="backup in volumeBackups[vol.name]"
+                   :key="backup.snapshotId"
+                   class="flex items-center justify-between py-2.5 px-3 bg-gray-50 dark:bg-zinc-900/50 hover:bg-gray-100 dark:hover:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 transition-all"
+                 >
+                   <div class="flex-1 min-w-0">
+                     <div class="font-mono text-[11px] font-medium text-gray-900 dark:text-white">{{ formatBackupDate(backup.timestamp) }}</div>
+                     <div class="text-gray-500 dark:text-zinc-400 text-[10px] mt-0.5 font-bold uppercase tracking-wider">{{ backup.sizeMB != null ? backup.sizeMB + ' MB' : '' }}</div>
+                   </div>
+                   <div class="flex gap-2 ml-3">
+                     <button @click="restoreBackup(vol.name, backup.snapshotId)" class="px-2.5 py-1.5 border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 bg-white dark:bg-[#0A0A0A] rounded-md hover:bg-gray-50 dark:hover:bg-zinc-800 transition-all text-[10px] font-bold uppercase tracking-wider">Restore</button>
+                     <button @click="deleteBackupFile(vol.name, backup.snapshotId)" class="px-2.5 py-1.5 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-500/10 rounded-md hover:bg-red-100 dark:hover:bg-red-500/20 transition-all text-[10px] font-bold uppercase tracking-wider">Delete</button>
+                   </div>
+                 </div>
               </div>
             </div>
           </div>

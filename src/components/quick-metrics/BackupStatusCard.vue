@@ -37,7 +37,7 @@ async function checkConfig() {
 }
 
 function goToConfig() {
-  router.push('/minioconfig')
+  router.push('/backup-config')
 }
 
 onMounted(() => {

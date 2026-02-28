@@ -1,11 +1,11 @@
 import Docker from "dockerode";
-import { readFile, writeFile, unlink, mkdir, stat, mkdtemp, rm } from "fs/promises";
+import { readFile, writeFile, stat } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { spawnProcess } from "./utils.js";
 import { resolveComposeCommand } from "./compose.js";
-import { Client as MinioClient } from "minio";
+import * as restic from "./restic.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -83,61 +83,11 @@ export async function deleteSchedule(volumeName) {
   await saveSchedules(filtered);
 }
 
-// Create MinIO client from S3 config
-function createMinioClient(s3Config) {
-  // Parse endpoint to extract host and port
-  let endPoint = s3Config.endpoint;
-  let port = 9000;
-  let useSSL = true;
-
-  if (endPoint) {
-    // Remove protocol if present
-    endPoint = endPoint.replace(/^https?:\/\//, "");
-    useSSL = s3Config.endpoint.startsWith("https://");
-    
-    // Extract port if present
-    if (endPoint.includes(":")) {
-      const parts = endPoint.split(":");
-      endPoint = parts[0];
-      port = parseInt(parts[1], 10);
-    } else {
-      port = useSSL ? 443 : 80;
-    }
-  }
-
-  return new MinioClient({
-    endPoint,
-    port,
-    useSSL,
-    accessKey: s3Config.accessKey,
-    secretKey: s3Config.secretKey,
-    region: s3Config.region || "us-east-1",
-  });
-}
-
 function getComposeEnv(socketPath) {
   return {
     ...process.env,
     DOCKER_HOST: socketPath ? `unix://${socketPath}` : process.env.DOCKER_HOST,
   };
-}
-
-async function runAlpineTask({ cmd, binds, context }) {
-  const container = await docker.createContainer({
-    Image: "alpine:latest",
-    Cmd: cmd,
-    HostConfig: {
-      Binds: binds,
-      AutoRemove: true,
-    },
-  });
-
-  await container.start();
-  const result = await container.wait();
-
-  if (result && Number.isFinite(result.StatusCode) && result.StatusCode !== 0) {
-    throw new Error(`${context} failed with status ${result.StatusCode}`);
-  }
 }
 
 async function startRestoredApps(metadata, log) {
@@ -188,613 +138,6 @@ async function startRestoredApps(metadata, log) {
   }
 }
 
-// List backups from S3
-export async function listBackups(s3Config, log) {
-  try {
-    const minioClient = createMinioClient(s3Config);
-    const bucket = s3Config.bucket;
-    const prefix = "yantr-backup/";
-
-    // List app directories in yantr-backup/
-    const appFolders = new Set();
-    const stream = minioClient.listObjects(bucket, prefix, false);
-
-    for await (const obj of stream) {
-      if (obj.prefix) {
-        // This is a directory/prefix
-        const appName = obj.prefix.replace(prefix, "").replace(/\/$/, "");
-        if (appName) appFolders.add(appName);
-      }
-    }
-
-
-    // Read metadata from each app folder
-    const backups = [];
-    for (const appName of appFolders) {
-
-      try {
-        const metadataPath = `${prefix}${appName}/metadata.json`;
-        
-        // Get metadata.json
-        const chunks = [];
-        const dataStream = await minioClient.getObject(bucket, metadataPath);
-        
-        for await (const chunk of dataStream) {
-          chunks.push(chunk);
-        }
-        
-        const metadataContent = Buffer.concat(chunks).toString("utf-8");
-        const metadata = JSON.parse(metadataContent);
-        backups.push(metadata);
-      } catch (err) {
-        log?.("error", `Failed to read metadata for ${appName}:`, err.message);
-      }
-    }
-
-    return backups.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  } catch (err) {
-    // If bucket doesn't exist or is empty, return empty array
-    if (err.code === "NoSuchBucket" || err.code === "NoSuchKey") {
-      log?.("info", "No backups found - bucket or prefix doesn't exist yet");
-      return [];
-    }
-    throw new Error(`Failed to list backups: ${err.message}`);
-  }
-}
-
-// Create backup of volumes
-export async function createBackup({ volumes, s3Config, name, log, appConfigs = [], apps = [] }) {
-  const jobId = generateJobId();
-  // Use first app name as backup folder, or fallback to "volumes" for manual volume backups
-  const backupId = (apps?.[0]?.appId || appConfigs?.[0]?.appId || name || "volumes").replace(/[^a-z0-9-_]/gi, "-");
-  const tmpDir = "/tmp";
-  let jobTmpDir = null;
-  const volumeList = Array.isArray(volumes) ? volumes : [];
-  let minioClient = null;
-  const uploadedKeys = [];
-
-  backupJobs.set(jobId, {
-    status: "in-progress",
-    progress: 0,
-    backupId,
-    volumes: volumeList,
-    apps,
-    startedAt: new Date().toISOString(),
-  });
-
-  // Run backup asynchronously
-  (async () => {
-    try {
-      log?.("info", `[Backup ${jobId}] Starting backup of ${volumeList.length} volume(s)`);
-
-      // Ensure alpine image exists for tar operations
-      try {
-        await docker.getImage("alpine:latest").inspect();
-        log?.("info", `[Backup ${jobId}] Alpine image already available`);
-      } catch (err) {
-        log?.("info", `[Backup ${jobId}] Pulling alpine:latest image...`);
-        await new Promise((resolve, reject) => {
-          docker.pull("alpine:latest", (err, stream) => {
-            if (err) return reject(err);
-            docker.modem.followProgress(stream, (err, output) => {
-              if (err) return reject(err);
-              resolve(output);
-            });
-          });
-        });
-        log?.("info", `[Backup ${jobId}] Alpine image pulled successfully`);
-      }
-
-      jobTmpDir = await mkdtemp(path.join(tmpDir, "yantr-backup-"));
-      const volumeBackups = [];
-      const appConfigBackups = [];
-      const totalVolumes = volumeList.length;
-
-      minioClient = createMinioClient(s3Config);
-      const expectedKeys = [];
-
-      for (let i = 0; i < volumeList.length; i++) {
-        const volumeName = volumeList[i];
-        log?.("info", `[Backup ${jobId}] Processing volume ${i + 1}/${totalVolumes}: ${volumeName}`);
-
-        // Update progress
-        backupJobs.set(jobId, {
-          ...backupJobs.get(jobId),
-          progress: Math.floor((i / totalVolumes) * 90),
-          currentVolume: volumeName,
-        });
-
-        const tarFileName = `${volumeName}.tar`;
-        const tarPath = path.join(jobTmpDir, tarFileName);
-
-        // Step 1: Create tar of volume using temporary container
-        log?.("info", `[Backup ${jobId}] Creating tar archive of ${volumeName}`);
-
-        await runAlpineTask({
-          cmd: ["tar", "cf", `/backup/${tarFileName}`, "-C", "/data", "."],
-          binds: [
-            `${volumeName}:/data:ro`,
-            `${jobTmpDir}:/backup`,
-          ],
-          context: `Backup volume tar for ${volumeName}`,
-        });
-
-        // Get tar file size
-        const stats = await stat(tarPath);
-        const sizeBytes = stats.size;
-
-        log?.("info", `[Backup ${jobId}] Created tar: ${(sizeBytes / (1024 * 1024)).toFixed(2)} MB`);
-
-        // Step 2: Upload to S3 using MinIO client
-        log?.("info", `[Backup ${jobId}] Uploading ${volumeName} to S3`);
-
-        await minioClient.fPutObject(
-          s3Config.bucket,
-          `yantr-backup/${backupId}/${tarFileName}`,
-          tarPath
-        );
-        uploadedKeys.push(`yantr-backup/${backupId}/${tarFileName}`);
-
-        log?.("info", `[Backup ${jobId}] Uploaded ${volumeName} successfully`);
-
-        volumeBackups.push({
-          name: volumeName,
-          size: sizeBytes,
-          tarFileName,
-        });
-        expectedKeys.push(`yantr-backup/${backupId}/${tarFileName}`);
-
-        // Cleanup tar file
-        try {
-          await unlink(tarPath);
-        } catch (err) {
-          log?.("warn", `[Backup ${jobId}] Failed to remove temp file ${tarFileName}:`, err.message);
-        }
-      }
-
-      const uniqueAppConfigs = new Map();
-      for (const appConfig of appConfigs) {
-        if (!appConfig || !appConfig.appId || !appConfig.appPath) continue;
-        if (!uniqueAppConfigs.has(appConfig.appId)) {
-          uniqueAppConfigs.set(appConfig.appId, appConfig);
-        }
-      }
-
-      const appConfigList = Array.from(uniqueAppConfigs.values());
-      const totalAppConfigs = appConfigList.length;
-
-      if (totalAppConfigs > 0) {
-        log?.("info", `[Backup ${jobId}] Backing up ${totalAppConfigs} app config(s)`);
-      }
-
-      for (let i = 0; i < totalAppConfigs; i++) {
-        const appConfig = appConfigList[i];
-        const appId = appConfig.appId;
-        const appPath = appConfig.appPath;
-
-        log?.("info", `[Backup ${jobId}] Archiving app config ${i + 1}/${totalAppConfigs}: ${appId}`);
-
-        const appTarFileName = `app-${appId}.tar`;
-        const appTarPath = path.join(jobTmpDir, appTarFileName);
-
-        const tarResult = await spawnProcess(
-          "tar",
-          ["cf", appTarPath, "-C", appPath, "."]
-        );
-
-        if (tarResult.exitCode !== 0) {
-          throw new Error(`Failed to archive app ${appId}: ${tarResult.stderr}`);
-        }
-
-        const appStats = await stat(appTarPath);
-
-        await minioClient.fPutObject(
-          s3Config.bucket,
-          `yantr-backup/${backupId}/app-configs/${appTarFileName}`,
-          appTarPath
-        );
-        uploadedKeys.push(`yantr-backup/${backupId}/app-configs/${appTarFileName}`);
-
-        appConfigBackups.push({
-          appId,
-          tarFileName: appTarFileName,
-          size: appStats.size,
-        });
-        expectedKeys.push(`yantr-backup/${backupId}/app-configs/${appTarFileName}`);
-
-        try {
-          await unlink(appTarPath);
-        } catch (err) {
-          log?.("warn", `[Backup ${jobId}] Failed to remove app config tar ${appTarFileName}:`, err.message);
-        }
-      }
-
-      // Step 3: Upload metadata
-      log?.("info", `[Backup ${jobId}] Creating metadata`);
-
-      const metadata = {
-        id: backupId,
-        name: name || `Backup ${new Date().toLocaleString()}`,
-        timestamp: new Date().toISOString(),
-        volumes: volumeBackups,
-        totalSize:
-          volumeBackups.reduce((sum, v) => sum + v.size, 0) +
-          appConfigBackups.reduce((sum, v) => sum + v.size, 0),
-        appConfigs: appConfigBackups,
-        apps,
-      };
-
-      const metadataPath = path.join(jobTmpDir, "metadata.json");
-      await writeFile(metadataPath, JSON.stringify(metadata, null, 2), "utf-8");
-
-      await minioClient.fPutObject(
-        s3Config.bucket,
-        `yantr-backup/${backupId}/metadata.json`,
-        metadataPath
-      );
-      uploadedKeys.push(`yantr-backup/${backupId}/metadata.json`);
-      expectedKeys.push(`yantr-backup/${backupId}/metadata.json`);
-
-      for (const key of expectedKeys) {
-        await minioClient.statObject(s3Config.bucket, key);
-      }
-
-      try {
-        await unlink(metadataPath);
-      } catch (err) {
-        log?.("warn", `[Backup ${jobId}] Failed to remove metadata file:`, err.message);
-      }
-
-      // Mark as completed
-      backupJobs.set(jobId, {
-        ...backupJobs.get(jobId),
-        status: "completed",
-        progress: 100,
-        completedAt: new Date().toISOString(),
-        metadata,
-      });
-
-      log?.("info", `[Backup ${jobId}] Backup completed successfully`);
-    } catch (err) {
-      if (minioClient && uploadedKeys.length > 0) {
-        try {
-          await minioClient.removeObjects(s3Config.bucket, uploadedKeys);
-        } catch (cleanupErr) {
-          log?.("warn", `[Backup ${jobId}] Failed to rollback uploaded objects:`, cleanupErr.message);
-        }
-      }
-      log?.("error", `[Backup ${jobId}] Backup failed:`, err.message);
-      backupJobs.set(jobId, {
-        ...backupJobs.get(jobId),
-        status: "failed",
-        error: err.message,
-      });
-    } finally {
-      if (jobTmpDir) {
-        try {
-          await rm(jobTmpDir, { recursive: true, force: true });
-        } catch (err) {
-          log?.("warn", `[Backup ${jobId}] Failed to clean temp directory:`, err.message);
-        }
-      }
-    }
-  })();
-
-  return { jobId, backupId, status: "started" };
-}
-
-// Restore backup from S3
-export async function restoreBackup(backupId, s3Config, volumesToRestore, overwrite, log, restoreApps) {
-  const jobId = generateJobId();
-  const tmpDir = "/tmp";
-  let jobTmpDir = null;
-  const appsDir = path.join(__dirname, "..", "apps");
-  const rollbackActions = [];
-
-  function registerRollback(action) {
-    rollbackActions.push(action);
-  }
-
-  restoreJobs.set(jobId, {
-    status: "in-progress",
-    progress: 0,
-    backupId,
-    startedAt: new Date().toISOString(),
-  });
-
-  // Run restore asynchronously
-  (async () => {
-    try {
-      // Create job-specific temp directory
-      jobTmpDir = await mkdtemp(path.join(tmpDir, `restore-${jobId}-`));
-      log?.("info", `[Restore ${jobId}] Starting restore from backup ${backupId}`);
-
-      // Ensure alpine image exists for tar operations
-      try {
-        await docker.getImage("alpine:latest").inspect();
-        log?.("info", `[Restore ${jobId}] Alpine image already available`);
-      } catch (err) {
-        log?.("info", `[Restore ${jobId}] Pulling alpine:latest image...`);
-        await new Promise((resolve, reject) => {
-          docker.pull("alpine:latest", (err, stream) => {
-            if (err) return reject(err);
-            docker.modem.followProgress(stream, (err, output) => {
-              if (err) return reject(err);
-              resolve(output);
-            });
-          });
-        });
-        log?.("info", `[Restore ${jobId}] Alpine image pulled successfully`);
-      }
-
-      // Step 1: Download metadata
-      const minioClient = createMinioClient(s3Config);
-      const metadataPath = path.join(jobTmpDir, "metadata.json");
-
-      await minioClient.fGetObject(
-        s3Config.bucket,
-        `yantr-backup/${backupId}/metadata.json`,
-        metadataPath
-      );
-
-      const metadataContent = await readFile(metadataPath, "utf-8");
-      const metadata = JSON.parse(metadataContent);
-      await unlink(metadataPath);
-
-      const shouldRestoreApps = restoreApps === true || (restoreApps === undefined && !volumesToRestore);
-      const appConfigs = Array.isArray(metadata.appConfigs) ? metadata.appConfigs : [];
-
-      if (shouldRestoreApps && appConfigs.length > 0) {
-        for (const appConfig of appConfigs) {
-          const appId = appConfig.appId;
-          const tarFileName = appConfig.tarFileName;
-
-          if (!appId || !tarFileName) {
-            log?.("warn", `[Restore ${jobId}] Skipping invalid app config entry`);
-            continue;
-          }
-
-          const appPath = path.join(appsDir, appId);
-          let appPathExists = false;
-
-          try {
-            await stat(appPath);
-            appPathExists = true;
-          } catch (err) {
-            appPathExists = false;
-          }
-
-          if (appPathExists && !overwrite) {
-            log?.("warn", `[Restore ${jobId}] Skipping app ${appId} (already exists, overwrite=false)`);
-            continue;
-          }
-
-          if (appPathExists && overwrite) {
-            const appRollbackTar = path.join(jobTmpDir, `rollback-app-${appId}.tar`);
-            const backupResult = await spawnProcess("tar", ["cf", appRollbackTar, "-C", appPath, "."]);
-
-            if (backupResult.exitCode !== 0) {
-              throw new Error(`Failed to snapshot app config ${appId}: ${backupResult.stderr}`);
-            }
-
-            registerRollback(async () => {
-              await rm(appPath, { recursive: true, force: true });
-              await mkdir(appPath, { recursive: true });
-              const restoreResult = await spawnProcess("tar", ["xf", appRollbackTar, "-C", appPath]);
-              if (restoreResult.exitCode !== 0) {
-                throw new Error(`Failed to rollback app config ${appId}: ${restoreResult.stderr}`);
-              }
-            });
-
-            await rm(appPath, { recursive: true, force: true });
-          } else if (!appPathExists) {
-            registerRollback(async () => {
-              await rm(appPath, { recursive: true, force: true });
-            });
-          }
-
-          const tarPath = path.join(jobTmpDir, tarFileName);
-          
-          await minioClient.fGetObject(
-            s3Config.bucket,
-            `yantr-backup/${backupId}/app-configs/${tarFileName}`,
-            tarPath
-          );
-
-          await mkdir(appPath, { recursive: true });
-
-          const extract = await spawnProcess("tar", ["xf", tarPath, "-C", appPath]);
-
-          if (extract.exitCode !== 0) {
-            throw new Error(`Failed to extract app config ${appId}: ${extract.stderr}`);
-          }
-
-          try {
-            await unlink(tarPath);
-          } catch (err) {
-            log?.("warn", `[Restore ${jobId}] Failed to remove app config tar ${tarFileName}:`, err.message);
-          }
-
-        }
-      }
-
-      // Determine which volumes to restore
-      const volumes = volumesToRestore || metadata.volumes.map(v => v.name);
-      const totalVolumes = volumes.length;
-
-      for (let i = 0; i < volumes.length; i++) {
-        const volumeName = volumes[i];
-        const volumeBackup = metadata.volumes.find(v => v.name === volumeName);
-
-        if (!volumeBackup) {
-          log?.("warn", `[Restore ${jobId}] Volume ${volumeName} not found in backup, skipping`);
-          continue;
-        }
-
-        // Update progress
-        restoreJobs.set(jobId, {
-          ...restoreJobs.get(jobId),
-          progress: Math.floor((i / totalVolumes) * 90),
-          currentVolume: volumeName,
-        });
-
-        const tarFileName = volumeBackup.tarFileName;
-        const tarPath = path.join(jobTmpDir, tarFileName);
-
-        // Step 2: Download tar from S3
-
-        await minioClient.fGetObject(
-          s3Config.bucket,
-          `yantr-backup/${backupId}/${tarFileName}`,
-          tarPath
-        );
-
-        // Step 3: Ensure volume exists
-        let volumeExists = false;
-        try {
-          await docker.getVolume(volumeName).inspect();
-          volumeExists = true;
-
-          if (!overwrite) {
-            log?.("warn", `[Restore ${jobId}] Skipping ${volumeName} (already exists, overwrite=false)`);
-            await unlink(tarPath);
-            continue;
-          }
-        } catch (err) {
-          volumeExists = false;
-        }
-
-        if (volumeExists && overwrite) {
-          const rollbackTar = path.join(jobTmpDir, `rollback-${volumeName}.tar`);
-          await runAlpineTask({
-            cmd: ["tar", "cf", `/backup/${path.basename(rollbackTar)}`, "-C", "/data", "."],
-            binds: [
-              `${volumeName}:/data:ro`,
-              `${jobTmpDir}:/backup`,
-            ],
-            context: `Snapshot volume ${volumeName}`,
-          });
-
-          registerRollback(async () => {
-            await runAlpineTask({
-              cmd: ["sh", "-c", "rm -rf /data/* /data/.[!.]* /data/..?*"],
-              binds: [`${volumeName}:/data`],
-              context: `Rollback clear volume ${volumeName}`,
-            });
-            await runAlpineTask({
-              cmd: ["tar", "xf", `/backup/${path.basename(rollbackTar)}`, "-C", "/data"],
-              binds: [
-                `${volumeName}:/data`,
-                `${jobTmpDir}:/backup`,
-              ],
-              context: `Rollback restore volume ${volumeName}`,
-            });
-          });
-
-          await runAlpineTask({
-            cmd: ["sh", "-c", "rm -rf /data/* /data/.[!.]* /data/..?*"],
-            binds: [`${volumeName}:/data`],
-            context: `Clear volume ${volumeName}`,
-          });
-        } else if (!volumeExists) {
-          await docker.createVolume({ Name: volumeName });
-          registerRollback(async () => {
-            try {
-              await docker.getVolume(volumeName).remove();
-            } catch (removeErr) {
-              log?.("warn", `[Restore ${jobId}] Failed to rollback volume ${volumeName}:`, removeErr.message);
-            }
-          });
-        }
-
-        // Step 4: Extract tar into volume
-        await runAlpineTask({
-          cmd: ["tar", "xf", `/backup/${tarFileName}`, "-C", "/data"],
-          binds: [
-            `${volumeName}:/data`,
-            `${jobTmpDir}:/backup`,
-          ],
-          context: `Restore volume ${volumeName}`,
-        });
-
-        // Cleanup
-        await unlink(tarPath);
-      }
-
-      if (shouldRestoreApps) {
-        await startRestoredApps(metadata, log);
-      }
-
-      // Mark as completed
-      restoreJobs.set(jobId, {
-        ...restoreJobs.get(jobId),
-        status: "completed",
-        progress: 100,
-        completedAt: new Date().toISOString(),
-      });
-
-      log?.("info", `[Restore ${jobId}] Restore completed successfully`);
-    } catch (err) {
-      if (rollbackActions.length > 0) {
-        for (const rollback of [...rollbackActions].reverse()) {
-          try {
-            await rollback();
-          } catch (rollbackErr) {
-            log?.("warn", `[Restore ${jobId}] Rollback action failed:`, rollbackErr.message);
-          }
-        }
-      }
-      log?.("error", `[Restore ${jobId}] Restore failed:`, err.message);
-      restoreJobs.set(jobId, {
-        ...restoreJobs.get(jobId),
-        status: "failed",
-        error: err.message,
-      });
-    } finally {
-      // Cleanup job temp directory
-      if (jobTmpDir) {
-        try {
-          await rm(jobTmpDir, { recursive: true, force: true });
-        } catch (err) {
-          log?.("warn", `[Restore ${jobId}] Failed to cleanup temp directory:`, err.message);
-        }
-      }
-    }
-  })();
-
-  return { jobId, status: "started" };
-}
-
-// Delete backup from S3
-export async function deleteBackup(backupId, s3Config, log) {
-  try {
-    log?.("info", `[Backup Delete] Deleting backup ${backupId}`);
-
-    const minioClient = createMinioClient(s3Config);
-    const bucket = s3Config.bucket;
-    const prefix = `yantr-backup/${backupId}/`;
-
-    // List all objects with this prefix
-    const objectsList = [];
-    const stream = minioClient.listObjects(bucket, prefix, true);
-
-    for await (const obj of stream) {
-      objectsList.push(obj.name);
-    }
-
-    // Delete all objects
-    if (objectsList.length > 0) {
-      await minioClient.removeObjects(bucket, objectsList);
-      log?.("info", `[Backup Delete] Deleted ${objectsList.length} object(s)`);
-    }
-
-    log?.("info", `[Backup Delete] Backup ${backupId} deleted successfully`);
-    return { success: true };
-  } catch (err) {
-    throw new Error(`Failed to delete backup: ${err.message}`);
-  }
-}
-
 // Get job status
 export function getBackupJobStatus(jobId) {
   return backupJobs.get(jobId) || null;
@@ -813,18 +156,20 @@ export function getAllRestoreJobs() {
   return Array.from(restoreJobs.entries()).map(([id, job]) => ({ id, ...job }));
 }
 
-// ============================================
-// NEW VOLUME-CENTRIC BACKUP FUNCTIONS
-// ============================================
+// ============================================================================
+// RESTIC-BASED VOLUME BACKUP FUNCTIONS
+// ============================================================================
 
-// Create backup for container volumes
-export async function createContainerBackup({ containerId, volumes, s3Config, log }) {
+/**
+ * Create a restic backup for each volume associated with a container.
+ * Containers using a volume are stopped before backup and always restarted.
+ *
+ * @param {{ containerId: string, volumes: string[], s3Config: Object, log: Function }} opts
+ * @returns {{ jobId: string, status: string }}
+ */
+export function createContainerBackup({ containerId, volumes, s3Config, log }) {
   const jobId = generateJobId();
-  const tmpDir = "/tmp";
-  let jobTmpDir = null;
   const volumeList = Array.isArray(volumes) ? volumes : [];
-  let minioClient = null;
-  const uploadedKeys = [];
 
   backupJobs.set(jobId, {
     status: "in-progress",
@@ -834,234 +179,98 @@ export async function createContainerBackup({ containerId, volumes, s3Config, lo
     startedAt: new Date().toISOString(),
   });
 
-  // Run backup asynchronously
   (async () => {
     try {
-      log?.("info", `[Backup ${jobId}] Starting volume backup for container ${containerId}`);
+      log?.("info", `[Backup ${jobId}] Starting restic backup for container ${containerId} (${volumeList.length} volume(s))`);
 
-      // Ensure alpine image exists for tar operations
-      try {
-        await docker.getImage("alpine:latest").inspect();
-        log?.("info", `[Backup ${jobId}] Alpine image already available`);
-      } catch (err) {
-        log?.("info", `[Backup ${jobId}] Pulling alpine:latest image...`);
-        await new Promise((resolve, reject) => {
-          docker.pull("alpine:latest", (err, stream) => {
-            if (err) return reject(err);
-            docker.modem.followProgress(stream, (err, output) => {
-              if (err) return reject(err);
-              resolve(output);
-            });
-          });
-        });
-        log?.("info", `[Backup ${jobId}] Alpine image pulled successfully`);
-      }
+      // Ensure repo exists (safe to call every time — no-op if already initialised)
+      await restic.initRepo(s3Config, log);
 
-      jobTmpDir = await mkdtemp(path.join(tmpDir, "yantr-backup-"));
-      minioClient = createMinioClient(s3Config);
+      const snapshotIds = [];
       const totalVolumes = volumeList.length;
 
       for (let i = 0; i < volumeList.length; i++) {
         const volumeName = volumeList[i];
-        log?.("info", `[Backup ${jobId}] Processing volume ${i + 1}/${totalVolumes}: ${volumeName}`);
 
-        // Update progress
         backupJobs.set(jobId, {
           ...backupJobs.get(jobId),
           progress: Math.floor((i / totalVolumes) * 90),
           currentVolume: volumeName,
         });
 
-        // Create timestamp: 2026-02-06_10-30-45
-        const now = new Date();
-        const timestamp = now.toISOString()
-          .replace(/T/, '_')
-          .replace(/\..+/, '')
-          .replace(/:/g, '-');
+        log?.("info", `[Backup ${jobId}] Processing volume ${i + 1}/${totalVolumes}: ${volumeName}`);
 
-        const tarFileName = `${timestamp}.tar`;
-        const tarPath = path.join(jobTmpDir, tarFileName);
-
-        // Create tar using Alpine container
-        log?.("info", `[Backup ${jobId}] Creating tar archive of ${volumeName}`);
-
-        await runAlpineTask({
-          cmd: ["tar", "cf", `/backup/${tarFileName}`, "-C", "/data", "."],
-          binds: [
-            `${volumeName}:/data:ro`,
-            `${jobTmpDir}:/backup`,
-          ],
-          context: `Backup volume tar for ${volumeName}`,
-        });
-
-        // Get tar file size
-        const stats = await stat(tarPath);
-        const sizeBytes = stats.size;
-
-        log?.("info", `[Backup ${jobId}] Created tar: ${(sizeBytes / (1024 * 1024)).toFixed(2)} MB`);
-
-        // Upload to S3 with NEW path format: /{volumeName}/{timestamp}.tar
-        const s3Key = `${volumeName}/${tarFileName}`;
-        log?.("info", `[Backup ${jobId}] Uploading ${volumeName} to S3 at ${s3Key}`);
-
-        await minioClient.fPutObject(s3Config.bucket, s3Key, tarPath);
-        uploadedKeys.push(s3Key);
-
-        log?.("info", `[Backup ${jobId}] Uploaded ${volumeName} successfully`);
-
-        // Cleanup tar file
+        // Stop containers using this volume for consistency
+        const stopped = await restic.stopContainersForVolume(volumeName, log);
         try {
-          await unlink(tarPath);
-        } catch (err) {
-          log?.("warn", `[Backup ${jobId}] Failed to remove temp file ${tarFileName}:`, err.message);
+          const snapshotId = await restic.backupVolume(
+            volumeName,
+            [String(containerId)],
+            s3Config,
+            log
+          );
+          snapshotIds.push({ volumeName, snapshotId });
+          log?.("info", `[Backup ${jobId}] Volume ${volumeName} snapshot: ${snapshotId}`);
+        } finally {
+          // Always restart containers even if backup fails
+          await restic.startContainers(stopped, log);
         }
       }
 
-      // Mark completed
       backupJobs.set(jobId, {
         ...backupJobs.get(jobId),
         status: "completed",
         progress: 100,
         completedAt: new Date().toISOString(),
+        snapshotIds,
       });
 
-      log?.("info", `[Backup ${jobId}] Backup completed successfully`);
+      log?.("info", `[Backup ${jobId}] All volumes backed up successfully`);
     } catch (err) {
-      if (minioClient && uploadedKeys.length > 0) {
-        try {
-          await minioClient.removeObjects(s3Config.bucket, uploadedKeys);
-        } catch (cleanupErr) {
-          log?.("warn", `[Backup ${jobId}] Failed to rollback uploaded objects:`, cleanupErr.message);
-        }
-      }
-      log?.("error", `[Backup ${jobId}] Backup failed:`, err.message);
+      log?.("error", `[Backup ${jobId}] Backup failed: ${err.message}`);
       backupJobs.set(jobId, {
         ...backupJobs.get(jobId),
         status: "failed",
         error: err.message,
       });
-    } finally {
-      if (jobTmpDir) {
-        try {
-          await rm(jobTmpDir, { recursive: true, force: true });
-        } catch (err) {
-          log?.("warn", `[Backup ${jobId}] Failed to clean temp directory:`, err.message);
-        }
-      }
     }
   })();
 
   return { jobId, status: "started" };
 }
 
-// List backups for specific volumes
-export async function listVolumeBackups(volumeNames, s3Config, log) {
-  try {
-    const minioClient = createMinioClient(s3Config);
-    const backups = {};
-
-    for (const volumeName of volumeNames) {
-      const objects = [];
-      const stream = minioClient.listObjects(s3Config.bucket, `${volumeName}/`, false);
-
-      for await (const obj of stream) {
-        if (obj.name.endsWith('.tar')) {
-          // Extract timestamp from filename
-          const filename = obj.name.split('/')[1]; // Get "2026-02-06_10-30-45.tar"
-          const timestampStr = filename.replace('.tar', ''); // Remove .tar
-
-          // Convert timestamp format from "2026-02-06_10-30-45" to ISO
-          // Split into date and time parts
-          const parts = timestampStr.split('_');
-          if (parts.length === 2) {
-            const datePart = parts[0]; // "2026-02-06"
-            const timePart = parts[1].replace(/-/g, ':'); // "10:30:45"
-            const isoTimestamp = `${datePart}T${timePart}Z`;
-
-            objects.push({
-              key: obj.name,
-              timestamp: isoTimestamp,
-              size: obj.size,
-              lastModified: obj.lastModified
-            });
-          }
-        }
-      }
-
-      // Sort by timestamp (newest first)
-      backups[volumeName] = objects.sort(
-        (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-      );
-    }
-
-    return backups;
-  } catch (err) {
-    if (err.code === "NoSuchBucket") {
-      log?.("info", "No backups found - bucket doesn't exist yet");
-      return {};
-    }
-    throw new Error(`Failed to list volume backups: ${err.message}`);
-  }
-}
-
-// Restore a volume from backup
-export async function restoreVolumeBackup(volumeName, backupKey, s3Config, overwrite, log) {
+/**
+ * Restore a Docker volume from a restic snapshot.
+ * Containers using the volume are stopped and always restarted.
+ *
+ * @param {string} volumeName
+ * @param {string} snapshotId  restic snapshot short ID
+ * @param {Object} s3Config
+ * @param {boolean} overwrite  If false and volume exists, throws.
+ * @param {Function} [log]
+ * @returns {{ jobId: string, status: string }}
+ */
+export function restoreVolumeBackup(volumeName, snapshotId, s3Config, overwrite, log) {
   const jobId = generateJobId();
-  const tmpDir = "/tmp";
-  let jobTmpDir = null;
-  const rollbackActions = [];
-
-  function registerRollback(action) {
-    rollbackActions.push(action);
-  }
 
   restoreJobs.set(jobId, {
     status: "in-progress",
     progress: 0,
     volumeName,
-    backupKey,
+    snapshotId,
     startedAt: new Date().toISOString(),
   });
 
   (async () => {
     try {
-      jobTmpDir = await mkdtemp(path.join(tmpDir, `restore-${jobId}-`));
-      log?.("info", `[Restore ${jobId}] Starting restore for ${volumeName} from ${backupKey}`);
-
-      // Ensure alpine image exists for tar operations
-      try {
-        await docker.getImage("alpine:latest").inspect();
-        log?.("info", `[Restore ${jobId}] Alpine image already available`);
-      } catch (err) {
-        log?.("info", `[Restore ${jobId}] Pulling alpine:latest image...`);
-        await new Promise((resolve, reject) => {
-          docker.pull("alpine:latest", (err, stream) => {
-            if (err) return reject(err);
-            docker.modem.followProgress(stream, (err, output) => {
-              if (err) return reject(err);
-              resolve(output);
-            });
-          });
-        });
-        log?.("info", `[Restore ${jobId}] Alpine image pulled successfully`);
-      }
-
-      const minioClient = createMinioClient(s3Config);
-      const tarFileName = backupKey.split('/')[1]; // Extract filename from key
-      const tarPath = path.join(jobTmpDir, tarFileName);
-
-      // Download tar from S3
-      log?.("info", `[Restore ${jobId}] Downloading backup from S3`);
-      await minioClient.fGetObject(s3Config.bucket, backupKey, tarPath);
-
-      restoreJobs.set(jobId, { ...restoreJobs.get(jobId), progress: 30 });
+      log?.("info", `[Restore ${jobId}] Starting restore for volume ${volumeName} from snapshot ${snapshotId}`);
 
       // Check if volume exists
       let volumeExists = false;
       try {
         await docker.getVolume(volumeName).inspect();
         volumeExists = true;
-      } catch (err) {
+      } catch {
         volumeExists = false;
       }
 
@@ -1069,138 +278,129 @@ export async function restoreVolumeBackup(volumeName, backupKey, s3Config, overw
         throw new Error("Volume exists and overwrite is false");
       }
 
-      if (volumeExists && overwrite) {
-        const rollbackTar = path.join(jobTmpDir, `rollback-${volumeName}.tar`);
-        await runAlpineTask({
-          cmd: ["tar", "cf", `/backup/${path.basename(rollbackTar)}`, "-C", "/data", "."],
-          binds: [
-            `${volumeName}:/data:ro`,
-            `${jobTmpDir}:/backup`,
-          ],
-          context: `Snapshot volume ${volumeName}`,
-        });
+      restoreJobs.set(jobId, { ...restoreJobs.get(jobId), progress: 10 });
 
-        registerRollback(async () => {
-          await runAlpineTask({
-            cmd: ["sh", "-c", "rm -rf /data/* /data/.[!.]* /data/..?*"],
-            binds: [`${volumeName}:/data`],
-            context: `Rollback clear volume ${volumeName}`,
-          });
-          await runAlpineTask({
-            cmd: ["tar", "xf", `/backup/${path.basename(rollbackTar)}`, "-C", "/data"],
-            binds: [
-              `${volumeName}:/data`,
-              `${jobTmpDir}:/backup`,
-            ],
-            context: `Rollback restore volume ${volumeName}`,
-          });
-        });
+      // Stop containers using this volume
+      const stopped = await restic.stopContainersForVolume(volumeName, log);
 
-        await runAlpineTask({
-          cmd: ["sh", "-c", "rm -rf /data/* /data/.[!.]* /data/..?*"],
-          binds: [`${volumeName}:/data`],
-          context: `Clear volume ${volumeName}`,
-        });
-      }
-
-      if (!volumeExists) {
-        log?.("info", `[Restore ${jobId}] Creating volume ${volumeName}`);
-        await docker.createVolume({ Name: volumeName });
-        registerRollback(async () => {
-          try {
-            await docker.getVolume(volumeName).remove();
-          } catch (removeErr) {
-            log?.("warn", `[Restore ${jobId}] Failed to rollback volume ${volumeName}:`, removeErr.message);
-          }
-        });
-      }
-
-      restoreJobs.set(jobId, { ...restoreJobs.get(jobId), progress: 50 });
-
-      // Extract tar into volume
-      log?.("info", `[Restore ${jobId}] Extracting backup into volume`);
-
-      await runAlpineTask({
-        cmd: ["tar", "xf", `/backup/${tarFileName}`, "-C", "/data"],
-        binds: [
-          `${volumeName}:/data`,
-          `${jobTmpDir}:/backup`,
-        ],
-        context: `Restore volume ${volumeName}`,
-      });
-
-      await unlink(tarPath);
-
-      restoreJobs.set(jobId, {
-        ...restoreJobs.get(jobId),
-        status: "completed",
-        progress: 100,
-        completedAt: new Date().toISOString(),
-      });
-
-      log?.("info", `[Restore ${jobId}] Restore completed successfully`);
-    } catch (err) {
-      if (rollbackActions.length > 0) {
-        for (const rollback of [...rollbackActions].reverse()) {
-          try {
-            await rollback();
-          } catch (rollbackErr) {
-            log?.("warn", `[Restore ${jobId}] Rollback action failed:`, rollbackErr.message);
-          }
+      try {
+        if (!volumeExists) {
+          log?.("info", `[Restore ${jobId}] Creating volume ${volumeName}`);
+          await docker.createVolume({ Name: volumeName });
         }
+
+        restoreJobs.set(jobId, { ...restoreJobs.get(jobId), progress: 30 });
+
+        // restic restore writes directly into the volume path — no temp dir needed
+        await restic.restoreSnapshot(snapshotId, volumeName, s3Config, log);
+
+        restoreJobs.set(jobId, {
+          ...restoreJobs.get(jobId),
+          status: "completed",
+          progress: 100,
+          completedAt: new Date().toISOString(),
+        });
+
+        log?.("info", `[Restore ${jobId}] Restore completed successfully`);
+      } finally {
+        // Always restart containers
+        await restic.startContainers(stopped, log);
       }
-      log?.("error", `[Restore ${jobId}] Restore failed:`, err.message);
+    } catch (err) {
+      log?.("error", `[Restore ${jobId}] Restore failed: ${err.message}`);
       restoreJobs.set(jobId, {
         ...restoreJobs.get(jobId),
         status: "failed",
         error: err.message,
       });
-    } finally {
-      if (jobTmpDir) {
-        try {
-          await rm(jobTmpDir, { recursive: true, force: true });
-        } catch (err) {
-          log?.("warn", `[Restore ${jobId}] Failed to cleanup temp directory:`, err.message);
-        }
-      }
     }
   })();
 
   return { jobId, status: "started" };
 }
 
-// Delete a volume backup
-export async function deleteVolumeBackup(volumeName, timestamp, s3Config, log) {
-  try {
-    const minioClient = createMinioClient(s3Config);
+/**
+ * List restic snapshots for one or more volumes.
+ *
+ * Returns:
+ *   {
+ *     [volumeName]: [
+ *       { snapshotId, timestamp, tags, sizeMB, dedupMB }
+ *     ]
+ *   }
+ *
+ * @param {string[]} volumeNames
+ * @param {Object} s3Config
+ * @param {Function} [log]
+ * @returns {Object}
+ */
+export async function listVolumeBackups(volumeNames, s3Config, log) {
+  const result = {};
 
-    // Construct the S3 key from volume name and timestamp
-    const key = `${volumeName}/${timestamp}.tar`;
+  for (const volumeName of volumeNames) {
+    try {
+      const snapshots = await restic.listSnapshots(
+        { tag: `vol:${volumeName}` },
+        s3Config,
+        log
+      );
 
-    log?.("info", `[Backup Delete] Deleting ${key}`);
-    await minioClient.removeObject(s3Config.bucket, key);
-
-    log?.("info", `[Backup Delete] Deleted ${key} successfully`);
-    return { success: true };
-  } catch (err) {
-    throw new Error(`Failed to delete backup: ${err.message}`);
+      result[volumeName] = snapshots.map((s) => ({
+        snapshotId: s.short_id || s.id?.substring(0, 8) || s.id,
+        timestamp: s.time,
+        tags: s.tags || [],
+        sizeMB: s.summary?.total_bytes_processed
+          ? parseFloat((s.summary.total_bytes_processed / (1024 * 1024)).toFixed(2))
+          : null,
+        dedupMB: s.summary?.data_added
+          ? parseFloat((s.summary.data_added / (1024 * 1024)).toFixed(2))
+          : null,
+      })).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    } catch (err) {
+      log?.("warn", `[listVolumeBackups] Failed for ${volumeName}: ${err.message}`);
+      result[volumeName] = [];
+    }
   }
+
+  return result;
 }
 
-// Enforce retention: delete oldest backups beyond keepCount for a given volume
+/**
+ * Enforce retention for a volume using restic forget --prune.
+ * keepCount maps to --keep-daily.
+ *
+ * @param {string} volumeName
+ * @param {number} keepCount
+ * @param {Object} s3Config
+ * @param {Function} [log]
+ */
 export async function enforceRetention(volumeName, keepCount, s3Config, log) {
   if (!keepCount || keepCount <= 0) return;
   try {
-    const backupsMap = await listVolumeBackups([volumeName], s3Config, log);
-    const list = backupsMap[volumeName] || [];
-    // list is already sorted newest-first
-    const toDelete = list.slice(keepCount);
-    for (const entry of toDelete) {
-      const timestamp = entry.key.split("/")[1].replace(".tar", "");
-      log?.("info", `[Retention] Pruning ${entry.key} (keeping last ${keepCount})`);
-      await deleteVolumeBackup(volumeName, timestamp, s3Config, log);
-    }
+    await restic.forget(
+      [`vol:${volumeName}`],
+      {
+        daily: keepCount,
+        weekly: Math.ceil(keepCount / 7),
+        monthly: 2,
+      },
+      s3Config,
+      log
+    );
   } catch (err) {
     log?.("warn", `[Retention] Failed for ${volumeName}: ${err.message}`);
   }
+}
+
+/**
+ * Delete a single restic snapshot by ID.
+ *
+ * @param {string} volumeName  (unused — kept for API compat)
+ * @param {string} snapshotId
+ * @param {Object} s3Config
+ * @param {Function} [log]
+ */
+export async function deleteVolumeBackup(volumeName, snapshotId, s3Config, log) {
+  await restic.forgetSnapshot(snapshotId, s3Config, log);
+  return { success: true };
 }

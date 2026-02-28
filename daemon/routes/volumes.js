@@ -142,23 +142,23 @@ router.delete("/api/volumes/:name", async (req, res) => {
 // POST /api/volumes/:volumeName/restore
 router.post("/api/volumes/:volumeName/restore", asyncHandler(async (req, res) => {
   const volumeName = req.params.volumeName;
-  const { backupKey, overwrite = true } = req.body;
-  if (!backupKey) return res.status(400).json({ success: false, error: "backupKey is required" });
+  const { snapshotId, overwrite = true } = req.body;
+  if (!snapshotId) return res.status(400).json({ success: false, error: "snapshotId is required" });
 
   const config = await getS3Config();
   if (!config) return res.status(400).json({ success: false, error: "S3 not configured" });
 
-  const result = await restoreVolumeBackup(volumeName, backupKey, config, overwrite, log);
+  const result = await restoreVolumeBackup(volumeName, snapshotId, config, overwrite, log);
   res.json({ success: true, ...result });
 }));
 
-// DELETE /api/volumes/:volumeName/backup/:timestamp
-router.delete("/api/volumes/:volumeName/backup/:timestamp", asyncHandler(async (req, res) => {
-  const { volumeName, timestamp } = req.params;
+// DELETE /api/volumes/:volumeName/backup/:snapshotId
+router.delete("/api/volumes/:volumeName/backup/:snapshotId", asyncHandler(async (req, res) => {
+  const { volumeName, snapshotId } = req.params;
   const config = await getS3Config();
   if (!config) return res.status(400).json({ success: false, error: "S3 not configured" });
 
-  await deleteVolumeBackup(volumeName, timestamp, config, log);
+  await deleteVolumeBackup(volumeName, snapshotId, config, log);
   res.json({ success: true, message: "Backup deleted successfully" });
 }));
 

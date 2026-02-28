@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNotification } from '../composables/useNotification'
 import { useApiUrl } from '../composables/useApiUrl'
@@ -20,6 +20,18 @@ const bucket = ref('')
 const accessKey = ref('')
 const secretKey = ref('')
 const region = ref('us-east-1')
+const resticPassword = ref('')
+
+// Computed restic repo preview
+const resticRepoPreview = computed(() => {
+  if (!bucket.value) return ''
+  const ep = (endpoint.value || '').replace(/\/$/, '')
+  if (ep.includes('amazonaws.com')) {
+    return `s3:${bucket.value}.s3.${region.value || 'us-east-1'}.amazonaws.com/yantr-restic`
+  }
+  if (!ep) return ''
+  return `s3:${ep}/${bucket.value}/yantr-restic`
+})
 
 // Fetch existing configuration
 async function fetchConfig() {
@@ -57,6 +69,11 @@ async function saveConfig() {
     return
   }
 
+  if (!resticPassword.value && !configured.value) {
+    toast.error('Restic Password is required to initialise encrypted backups')
+    return
+  }
+
   saving.value = true
   try {
     const response = await fetch(`${apiUrl.value}/api/backup/config`, {
@@ -68,7 +85,8 @@ async function saveConfig() {
         bucket: bucket.value,
         accessKey: accessKey.value,
         secretKey: secretKey.value,
-        region: region.value
+        region: region.value,
+        resticPassword: resticPassword.value
       })
     })
 
@@ -80,6 +98,7 @@ async function saveConfig() {
       // Clear sensitive fields after save
       accessKey.value = ''
       secretKey.value = ''
+      resticPassword.value = ''
     } else {
       toast.error(data.error || 'Failed to save configuration')
     }
@@ -242,6 +261,29 @@ onMounted(() => {
               />
               <p class="mt-2 text-[11px] font-medium text-gray-500 dark:text-zinc-500">Required to update configuration</p>
             </div>
+
+            <!-- Restic Password -->
+            <div>
+              <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500 mb-2">
+                Restic Password <span class="text-red-500">*</span>
+              </label>
+              <input
+                v-model="resticPassword"
+                type="password"
+                :placeholder="configured ? 'configured ✓ — enter to update' : 'Strong secret — used to encrypt all backups'"
+                class="w-full px-4 py-2.5 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg text-sm font-mono focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-600"
+              />
+              <p class="mt-2 text-[11px] font-medium text-amber-600 dark:text-amber-500">
+                Warning: losing this password makes all backups unrecoverable. Store it securely.
+              </p>
+            </div>
+
+            <!-- Restic Repo Preview -->
+            <div v-if="resticRepoPreview" class="bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg px-4 py-3">
+              <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-zinc-500 mb-1">Restic Repository</p>
+              <p class="font-mono text-[11px] text-gray-700 dark:text-zinc-300 break-all">{{ resticRepoPreview }}</p>
+            </div>
+
           </div>
 
           <!-- Actions -->

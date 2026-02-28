@@ -17,7 +17,7 @@ import AverageUptimeCard from "../components/quick-metrics/AverageUptimeCard.vue
 import ExpiringContainersCard from "../components/quick-metrics/ExpiringContainersCard.vue";
 import WatchtowerNextCheckCard from "../components/quick-metrics/WatchtowerNextCheckCard.vue";
 import HostMetricsCard from "../components/quick-metrics/HostMetricsCard.vue";
-import MinioStatusCard from "../components/quick-metrics/MinioStatusCard.vue";
+import BackupStatusCard from "../components/quick-metrics/BackupStatusCard.vue";
 import ToolsNavCard from "../components/home/ToolsNavCard.vue";
 import ExternalLinksCard from "../components/home/ExternalLinksCard.vue";
 
@@ -333,7 +333,7 @@ onUnmounted(() => {
             </div>
 
             <div v-if="showMetrics">
-              <MinioStatusCard />
+              <BackupStatusCard />
             </div>
 
             <YantraContainersGrid
