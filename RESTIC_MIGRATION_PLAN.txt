@@ -1,0 +1,402 @@
+================================================================================
+  YANTR — RESTIC BACKUP MIGRATION PLAN
+  Date: 2026-02-28
+================================================================================
+
+OVERVIEW
+--------
+Replace the current tar + MinIO-SDK backup engine with restic.
+S3 stays as the storage backend. The minio npm package is removed from the
+backup path. restic handles encryption, dedup, incremental chunking, and
+snapshot management natively. The repo lives at a new prefix inside the same
+S3 bucket so existing tar backups are never touched during migration.
+
+Old:  volume → Alpine container → tar → /tmp → minio.fPutObject → S3
+New:  volume → restic backup (restic binary in Yantr container) → S3 directly
+
+================================================================================
+PART 1 — DOCKERFILE CHANGE
+================================================================================
+
+File: Dockerfile (runtime stage only)
+
+Current line:
+  RUN apk add --no-cache docker-cli docker-cli-compose wget
+
+New line:
+  RUN apk add --no-cache docker-cli docker-cli-compose wget restic
+
+That is the only Dockerfile change. restic is a single static binary,
+the apk package is ~8 MB, no extra dependencies.
+
+================================================================================
+PART 2 — CONFIG SCHEMA CHANGE
+================================================================================
+
+File: backup-config.json  (persisted via /api/backup/config)
+
+Add ONE new field:
+
+  {
+    "endpoint":       "https://s3.p0ts.com",
+    "accessKey":      "...",
+    "secretKey":      "...",
+    "bucket":         "yantr",
+    "region":         "us-east-1",
+    "provider":       "Other",
+    "resticPassword": "user-chosen-strong-secret"   ← NEW
+  }
+
+The RESTIC_REPOSITORY is never stored. It is computed at runtime:
+  s3:<endpoint>/<bucket>/yantr-restic
+  e.g. s3:https://s3.p0ts.com/yantr/yantr-restic
+
+The existing yantr-backup/ prefix in the bucket is untouched.
+The restic repo lives at yantr-restic/ in the same bucket.
+
+================================================================================
+PART 3 — UI CHANGE (MinioConfig.vue)
+================================================================================
+
+Add one password input field below the existing "Secret Key" field:
+
+  Label:       "Restic Password"
+  Type:        password input
+  Placeholder: "Strong secret — used to encrypt all backups"
+  Note:        Not echoed back on load (same as secretKey treatment)
+
+Add one read-only computed preview below the form:
+
+  "Restic repository: s3:<endpoint>/<bucket>/yantr-restic"
+
+Wire the new field into the existing saveConfig() POST body:
+  body: { ...existing fields, resticPassword: resticPassword.value }
+
+Wire the existing fetchConfig() to accept resticPassword in the loaded config
+(masked as "***" just like secretKey, only shown as "configured ✓").
+
+API route change (daemon/routes/backup.js  POST /api/backup/config):
+  Destructure resticPassword from req.body and include it in the saved config.
+
+================================================================================
+PART 4 — RESTIC HELPER MODULE (NEW FILE)
+================================================================================
+
+File: daemon/restic.js
+
+This module owns all restic subprocess calls.
+It never touches minio SDK. It receives the s3Config object and builds
+the correct environment variables internally.
+
+Functions exported:
+
+  buildResticEnv(s3Config)
+  ─ Returns the env object injected into every restic spawn:
+      RESTIC_REPOSITORY = s3:<endpoint>/<bucket>/yantr-restic
+      RESTIC_PASSWORD   = config.resticPassword
+      AWS_ACCESS_KEY_ID     = config.accessKey
+      AWS_SECRET_ACCESS_KEY = config.secretKey
+      AWS_DEFAULT_REGION    = config.region
+  ─ If endpoint contains "amazonaws.com" the repo format changes to
+    s3:<bucket>.s3.<region>.amazonaws.com/<prefix> (native AWS format).
+
+  initRepo(s3Config, log)
+  ─ Runs: restic init
+  ─ If repo already exists (exit code 1 + "already initialized") treats as OK.
+  ─ Called once before the very first backup attempt.
+
+  backupVolume(volumeName, tags, s3Config, log)
+  ─ Runs:
+      restic backup /var/lib/docker/volumes/<volumeName>/_data \
+        --tag yantr \
+        --tag vol:<volumeName> \
+        --tag <each entry in tags array> \
+        --json
+  ─ Returns the snapshot ID from the JSON output.
+  ─ No temp directory needed. restic streams directly to S3.
+
+  listSnapshots(filter, s3Config, log)
+  ─ Runs: restic snapshots --json [--tag <filter.tag>] [--path <filter.path>]
+  ─ Returns parsed JSON array of snapshot objects:
+      { id, short_id, time, tags, paths, summary.total_bytes_processed }
+
+  restoreSnapshot(snapshotId, volumeName, s3Config, log)
+  ─ Runs:
+      restic restore <snapshotId> \
+        --target /var/lib/docker/volumes/<volumeName>/_data
+  ─ Streams from S3 directly into the volume path.
+  ─ No temp directory needed.
+
+  forget(tags, keepPolicy, s3Config, log)
+  ─ Runs:
+      restic forget --prune --json \
+        --tag <tags> \
+        --keep-daily  <keepPolicy.daily>   \
+        --keep-weekly <keepPolicy.weekly>  \
+        --keep-monthly <keepPolicy.monthly>
+  ─ keepPolicy defaults: { daily: 7, weekly: 4, monthly: 6 }
+
+  checkRepo(s3Config, log)
+  ─ Runs: restic check
+  ─ Used for health checks and scheduled integrity verification.
+
+All functions use spawnProcess() (already in utils.js) with the env object
+from buildResticEnv(). stdout/stderr are captured and forwarded to the
+log callback on every line.
+
+================================================================================
+PART 5 — CONTAINER STOP / START LIFECYCLE
+================================================================================
+
+This is the most important correctness concern.
+
+A volume snapshot taken while a DB is writing can produce a corrupt snapshot.
+Solution: stop the containers using the volume, snapshot, restart.
+
+New helper in daemon/restic.js (or daemon/backup.js):
+
+  getContainersUsingVolume(volumeName)
+  ─ docker.listContainers({ all: false })  ← only running containers
+  ─ For each, inspect Mounts array
+  ─ Return array of { id, name } where mount.Name === volumeName
+
+  stopContainersForVolume(volumeName, log)
+  ─ Calls getContainersUsingVolume()
+  ─ Calls container.stop({ t: 10 }) for each (10 second graceful timeout)
+  ─ Returns the list of container IDs that were stopped (for restart later)
+  ─ Skips containers that are already stopped (state !== "running")
+
+  startContainers(containerIds, log)
+  ─ Calls container.start() for each ID in the list
+  ─ Used in the finally block so it always runs even if backup fails
+
+Backup sequence per volume:
+
+  const stopped = await stopContainersForVolume(volumeName, log);
+  try {
+    await restic.backupVolume(volumeName, tags, s3Config, log);
+  } finally {
+    await startContainers(stopped, log);   // always restarts, even on error
+  }
+
+This means:
+  - Containers are down only during the restic read pass (usually seconds
+    on incremental runs after the first full backup).
+  - If restic fails, containers still come back up.
+  - If a container was already stopped by the user, it is NOT restarted
+    (because it was not in the "stopped by us" list).
+
+================================================================================
+PART 6 — REWRITE daemon/backup.js FUNCTIONS
+================================================================================
+
+Functions REMOVED (replaced by restic equivalents):
+
+  runAlpineTask()             → removed entirely (no more Alpine containers)
+  createMinioClient()         → removed from backup path (kept in old legacy path only during migration)
+  createContainerBackup()     → replaced (see below)
+  createBackup()              → replaced (see below)
+  listVolumeBackups()         → replaced by restic.listSnapshots()
+  restoreVolumeBackup()       → replaced by restic.restoreSnapshot()
+  deleteVolumeBackup()        → replaced by restic forget --tag + --prune
+  deleteBackup()              → replaced by restic forget specific snapshot ID
+  enforceRetention()          → replaced by restic.forget()
+  listBackups()               → replaced by restic.listSnapshots()
+
+Functions KEPT unchanged:
+  getS3Config() / saveS3Config()
+  getSchedules() / saveSchedules() / upsertSchedule() / deleteSchedule()
+  getBackupJobStatus() / getRestoreJobStatus()
+  getAllBackupJobs() / getAllRestoreJobs()
+  generateJobId()
+  startRestoredApps()
+
+New createContainerBackup({ containerId, volumes, s3Config, log }):
+
+  1. generateJobId(), mark job in-progress in backupJobs Map
+  2. Call restic.initRepo(s3Config, log) — safe to call every time, no-op if
+     repo already exists
+  3. For each volume:
+     a. stopContainersForVolume(volumeName, log)
+     b. try: restic.backupVolume(volumeName, [containerId], s3Config, log)
+     c. finally: startContainers(stopped, log)
+     d. Capture returned snapshotId, store in job metadata
+  4. Mark job completed with { snapshotIds, completedAt }
+
+New restoreVolumeBackup(volumeName, snapshotId, s3Config, overwrite, log):
+
+  1. generateJobId(), mark restore job in-progress
+  2. Check volume exists via docker API
+  3. If exists and !overwrite → throw
+  4. stopContainersForVolume(volumeName, log)
+  5. try:
+     a. If volume exists and overwrite: clear volume contents via
+        docker exec or Alpine one-liner
+     b. If volume does not exist: docker.createVolume({ Name: volumeName })
+     c. restic.restoreSnapshot(snapshotId, volumeName, s3Config, log)
+  6. finally: startContainers(stopped, log)
+  7. Mark job completed
+
+New listVolumeBackups(volumeNames, s3Config, log):
+
+  For each volumeName:
+    restic.listSnapshots({ tag: `vol:${volumeName}` }, s3Config, log)
+  Returns same shape as before:
+    { [volumeName]: [{ snapshotId, timestamp, size, tags }] }
+
+New enforceRetention(volumeName, keepCount, s3Config, log):
+
+  restic.forget(
+    [`vol:${volumeName}`],
+    { daily: keepCount, weekly: Math.ceil(keepCount/7), monthly: 2 },
+    s3Config, log
+  )
+  Note: keepCount maps to --keep-daily. Adjust policy as needed.
+
+================================================================================
+PART 7 — API ROUTE CHANGES (daemon/routes/)
+================================================================================
+
+daemon/routes/backup.js
+
+  POST /api/backup/config — add resticPassword to destructure + save
+
+daemon/routes/volumes.js
+
+  GET /api/volumes/:name/backups
+  ─ Was: listVolumeBackups([name], s3Config)
+  ─ Still calls listVolumeBackups() — no change in API contract.
+  ─ Response shape changes: backupKey (S3 tar key) → snapshotId (restic short ID)
+
+  POST /api/volumes/:name/restore
+  ─ Was: body { backupKey, overwrite }
+  ─ New: body { snapshotId, overwrite }
+  ─ Calls restoreVolumeBackup(name, snapshotId, config, overwrite, log)
+
+  DELETE /api/volumes/:name/backups/:timestamp
+  ─ Was: deleteVolumeBackup(name, timestamp, config, log)
+  ─ New: restic forget specific snapshot by ID
+  ─ Route param changes from :timestamp to :snapshotId
+
+daemon/routes/containers.js
+
+  POST /api/containers/:id/backup
+  ─ No change in route contract. Internally calls new createContainerBackup().
+
+================================================================================
+PART 8 — BACKUP SCHEDULER CHANGES (daemon/backup-scheduler.js)
+================================================================================
+
+runScheduledBackup() changes:
+
+  Old:
+    await createContainerBackup({ containerId: "scheduled", volumes, s3Config, log })
+    await enforceRetention(volumeName, keepCount, s3Config, log)
+
+  New (same calls, but the implementations are now restic-based):
+    await createContainerBackup({ containerId: "scheduled", volumes, s3Config, log })
+    await enforceRetention(volumeName, keepCount, s3Config, log)
+
+  No signature change. The scheduler itself (timers, persistence) is unchanged.
+
+Add one new scheduled job (optional, weekly):
+  checkRepo:
+    restic.checkRepo(s3Config, log)
+    Run every 7 days via a separate timer.
+    Log result; surface as a "last integrity check" timestamp in settings UI.
+
+================================================================================
+PART 9 — SNAPSHOT OBJECT SHAPE (UI CONTRACT)
+================================================================================
+
+Old backup list item:
+  { key: "myvolume/2026-02-06_10-30-45.tar", timestamp: "2026-02-06T10:30:45Z", size: 104857600 }
+
+New snapshot list item:
+  {
+    snapshotId:  "a1b2c3d4",          ← restic short ID (8 hex chars)
+    timestamp:   "2026-02-06T10:30:45Z",
+    tags:        ["yantr", "vol:myvolume", "scheduled"],
+    sizeMB:      12.4,                ← summary.total_bytes_processed / 1MB
+    dedupMB:     1.1                  ← summary.data_added / 1MB (what was new)
+  }
+
+The UI (Volumes.vue) needs to change:
+  - Backup list items reference snapshotId instead of key/timestamp
+  - Restore action passes snapshotId instead of backupKey
+  - Delete action passes snapshotId
+  - (Optional) Show dedupMB alongside sizeMB to surface restic's dedup savings
+
+================================================================================
+PART 10 — WHAT IS PRESERVED UNTOUCHED
+================================================================================
+
+  - backup-config.json structure (only resticPassword added)
+  - backup-schedules.json structure (no change)
+  - All API route paths (no URL changes)
+  - Job tracking system (backupJobs / restoreJobs Maps)
+  - Scheduler timer logic
+  - S3 credentials and bucket (same endpoint, same bucket)
+  - The old yantr-backup/ prefix in S3 (legacy tar backups remain accessible
+    for manual download until user explicitly deletes them)
+  - startRestoredApps() — still called after restore
+
+================================================================================
+PART 11 — WHAT IS REMOVED
+================================================================================
+
+  - minio npm package dependency (can be removed from package.json after migration)
+  - Alpine container pulls for tar
+  - All fPutObject / fGetObject / removeObjects calls in backup path
+  - /tmp staging of tar files (no more temp disk usage during backup)
+  - metadata.json upload / download pattern
+
+================================================================================
+PART 12 — IMPLEMENTATION ORDER
+================================================================================
+
+Step 1:  Add resticPassword field to MinioConfig.vue + POST /api/backup/config
+Step 2:  Create daemon/restic.js with all helper functions
+Step 3:  Add container stop/start lifecycle helpers
+Step 4:  Rewrite createContainerBackup() in daemon/backup.js
+Step 5:  Rewrite restoreVolumeBackup() in daemon/backup.js
+Step 6:  Rewrite listVolumeBackups() and enforceRetention()
+Step 7:  Update API routes (volumes.js — snapshotId param)
+Step 8:  Update Volumes.vue to use snapshotId
+Step 9:  Add restic to Dockerfile
+Step 10: Test: init → backup one volume → list → restore → forget
+
+================================================================================
+PART 13 — RISK NOTES
+================================================================================
+
+1. FIRST BACKUP IS FULL
+   The first restic backup of each volume uploads all data (no prior chunks).
+   Subsequent runs are incremental. Plan for the first run to take longer.
+
+2. REPO PASSWORD LOSS = DATA LOSS
+   If resticPassword is lost, the entire repo is unrecoverable.
+   Recommend: show a prominent warning in the UI when saving and advise
+   the user to write it down.
+
+3. CONCURRENT BACKUPS
+   restic locks the repo during backup. Two simultaneous backups to the same
+   repo will queue (one waits for the lock). This is safe but slower.
+   The scheduler already serializes per-volume so this is unlikely to be an
+   issue with the current design.
+
+4. RESTIC NOT IN PATH
+   If restic binary is missing (non-Docker dev environment), backupVolume()
+   will fail with ENOENT. Add a startup check in daemon/main.js:
+     spawnProcess('restic', ['version'])
+     If it fails, log a warning and disable backup features.
+
+5. CONTAINER STOP WINDOW
+   Containers are stopped during the restic read pass. For large volumes
+   (100 GB+) the first backup could mean minutes of downtime. Subsequent runs
+   are typically seconds (only changed data is re-read). Inform users via
+   the UI: "First backup may take several minutes; app will be briefly stopped."
+
+================================================================================
+END OF PLAN
+================================================================================
