@@ -9,6 +9,7 @@ import {
   deleteSchedule,
   getBackupJobStatus,
   getRestoreJobStatus,
+  listVolumeBackups,
 } from "../backup.js";
 import {
   applySchedule,
@@ -16,6 +17,7 @@ import {
   runNow,
 } from "../backup-scheduler.js";
 import { listSnapshots } from "../restic.js";
+import { docker } from "../shared.js";
 
 const router = Router();
 
@@ -147,33 +149,52 @@ router.post("/api/backup/schedules/:volumeName/run", asyncHandler(async (req, re
 
 // ─── Backed-up Volumes ────────────────────────────────────────────────────────
 
-// GET /api/backup/volumes — list volumes that have at least one snapshot,
-// with snapshot count and newest/oldest timestamps.
+// GET /api/backup/volumes — list volumes that have at least one snapshot.
+// Returns per volume: full snapshot list (id, timestamp, sizeMB), snapshot count,
+// newest/oldest timestamps, and the running container that uses this volume (if any).
 router.get("/api/backup/volumes", asyncHandler(async (req, res) => {
   const config = await getS3Config();
   if (!config) return res.json({ success: true, volumes: [] });
 
-  const snapshots = await listSnapshots({ tag: "yantr" }, config, log);
+  // One restic call to discover all backed-up volume names
+  const allSnapshots = await listSnapshots({ tag: "yantr" }, config, log);
+  const volumeNames = [...new Set(
+    allSnapshots
+      .flatMap(s => s.tags || [])
+      .filter(t => t.startsWith("vol:"))
+      .map(t => t.slice(4))
+  )];
 
-  // Group snapshots by volume name (derived from the "vol:<name>" tag)
-  const volumeMap = new Map();
-  for (const snap of snapshots) {
-    const volTag = (snap.tags || []).find(t => t.startsWith("vol:"));
-    if (!volTag) continue;
-    const volumeName = volTag.slice(4);
-    if (!volumeMap.has(volumeName)) {
-      volumeMap.set(volumeName, []);
+  if (volumeNames.length === 0) return res.json({ success: true, volumes: [] });
+
+  // Fetch full snapshot details and running containers in parallel
+  const [backups, runningContainers] = await Promise.all([
+    listVolumeBackups(volumeNames, config, log),
+    docker.listContainers({ all: false }).catch(() => []),
+  ]);
+
+  // Map volume name → first running container that mounts it
+  const volumeToContainer = new Map();
+  for (const c of runningContainers) {
+    for (const mount of (c.Mounts || [])) {
+      if (mount.Type === "volume" && !volumeToContainer.has(mount.Name)) {
+        volumeToContainer.set(mount.Name, {
+          id: c.Id,
+          name: (c.Names?.[0] || "").replace(/^\//, ""),
+        });
+      }
     }
-    volumeMap.get(volumeName).push(snap);
   }
 
-  const volumes = Array.from(volumeMap.entries()).map(([volumeName, snaps]) => {
-    const sorted = snaps.slice().sort((a, b) => new Date(b.time) - new Date(a.time));
+  const volumes = volumeNames.map(volumeName => {
+    const snaps = backups[volumeName] || [];
     return {
       volumeName,
       snapshotCount: snaps.length,
-      latestAt: sorted[0]?.time ?? null,
-      oldestAt: sorted[sorted.length - 1]?.time ?? null,
+      latestAt: snaps[0]?.timestamp ?? null,
+      oldestAt: snaps[snaps.length - 1]?.timestamp ?? null,
+      snapshots: snaps,
+      container: volumeToContainer.get(volumeName) ?? null,
     };
   });
 
