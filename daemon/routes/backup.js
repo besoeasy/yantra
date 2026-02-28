@@ -37,10 +37,27 @@ router.post("/api/backup/config", asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, error: "endpoint, accessKey, secretKey, and bucket are required" });
   }
 
-  const config = { endpoint, accessKey, secretKey, bucket, region: region || "us-east-1", provider: provider || "Other" };
-  if (resticPassword) config.resticPassword = resticPassword;
+  // Read the existing config so we can preserve the restic password if not re-supplied.
+  const existing = await getS3Config();
+
+  // On first setup there is no existing config — resticPassword is mandatory.
+  if (!existing && !resticPassword) {
+    return res.status(400).json({ success: false, error: "resticPassword is required when configuring backups for the first time" });
+  }
+
+  const config = {
+    endpoint,
+    accessKey,
+    secretKey,
+    bucket,
+    region: region || "us-east-1",
+    provider: provider || "Other",
+    // Preserve the existing password if the user did not supply a new one.
+    resticPassword: resticPassword || existing?.resticPassword || "",
+  };
+
   await saveS3Config(config);
-  log("info", "[POST /api/backup/config] S3 backup configuration saved");
+  log("info", "[POST /api/backup/config] Backup configuration saved");
   res.json({ success: true, message: "Backup configuration saved successfully" });
 }));
 

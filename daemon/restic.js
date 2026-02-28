@@ -183,8 +183,44 @@ export async function listSnapshots(filter, s3Config, log) {
 }
 
 /**
+ * Get size statistics for a single snapshot.
+ * Uses `restic stats <snapshotId> --json` which returns { total_size, total_file_count }.
+ * Returns null on failure (non-fatal — callers treat null as unknown size).
+ *
+ * @param {string} snapshotId
+ * @param {Object} s3Config
+ * @returns {Promise<{ sizeMB: number } | null>}
+ */
+export async function getSnapshotStats(snapshotId, s3Config) {
+  const env = buildResticEnv(s3Config);
+
+  const { stdout, exitCode } = await spawnProcess(
+    "restic",
+    ["stats", snapshotId, "--json"],
+    { env }
+  );
+
+  if (exitCode !== 0) return null;
+
+  try {
+    const obj = JSON.parse(stdout.trim());
+    if (obj.total_size == null) return null;
+    return {
+      sizeMB: parseFloat((obj.total_size / (1024 * 1024)).toFixed(2)),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Restore a restic snapshot into a Docker volume path.
  * Streams directly from S3 — no temp directory needed.
+ *
+ * Uses `--target /` so restic restores files to their original absolute paths
+ * (e.g. /var/lib/docker/volumes/<name>/_data/...).
+ * Using `--target <dataPath>` would cause double-nesting because restic
+ * appends the backed-up absolute path under the target directory.
  *
  * @param {string} snapshotId
  * @param {string} volumeName
@@ -193,13 +229,13 @@ export async function listSnapshots(filter, s3Config, log) {
  */
 export async function restoreSnapshot(snapshotId, volumeName, s3Config, log) {
   const env = buildResticEnv(s3Config);
-  const targetPath = `/var/lib/docker/volumes/${volumeName}/_data`;
+  const dataPath = `/var/lib/docker/volumes/${volumeName}/_data`;
 
-  log?.("info", `[restic] Restoring snapshot ${snapshotId} → ${targetPath}`);
+  log?.("info", `[restic] Restoring snapshot ${snapshotId} → ${dataPath}`);
 
   const { stdout, stderr, exitCode } = await spawnProcess(
     "restic",
-    ["restore", snapshotId, "--target", targetPath],
+    ["restore", snapshotId, "--target", "/", "--include", dataPath],
     { env }
   );
 

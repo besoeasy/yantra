@@ -132,7 +132,7 @@ onMounted(() => {
               <Cloud :size="16" class="text-gray-700 dark:text-zinc-300" />
             </div>
             <div>
-              <h1 class="text-sm font-semibold tracking-tight text-gray-900 dark:text-white">MinIO / S3 Configuration</h1>
+              <h1 class="text-sm font-semibold tracking-tight text-gray-900 dark:text-white">Backup Storage Configuration</h1>
               <p class="text-xs font-medium text-gray-500 dark:text-zinc-500">Configure object storage for volume backups</p>
             </div>
           </div>
@@ -165,9 +165,9 @@ onMounted(() => {
             <div class="flex gap-4">
               <Cloud :size="20" class="text-blue-600 dark:text-blue-500 shrink-0 mt-0.5" />
               <div class="text-sm">
-                <p class="font-semibold text-blue-900 dark:text-blue-400 tracking-tight mb-1.5">About S3 / MinIO Storage</p>
+                <p class="font-semibold text-blue-900 dark:text-blue-400 tracking-tight mb-1.5">About Backup Storage</p>
                 <p class="text-blue-700 dark:text-blue-300/80 leading-relaxed font-medium">
-                  Configure S3-compatible object storage (AWS S3, MinIO, or other providers) to enable automatic volume backups.
+                  Configure S3-compatible object storage (AWS S3 or any S3-compatible provider) to enable automatic volume backups powered by restic.
                   Backups are stored securely and can be restored from any container detail page.
                 </p>
               </div>
@@ -185,7 +185,7 @@ onMounted(() => {
                 class="w-full px-4 py-2.5 bg-gray-50 dark:bg-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-lg text-sm font-medium focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 dark:text-white"
               >
                 <option value="AWS">AWS S3</option>
-                <option value="Other">MinIO / Other S3-Compatible</option>
+                <option value="Other">S3-Compatible (Custom Endpoint)</option>
               </select>
             </div>
 

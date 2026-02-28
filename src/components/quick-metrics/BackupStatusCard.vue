@@ -30,7 +30,7 @@ async function checkConfig() {
       }
     }
   } catch (error) {
-    console.error('Failed to check MinIO config:', error)
+    console.error('Failed to check backup config:', error)
   } finally {
     loading.value = false
   }
@@ -67,7 +67,7 @@ onMounted(() => {
         
         <div>
           <h3 class="text-sm font-semibold text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-            S3 Storage
+            S3 Backups
           </h3>
           <div class="flex items-center gap-2 mt-1">
              <div class="w-1.5 h-1.5 rounded-full"
@@ -115,7 +115,7 @@ onMounted(() => {
       <!-- Not Configured State -->
       <div v-else class="pt-4 border-t border-gray-100 dark:border-zinc-800/80">
         <p class="text-sm font-medium text-gray-500 dark:text-zinc-400 leading-relaxed mb-4">
-          Configure S3/MinIO storage to enable volume backups.
+          Configure S3-compatible storage to enable restic volume backups.
         </p>
         <div class="flex items-center gap-1.5 text-amber-600 dark:text-amber-500 transition-colors duration-300">
           <Zap class="w-3.5 h-3.5" />

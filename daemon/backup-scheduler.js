@@ -17,12 +17,32 @@ import {
   getS3Config,
   createContainerBackup,
   enforceRetention,
+  getBackupJobStatus,
 } from "./backup.js";
 
 // Map<volumeName, NodeJS.Timer>
 const activeTimers = new Map();
 
 let _log = null;
+
+/**
+ * Poll a backup job until it reaches a terminal state (completed / failed)
+ * or the timeout expires.
+ *
+ * @param {string} jobId
+ * @param {{ pollMs?: number, timeoutMs?: number }} opts
+ * @returns {Promise<'completed'|'failed'|'timeout'>}
+ */
+async function waitForJob(jobId, { pollMs = 2000, timeoutMs = 30 * 60 * 1000 } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const job = getBackupJobStatus(jobId);
+    if (job?.status === "completed") return "completed";
+    if (job?.status === "failed") return "failed";
+    await new Promise((r) => setTimeout(r, pollMs));
+  }
+  return "timeout";
+}
 
 /**
  * Run a single scheduled backup for a volume.
@@ -38,29 +58,26 @@ async function runScheduledBackup(schedule) {
   }
 
   try {
-    // createContainerBackup accepts a list of volumes; pass just this one.
-    // containerId is not required by the core logic — it's only used for logging.
-    await new Promise((resolve, reject) => {
-      const result = createContainerBackup({
-        containerId: "scheduled",
-        volumes: [volumeName],
-        s3Config,
-        log: _log,
-      });
-
-      // createContainerBackup runs async internally and returns immediately.
-      // We wait a short moment so the job is at least queued, then resolve.
-      // Retention is enforced after the backup completes asynchronously below.
-      resolve(result);
+    // createContainerBackup is fire-and-forget — capture the jobId to poll.
+    const { jobId } = createContainerBackup({
+      containerId: "scheduled",
+      volumes: [volumeName],
+      s3Config,
+      log: _log,
     });
 
-    // Wait for the backup job to finish before enforcing retention.
-    // Because createContainerBackup is fire-and-forget we give it reasonable time.
-    // A proper production implementation would await the job-id poll; this is
-    // sufficient for a scheduled context where a small delay is acceptable.
-    await new Promise((res) => setTimeout(res, 5000));
+    // Wait for the job to reach a terminal state before enforcing retention.
+    const outcome = await waitForJob(jobId);
 
-    // Enforce retention
+    if (outcome === "failed") {
+      const job = getBackupJobStatus(jobId);
+      throw new Error(`Backup job failed: ${job?.error || "unknown error"}`);
+    }
+    if (outcome === "timeout") {
+      throw new Error("Backup job timed out after 30 minutes");
+    }
+
+    // Enforce retention only after a confirmed successful backup.
     await enforceRetention(volumeName, keepCount, s3Config, _log);
 
     // Update lastRunAt / nextRunAt in persisted schedules

@@ -325,7 +325,7 @@ export function restoreVolumeBackup(volumeName, snapshotId, s3Config, overwrite,
  * Returns:
  *   {
  *     [volumeName]: [
- *       { snapshotId, timestamp, tags, sizeMB, dedupMB }
+ *       { snapshotId, timestamp, tags, sizeMB }
  *     ]
  *   }
  *
@@ -345,17 +345,19 @@ export async function listVolumeBackups(volumeNames, s3Config, log) {
         log
       );
 
-      result[volumeName] = snapshots.map((s) => ({
-        snapshotId: s.short_id || s.id?.substring(0, 8) || s.id,
-        timestamp: s.time,
-        tags: s.tags || [],
-        sizeMB: s.summary?.total_bytes_processed
-          ? parseFloat((s.summary.total_bytes_processed / (1024 * 1024)).toFixed(2))
-          : null,
-        dedupMB: s.summary?.data_added
-          ? parseFloat((s.summary.data_added / (1024 * 1024)).toFixed(2))
-          : null,
-      })).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      result[volumeName] = await Promise.all(
+        snapshots.map(async (s) => {
+          const snapshotId = s.short_id || s.id?.substring(0, 8) || s.id;
+          const stats = await restic.getSnapshotStats(snapshotId, s3Config).catch(() => null);
+          return {
+            snapshotId,
+            timestamp: s.time,
+            tags: s.tags || [],
+            sizeMB: stats?.sizeMB ?? null,
+          };
+        })
+      );
+      result[volumeName].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     } catch (err) {
       log?.("warn", `[listVolumeBackups] Failed for ${volumeName}: ${err.message}`);
       result[volumeName] = [];

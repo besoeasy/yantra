@@ -784,10 +784,9 @@ onUnmounted(() => {
                       <div class="flex-1 min-w-0">
                         <div class="font-mono text-[11px] font-medium text-gray-900 dark:text-white">{{ formatBackupDate(backup.timestamp) }}</div>
                         <div class="text-gray-500 dark:text-zinc-400 text-[10px] mt-0.5 font-bold uppercase tracking-wider">
-                          <span v-if="backup.sizeMB != null">{{ backup.sizeMB }} MB</span>
-                          <span v-if="backup.dedupMB != null" class="ml-2 text-green-600 dark:text-green-500">(+{{ backup.dedupMB }} MB new)</span>
-                          <span class="font-mono ml-2 text-gray-400 dark:text-zinc-500">{{ backup.snapshotId }}</span>
-                        </div>
+                           <span v-if="backup.sizeMB != null">{{ backup.sizeMB }} MB</span>
+                           <span class="font-mono ml-2 text-gray-400 dark:text-zinc-500">{{ backup.snapshotId }}</span>
+                         </div>
                       </div>
                       <div class="flex gap-2 ml-3">
                         <button
