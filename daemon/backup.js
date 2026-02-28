@@ -21,22 +21,33 @@ function generateJobId() {
   return `job-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
-const CONFIG_PATH = path.join(__dirname, "..", "backup-config.json");
-const SCHEDULES_PATH = path.join(__dirname, "..", "backup-schedules.json");
+// Single file that holds all backup state: S3 credentials + schedules.
+// Shape: { s3: { ... }, schedules: [ ... ] }
+const BACKUP_STATE_PATH = path.join(__dirname, "..", "backup.json");
 
-// Get S3 config from environment or config file
-export async function getS3Config() {
+async function readState() {
   try {
-    const content = await readFile(CONFIG_PATH, "utf-8");
-    return JSON.parse(content);
-  } catch (err) {
-    return null;
+    const content = await readFile(BACKUP_STATE_PATH, "utf-8");
+    const parsed = JSON.parse(content);
+    return { s3: parsed.s3 ?? null, schedules: Array.isArray(parsed.schedules) ? parsed.schedules : [] };
+  } catch {
+    return { s3: null, schedules: [] };
   }
 }
 
-// Save S3 config
+async function writeState(state) {
+  await writeFile(BACKUP_STATE_PATH, JSON.stringify(state, null, 2), "utf-8");
+}
+
+export async function getS3Config() {
+  const { s3 } = await readState();
+  return s3;
+}
+
 export async function saveS3Config(config) {
-  await writeFile(CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
+  const state = await readState();
+  state.s3 = config;
+  await writeState(state);
 }
 
 // ---- Schedule persistence ----
@@ -53,16 +64,14 @@ export async function saveS3Config(config) {
  * }
  */
 export async function getSchedules() {
-  try {
-    const content = await readFile(SCHEDULES_PATH, "utf-8");
-    return JSON.parse(content);
-  } catch (err) {
-    return [];
-  }
+  const { schedules } = await readState();
+  return schedules;
 }
 
 export async function saveSchedules(schedules) {
-  await writeFile(SCHEDULES_PATH, JSON.stringify(schedules, null, 2), "utf-8");
+  const state = await readState();
+  state.schedules = schedules;
+  await writeState(state);
 }
 
 export async function upsertSchedule(schedule) {
