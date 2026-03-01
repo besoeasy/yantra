@@ -60,6 +60,5 @@ Navigate to `http://localhost` in your browser. You are ready to go.
 <div align="center">
   <br/>
   <a href="https://github.com/besoeasy/yantr/issues">Report an Issue</a> • <a href="apps/apps.md">Submit an App</a>
-  <br/><br/>
-  <b>Built with ❤️ by <a href="https://github.com/besoeasy">besoeasy</a></b>
+  <br/>
 </div>
