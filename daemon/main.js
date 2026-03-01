@@ -1,5 +1,6 @@
-import express from "express";
-import cors from "cors";
+import Fastify from "fastify";
+import fastifyCors from "@fastify/cors";
+import fastifyStatic from "@fastify/static";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -10,22 +11,21 @@ import { startCleanupScheduler } from "./cleanup.js";
 import { startScheduler } from "./backup-scheduler.js";
 import { socketPath, log } from "./shared.js";
 
-import systemRouter from "./routes/system.js";
-import containersRouter from "./routes/containers.js";
-import stacksRouter from "./routes/stacks.js";
-import appsRouter from "./routes/apps.js";
-import imagesRouter from "./routes/images.js";
-import volumesRouter from "./routes/volumes.js";
-import backupRouter from "./routes/backup.js";
+import systemRoutes from "./routes/system.js";
+import containersRoutes from "./routes/containers.js";
+import stacksRoutes from "./routes/stacks.js";
+import appsRoutes from "./routes/apps.js";
+import imagesRoutes from "./routes/images.js";
+import volumesRoutes from "./routes/volumes.js";
+import backupRoutes from "./routes/backup.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const app = express();
+const fastify = Fastify({ logger: false });
 
-// ─── Middleware ───────────────────────────────────────────────────────────────
-app.use(cors());
-app.use(express.json());
+// ─── CORS ─────────────────────────────────────────────────────────────────────
+await fastify.register(fastifyCors, { origin: "*" });
 
 // ─── Static UI (production only) ─────────────────────────────────────────────
 function normalizeUiBasePath(value) {
@@ -40,27 +40,41 @@ if (process.env.NODE_ENV === "production") {
   const uiDistPath = path.join(__dirname, "..", "dist");
   const uiBasePath = normalizeUiBasePath(process.env.UI_BASE_PATH || process.env.VITE_BASE_PATH || "/");
 
-  app.use(uiBasePath, express.static(uiDistPath));
+  await fastify.register(fastifyStatic, {
+    root: uiDistPath,
+    prefix: uiBasePath,
+    wildcard: false,
+    decorateReply: true,
+  });
 
   log("info", `📦 Serving Vue.js app from: ${uiDistPath}`);
   log("info", `🧭 UI virtual root: ${uiBasePath}`);
 }
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
-app.use(systemRouter);
-app.use(containersRouter);
-app.use(stacksRouter);
-app.use(appsRouter);
-app.use(imagesRouter);
-app.use(volumesRouter);
-app.use(backupRouter);
+await fastify.register(systemRoutes);
+await fastify.register(containersRoutes);
+await fastify.register(stacksRoutes);
+await fastify.register(appsRoutes);
+await fastify.register(imagesRoutes);
+await fastify.register(volumesRoutes);
+await fastify.register(backupRoutes);
 
-// ─── Error handler (must be last) ────────────────────────────────────────────
-app.use(errorHandler);
+// ─── Error handler ────────────────────────────────────────────────────────────
+fastify.setErrorHandler(errorHandler);
+
+// ─── SPA fallback (production only, after API routes) ────────────────────────
+if (process.env.NODE_ENV === "production") {
+  fastify.setNotFoundHandler((_request, reply) => {
+    reply.sendFile("index.html");
+  });
+}
 
 // ─── Start server ─────────────────────────────────────────────────────────────
 const PORT = 5252;
-app.listen(PORT, "0.0.0.0", () => {
+try {
+  await fastify.listen({ port: PORT, host: "0.0.0.0" });
+
   log("info", "\n" + "=".repeat(50));
   log("info", "🚀 Yantr API Server Started");
   log("info", "=".repeat(50));
@@ -81,4 +95,7 @@ app.listen(PORT, "0.0.0.0", () => {
   startScheduler(log).catch((err) => {
     log("warn", `⚠️  [BACKUP SCHEDULER] ${err.message}`);
   });
-});
+} catch (err) {
+  console.error("Failed to start server:", err);
+  process.exit(1);
+}

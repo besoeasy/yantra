@@ -1,4 +1,3 @@
-import { Router } from "express";
 import path from "path";
 import { readFile, writeFile, unlink, access } from "fs/promises";
 import YAML from "yaml";
@@ -6,98 +5,98 @@ import {
   docker, log, appsDir, socketPath,
   getAppsCatalogCached, checkImageArchitectureSupport, getImageFromCompose,
 } from "../shared.js";
-import { asyncHandler, spawnProcess, NotFoundError, BadRequestError } from "../utils.js";
+import { spawnProcess, NotFoundError, BadRequestError } from "../utils.js";
 import { resolveComposeCommand } from "../compose.js";
 
-const router = Router();
+export default async function appsRoutes(fastify) {
 
-// GET /api/apps
-router.get("/api/apps", asyncHandler(async (req, res) => {
-  const forceRefresh = req.query.refresh === "1" || req.query.refresh === "true";
-  const { apps, count } = await getAppsCatalogCached({ forceRefresh });
-  res.json({ success: true, count, apps });
-}));
+  // GET /api/apps
+  fastify.get("/api/apps", async (request, reply) => {
+    const forceRefresh = request.query.refresh === "1" || request.query.refresh === "true";
+    const { apps, count } = await getAppsCatalogCached({ forceRefresh });
+    return reply.send({ success: true, count, apps });
+  });
 
-// GET /api/apps/:id/check-arch
-router.get("/api/apps/:id/check-arch", asyncHandler(async (req, res) => {
-  const appId = req.params.id;
-  const composePath = path.join(appsDir, appId, "compose.yml");
-  try { await access(composePath); } catch { throw new NotFoundError(`App '${appId}' not found`); }
+  // GET /api/apps/:id/check-arch
+  fastify.get("/api/apps/:id/check-arch", async (request, reply) => {
+    const appId = request.params.id;
+    const composePath = path.join(appsDir, appId, "compose.yml");
+    try { await access(composePath); } catch { throw new NotFoundError(`App '${appId}' not found`); }
 
-  const imageName = await getImageFromCompose(composePath);
-  if (!imageName) throw new BadRequestError("Could not extract image name from compose file");
+    const imageName = await getImageFromCompose(composePath);
+    if (!imageName) throw new BadRequestError("Could not extract image name from compose file");
 
-  const archCheck = await checkImageArchitectureSupport(imageName);
-  res.json({ success: true, appId, image: imageName, supported: archCheck.supported, systemArch: archCheck.systemArch, imageArch: archCheck.imageArch });
-}));
+    const archCheck = await checkImageArchitectureSupport(imageName);
+    return reply.send({ success: true, appId, image: imageName, supported: archCheck.supported, systemArch: archCheck.systemArch, imageArch: archCheck.imageArch });
+  });
 
-// GET /api/apps/:id/dependency-env
-router.get("/api/apps/:id/dependency-env", asyncHandler(async (req, res) => {
-  const appId = req.params.id;
-  const appPath = path.join(appsDir, appId);
+  // GET /api/apps/:id/dependency-env
+  fastify.get("/api/apps/:id/dependency-env", async (request, reply) => {
+    const appId = request.params.id;
+    const appPath = path.join(appsDir, appId);
 
-  try { await readFile(path.join(appPath, "compose.yml"), "utf-8"); }
-  catch { throw new NotFoundError(`App '${appId}' not found or has no compose.yml`); }
+    try { await readFile(path.join(appPath, "compose.yml"), "utf-8"); }
+    catch { throw new NotFoundError(`App '${appId}' not found or has no compose.yml`); }
 
-  let dependencies = [];
-  try {
-    const info = JSON.parse(await readFile(path.join(appPath, "info.json"), "utf-8"));
-    dependencies = Array.isArray(info.dependencies) ? info.dependencies : [];
-  } catch {}
-
-  if (dependencies.length === 0) return res.json({ success: true, dependencies: [], environmentVariables: {} });
-
-  log("info", `[GET /api/apps/:id/dependency-env] Found dependencies for ${appId}: ${dependencies.join(", ")}`);
-
-  const environmentVariables = {};
-  for (const depAppId of dependencies) {
+    let dependencies = [];
     try {
-      const containers = await docker.listContainers({ all: false, filters: { label: [`com.docker.compose.project=${depAppId}`] } });
-      if (containers.length === 0) continue;
-      const inspect = await docker.getContainer(containers[0].Id).inspect();
-      environmentVariables[depAppId] = {};
-      (inspect.Config.Env || []).forEach(envVar => {
-        const [key, ...valueParts] = envVar.split("=");
-        const value = valueParts.join("=");
-        if (value && !value.match(/^\$\{.*\}$/)) environmentVariables[depAppId][key] = value;
-      });
-    } catch (err) {
-      log("error", `[GET /api/apps/:id/dependency-env] Error fetching env from ${depAppId}:`, err.message);
+      const info = JSON.parse(await readFile(path.join(appPath, "info.json"), "utf-8"));
+      dependencies = Array.isArray(info.dependencies) ? info.dependencies : [];
+    } catch {}
+
+    if (dependencies.length === 0) return reply.send({ success: true, dependencies: [], environmentVariables: {} });
+
+    log("info", `[GET /api/apps/:id/dependency-env] Found dependencies for ${appId}: ${dependencies.join(", ")}`);
+
+    const environmentVariables = {};
+    for (const depAppId of dependencies) {
+      try {
+        const containers = await docker.listContainers({ all: false, filters: { label: [`com.docker.compose.project=${depAppId}`] } });
+        if (containers.length === 0) continue;
+        const inspect = await docker.getContainer(containers[0].Id).inspect();
+        environmentVariables[depAppId] = {};
+        (inspect.Config.Env || []).forEach(envVar => {
+          const [key, ...valueParts] = envVar.split("=");
+          const value = valueParts.join("=");
+          if (value && !value.match(/^\$\{.*\}$/)) environmentVariables[depAppId][key] = value;
+        });
+      } catch (err) {
+        log("error", `[GET /api/apps/:id/dependency-env] Error fetching env from ${depAppId}:`, err.message);
+      }
     }
-  }
 
-  res.json({ success: true, dependencies, environmentVariables });
-}));
+    return reply.send({ success: true, dependencies, environmentVariables });
+  });
 
-// POST /api/deploy
-router.post("/api/deploy", async (req, res) => {
-  log("info", "🚀 [POST /api/deploy] Deploy request received");
-  try {
-    const { appId, environment, expiresIn, customPortMappings, instanceId, allowMissingDependencies } = req.body;
-    log("info", `🚀 [POST /api/deploy] Deploying app: ${appId}${instanceId > 1 ? ` (Instance #${instanceId})` : ""}`);
+  // POST /api/deploy
+  fastify.post("/api/deploy", async (request, reply) => {
+    log("info", "🚀 [POST /api/deploy] Deploy request received");
+    try {
+      const { appId, environment, expiresIn, customPortMappings, instanceId, allowMissingDependencies } = request.body;
+      log("info", `🚀 [POST /api/deploy] Deploying app: ${appId}${instanceId > 1 ? ` (Instance #${instanceId})` : ""}`);
 
-    if (!appId) {
-      return res.status(400).json({ success: false, error: "appId is required" });
-    }
+      if (!appId) {
+        return reply.code(400).send({ success: false, error: "appId is required" });
+      }
 
     const appPath = path.join(appsDir, appId);
     const composePath = path.join(appPath, "compose.yml");
 
-    let composeContent;
-    try {
-      composeContent = await readFile(composePath, "utf-8");
-    } catch {
-      return res.status(404).json({ success: false, error: `App '${appId}' not found or has no compose.yml` });
-    }
+      let composeContent;
+      try {
+        composeContent = await readFile(composePath, "utf-8");
+      } catch {
+        return reply.code(404).send({ success: false, error: `App '${appId}' not found or has no compose.yml` });
+      }
 
     // Architecture check
     const imageName = await getImageFromCompose(composePath);
-    if (imageName) {
-      const archCheck = await checkImageArchitectureSupport(imageName);
-      if (archCheck.supported === false) {
-        return res.status(400).json({ success: false, error: "Architecture not supported", message: `The image '${imageName}' does not support your system architecture (${archCheck.systemArch}). Image supports: ${archCheck.imageArch}`, details: { image: imageName, systemArch: archCheck.systemArch, imageArch: archCheck.imageArch } });
+      if (imageName) {
+        const archCheck = await checkImageArchitectureSupport(imageName);
+        if (archCheck.supported === false) {
+          return reply.code(400).send({ success: false, error: "Architecture not supported", message: `The image '${imageName}' does not support your system architecture (${archCheck.systemArch}). Image supports: ${archCheck.imageArch}`, details: { image: imageName, systemArch: archCheck.systemArch, imageArch: archCheck.imageArch } });
+        }
       }
-    }
 
     // Check external networks
     let parsedCompose;
@@ -111,10 +110,10 @@ router.post("/api/deploy", async (req, res) => {
           if (!nets.some(n => n.Name === name)) missingNetworks.push(name);
         }
       }
-      if (missingNetworks.length > 0) {
-        const needed = missingNetworks.map(n => n.replace(/_network$/, "")).join(", ");
-        return res.status(400).json({ success: false, error: "Missing networks", message: `Required network(s) ${missingNetworks.join(", ")} do not exist. Deploy ${needed} first.`, missingNetworks });
-      }
+          if (missingNetworks.length > 0) {
+          const needed = missingNetworks.map(n => n.replace(/_network$/, "")).join(", ");
+          return reply.code(400).send({ success: false, error: "Missing networks", message: `Required network(s) ${missingNetworks.join(", ")} do not exist. Deploy ${needed} first.`, missingNetworks });
+        }
     }
 
     // Check dependencies
@@ -130,9 +129,9 @@ router.post("/api/deploy", async (req, res) => {
       const runningProjects = new Set(runningContainers.map(c => c.Labels?.["com.docker.compose.project"]).filter(Boolean));
       // Match base dep ID or any numbered instance (e.g. "postgresql" or "postgresql-2")
       const missingDeps = deployDeps.filter(dep => !([...runningProjects].some(p => p === dep || new RegExp(`^${dep}-\\d+$`).test(p))));
-      if (missingDeps.length > 0) {
+          if (missingDeps.length > 0) {
         if (!allowMissingDependencies) {
-          return res.status(400).json({ success: false, error: "Missing dependencies", message: `This app requires the following apps to be running: ${missingDeps.join(", ")}. Please deploy ${missingDeps.length === 1 ? "it" : "them"} first.`, missingDependencies: missingDeps });
+          return reply.code(400).send({ success: false, error: "Missing dependencies", message: `This app requires the following apps to be running: ${missingDeps.join(", ")}. Please deploy ${missingDeps.length === 1 ? "it" : "them"} first.`, missingDependencies: missingDeps });
         }
         dependencyWarnings = missingDeps;
       }
@@ -240,16 +239,15 @@ router.post("/api/deploy", async (req, res) => {
         try { await unlink(path.join(appPath, ".compose.tmp.yml")); } catch {}
       }
 
-      res.json({ success: true, message: `App '${appId}' deployed successfully`, appId, output: stdout, warnings: stderr || null, dependencyWarnings, temporary: !!expiresIn });
+      return reply.send({ success: true, message: `App '${appId}' deployed successfully`, appId, output: stdout, warnings: stderr || null, dependencyWarnings, temporary: !!expiresIn });
     } catch (error) {
       if (useTmp) { try { await unlink(path.join(appPath, ".compose.tmp.yml")); } catch {} }
       const isArchError = error.message?.includes("no matching manifest") || error.message?.includes("platform") || error.message?.includes("architecture");
-      res.status(500).json({ success: false, error: isArchError ? "Architecture not supported" : "Deployment failed", message: isArchError ? "This image does not support your system architecture" : error.message, stderr: error.stderr });
+      return reply.code(500).send({ success: false, error: isArchError ? "Architecture not supported" : "Deployment failed", message: isArchError ? "This image does not support your system architecture" : error.message, stderr: error.stderr });
     }
   } catch (error) {
     log("error", "❌ [POST /api/deploy] Unexpected error:", error.message);
-    res.status(500).json({ success: false, error: error.message });
+    return reply.code(500).send({ success: false, error: error.message });
   }
-});
-
-export default router;
+  });
+}

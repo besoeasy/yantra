@@ -94,66 +94,40 @@ export class DockerError extends AppError {
 }
 
 /**
- * Express error handling middleware
- * Should be the last middleware added to the app
- * @param {Error} err - The error object
- * @param {import('express').Request} req - Express request
- * @param {import('express').Response} res - Express response
- * @param {import('express').NextFunction} next - Express next function
+ * Fastify error handler — register with fastify.setErrorHandler(errorHandler)
+ * @param {Error} err
+ * @param {import('fastify').FastifyRequest} request
+ * @param {import('fastify').FastifyReply} reply
  */
-export function errorHandler(err, req, res, next) {
-  // Log error for debugging
+export function errorHandler(err, request, reply) {
   const timestamp = new Date().toISOString();
-  console.error(`[${timestamp}] ❌ [ERROR] ${req.method} ${req.path}`);
+  console.error(`[${timestamp}] ❌ [ERROR] ${request.method} ${request.url}`);
   console.error(`[${timestamp}] ❌ [ERROR] ${err.stack || err.message}`);
 
-  // Don't send error response if headers already sent
-  if (res.headersSent) {
-    return next(err);
-  }
-
-  // Handle operational errors (errors we expect and handle)
+  // Operational errors (AppError subclasses)
   if (err.isOperational) {
-    return res.status(err.statusCode).json({
+    return reply.code(err.statusCode).send({
       success: false,
       error: err.message,
       details: err.details,
     });
   }
 
-  // Handle Docker API errors
+  // Docker API errors
   if (err.statusCode && err.reason) {
-    return res.status(err.statusCode >= 400 && err.statusCode < 600 ? err.statusCode : 500).json({
+    return reply.code(err.statusCode >= 400 && err.statusCode < 600 ? err.statusCode : 500).send({
       success: false,
       error: err.reason || err.message,
       details: err.json || null,
     });
   }
 
-  // Handle unexpected errors (programming errors)
-  // Don't leak error details in production
   const isDevelopment = process.env.NODE_ENV === 'development';
-  
-  return res.status(500).json({
+  return reply.code(500).send({
     success: false,
     error: "Internal server error",
-    details: isDevelopment ? {
-      message: err.message,
-      stack: err.stack,
-    } : null,
+    details: isDevelopment ? { message: err.message, stack: err.stack } : null,
   });
-}
-
-/**
- * Async handler wrapper to catch errors in async route handlers
- * Eliminates the need for try-catch in every route
- * @param {Function} fn - Async route handler function
- * @returns {Function} Wrapped function
- */
-export function asyncHandler(fn) {
-  return (req, res, next) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-  };
 }
 
 /**
