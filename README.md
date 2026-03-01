@@ -44,18 +44,6 @@ Navigate to `http://localhost` in your browser. You are ready to go.
 
 <br/>
 
-## The AI Ecosystem
-
-Yantr is the first platform to ship a complete suite of AI agents that can be deployed locally with zero configuration. Running local AI usually involves complex environment setups, but Yantr isolates every agent perfectly.
-
-- **[Ollama](apps/ollama):** Local LLM inference server (Llama, Mistral, CodeLlama)
-- **[Open WebUI](apps/open-webui):** Beautiful chat interface for your local models
-- **[Perplexica](apps/perplexica):** AI-powered search engine with conversational responses
-- **[OpenCode](apps/opencode) & [OpenClaw](apps/openclaw):** AI coding agents for terminal and IDEs
-- **[Kokoro](apps/kokoro):** Lightweight, ultra-fast text-to-speech model (82M parameters)
-
-<br/>
-
 ## Core Features
 
 - **One-Click Deploys:** 100+ pre-configured apps ready to launch instantly.
@@ -66,15 +54,6 @@ Yantr is the first platform to ship a complete suite of AI agents that can be de
 - **No Lock-In:** Yantr translates everything to standard Docker Compose under the hood. You maintain complete control.
 
 <br/>
-
-## App Catalog
-
-Beyond AI, Yantr ships with over 100 applications spanning multiple categories:
-* **Media & Downloads:** Jellyfin, Transmission, qBittorrent, MeTube
-* **Tools & Utilities:** Stirling PDF, Glances, Uptime Kuma
-* **Network & Privacy:** Pi-hole, Wireguard, Syncthing, Tor Browser
-
-**[👉 Browse the full app catalog](apps/)**
 
 ---
 
