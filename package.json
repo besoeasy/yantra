@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "docker": "docker build -t yantr:dev . && docker stop yantr || true && docker rm yantr || true && docker run -d --name yantr -p 5252:5252 -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes yantr:dev && docker logs -f yantr",
+    "docker": "docker stop yantr || true && docker rm yantr || true && docker build -t yantr:dev . && docker run -d --name yantr -p 5252:5252 -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes yantr:dev && docker logs -f yantr",
     "website": "npx @tailwindcss/cli -i ./website/tailwind.input.css -o ./website/tailwind.css --minify && node website-build.js"
   },
   "dependencies": {
