@@ -32,6 +32,7 @@ function viewContainerDetail(container) {
 const containers = ref([]);
 const volumes = ref([]);
 const images = ref([]);
+const volumeBrowsers = ref([]);
 const loading = ref(false);
 const watchtowerInstalled = ref(false);
 const activeFilter = ref("all");
@@ -75,27 +76,20 @@ const reclaimableStats = computed(() => {
 const showWatchtowerAlert = computed(() => !watchtowerInstalled.value);
 
 // Container Grouping
-const volumeContainers = computed(() => {
-  return containers.value.filter((c) => c.labels && c.labels["yantr.volume-browser"]);
-});
+const volumeContainers = computed(() => volumeBrowsers.value);
 
 const yantrContainers = computed(() => {
-  return containers.value.filter((c) => {
-    const isVolume = c.labels && c.labels["yantr.volume-browser"];
-    const isYantrApp = c.appLabels?.app;
-    return !isVolume && isYantrApp;
-  });
+  return containers.value.filter((c) => c.appLabels?.app);
 });
 
 const otherContainers = computed(() => {
-  return containers.value.filter((c) => {
-    const isVolume = c.labels && c.labels["yantr.volume-browser"];
-    const isYantrApp = c.appLabels?.app;
-    return !isVolume && !isYantrApp;
-  });
+  return containers.value.filter((c) => !c.appLabels?.app);
 });
 
-const temporaryContainersCount = computed(() => containers.value.filter((c) => c?.labels?.["yantr.expireAt"]).length);
+const temporaryContainersCount = computed(() =>
+  containers.value.filter((c) => c?.labels?.["yantr.expireAt"]).length +
+  volumeBrowsers.value.filter((b) => b.expireAt).length
+);
 
 // Filter visibility computed properties
 const showYantrApps = computed(() => activeFilter.value === "all" || activeFilter.value === "yantr");
@@ -180,6 +174,15 @@ async function fetchVolumes() {
   }
 }
 
+async function fetchVolumeBrowsers() {
+  try {
+    const response = await fetch(`${apiUrl.value}/api/volumes/browsers`);
+    volumeBrowsers.value = await response.json();
+  } catch (error) {
+    console.error("Failed to fetch volume browsers:", error);
+  }
+}
+
 async function fetchImages() {
   try {
     const response = await fetch(`${apiUrl.value}/api/images`);
@@ -193,7 +196,7 @@ async function fetchImages() {
 }
 
 async function refreshAll() {
-  await Promise.all([fetchContainers(), fetchVolumes(), fetchImages()]);
+  await Promise.all([fetchContainers(), fetchVolumes(), fetchImages(), fetchVolumeBrowsers()]);
 }
 
 onMounted(async () => {

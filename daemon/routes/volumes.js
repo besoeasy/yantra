@@ -1,4 +1,6 @@
 import { docker, log } from "../shared.js";
+import http from "node:http";
+import { startBrowser, stopBrowser, isBrowsing, getBrowserPort, listBrowsers } from "../dufs.js";
 import { getS3Config, restoreVolumeBackup, deleteVolumeBackup } from "../backup.js";
 
 export default async function volumesRoutes(fastify) {
@@ -22,16 +24,14 @@ export default async function volumesRoutes(fastify) {
       }
 
       const containers = await docker.listContainers({ all: true });
-      const browsedVolumes = new Set();
       const usedVolumeNames = new Set();
       containers.forEach(c => {
-        if (c.Labels?.["yantr.volume-browser"]) browsedVolumes.add(c.Labels["yantr.volume-browser"]);
         (c.Mounts || []).forEach(m => { if (m.Type === "volume" && m.Name) usedVolumeNames.add(m.Name); });
       });
 
       const enrichedVolumes = volumeList.map(vol => {
         const sizeBytes = volumeSizes[vol.Name] || 0;
-        return { name: vol.Name, driver: vol.Driver, mountpoint: vol.Mountpoint, createdAt: vol.CreatedAt, labels: vol.Labels || {}, isBrowsing: browsedVolumes.has(vol.Name), isUsed: usedVolumeNames.has(vol.Name), size: (sizeBytes / (1024 * 1024)).toFixed(2), sizeBytes };
+        return { name: vol.Name, driver: vol.Driver, mountpoint: vol.Mountpoint, createdAt: vol.CreatedAt, labels: vol.Labels || {}, isBrowsing: isBrowsing(vol.Name), isUsed: usedVolumeNames.has(vol.Name), size: (sizeBytes / (1024 * 1024)).toFixed(2), sizeBytes };
       });
 
       const usedVolumes = enrichedVolumes.filter(v => v.isUsed).sort((a, b) => b.sizeBytes - a.sizeBytes);
@@ -46,6 +46,11 @@ export default async function volumesRoutes(fastify) {
     }
   });
 
+  // GET /api/volumes/browsers
+  fastify.get("/api/volumes/browsers", async (request, reply) => {
+    return reply.send(listBrowsers());
+  });
+
   // POST /api/volumes/:name/browse
   fastify.post("/api/volumes/:name/browse", async (request, reply) => {
     const volumeName = request.params.name;
@@ -58,43 +63,8 @@ export default async function volumesRoutes(fastify) {
         return reply.code(404).send({ success: false, error: "Volume not found" });
       }
 
-      const containers = await docker.listContainers({ all: true });
-      const existingBrowser = containers.find(c => c.Labels?.["yantr.volume-browser"] === volumeName);
-      if (existingBrowser) {
-        const container = docker.getContainer(existingBrowser.Id);
-        const inspect = await container.inspect();
-        if (inspect.State.Status !== "running") await container.start();
-        const port = inspect.NetworkSettings.Ports["5000/tcp"]?.[0]?.HostPort;
-        return reply.send({ success: true, port: port ? parseInt(port) : null, containerId: existingBrowser.Id, message: "Browser container already exists and is now running" });
-      }
-
-      const imageName = "sigoden/dufs:latest";
-      try { await docker.getImage(imageName).inspect(); }
-      catch {
-        log("info", `📥 Pulling ${imageName}...`);
-        await new Promise((resolve, reject) => {
-          docker.pull(imageName, (err, stream) => {
-            if (err) return reject(err);
-            docker.modem.followProgress(stream, (err, output) => err ? reject(err) : resolve(output));
-          });
-        });
-      }
-
-      const labels = { "yantr.volume-browser": volumeName, "yantr.managed": "true" };
-      if (expiryMinutes > 0) labels["yantr.expireAt"] = String(Math.floor(Date.now() / 1000) + expiryMinutes * 60);
-
-      const container = await docker.createContainer({
-        Image: imageName,
-        name: `yantr-v-${volumeName}`,
-        Cmd: ["/data", "--enable-cors", "--allow-all"],
-        Labels: labels,
-        HostConfig: { Binds: [`${volumeName}:/data`], PortBindings: { "5000/tcp": [{ HostPort: "" }] }, RestartPolicy: { Name: "no" } },
-        ExposedPorts: { "5000/tcp": {} },
-      });
-      await container.start();
-      const inspect = await container.inspect();
-      const port = inspect.NetworkSettings.Ports["5000/tcp"]?.[0]?.HostPort;
-      return reply.send({ success: true, port: port ? parseInt(port) : null, containerId: container.id, message: "Volume browser started successfully" });
+      const port = await startBrowser(volumeName, expiryMinutes);
+      return reply.send({ success: true, port, message: "Volume browser started successfully" });
     } catch (error) {
       log("error", `❌ [POST /api/volumes/${volumeName}/browse] Error:`, error.message);
       return reply.code(500).send({ success: false, error: error.message });
@@ -106,15 +76,9 @@ export default async function volumesRoutes(fastify) {
     const volumeName = request.params.name;
     log("info", `🛑 [DELETE /api/volumes/${volumeName}/browse] Stopping volume browser`);
     try {
-      const containers = await docker.listContainers({ all: true });
-      const browserContainer = containers.find(c => c.Labels?.["yantr.volume-browser"] === volumeName);
-      if (!browserContainer) return reply.code(404).send({ success: false, error: "No browser container found for this volume" });
-
-      const container = docker.getContainer(browserContainer.Id);
-      const inspect = await container.inspect();
-      if (inspect.State.Running) await container.stop();
-      await container.remove();
-      return reply.send({ success: true, message: "Volume browser stopped and removed successfully" });
+      const stopped = stopBrowser(volumeName);
+      if (!stopped) return reply.code(404).send({ success: false, error: "No active browser for this volume" });
+      return reply.send({ success: true, message: "Volume browser stopped" });
     } catch (error) {
       log("error", `❌ [DELETE /api/volumes/${volumeName}/browse] Error:`, error.message);
       return reply.code(500).send({ success: false, error: error.message });

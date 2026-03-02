@@ -8,7 +8,6 @@ const toast = useNotification()
 const volumesData = ref({})
 const loading = ref(false)
 const actionLoading = ref({})
-const volumePorts = ref({})
 const deletingVolume = ref(null)
 const deletingAllVolumes = ref(false)
 const searchQuery = ref('')
@@ -72,27 +71,9 @@ const browsingVolumes = computed(() => {
 async function fetchVolumes() {
   loading.value = true
   try {
-    const response = await fetch('/api/volumes')
-    const data = await response.json()
-    if (data.success) {
-      volumesData.value = data
-      
-      const containers = await fetch('/api/containers')
-      const containersData = await containers.json()
-      if (containersData.success) {
-        const newPorts = {}
-        containersData.containers.forEach(container => {
-          if (container.labels && container.labels['yantr.volume-browser']) {
-            const volumeName = container.labels['yantr.volume-browser']
-            const port = container.ports?.find(p => p.privatePort === 5000)?.publicPort
-            if (port) {
-              newPorts[volumeName] = port
-            }
-          }
-        })
-        volumePorts.value = newPorts
-      }
-    }
+    const res = await fetch('/api/volumes')
+    const data = await res.json()
+    if (data.success) volumesData.value = data
   } catch (error) {
     console.error(error)
   } finally {
@@ -107,12 +88,8 @@ async function startBrowsing(volumeName) {
     const data = await response.json()
     if (data.success) {
       toast.success(`Browser started`)
-      if (data.port) volumePorts.value[volumeName] = data.port
       await fetchVolumes()
-      if (data.port) {
-        const url = `http://${window.location.hostname || 'localhost'}:${data.port}`
-        window.open(url, '_blank')
-      }
+      window.open(`/browse/${volumeName}/`, '_blank')
     }
   } catch (error) {
     toast.error('Failed to start browser')
@@ -128,7 +105,6 @@ async function stopBrowsing(volumeName) {
     const data = await response.json()
     if (data.success) {
       toast.success('Browser stopped')
-      delete volumePorts.value[volumeName]
       await fetchVolumes()
     }
   } catch (error) {
@@ -315,8 +291,7 @@ onUnmounted(() => {
                   </div>
                   <h4 class="font-mono font-medium text-sm text-gray-900 dark:text-white truncate mb-4" :title="volume.name">{{ volume.name }}</h4>
                   <div class="mt-auto flex gap-2">
-                      <a v-if="volumePorts[volume.name]"
-                         :href="`http://${window.location.hostname || 'localhost'}:${volumePorts[volume.name]}`"
+                      <a :href="`/browse/${volume.name}/`"
                          target="_blank"
                          class="flex-1 flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white dark:bg-white dark:hover:bg-gray-100 dark:text-gray-900 rounded-lg px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors shadow-sm">
                          <ExternalLink class="w-4 h-4" />

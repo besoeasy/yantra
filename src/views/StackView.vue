@@ -220,8 +220,8 @@ async function browseVolume(volumeName, expiryMinutes = 60) {
     const data = await response.json();
     if (data.success) {
       const expiryText = expiryMinutes > 0 ? ` (expires in ${expiryMinutes}m)` : ' (no expiry)';
-      toast.success(`Volume browser started on port ${data.port}${expiryText}`);
-      if (data.port) window.open(`http://${window.location.hostname}:${data.port}`, '_blank');
+      toast.success(`Volume browser started${expiryText}`);
+      window.open(`/browse/${volumeName}/`, '_blank');
     }
   } catch (e) {
     toast.error('Failed to start volume browser');
