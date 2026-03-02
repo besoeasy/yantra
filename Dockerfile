@@ -12,6 +12,8 @@ RUN VITE_BUILD_TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ) npm run build
 
 RUN rm -rf node_modules .npm
 
+# Final image
+
 FROM docker.io/library/node:alpine
 
 RUN apk add --no-cache docker-cli docker-cli-compose wget restic
