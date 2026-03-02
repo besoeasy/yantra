@@ -4,13 +4,23 @@ import { log } from './shared.js'
 
 // Map: volumeName -> { process, port, expireAt }
 const browsers = new Map()
+// Ports currently claimed (active or pending spawn) — prevents concurrent startBrowser
+// calls from getting the same port during the TOCTOU window
+const reservedPorts = new Set()
 
 function findFreePort() {
   return new Promise((resolve, reject) => {
     const server = createServer()
     server.listen(0, () => {
       const port = server.address().port
-      server.close(() => resolve(port))
+      server.close(() => {
+        if (reservedPorts.has(port)) {
+          // Extremely unlikely, but recurse to get a different one
+          return findFreePort().then(resolve, reject)
+        }
+        reservedPorts.add(port)
+        resolve(port)
+      })
     })
     server.on('error', reject)
   })
@@ -32,16 +42,18 @@ export async function startBrowser(volumeName, expiryMinutes = 0) {
 
   proc.on('exit', (code) => {
     log('info', `dufs for ${volumeName} exited (code ${code})`)
+    reservedPorts.delete(port)
     browsers.delete(volumeName)
   })
 
   proc.on('error', (err) => {
     log('error', `dufs process error for ${volumeName}: ${err.message}`)
+    reservedPorts.delete(port)
     browsers.delete(volumeName)
   })
 
   browsers.set(volumeName, { process: proc, port, expireAt })
-  log('info', `dufs started for volume "${volumeName}" on port ${port}`)
+  log('info', `📂 Volume browser started: "${volumeName}" → /browse/${volumeName}/`)
   return port
 }
 
@@ -49,6 +61,7 @@ export function stopBrowser(volumeName) {
   const browser = browsers.get(volumeName)
   if (!browser) return false
   try { browser.process.kill() } catch {}
+  reservedPorts.delete(browser.port)
   browsers.delete(volumeName)
   log('info', `dufs stopped for volume "${volumeName}"`)
   return true
@@ -75,4 +88,5 @@ export function stopAll() {
     try { proc.kill() } catch {}
   }
   browsers.clear()
+  reservedPorts.clear()
 }
