@@ -3,7 +3,6 @@ import { ref, onMounted, computed } from 'vue'
 import { useNotification } from '../composables/useNotification'
 import { useApiUrl } from '../composables/useApiUrl'
 import { HardDrive, Trash2, Check, AlertTriangle, Box, Database, Layers, Search, Filter } from 'lucide-vue-next'
-import VueApexCharts from 'vue3-apexcharts'
 
 const toast = useNotification()
 const { apiUrl } = useApiUrl()
@@ -15,89 +14,33 @@ const deletingAllImages = ref(false)
 const searchQuery = ref('')
 const currentTab = ref('active') // 'active', 'unused'
 
-// Chart Data Configuration
-const treemapOptions = computed(() => ({
-  chart: {
-    type: 'treemap',
-    fontFamily: 'inherit',
-    toolbar: { show: false },
-    background: 'transparent',
-    animations: { enabled: true, speed: 600 }
-  },
-  colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
-  states: {
-    hover: { filter: { type: 'darken', value: 0.1 } }
-  },
-  plotOptions: {
-    treemap: {
-      distributed: true,
-      enableShades: true,
-      shadeIntensity: 0.5,
-      radius: 4,
-      useFillColorAsStroke: true,
-    }
-  },
-  dataLabels: {
-    enabled: true,
-    style: {
-      fontSize: '11px',
-      fontFamily: 'inherit',
-      fontWeight: 600,
-    },
-    formatter: function(text, op) {
-      return [text, op.value + ' MB']
-    },
-    offsetY: -4
-  },
-  title: { text: undefined },
-  tooltip: {
-    theme: 'dark',
-    style: { fontFamily: 'inherit', fontSize: '12px' },
-    y: {
-      formatter: function(val) { return val + " MB" }
-    },
-    marker: { show: false }
-  },
-  stroke: { show: true, width: 2, colors: ['#ffffff'] } // White stroke for separation
-}))
-
-const treemapSeries = computed(() => {
-  if (!imagesData.value.usedImages && !imagesData.value.unusedImages) return []
-  
+// Chart Data
+const chartItems = computed(() => {
   const allImages = []
-  
-  // Add used images
+
   if (imagesData.value.usedImages) {
     imagesData.value.usedImages.forEach(img => {
       const sizeVal = parseFloat(img.size)
       if (sizeVal > 1) {
-        const tagName = img.tags?.[0] && img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId
-        allImages.push({
-          x: tagName,
-          y: sizeVal,
-          fillColor: '#10b981'
-        })
-      }
-    })
-  }
-  
-  // Add unused images
-  if (imagesData.value.unusedImages) {
-    imagesData.value.unusedImages.forEach(img => {
-      const sizeVal = parseFloat(img.size)
-      if (sizeVal > 1) {
-        const tagName = img.tags?.[0] && img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId
-        allImages.push({
-          x: tagName,
-          y: sizeVal,
-          fillColor: '#f59e0b' // Amber/Orange for unused
-        })
+        const name = img.tags?.[0] && img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId
+        allImages.push({ name, size: sizeVal, color: '#10b981' })
       }
     })
   }
 
-  const sortedData = allImages.sort((a, b) => b.y - a.y).slice(0, 30) // Top 30
-  return [{ data: sortedData }]
+  if (imagesData.value.unusedImages) {
+    imagesData.value.unusedImages.forEach(img => {
+      const sizeVal = parseFloat(img.size)
+      if (sizeVal > 1) {
+        const name = img.tags?.[0] && img.tags[0] !== '<none>:<none>' ? img.tags[0].split(':')[0] : img.shortId
+        allImages.push({ name, size: sizeVal, color: '#f59e0b' })
+      }
+    })
+  }
+
+  const sorted = allImages.sort((a, b) => b.size - a.size).slice(0, 15)
+  const max = sorted[0]?.size || 1
+  return sorted.map(item => ({ ...item, pct: Math.round((item.size / max) * 100) }))
 })
 
 // Filtered Lists
@@ -271,12 +214,24 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Treemap Chart -->
-      <div v-if="treemapSeries.length > 0" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-6">
-         <h3 class="text-sm font-semibold tracking-tight text-gray-900 dark:text-white mb-4">Storage Distribution</h3>
-         <div class="rounded-lg overflow-hidden bg-gray-50 dark:bg-zinc-900/30 border border-gray-200 dark:border-zinc-800/50 p-1">
-            <VueApexCharts :options="treemapOptions" :series="treemapSeries" height="280" />
-         </div>
+      <!-- Storage Distribution -->
+      <div v-if="chartItems.length > 0" class="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-zinc-800 p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-sm font-semibold tracking-tight text-gray-900 dark:text-white">Storage Distribution</h3>
+          <div class="flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.15em] text-gray-500 dark:text-zinc-500">
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>In Use</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>Unused</span>
+          </div>
+        </div>
+        <div class="space-y-2.5">
+          <div v-for="item in chartItems" :key="item.name" class="flex items-center gap-3">
+            <div class="w-36 shrink-0 text-xs font-mono text-gray-500 dark:text-zinc-400 truncate text-right" :title="item.name">{{ item.name }}</div>
+            <div class="flex-1 bg-gray-100 dark:bg-zinc-900 rounded-full h-1.5 overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-500" :style="{ width: item.pct + '%', backgroundColor: item.color }"></div>
+            </div>
+            <div class="w-16 shrink-0 text-xs tabular-nums text-gray-500 dark:text-zinc-500 text-right">{{ item.size }} MB</div>
+          </div>
+        </div>
       </div>
 
       <!-- Content Tabs -->
