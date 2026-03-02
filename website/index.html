@@ -767,12 +767,14 @@
 
       async function loadStars() {
         try {
-          const response = await fetch("https://api.github.com/repos/besoeasy/yantr");
+          const response = await fetch("./github-data.json");
           if (response.ok) {
             const data = await response.json();
-            const stars = data.stargazers_count;
-            const formatted = stars > 1000 ? (stars / 1000).toFixed(1) + "k" : stars;
-            document.getElementById("stars-nav").textContent = formatted;
+            const stars = data.stars || 0;
+            if (stars > 0) {
+              const formatted = stars > 1000 ? (stars / 1000).toFixed(1) + "k" : stars;
+              document.getElementById("stars-nav").textContent = formatted;
+            }
           }
         } catch (e) {
           document.getElementById("stars-nav").textContent = "";
@@ -785,10 +787,11 @@
         if (!grid) return;
 
         try {
-          const response = await fetch("https://api.github.com/repos/besoeasy/yantr/contributors?per_page=100");
+          const response = await fetch("./github-data.json");
           if (!response.ok) return;
 
-          const contributors = await response.json();
+          const data = await response.json();
+          const contributors = data.contributors || [];
           if (!Array.isArray(contributors) || contributors.length === 0) return;
 
           const humans = contributors.filter((contributor) => contributor?.type === "User" && contributor?.login && !contributor.login.endsWith("[bot]"));

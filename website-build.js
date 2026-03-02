@@ -215,7 +215,43 @@ function buildPages() {
   console.log(`✨ Generated ${apps.length} app pages in ${appsOutputDir}`);
 }
 
+async function fetchGitHubData() {
+  const githubDataPath = path.join(websiteDir, 'github-data.json');
+  console.log('\n🐙 Fetching GitHub data...');
+
+  try {
+    const [repoRes, contribRes] = await Promise.all([
+      fetch('https://api.github.com/repos/besoeasy/yantr', {
+        headers: { 'User-Agent': 'yantr-website-builder' },
+      }),
+      fetch('https://api.github.com/repos/besoeasy/yantr/contributors?per_page=100', {
+        headers: { 'User-Agent': 'yantr-website-builder' },
+      }),
+    ]);
+
+    const repoData = repoRes.ok ? await repoRes.json() : {};
+    const contribData = contribRes.ok ? await contribRes.json() : [];
+
+    const output = {
+      fetchedAt: new Date().toISOString(),
+      stars: repoData.stargazers_count || 0,
+      forks: repoData.forks_count || 0,
+      contributors: Array.isArray(contribData) ? contribData : [],
+    };
+
+    fs.writeFileSync(githubDataPath, JSON.stringify(output, null, 2), 'utf8');
+    console.log(`✅ GitHub data saved (${output.stars} stars, ${output.contributors.length} contributors)`);
+  } catch (error) {
+    console.warn(`⚠️  Could not fetch GitHub data: ${error.message}`);
+    // Write empty fallback so the page doesn't break
+    if (!fs.existsSync(githubDataPath)) {
+      fs.writeFileSync(githubDataPath, JSON.stringify({ fetchedAt: new Date().toISOString(), stars: 0, forks: 0, contributors: [] }, null, 2), 'utf8');
+    }
+  }
+}
+
 try {
+  await fetchGitHubData();
   buildPages();
 } catch (error) {
   console.error('❌ Failed to generate app pages:', error.message);
