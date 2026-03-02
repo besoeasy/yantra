@@ -1,4 +1,5 @@
 import fs from 'fs';
+import https from 'https';
 import path from 'path';
 import nunjucks from 'nunjucks';
 import { parse } from 'yaml';
@@ -215,22 +216,27 @@ function buildPages() {
   console.log(`✨ Generated ${apps.length} app pages in ${appsOutputDir}`);
 }
 
+function httpsGet(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, { headers: { 'User-Agent': 'yantr-website-builder' } }, (res) => {
+      let body = '';
+      res.on('data', (chunk) => (body += chunk));
+      res.on('end', () => {
+        try { resolve(JSON.parse(body)); } catch (e) { reject(e); }
+      });
+    }).on('error', reject);
+  });
+}
+
 async function fetchGitHubData() {
   const githubDataPath = path.join(websiteDir, 'github-data.json');
   console.log('\n🐙 Fetching GitHub data...');
 
   try {
-    const [repoRes, contribRes] = await Promise.all([
-      fetch('https://api.github.com/repos/besoeasy/yantr', {
-        headers: { 'User-Agent': 'yantr-website-builder' },
-      }),
-      fetch('https://api.github.com/repos/besoeasy/yantr/contributors?per_page=100', {
-        headers: { 'User-Agent': 'yantr-website-builder' },
-      }),
+    const [repoData, contribData] = await Promise.all([
+      httpsGet('https://api.github.com/repos/besoeasy/yantr'),
+      httpsGet('https://api.github.com/repos/besoeasy/yantr/contributors?per_page=100'),
     ]);
-
-    const repoData = repoRes.ok ? await repoRes.json() : {};
-    const contribData = contribRes.ok ? await contribRes.json() : [];
 
     const output = {
       fetchedAt: new Date().toISOString(),
