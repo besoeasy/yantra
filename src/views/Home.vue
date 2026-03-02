@@ -183,6 +183,15 @@ async function fetchVolumeBrowsers() {
   }
 }
 
+async function stopBrowser(volumeName) {
+  try {
+    await fetch(`${apiUrl.value}/api/volumes/${volumeName}/browse`, { method: 'DELETE' });
+    await fetchVolumeBrowsers();
+  } catch (error) {
+    console.error('Failed to stop browser:', error);
+  }
+}
+
 async function fetchImages() {
   try {
     const response = await fetch(`${apiUrl.value}/api/images`);
@@ -351,6 +360,7 @@ onUnmounted(() => {
             <VolumeContainersGrid
               v-if="showVolumeBrowsers && volumeContainers.length > 0"
               :containers="volumeContainers"
+              @stop-browser="stopBrowser"
             />
 
             <OtherContainersGrid v-if="showDockerApps && otherContainers.length > 0" :containers="otherContainers" @select="viewContainerDetail" />

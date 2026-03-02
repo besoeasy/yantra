@@ -1,6 +1,8 @@
 <script setup>
 import { useCurrentTime } from "../../composables/useCurrentTime";
-import { FolderOpen, ExternalLink } from "lucide-vue-next";
+import { FolderOpen, ExternalLink, EyeOff } from "lucide-vue-next";
+
+const emit = defineEmits(['stop-browser'])
 
 const { containers } = defineProps({
   containers: { type: Array, default: () => [] },
@@ -66,6 +68,13 @@ function getExpirationInfo(browser) {
                 >
                   <ExternalLink :size="10" />
                   Browse
+                </button>
+                <button
+                  @click.stop="emit('stop-browser', browser.volumeName)"
+                  class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-red-50/50 text-red-500 dark:bg-red-500/10 dark:text-red-400 hover:bg-red-100/50 dark:hover:bg-red-500/20 transition-colors"
+                >
+                  <EyeOff :size="10" />
+                  Stop
                 </button>
                 
                 <span v-if="isTemporary(browser)" 
